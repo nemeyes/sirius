@@ -1,0 +1,61 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{E5418E64-9EA1-39D5-910A-3DDF364044A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6} = {F323FBA0-ECB7-373E-BE9F-B5FA959182F6}
+		{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0} = {42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}
+		{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3} = {CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}
+		{1513F37F-8C02-3706-9757-8F71AE3A252A} = {1513F37F-8C02-3706-9757-8F71AE3A252A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{F323FBA0-ECB7-373E-BE9F-B5FA959182F6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cefclient", "cefclient\cefclient.vcxproj", "{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6} = {F323FBA0-ECB7-373E-BE9F-B5FA959182F6}
+		{1513F37F-8C02-3706-9757-8F71AE3A252A} = {1513F37F-8C02-3706-9757-8F71AE3A252A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cefsimple", "cefsimple\cefsimple.vcxproj", "{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6} = {F323FBA0-ECB7-373E-BE9F-B5FA959182F6}
+		{1513F37F-8C02-3706-9757-8F71AE3A252A} = {1513F37F-8C02-3706-9757-8F71AE3A252A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcef_dll_wrapper", "libcef_dll\libcef_dll_wrapper.vcxproj", "{1513F37F-8C02-3706-9757-8F71AE3A252A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6} = {F323FBA0-ECB7-373E-BE9F-B5FA959182F6}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5418E64-9EA1-39D5-910A-3DDF364044A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5418E64-9EA1-39D5-910A-3DDF364044A5}.Release|Win32.ActiveCfg = Release|Win32
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6}.Debug|Win32.Build.0 = Debug|Win32
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6}.Release|Win32.ActiveCfg = Release|Win32
+		{F323FBA0-ECB7-373E-BE9F-B5FA959182F6}.Release|Win32.Build.0 = Release|Win32
+		{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}.Debug|Win32.Build.0 = Debug|Win32
+		{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}.Release|Win32.ActiveCfg = Release|Win32
+		{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}.Release|Win32.Build.0 = Release|Win32
+		{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}.Debug|Win32.Build.0 = Debug|Win32
+		{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}.Release|Win32.ActiveCfg = Release|Win32
+		{CDC14734-77E7-3EB5-B1EC-12E10D6F96D3}.Release|Win32.Build.0 = Release|Win32
+		{1513F37F-8C02-3706-9757-8F71AE3A252A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1513F37F-8C02-3706-9757-8F71AE3A252A}.Debug|Win32.Build.0 = Debug|Win32
+		{1513F37F-8C02-3706-9757-8F71AE3A252A}.Release|Win32.ActiveCfg = Release|Win32
+		{1513F37F-8C02-3706-9757-8F71AE3A252A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
