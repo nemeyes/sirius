@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxVectorGraphics\libs\CreEPS.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxBaseGui.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxButton.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\ofxDatGui.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\core\ofxDatGuiComponent.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxGuiGroup.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxLabel.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxPanel.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxSlider.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxSliderGroup.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\libs\ofxSmartFont\ofxSmartFont.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxSvg\src\ofxSvg.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPClient.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPManager.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPServer.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxThreadedImageLoader\src\ofxThreadedImageLoader.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxToggle.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxUDPManager.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxVectorGraphics\src\ofxVectorGraphics.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\src_colors.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\svgtiny.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\svgtiny_gradient.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\svgtiny_list.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\app\attendant\launcher\src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\app\attendant\launcher\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{5d53665e-6e94-4adf-8f3e-7a8c41401b44}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxVectorGraphics\libs\CreEPS.hpp">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxVectorGraphics\libs\CreEPS_Types.hpp">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxBaseGui.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxButton.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\ofxDatGui.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGui2dPad.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiButton.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiColorPicker.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\core\ofxDatGuiComponent.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\core\ofxDatGuiConstants.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiControls.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\core\ofxDatGuiEvents.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiFRM.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiGroups.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\core\ofxDatGuiIntObject.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiLabel.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiMatrix.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiScrollView.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiSlider.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiTextInput.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiTextInputField.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\themes\ofxDatGuiTheme.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\themes\ofxDatGuiThemes.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\components\ofxDatGuiTimeGraph.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxGui.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxGuiGroup.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxLabel.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxNetwork.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxNetworkUtils.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxPanel.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxSlider.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxSliderGroup.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxDatGui\src\libs\ofxSmartFont\ofxSmartFont.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxSvg\src\ofxSvg.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPClient.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPManager.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxTCPServer.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxThreadedImageLoader\src\ofxThreadedImageLoader.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxGui\src\ofxToggle.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxNetwork\src\ofxUDPManager.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxVectorGraphics\src\ofxVectorGraphics.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\svgtiny.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\openframeworks\addons\ofxSvg\libs\svgTiny\src\svgtiny_internal.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\base\include\sirius_stringhelper.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\app\attendant\launcher\src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\app\attendant\launcher\icon.rc">
+      <Filter>src</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="compressor">
+      <UniqueIdentifier>{d41a210a-5e13-4fa5-843f-c382fae8a4bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video">
+      <UniqueIdentifier>{bc46c21d-452c-4626-b3d9-70468c99ddc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libimgqnt">
+      <UniqueIdentifier>{9703ff20-8b23-4d15-b082-d07fe9f796c9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\base\include\resource.h">
+      <Filter>리소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_compressor.h">
+      <Filter>compressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\base\include\sirius_video.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\blur.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\kmeans.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\libimagequant.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\mediancut.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\mempool.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\nearest.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\pam.h">
+      <Filter>libimgqnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\include\sirius_png_compressor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\include\png_compressor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp">
+      <Filter>compressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\base\source\sirius_video.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\blur.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\kmeans.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\libimagequant.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\mediancut.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\mempool.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\nearest.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\libimgqnt\pam.c">
+      <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\source\sirius_png_compressor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\source\png_compressor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
