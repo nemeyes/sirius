@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\binding_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window_osr_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window_std_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\bytes_write_handler.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_app_delegates_browser.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_browser.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler_osr.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler_std.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\dialog_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\drm_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_context.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_context_impl.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_context_impl_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_message_loop_multithreaded_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_dragdrop_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_ime_handler_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_renderer.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_window_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\preferences_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\resource_util_win_idmap.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\response_filter_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_create.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_manager.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_views.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\scheme_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\temp_window_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\test_runner.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\urlrequest_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_menu_bar.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_style.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_window.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner_views.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\cefclient_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\common\client_app_delegates_common.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\common\scheme_test_common.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\client_app_delegates_renderer.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\client_renderer.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\performance_test.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\performance_test_tests.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\client_app_browser.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\geometry_util.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop_external_pump.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop_external_pump_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop_std.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\resource_util.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\resource_util_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\util_win.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_app.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_app_other.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_switches.cc" />
+    <ClCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\renderer\client_app_renderer.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\binding_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window_osr_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\browser_window_std_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\bytes_write_handler.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_browser.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler_osr.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_handler_std.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\client_types.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\dialog_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\drm_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_context.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_context_impl.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\main_message_loop_multithreaded_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_dragdrop_events.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_dragdrop_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_ime_handler_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_renderer.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\osr_window_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\preferences_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\resource.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\response_filter_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_manager.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_views.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\root_window_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\scheme_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\temp_window.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\temp_window_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\test_runner.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\urlrequest_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_menu_bar.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_style.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\views_window.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner_views.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\browser\window_test_runner_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\common\scheme_test_common.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\client_renderer.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\performance_test.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\renderer\performance_test_setup.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\client_app_browser.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\geometry_util.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop_external_pump.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\main_message_loop_std.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\resource_util.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\browser\util_win.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_app.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_app_other.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\common\client_switches.h" />
+    <ClInclude Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\renderer\client_app_renderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\binding.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\dialogs.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\draggable.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\drm.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\localstorage.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\other_tests.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\performance.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\performance2.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\preferences.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\response_filter.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\transparency.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\urlrequest.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\window.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\xmlhttprequest.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\resources\osr_test.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\resources\pdf.html" />
+    <None Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\resources\pdf.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\logo.png" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\menu_icon.1x.png" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\menu_icon.2x.png" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\win\cefclient.ico" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\win\small.ico" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\resources\window_icon.1x.png" />
+    <Image Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\shared\resources\window_icon.2x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\win\cefclient.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{326D5DBD-977D-4644-A8DD-AAE4EB752418}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>sirius_web_player</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>sirius_web_attendant</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\$(PlatformTarget)\debug\intermediate\$(ProjectName)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\$(PlatformTarget)\debug\intermediate\$(ProjectName)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;_WIN32;UNICODE;_UNICODE;WINVER=0x0601;_WIN32_WINNT=0x601;NOMINMAX;WIN32_LEAN_AND_MEAN;_HAS_EXCEPTIONS=0;PSAPI_VERSION=1;CEF_USE_ATL;NDEBUG;_NDEBUG;DCHECK_ALWAYS_ON=1;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\app\player\$(ProjectName);..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4100;4127;4244;4481;4512;4701;4702;4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcef_dll_wrapper.lib;libcef.lib;dbghelp.lib;psapi.lib;version.lib;winmm.lib;ws2_32.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;imm32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\$(Configuration);..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\build\libcef_dll_wrapper\$(Configuration);..\..\..\platform\win32\v140\x86\$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\win\compatibility.manifest;</AdditionalManifestFiles>
+      <OutputManifestFile />
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName />
+    </ManifestResourceCompile>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\sirius_attendant_proxy.dll" "$(SolutionDir)..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\apps\attendants\web\"
+..\..\..\script\copy_cef_dlls.bat ..\..\..\ $(Configuration)</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>copy resources</Message>
+    </PostBuildEvent>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\cef\win32\v140\x86;D:\gitwork\Amadeus_last\Amadeus\3rdparty\cef\win32\v140\x86\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;_WIN32;UNICODE;_UNICODE;WINVER=0x0601;_WIN32_WINNT=0x601;NOMINMAX;WIN32_LEAN_AND_MEAN;_HAS_EXCEPTIONS=0;PSAPI_VERSION=1;CEF_USE_SANDBOX;CEF_USE_ATL;NDEBUG;_NDEBUG;DCHECK_ALWAYS_ON=1;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ResourceOutputFileName>$(IntDir)cefclient.res</ResourceOutputFileName>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;_WIN32;UNICODE;_UNICODE;WINVER=0x0601;_WIN32_WINNT=0x601;NOMINMAX;WIN32_LEAN_AND_MEAN;_HAS_EXCEPTIONS=0;PSAPI_VERSION=1;CEF_USE_ATL;_NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\app\player\$(ProjectName);..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4100;4127;4244;4481;4512;4701;4702;4996</DisableSpecificWarnings>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>imm32.lib;opengl32.lib;winmm.lib;libcef_dll_wrapper.lib;libcef.lib;dbghelp.lib;psapi.lib;version.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\$(Configuration);..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\build\libcef_dll_wrapper\$(Configuration);..\..\..\platform\win32\v140\x86\$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\..\..\3rdparty\cef\3.2987.1600.g9ea5b3b\win32\v140\x86\tests\cefclient\resources\win\compatibility.manifest;</AdditionalManifestFiles>
+    </Manifest>
+    <PostBuildEvent>
+      <Command>..\..\..\script\copy_cef_dlls.bat ..\..\..\ $(Configuration) 
+copy /Y "$(SolutionDir)..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\sirius_attendant_proxy.dll" "$(SolutionDir)..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\apps\attendants\launcher\"</Command>
+      <Message>copy resources</Message>
+    </PostBuildEvent>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\cef\win32\v140\x86;D:\gitwork\Amadeus_last\Amadeus\3rdparty\cef\win32\v140\x86\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

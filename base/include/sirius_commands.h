@@ -1,0 +1,91 @@
+#ifndef _SIRIUS_COMMANDS_H_
+#define _SIRIUS_COMMANDS_H_
+#include <vector>
+
+#include <stdint.h>
+
+#define CMD_CONNECT_ATTENDANT_REQ						2101
+#define CMD_CONNECT_ATTENDANT_RES						2102
+#define CMD_ATTENDANT_INFO_IND							2104
+#define CMD_DISCONNECT_ATTENDANT_REQ						2105
+#define CMD_DISCONNECT_ATTENDANT_RES						2106
+
+#define CMD_START_ATTENDANT_REQ							3101
+#define CMD_START_ATTENDANT_RES							3102
+#define CMD_STOP_ATTENDANT_REQ							3103
+#define CMD_STOP_ATTENDANT_RES							3104
+
+#define CMD_IFRAME_REQ_IND								2201
+#define CMD_CLIENT_INFO_XML_IND							2202
+#define CMD_CLIENT_INFO_JSON_IND						2203
+
+#define CMD_PLAYBACK_TOTALTIME_IND						3201
+#define CMD_PLAYBACK_CURRENTTIME_IND					3202
+#define CMD_PLAYBACK_END_IND							3203
+#define CMD_PLAYBACK_CURRENTRATE_IND					3204
+
+
+#define CMD_PLAY_REQ									4001 
+#define CMD_PLAY_RES									4002
+#define CMD_VIDEO_STREAM_DATA							4003
+
+#define CMD_KEY_DOWN_IND								2301
+#define CMD_KEY_UP_IND									2302
+#define CMD_MOUSE_LBD_IND								2303
+#define CMD_MOUSE_LBU_IND								2304
+#define CMD_MOUSE_RBD_IND								2305
+#define CMD_MOUSE_RBU_IND								2306
+#define CMD_MOUSE_MOVE_IND								2307
+#define CMD_MOUSE_LB_DCLICK_IND							2308
+#define CMD_MOUSE_RB_DCLICK_IND							2309
+#define CMD_MOUSE_WHEEL_IND								2310
+
+#define CMD_GYRO_IND									2311
+#define CMD_PINCH_ZOOM_IND								2312
+#define CMD_GYRO_ROT_IND								2313
+
+#define CMD_GYRO_ATTITUDE								2314
+#define CMD_GYRO_GRAVITY								2315
+#define CMD_GYRO_ROTATION_RATE							2316
+#define CMD_GYRO_ROTATION_RATE_UNBIASED					2317
+#define CMD_GYRO_ACCELERATION							2318
+
+#define CMD_GYRO_ENABLED_ATTITUDE						2319
+#define CMD_GYRO_ENABLED_GRAVITY						2320
+#define CMD_GYRO_ENABLED_ROTATION_RATE					2321
+#define CMD_GYRO_ENABLED_ROTATION_RATE_UNBIASED			2322
+#define CMD_GYRO_ENABLED_USER_ACCELERATION				2323
+#define CMD_GYRO_UPDATEINTERVAL							2324
+
+#define CMD_AR_VIEW_MAT									2325
+#define CMD_AR_PROJ_MAT									2326
+
+#define CMD_SEEK_KEY_DOWN								2401
+#define CMD_SEEK_KEY_UP									2402
+#define CMD_SEEK_POS									2403
+#define CMD_PLAY_TOGGLE									2404
+#define CMD_BACKWARD									2405
+#define CMD_FORWARD										2406
+#define CMD_REVERSE										2407
+
+
+#define CMD_ERROR_IND									7000
+/*
+
+#define CMD_CA_ALIVE_CHECK_REQ						1041
+#define CMD_AC_ALIVE_CHECK_RES						1042
+#define CMD_SA_DISCONNECT_REQ						2031
+#define CMD_AS_DISCONNECT_RES						2032
+
+#define CMD_SA_ALIVE_CHECK_REQ						2041
+#define CMD_AS_ALIVE_CHECK_RES						2042
+
+#define CMD_SC_ALIVECHECK_REQ						3011
+#define CMD_CS_ALIVECHECK_RES						3012
+
+
+
+
+*/
+
+#endif

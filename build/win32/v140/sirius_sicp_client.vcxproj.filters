@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="net_base">
+      <UniqueIdentifier>{d41afd86-f7d7-47f4-95bc-f5d622a19405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net_base\iocp">
+      <UniqueIdentifier>{d81e0916-e62c-42dd-90e6-b1873c2b7f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sicp_base">
+      <UniqueIdentifier>{d858676b-95c1-47fb-8f67-b0ad6c9e5671}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_client.h">
+      <Filter>net_base\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_handler.h">
+      <Filter>net_base\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h">
+      <Filter>net_base\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\abstract_client.h">
+      <Filter>net_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\abstract_session.h">
+      <Filter>net_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_tcp_client.h">
+      <Filter>net_base\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_udp_client.h">
+      <Filter>net_base\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_base.h">
+      <Filter>sicp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_command.h">
+      <Filter>sicp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_packet.h">
+      <Filter>sicp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_session.h">
+      <Filter>sicp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_abstract_client.h">
+      <Filter>sicp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\client\include\sicp_client.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\sicp\client\include\sirius_sicp_client.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_client.cpp">
+      <Filter>net_base\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp">
+      <Filter>net_base\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\abstract_session.cpp">
+      <Filter>net_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\abstract_client.cpp">
+      <Filter>net_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_tcp_client.cpp">
+      <Filter>net_base\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_udp_client.cpp">
+      <Filter>net_base\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_base.cpp">
+      <Filter>sicp_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_command.cpp">
+      <Filter>sicp_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_session.cpp">
+      <Filter>sicp_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_abstract_client.cpp">
+      <Filter>sicp_base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\client\source\sicp_client.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\sicp\client\source\sirius_sicp_client.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

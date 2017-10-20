@@ -40,13 +40,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\apps\attendants\web\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\intermediate\$(ProjectName)</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\apps\attendants\web\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.exe</TargetExt>
@@ -89,7 +89,7 @@
     <PostBuildEvent>
       <Message>Adding manifest...															</Message>
       <Command>mt.exe -nologo -manifest "../../cefclient/resources/win/cefclient.exe.manifest" "../../cefclient/resources/win/compatibility.manifest" -outputresource:"$(OutDir)sirius_web_attendant.exe";#1
-..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ $(Configuration) </Command>
+..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ debug</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Debug\libcef.lib;..\libcef_dll\Debug\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib</AdditionalDependencies>
@@ -146,7 +146,7 @@
     <PostBuildEvent>
       <Message>Adding manifest...															</Message>
       <Command>mt.exe -nologo -manifest "../../cefclient/resources/win/cefclient.exe.manifest" "../../cefclient/resources/win/compatibility.manifest" -outputresource:"$(OutDir)sirius_web_attendant.exe";#1
-..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ $(Configuration) </Command>
+..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ release</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Release\libcef.lib;..\libcef_dll\Release\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib</AdditionalDependencies>

@@ -1,0 +1,81 @@
+#ifndef _ABSTRACT_STREAM_SERVER_H_
+#define _ABSTRACT_STREAM_SERVER_H_
+
+#include <sirius.h>
+
+#if defined(EXPORT_SERVER_BASE_LIB)
+#define EXP_SERVER_BASE_CLASS __declspec(dllexport)
+#else
+#define EXP_SERVER_BASE_CLASS __declspec(dllimport)
+#endif
+
+namespace sirius
+{
+	namespace library
+	{
+		namespace net
+		{
+			namespace stream
+			{
+				class EXP_SERVER_BASE_CLASS server
+					: public sirius::base
+				{
+				public:
+					class proxy
+					{
+					public:
+						virtual int32_t play(int32_t flags) = 0;
+						virtual int32_t pause(int32_t flags) = 0;
+						virtual int32_t stop(int32_t flags) = 0;
+					};
+
+					typedef struct EXP_SERVER_BASE_CLASS _context_t
+					{
+						char			uuid[64];
+						char			address[MAX_PATH];
+						int32_t			portnumber;
+						int32_t			video_codec;
+						int32_t			video_width;
+						int32_t			video_height;
+						int32_t			video_fps;
+						proxy *			controller;
+						_context_t(void)
+							: video_codec(sirius::library::net::stream::server::video_submedia_type_t::unknown)
+							, video_width(1280)
+							, video_height(720)
+							, video_fps(30)
+							, controller(nullptr)
+						{
+							memset(address, 0x00, sizeof(address));
+							memset(uuid, 0x00, sizeof(uuid));
+						}
+					} context_t;
+
+					typedef struct EXP_SERVER_BASE_CLASS _network_usage_t
+					{
+						uint64_t video_transferred_bytes;
+						_network_usage_t(void)
+							: video_transferred_bytes(0)
+						{}
+					} network_usage_t;
+
+				public:
+					server(void);
+					virtual ~server(void);
+
+					virtual int32_t start(sirius::library::net::stream::server::context_t * context);
+					virtual int32_t stop(void);
+
+					virtual int32_t post_video(uint8_t * bytes, size_t nbytes, long long timestamp);
+					virtual sirius::library::net::stream::server::network_usage_t & get_network_usage(void);
+
+
+				protected:
+					sirius::library::net::stream::server::network_usage_t		_network_usage;
+				};
+			};
+		};
+	};
+};
+
+#endif
