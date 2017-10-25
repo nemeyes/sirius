@@ -73,7 +73,7 @@ namespace sirius
 						, video_width(1280)
 						, video_height(720)
 						, video_fps(0)
-						, video_nbuffer(1)
+						, video_nbuffer(2)
 						, gpuindex(0)
 						, present(false)
 						, repeat(true)

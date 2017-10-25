@@ -122,8 +122,8 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::compres
 	sirius::library::video::transform::codec::png::compressor::core::buffer_t * iobuffer = nullptr;
 	if (input->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
 	{
-		if (_state == sirius::library::video::transform::codec::png::compressor::state_t::compressing)
-			return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+		//if (_state == sirius::library::video::transform::codec::png::compressor::state_t::compressing)
+		//	return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
 
 		iobuffer = _iobuffer_queue.get_available();
 		if (!iobuffer)

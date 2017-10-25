@@ -88,6 +88,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcef_dll_wrapper", "..\..\..\3rdparty\cef\3.2526.1373.gb660893\win32\v140\x86\build\libcef_dll\libcef_dll_wrapper.vcxproj", "{1513F37F-8C02-3706-9757-8F71AE3A252A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_web_attendant", "..\..\..\3rdparty\cef\3.2526.1373.gb660893\win32\v140\x86\build\cefclient\sirius_web_attendant.vcxproj", "{42EAF4A1-EBA4-328F-B6C2-2AC1796DD8C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F21A9AA-7231-48E3-8960-834E5432607C} = {8F21A9AA-7231-48E3-8960-834E5432607C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_png_compressor", "sirius_png_compressor.vcxproj", "{68EC84D7-2C97-4A2D-A342-09FE04673CC5}"
 EndProject
