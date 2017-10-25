@@ -5,7 +5,7 @@ sirius::library::video::transform::codec::png::compressor::_context_t::_context_
 	: gamma(1/2.2f)
 	, floyd(0.5f)
 	, speed(10)
-	, max_colors(128)
+	, max_colors(64)
 	, min_quality(50)
 	, max_quality(80)
 	, fast_compression(true)
