@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\video\source\d3d11\desktop\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\video\base\include;..\..\..\library\video\source\base\include;..\..\..\library\video\source\d3d11\desktop\include;..\..\..\library\video\source\d3d11\capturer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

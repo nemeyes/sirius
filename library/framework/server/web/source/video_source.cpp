@@ -14,8 +14,9 @@ int32_t sirius::library::framework::server::web::video_source::start(int32_t fps
 {
 	int32_t code = sirius::library::video::source::d3d11::capturer::err_code_t::success;
 
-	sirius::library::video::source::d3d11::capturer::context_t::instance().gpuindex = _framework->_context.gpuindex;
-	sirius::library::video::source::d3d11::capturer::context_t::instance().present = _framework->_context.present;
+	//sirius_d3d11_video_capturer.dll 로딩시  gpu_index 와 present param 을 셋팅하도록 수정 했습니다. 
+//	sirius::library::video::source::d3d11::capturer::context_t::instance().gpuindex = _framework->_context.gpuindex;
+//	sirius::library::video::source::d3d11::capturer::context_t::instance().present = _framework->_context.present;
 	sirius::library::video::source::d3d11::capturer::context_t::instance().handler = this;
 	sirius::library::video::source::d3d11::capturer::context_t::instance().fps = fps;
 
