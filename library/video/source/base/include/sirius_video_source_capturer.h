@@ -75,6 +75,16 @@ namespace sirius
 						}
 					} gpu_descriton_t;
 
+					typedef enum _player_type_t
+					{
+						vr360 = 0,
+						web,
+						android,
+						unity,
+						mutiview,
+						web_single_process
+					} player_type_t;
+
 					typedef struct EXP_VIDEO_SOURCE_CAPTURER_CLASS _context_t
 					{
 						int32_t width;
@@ -83,6 +93,7 @@ namespace sirius
 						int32_t gpuindex;
 						int32_t present;
 						HWND	hwnd;
+						player_type_t player_type;
 						sirius::library::video::source::capturer::handler * handler;
 						_context_t(void)
 							: width(0)
@@ -92,6 +103,7 @@ namespace sirius
 							, present(false)
 							, hwnd(NULL)
 							, handler(NULL)
+							, player_type(player_type_t::vr360)
 						{
 						}
 					} context_t;
