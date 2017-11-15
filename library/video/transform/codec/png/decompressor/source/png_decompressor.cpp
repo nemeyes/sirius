@@ -150,7 +150,7 @@ int32_t sirius::library::video::transform::codec::png::decompressor::core::read_
 	read_state.self = this;
 	read_state.timestamp = timestamp;
 	png_set_read_fn(png_ptr, &read_state, png_read_callback);
-
+	png_set_bgr(png_ptr);
 	png_read_info(png_ptr, info_ptr);  /* read all PNG info up to image data */
 
 									   /* alternatively, could make separate calls to png_get_image_width(),

@@ -560,10 +560,10 @@ void sirius::library::framework::server::web::core::on_video_receive(sirius::lib
 	if (sirius::library::unified::server::instance().is_video_compressor_initialized())
 	{
 		sirius::library::video::transform::codec::compressor::entity_t input;
-		input.memtype = sirius::library::video::transform::codec::compressor::video_memory_type_t::d3d11;
+		input.memtype = captured->memtype;
 		input.data = captured->data;
-		input.data_size = 0;
-		input.data_capacity = 0;
+		input.data_size = captured->data_size;
+		input.data_capacity = captured->data_size;
 		sirius::library::unified::server::instance().compress(&input);
 	}
 }
