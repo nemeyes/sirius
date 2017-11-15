@@ -73,8 +73,8 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_container.bat					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_container_gpu.bat					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_attendant.bat					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_attendant_gpu.bat				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 
 
