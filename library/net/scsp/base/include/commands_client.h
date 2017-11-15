@@ -54,7 +54,14 @@ namespace sirius
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
 						sirius::exclusive_scopedlock mutex(&_lock);
-						_processor->push_video_packet((sirius::library::net::scsp::cmd_stream_data_t*)msg, (uint8_t*)msg + sizeof(sirius::library::net::scsp::cmd_stream_data_t), length);
+
+						uint8_t * packet = (uint8_t*)msg;
+						int32_t count = 0;
+						memmove(&count, packet, sizeof(count));
+						count = ntohl(count);
+						packet += sizeof(count);
+
+						_processor->push_video_packet(count, packet, length);
 					};
 
 				private:

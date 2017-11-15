@@ -16,6 +16,13 @@
 #include "cefclient/common/client_app_other.h"
 #include "cefclient/renderer/client_app_renderer.h"
 
+#if defined(WITH_ATTENDANT_PROXY)
+#include <windows.h>
+#include <shellapi.h>
+#include <sirius_attendant_proxy.h>
+
+#pragma comment(lib, "sirius_attendant_proxy.lib")
+#endif
 // When generating projects with CMake the CEF_USE_SANDBOX value will be defined
 // automatically if using the required compiler version. Pass -DUSE_SANDBOX=OFF
 // to the CMake command-line to disable use of the sandbox.
@@ -59,13 +66,27 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
     app = new ClientAppRenderer();
   else if (process_type == ClientApp::OtherProcess)
     app = new ClientAppOther();
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
-  OutputDebugString(::GetCommandLineW());
-  HMODULE hmodule = nullptr;
-  if (command_line->HasSwitch("multi-gpu")  && (command_line->HasSwitch("single-process")|| process_type == ClientApp::OtherProcess))
+#ifdef WITH_ATTENDANT_PROXY
+  if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {
-	  hmodule = LoadLibraryA("sirius_attendant_proxy.dll");
-	  assert(hmodule != nullptr);
+	  wchar_t * command = GetCommandLine();
+	  int32_t argc = 0;
+	  LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
+	  if (sirius::app::attendant::proxy::parse_argument(argc, argv))
+	  {
+		  sirius::app::attendant::proxy::instance().initialize();
+		  if (sirius::app::attendant::proxy::instance().is_initialized())
+		  {
+			  if (sirius::app::attendant::proxy::instance().context()->play_after_connect)
+			  {
+				  sirius::app::attendant::proxy::instance().connect();
+			  }
+			  else
+			  {
+				  sirius::app::attendant::proxy::instance().play();
+			  }
+		  }
+	  }
   }
 #endif
 
@@ -99,7 +120,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Register scheme handlers.
   test_runner::RegisterSchemeHandlers();
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
   bool present = true;
   if (command_line->HasSwitch("enable_present"))
   {
@@ -119,10 +140,14 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // RootWindowManager after all windows have been destroyed.
   int result = message_loop->Run();
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
-
-  if (hmodule)
-	  FreeLibrary(hmodule);
+#ifdef WITH_ATTENDANT_PROXY
+  if (sirius::app::attendant::proxy::instance().is_initialized())
+  {
+	  sirius::app::attendant::proxy::instance().stop();
+	  if (sirius::app::attendant::proxy::instance().context()->play_after_connect)
+		  sirius::app::attendant::proxy::instance().disconnect();
+	  sirius::app::attendant::proxy::instance().release();
+  }
 #endif
   // Shut down CEF.
   context->Shutdown();

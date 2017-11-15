@@ -40,6 +40,8 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 	streamer_context->video_width = _context->video_width;
 	streamer_context->video_height = _context->video_height;
 	streamer_context->video_fps = _context->video_fps;
+	streamer_context->video_block_width = _context->video_block_width;
+	streamer_context->video_block_height = _context->video_block_height;
 	streamer_context->controller = this;
 
 	code = streamer->start(streamer_context);
@@ -159,10 +161,6 @@ int32_t sirius::library::unified::server::core::stop(int32_t flags)
 {
 	return _unified_compressor->stop(flags);
 }
-/////////
-#if defined(WITH_SAVE_OUTPUT_STREAM)
-int32_t framenumber = 0;
-#endif
 
 int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, int32_t nbytes, long long before_encode_timestamp, long long after_encode_timestamp)
 {
@@ -172,18 +170,6 @@ int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, i
 	int32_t code = sirius::library::unified::server::err_code_t::fail;
 	if (_streamer)
 	{
-#if defined(WITH_SAVE_OUTPUT_STREAM)
-
-		char filename[MAX_PATH];
-		_snprintf_s(filename, sizeof(filename) - 1, "publish_video_%d_%d.png", framenumber, nbytes);
-		DWORD nwritten = 0;
-		HANDLE f = ::CreateFileA(filename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		::WriteFile(f, bytes, nbytes, &nwritten, NULL);
-		::CloseHandle(f);
-
-		framenumber++;
-#endif
-
 		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
 		code = streamer->post_video(bytes, nbytes, before_encode_timestamp);
 		if (code != sirius::library::unified::server::err_code_t::success)
@@ -192,8 +178,28 @@ int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, i
 	return code;
 }
 
+int32_t sirius::library::unified::server::core::publish_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	if (!_context)
+		return sirius::library::unified::server::err_code_t::success;
+
+	int32_t code = sirius::library::unified::server::err_code_t::fail;
+	if (_streamer)
+	{
+		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
+		code = streamer->post_video(count, index, compressed, size, before_compress_timestamp);
+		if (code != sirius::library::unified::server::err_code_t::success)
+			return code;
+	}
+	return code;
+}
 
 void sirius::library::unified::server::core::after_video_compressing_callback(uint8_t * data, size_t size, long long before_encode_timestamp, long long after_encode_timestamp)
 {
 	publish_video(data, size, before_encode_timestamp, after_encode_timestamp);
+}
+
+void sirius::library::unified::server::core::after_video_compressing_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	publish_video(count, index, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }

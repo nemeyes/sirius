@@ -7,8 +7,7 @@
 #include <commands_server.h>
 
 sirius::library::net::scsp::server::server(void)
-	: _frame_index_video(0)
-	, _video_data(nullptr)
+	: _video_data(nullptr)
 	, _core(nullptr)
 {
 
@@ -81,33 +80,62 @@ int32_t sirius::library::net::scsp::server::post_video(uint8_t * bytes, size_t n
 
 	if ((_video_data != nullptr) && (_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
 	{
-		int32_t stream_type = sirius::library::net::scsp::server::media_type_t::video;
+		uint8_t * video_data = _video_data;
 
-#if defined(WITH_SAVE_OUTPUT_STREAM)
+		int32_t count = 1;
+		int32_t index = -1;
+		int32_t pkt_count = htonl(count);
+		memmove(video_data, &pkt_count, sizeof(pkt_count));
+		video_data += sizeof(pkt_count);
 
-		char filename[MAX_PATH];
-		_snprintf_s(filename, sizeof(filename) - 1, "post_video_%d_%d.png", framenumber, nbytes);
-		DWORD nwritten = 0;
-		HANDLE f = ::CreateFileA(filename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		::WriteFile(f, bytes, nbytes, &nwritten, NULL);
-		::CloseHandle(f);
+		sirius::library::net::scsp::header_t single_packet_header;
+		single_packet_header.index = htonl(index);
+		single_packet_header.length = htonl(nbytes);
 
-		framenumber++;
-#endif
-		sirius::library::net::scsp::stream_packet_t * packet = (sirius::library::net::scsp::stream_packet_t*)(_video_data);
-		packet->stream_data.count = contents_count;
-		packet->stream_data.data.length = htonl(nbytes);
-		packet->stream_data.data.index = htonl(_frame_index_video);
-		packet->stream_data.data.timestamp = htonll(timestamp);
+		memmove(video_data, &single_packet_header, sizeof(single_packet_header));
+		video_data += sizeof(single_packet_header);
 
-		memcpy(_video_data + sizeof(sirius::library::net::scsp::stream_packet_t), bytes, nbytes);
+		memmove(video_data, bytes, nbytes);
+		video_data += nbytes;
 
 		if (_core)
 		{
-			_core->post_video(_video_data, sizeof(sirius::library::net::scsp::stream_packet_t) + nbytes, timestamp);
-			_network_usage.video_transferred_bytes += data_pos;
+			_core->post_video(_video_data, video_data - _video_data, timestamp);
+			_network_usage.video_transferred_bytes += (video_data - _video_data);
 		}
 	}
-	_frame_index_video++;
-	return 0;
+	return sirius::library::net::scsp::server::err_code_t::success;
+}
+
+int32_t sirius::library::net::scsp::server::post_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long timestamp)
+{
+	if ((_video_data != nullptr) &&
+		(_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
+	{
+
+		uint8_t * video_data = _video_data;
+
+		int32_t pkt_count = htonl(count);
+		memmove(video_data, &pkt_count, sizeof(pkt_count));
+		video_data += sizeof(pkt_count);
+
+		for (int32_t x = 0; x < count; x++)
+		{
+			sirius::library::net::scsp::header_t single_packet_header;
+			single_packet_header.index = htonl(index[x]);
+			single_packet_header.length = htonl(size[x]);
+
+			memmove(video_data, &single_packet_header, sizeof(single_packet_header));
+			video_data += sizeof(single_packet_header);
+			memmove(video_data, compressed[x], size[x]);
+			video_data += size[x];
+		}
+
+		if (_core)
+		{
+			_core->post_video(_video_data, video_data - _video_data, timestamp);
+			_network_usage.video_transferred_bytes += (video_data - _video_data);
+		}
+	}
+	return sirius::library::net::scsp::server::err_code_t::success;
 }

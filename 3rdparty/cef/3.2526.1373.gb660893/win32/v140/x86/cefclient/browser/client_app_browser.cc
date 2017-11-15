@@ -71,7 +71,7 @@ void ClientAppBrowser::OnContextInitialized() {
 void ClientAppBrowser::OnBeforeChildProcessLaunch(
       CefRefPtr<CefCommandLine> command_line) {
 
-//#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+//#ifdef WITH_ATTENDANT_PROXY
 	CefString val = command_line->GetSwitchValue(CefString("type"));
 	if (val.compare("gpu-process") == 0)
 	{

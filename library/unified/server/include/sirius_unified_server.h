@@ -31,12 +31,16 @@ namespace sirius
 					int32_t video_width;
 					int32_t video_height;
 					int32_t video_fps;
+					int32_t video_block_width;
+					int32_t video_block_height;
 					_context_t(void)
 						: portnumber(-1)
 						, video_codec(sirius::library::unified::server::video_submedia_type_t::unknown)
 						, video_width(1280)
 						, video_height(720)
 						, video_fps(30)
+						, video_block_width(128)
+						, video_block_height(72)
 					{
 						memset(uuid, 0x00, sizeof(uuid));
 						memset(address, 0x00, sizeof(address));
@@ -54,6 +58,8 @@ namespace sirius
 					int32_t width;
 					int32_t height;
 					int32_t fps;
+					int32_t block_width;
+					int32_t block_height;
 					int32_t nbuffer;
 					bool	play_after_init;
 					_video_compressor_context_t(void)
@@ -66,6 +72,8 @@ namespace sirius
 						, width(0)
 						, height(0)
 						, fps(0)
+						, block_width(0)
+						, block_height(0)
 						, nbuffer(1)
 						, play_after_init(false)
 					{

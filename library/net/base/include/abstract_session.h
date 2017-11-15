@@ -9,36 +9,16 @@
 # include <kqueue_io_context.h>
 #endif
 
+#include <memory>
+
 namespace sirius
 {
-	class multiple_inheritable_enable_shared_from_this : public std::enable_shared_from_this<multiple_inheritable_enable_shared_from_this>
-	{
-	public:
-		virtual ~multiple_inheritable_enable_shared_from_this(void) {}
-	};
-
-	template <class T>
-	class inheritable_enable_shared_from_this : virtual public sirius::multiple_inheritable_enable_shared_from_this
-	{
-	public:
-		std::shared_ptr<T> shared_from_this(void)
-		{
-			return std::dynamic_pointer_cast<T>(sirius::multiple_inheritable_enable_shared_from_this::shared_from_this());
-		}
-
-		template <class Down>
-		std::shared_ptr<Down> downcasted_shared_from_this(void)
-		{
-			return std::dynamic_pointer_cast<Down>(sirius::multiple_inheritable_enable_shared_from_this::shared_from_this());
-		}
-	};
-
 	namespace library
 	{
 		namespace net
 		{
 			class session :
-				public sirius::inheritable_enable_shared_from_this<sirius::library::net::session>
+				public std::enable_shared_from_this<sirius::library::net::session>
 			{
 			public:
 

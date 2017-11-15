@@ -38,19 +38,13 @@ namespace sirius
 					void play(const char * url, int32_t port, int32_t recv_option, bool reconnection = true);
 					void stop(void);
 
-					void on_recv_video_info(int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps);
-
-					virtual void on_begin_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts) = 0;
-					virtual void on_recv_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts) = 0;
+					virtual void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height) = 0;
+					virtual void on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts) = 0;
+					virtual void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts) = 0;
 					virtual void on_end_video(void) = 0;
 
 				private:
 					sirius::library::net::scsp::client::core * _video_client;
-
-					int32_t _video_codec;
-					int32_t _video_width;
-					int32_t _video_height;
-					int32_t _video_fps;
 				};
 			};
 		};

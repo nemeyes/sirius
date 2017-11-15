@@ -39,6 +39,9 @@ namespace sirius
 						int32_t video_height;
 						int32_t video_fps;
 						int32_t video_nbuffer;
+						int32_t video_process_type;
+						int32_t video_block_width;
+						int32_t video_block_height;
 						int32_t gpuindex;		//gpu
 						int32_t present;	//gpu
 						int32_t repeat;	//gpu
@@ -56,6 +59,9 @@ namespace sirius
 							, video_height(0)
 							, video_fps(0)
 							, video_nbuffer(1)
+							, video_process_type(sirius::library::framework::server::base::video_memory_type_t::host)
+							, video_block_width(0)
+							, video_block_height(0)
 							, gpuindex(sirius::library::framework::server::base::client_device_type_t::settop)
 							, present(false)
 							, repeat(false)

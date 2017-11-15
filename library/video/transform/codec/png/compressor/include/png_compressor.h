@@ -14,6 +14,7 @@
 
 
 #include <sirius_template_queue.h>
+#include <sirius_video_processor.h>
 
 namespace sirius
 {
@@ -28,6 +29,7 @@ namespace sirius
 					namespace png
 					{
 						class compressor::core
+							: public sirius::library::video::transform::codec::processor
 						{
 						public:
 							static const int32_t MAX_IO_BUFFERS = 30;
@@ -100,10 +102,14 @@ namespace sirius
 
 							typedef struct _ibuffer_t
 							{
-								ID3D11Texture2D *	data;
-								long long			timestamp;
+								void *		data;
+								int32_t		data_size;
+								int32_t		data_capacity;
+								long long	timestamp;
 								_ibuffer_t(void)
 									: data(nullptr)
+									, data_size(0)
+									, data_capacity(0)
 									, timestamp(0)
 								{}
 							} ibuffer_t;
@@ -150,8 +156,8 @@ namespace sirius
 							int32_t pause(void);
 							int32_t stop(void);
 
+							int32_t compress(sirius::library::video::transform::codec::png::compressor::entity_t * input, sirius::library::video::transform::codec::png::compressor::entity_t * bitstream);
 							int32_t compress(sirius::library::video::transform::codec::png::compressor::entity_t * input);
-
 
 						private:
 							static unsigned __stdcall process_callback(void * param);
@@ -170,8 +176,6 @@ namespace sirius
 							int32_t			write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::png::compressor::core::obuffer_t * compressed);
 							void			free_png_image8(png8_image_t * image);
 
-							void			convert(int32_t * bgra, int32_t * rgba, int32_t size);
-
 						private:
 							sirius::library::video::transform::codec::png::compressor * _front;
 							sirius::library::video::transform::codec::png::compressor::context_t * _context;
@@ -184,19 +188,9 @@ namespace sirius
 							sirius::queue<sirius::library::video::transform::codec::png::compressor::core::buffer_t> _iobuffer_queue;
 
 							uint8_t * _rgba_buffer;
-
-							/*
-							uint8_t * _compressed_buffer;
-							int32_t _compressed_buffer_size;
-							int32_t _compressed_buffer_index;
-							*/
-
-							//liq_image * _fixed_palette_image;
-							//liq_log_callback_function * _log_callback;
-
 							ATL::CComPtr<ID3D11Device> _device;
 							ATL::CComPtr<ID3D11DeviceContext> _device_ctx;
-							ATL::CComPtr<ID3D11Texture2D> _htex;
+							ATL::CComPtr<ID3D11Texture2D> _intermediate_tex;
 						};
 					};
 				};

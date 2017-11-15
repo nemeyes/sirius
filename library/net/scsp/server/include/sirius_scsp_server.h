@@ -4,7 +4,7 @@
 #include <abstract_stream_server.h>
 
 #define SERVER_UUID			"00000000-0000-0000-0000-000000000000"
-#define MAX_VIDEO_ES_SIZE	500000
+#define MAX_VIDEO_ES_SIZE	1000000
 
 #if defined(EXPORT_SCSP_SERVER_LIB)
 #define EXP_SCSP_SERVER_CLASS __declspec(dllexport)
@@ -43,14 +43,12 @@ namespace sirius
 					int32_t stop(void);
 
 					int32_t post_video(uint8_t * bytes, size_t nbytes, long long timestamp);
-
-					int32_t set_es_stream(uint8_t * data, int32_t stream_type, int32_t data_pos, uint8_t * bitstream, size_t nb);
-					int32_t set_casp_payload(uint8_t * data, uint8_t stream_type, int32_t & data_pos, uint8_t contents_count, size_t es_header_size, size_t nb, long long timestamp);
+					int32_t post_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long timestamp);
 
 				private:
 					sirius::library::net::scsp::server::context_t * _context;
 					sirius::library::net::scsp::server::core * _core;
-					int32_t _frame_index_video;
+					//int32_t _frame_index_video;
 					uint8_t * _video_data;
 					int32_t _state;
 				};

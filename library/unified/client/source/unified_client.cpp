@@ -16,7 +16,7 @@ sirius::library::unified::client::core::core(sirius::library::unified::client * 
 
 sirius::library::unified::client::core::~core(void)
 {
-	stop();
+	//stop();
 	::DeleteCriticalSection(&_cs);
 }
 

@@ -54,7 +54,7 @@ namespace client {
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);
 		void CreateRootWindow(const CefBrowserSettings& settings);
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 		void read_injection_js();
 #endif
 		// Register the root window class.
@@ -86,7 +86,7 @@ namespace client {
 		void OnAbout();
 		bool OnClose();
 		void OnDestroyed();
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 		void OnKeyEvent(UINT message, WPARAM wParam, LPARAM lParam);
 		void OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -151,7 +151,7 @@ namespace client {
 		bool window_destroyed_;
 		bool browser_destroyed_;
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 		float device_scale_factor_;
 		POINT last_mouse_pos_;
 		POINT current_mouse_pos_;

@@ -20,7 +20,8 @@ namespace sirius
 				{
 				public:
 					class core;
-					class video_source;
+					class d3d11_video_source;
+					class host_video_source;
 				public:
 					web(void);
 					virtual ~web(void);

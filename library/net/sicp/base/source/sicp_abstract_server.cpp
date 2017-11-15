@@ -160,8 +160,8 @@ std::shared_ptr<sirius::library::net::session> sirius::library::net::sicp::abstr
 
 void sirius::library::net::sicp::abstract_server::destroy_session_callback(std::shared_ptr<sirius::library::net::session> session)
 {
-	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
-	destroy_session_completion_callback(sicp_session->uuid(), sicp_session->downcasted_shared_from_this<sirius::library::net::sicp::session>());
+	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = std::static_pointer_cast<sirius::library::net::sicp::session>(session);
+	destroy_session_completion_callback(sicp_session->uuid(), sicp_session);
 	unregister_assoc_client(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 }
 

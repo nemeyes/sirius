@@ -382,7 +382,7 @@ bool ClientHandler::OnBeforePopup(
     bool* no_javascript_access) {
   CEF_REQUIRE_IO_THREAD();
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
   return true;
 #else 
   // Return true to cancel the popup window.
@@ -827,7 +827,7 @@ bool ClientHandler::ExecuteTestMenu(int command_id) {
   return false;
 }
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame) {
 	CEF_REQUIRE_UI_THREAD();

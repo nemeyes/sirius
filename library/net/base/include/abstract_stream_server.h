@@ -38,12 +38,16 @@ namespace sirius
 						int32_t			video_width;
 						int32_t			video_height;
 						int32_t			video_fps;
+						int32_t			video_block_width;
+						int32_t			video_block_height;
 						proxy *			controller;
 						_context_t(void)
 							: video_codec(sirius::library::net::stream::server::video_submedia_type_t::unknown)
 							, video_width(1280)
 							, video_height(720)
 							, video_fps(30)
+							, video_block_width(128)
+							, video_block_height(72)
 							, controller(nullptr)
 						{
 							memset(address, 0x00, sizeof(address));

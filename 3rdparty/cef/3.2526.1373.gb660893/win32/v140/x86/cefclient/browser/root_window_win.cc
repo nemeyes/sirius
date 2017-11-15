@@ -24,7 +24,7 @@
 #define URLBAR_HEIGHT   24
 
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 #define JS_INJECTION_PATH "\\js_injection\\injection.js"
 
 #ifndef GET_X_LPARAM
@@ -112,7 +112,7 @@ RootWindowWin::RootWindowWin()
 
   // Create a HRGN representing the draggable window area.
   draggable_region_ = ::CreateRectRgn(0, 0, 0, 0);
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
   device_scale_factor_ = client::GetDeviceScaleFactor();
 #endif
 
@@ -444,7 +444,7 @@ void RootWindowWin::CreateRootWindow(const CefBrowserSettings& settings) {
   Show(ShowNormal);
 }
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 
 void RootWindowWin::read_injection_js()
 {
@@ -648,7 +648,7 @@ LRESULT CALLBACK RootWindowWin::RootWndProc(HWND hWnd, UINT message,
       self->OnDestroyed();
       return 0;
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 	case WM_SYSCHAR:
 	case WM_SYSKEYDOWN:
 	case WM_SYSKEYUP:
@@ -873,7 +873,7 @@ void RootWindowWin::OnDestroyed() {
   NotifyDestroyedIfDone();
 }
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 void RootWindowWin::OnKeyEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	OutputDebugStringA("OnKeyEvent-------------------");
@@ -1092,7 +1092,7 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
     // Make sure the browser is sized correctly.
     OnSize(false);
   }
-#if defined(WITH_SIRIUS_ATTENDANT_PROXY)
+#if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
 #endif
   OutputDebugStringA("============RootWindowWin::OnBrowserCreated============");

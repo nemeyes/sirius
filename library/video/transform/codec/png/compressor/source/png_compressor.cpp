@@ -44,16 +44,25 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::initial
 	_state = sirius::library::video::transform::codec::png::compressor::state_t::initializing;
 
 	_context = context;
-	if (!_context->device)
-		return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
+	if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
+	{
+		if (!_context->device)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
 
-	_rgba_buffer = static_cast<uint8_t*>(malloc(_context->width*_context->height*4));
+		_device.Attach((ID3D11Device*)_context->device);
+		_device->GetImmediateContext(&_device_ctx);
+		if (!_device_ctx)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
+
+		sirius::library::video::transform::codec::processor::initialize_d3d11((ID3D11Device*)_context->device, _context->width, _context->height, 30, _context->width, _context->height, 30, DXGI_FORMAT_R8G8B8A8_UNORM);
+	}
+	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+	{
+
+	}
+
+	_rgba_buffer = static_cast<uint8_t*>(malloc(_context->width*_context->height * 4));
 	memset(_rgba_buffer, 0x00, _context->width*_context->height * 4);
-
-	_device.Attach((ID3D11Device*)_context->device);
-	_device->GetImmediateContext(&_device_ctx);
-	if (!_device_ctx)
-		return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
 
 	allocate_io_buffers();
 	_event = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -79,6 +88,7 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::release
 	if (_thread != NULL && _thread != INVALID_HANDLE_VALUE)
 	{
 		_run = false;
+		::SetEvent(_event);
 		if (::WaitForSingleObject(_thread, INFINITE) == WAIT_OBJECT_0)
 		{
 			::CloseHandle(_thread);
@@ -86,6 +96,16 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::release
 		}
 	}
 	release_io_buffers();
+
+
+	if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
+	{
+		sirius::library::video::transform::codec::processor::release_d3d11();
+	}
+	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+	{
+
+	}
 
 	if (_rgba_buffer)
 		free(_rgba_buffer);
@@ -110,20 +130,287 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::stop(vo
 	return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
 }
 
+int32_t sirius::library::video::transform::codec::png::compressor::core::compress(sirius::library::video::transform::codec::png::compressor::entity_t * input, sirius::library::video::transform::codec::png::compressor::entity_t * bitstream)
+{
+	int32_t status = sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+
+	sirius::library::video::transform::codec::png::compressor::core::buffer_t * iobuffer = nullptr;
+	if (input->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
+	{
+		if (_state == sirius::library::video::transform::codec::png::compressor::state_t::compressing)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+
+		_state = sirius::library::video::transform::codec::png::compressor::state_t::compressing;
+
+		iobuffer = _iobuffer_queue.get_available();
+		if (!iobuffer)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
+
+
+		iobuffer->input.timestamp = input->timestamp;
+		ID3D11Texture2D * gtex = (ID3D11Texture2D*)input->data;
+
+		D3D11_TEXTURE2D_DESC gdesc;
+		D3D11_TEXTURE2D_DESC hdesc;
+		gtex->GetDesc(&gdesc);
+
+		ID3D11Texture2D * input = (ID3D11Texture2D*)iobuffer->input.data;
+		input->GetDesc(&hdesc);
+
+		if (gdesc.Format == hdesc.Format)
+		{
+			_device_ctx->CopyResource(input, gtex);
+		}
+		else
+		{
+			sirius::library::video::transform::codec::processor::convert_d3d11_texture2d_format(gtex, _intermediate_tex, _context->width, _context->height, _context->width, _context->height);
+			_device_ctx->CopyResource(input, _intermediate_tex);
+		}
+
+
+		iobuffer = _iobuffer_queue.get_pending();
+		if (iobuffer)
+		{
+			liq_attr * liq = liq_attr_create();
+			liq_set_speed(liq, _context->speed);
+			liq_set_max_colors(liq, _context->max_colors);
+
+			int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
+			png8_image_t qntpng = { 0 };
+			liq_image * rgba = liq_image_create_rgba(liq, _rgba_buffer, _context->width, _context->height, _context->gamma);
+			liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
+
+			liq_result * remap = nullptr;
+			liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
+			if (liqerr == LIQ_OK)
+			{
+				liq_set_output_gamma(remap, 0.45455);
+				liq_set_dithering_level(remap, _context->floyd);
+
+				qntpng.width = liq_image_get_width(rgba);
+				qntpng.height = liq_image_get_height(rgba);
+				qntpng.gamma = liq_get_output_gamma(remap);
+				qntpng.output_color = RWPNG_SRGB;
+				qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
+				qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
+
+				if (!qntpng.indexed_data || !qntpng.row_pointers)
+				{
+					//iobuffer = _iobuffer_queue.get_pending();
+					//continue;
+					status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+				}
+
+				for (size_t row = 0; row < qntpng.height; row++)
+					qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
+
+				const liq_palette *palette = liq_get_palette(remap);
+				qntpng.num_palette = palette->count;
+
+				liqerr = liq_write_remapped_image_rows(remap, rgba, qntpng.row_pointers);
+				if (liqerr != LIQ_OK)
+					status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+
+				palette = liq_get_palette(remap);
+				qntpng.num_palette = palette->count;
+				for (unsigned int i = 0; i < palette->count; i++)
+				{
+					const liq_color px = palette->entries[i];
+					qntpng.palette[i].r = px.r;
+					qntpng.palette[i].g = px.g;
+					qntpng.palette[i].b = px.b;
+					qntpng.palette[i].a = px.a;
+				}
+
+				double palette_error = liq_get_quantization_error(remap);
+				if (palette_error >= 0)
+				{
+					quality_percent = liq_get_quantization_quality(remap);
+					//verbose_printf(options, "  mapped image to new colors...MSE=%.3f (Q=%d)", palette_error, quality_percent);
+				}
+				liq_result_destroy(remap);
+			}
+			else if (liqerr == LIQ_QUALITY_TOO_LOW)
+			{
+				status = sirius::library::video::transform::codec::compressor::err_code_t::too_low_quality;
+			}
+			else
+			{
+				status = sirius::library::video::transform::codec::compressor::err_code_t::invalid_argument;
+			}
+
+			if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
+			{
+				qntpng.fast_compression = _context->fast_compression;
+				//qntpng.chunks = input_image_rwpng.chunks; input_image_rwpng.chunks = NULL;
+				status = write_png_image8(&qntpng, &iobuffer->output);
+			}
+			if (rgba)
+				liq_image_destroy(rgba);
+			free_png_image8(&qntpng);
+			liq_attr_destroy(liq);
+
+			
+			bitstream->memtype = sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host;
+			if (iobuffer->output.data_size > bitstream->data_capacity)
+			{
+				bitstream->data_size = bitstream->data_capacity;
+				memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+			}
+			else
+			{
+				bitstream->data_size = iobuffer->output.data_size;
+				memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+			}
+
+			iobuffer->output.data_size = 0;
+		}
+
+		_state = sirius::library::video::transform::codec::png::compressor::state_t::compressed;
+	}
+	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+	{
+		if (_state == sirius::library::video::transform::codec::png::compressor::state_t::compressing)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+
+		_state = sirius::library::video::transform::codec::png::compressor::state_t::compressing;
+
+		{
+			iobuffer = _iobuffer_queue.get_available();
+			if (!iobuffer)
+				return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
+
+			iobuffer->input.timestamp = input->timestamp;
+			iobuffer->input.data_size = input->data_size;
+			memmove((uint8_t*)iobuffer->input.data, input->data, iobuffer->input.data_size);
+		}
+
+		{
+			iobuffer = _iobuffer_queue.get_pending();
+
+			uint8_t * pixels = (uint8_t*)iobuffer->input.data;
+			memcpy(_rgba_buffer, pixels, _context->width * _context->height * 4);
+
+			liq_attr * liq = liq_attr_create();
+			liq_set_speed(liq, _context->speed);
+			liq_set_max_colors(liq, _context->max_colors);
+
+			int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
+			png8_image_t qntpng = { 0 };
+			liq_image * rgba = liq_image_create_rgba(liq, _rgba_buffer, _context->width, _context->height, _context->gamma);
+			liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
+
+			liq_result * remap = nullptr;
+			liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
+			if (liqerr == LIQ_OK)
+			{
+				liq_set_output_gamma(remap, 0.45455);
+				liq_set_dithering_level(remap, _context->floyd);
+
+				qntpng.width = liq_image_get_width(rgba);
+				qntpng.height = liq_image_get_height(rgba);
+				qntpng.gamma = liq_get_output_gamma(remap);
+				qntpng.output_color = RWPNG_SRGB;
+				qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
+				qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
+
+				if (!qntpng.indexed_data || !qntpng.row_pointers)
+				{
+					if (rgba)
+						liq_image_destroy(rgba);
+					
+					free_png_image8(&qntpng);
+
+					liq_attr_destroy(liq);
+
+					return sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+				}
+
+				for (size_t row = 0; row < qntpng.height; row++)
+					qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
+
+				const liq_palette *palette = liq_get_palette(remap);
+				qntpng.num_palette = palette->count;
+
+				liqerr = liq_write_remapped_image_rows(remap, rgba, qntpng.row_pointers);
+				if (liqerr != LIQ_OK)
+					status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+
+				palette = liq_get_palette(remap);
+				qntpng.num_palette = palette->count;
+				for (unsigned int i = 0; i < palette->count; i++)
+				{
+					const liq_color px = palette->entries[i];
+#if 0
+					qntpng.palette[i].r = px.r;
+					qntpng.palette[i].g = px.g;
+					qntpng.palette[i].b = px.b;
+					qntpng.palette[i].a = px.a;
+#else
+					qntpng.palette[i].r = px.b;
+					qntpng.palette[i].g = px.g;
+					qntpng.palette[i].b = px.r;
+					qntpng.palette[i].a = px.a;
+#endif
+				}
+
+				double palette_error = liq_get_quantization_error(remap);
+				if (palette_error >= 0)
+					quality_percent = liq_get_quantization_quality(remap);
+				liq_result_destroy(remap);
+			}
+			else if (liqerr == LIQ_QUALITY_TOO_LOW)
+			{
+				status = sirius::library::video::transform::codec::compressor::err_code_t::too_low_quality;
+			}
+			else
+			{
+				status = sirius::library::video::transform::codec::compressor::err_code_t::invalid_argument;
+			}
+
+			if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
+			{
+				qntpng.fast_compression = _context->fast_compression;
+				status = write_png_image8(&qntpng, &iobuffer->output);
+			}
+
+			if (rgba)
+				liq_image_destroy(rgba);
+			free_png_image8(&qntpng);
+			liq_attr_destroy(liq);
+
+			bitstream->memtype = sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host;
+			if (iobuffer->output.data_size > bitstream->data_capacity)
+			{
+				bitstream->data_size = bitstream->data_capacity;
+				memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+			}
+			else
+			{
+				bitstream->data_size = iobuffer->output.data_size;
+				memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+			}
+
+			iobuffer->output.data_size = 0;
+		}
+		_state = sirius::library::video::transform::codec::png::compressor::state_t::compressed;
+	}
+
+	_state = sirius::library::video::transform::codec::png::compressor::state_t::compressed;
+	return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+}
+
 int32_t sirius::library::video::transform::codec::png::compressor::core::compress(sirius::library::video::transform::codec::png::compressor::entity_t * input)
 {
-	if (!_device_ctx)
-		return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
-
-	if ((_state != sirius::library::video::transform::codec::png::compressor::state_t::initialized) && 
+	if ((_state != sirius::library::video::transform::codec::png::compressor::state_t::initialized) &&
 		(_state != sirius::library::video::transform::codec::png::compressor::state_t::compressed))
 		return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
 
 	sirius::library::video::transform::codec::png::compressor::core::buffer_t * iobuffer = nullptr;
 	if (input->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
 	{
-		//if (_state == sirius::library::video::transform::codec::png::compressor::state_t::compressing)
-		//	return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
+		if (!_device_ctx)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
 
 		iobuffer = _iobuffer_queue.get_available();
 		if (!iobuffer)
@@ -132,27 +419,39 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::compres
 		iobuffer->input.timestamp = input->timestamp;
 		ID3D11Texture2D * gtex = (ID3D11Texture2D*)input->data;
 
-		
+
 		D3D11_TEXTURE2D_DESC gdesc;
 		D3D11_TEXTURE2D_DESC hdesc;
 		gtex->GetDesc(&gdesc);
-		iobuffer->input.data->GetDesc(&hdesc);
+		ID3D11Texture2D * input = (ID3D11Texture2D*)iobuffer->input.data;
+		input->GetDesc(&hdesc);
 
-		_device_ctx->CopyResource(iobuffer->input.data, gtex);
+		if (gdesc.Format == hdesc.Format)
+		{
+			_device_ctx->CopyResource(input, gtex);
+		}
+		else
+		{
+			sirius::library::video::transform::codec::processor::convert_d3d11_texture2d_format(gtex, _intermediate_tex, _context->width, _context->height, _context->width, _context->height);
+			_device_ctx->CopyResource(input, _intermediate_tex);
+		}
 
 		D3D11_MAPPED_SUBRESOURCE sub_resource;
 		HRESULT hr = _device_ctx->Map((ID3D11Resource*)iobuffer->input.data, 0, D3D11_MAP_READ, 0, &sub_resource);
 		_device_ctx->Unmap((ID3D11Resource*)iobuffer->input.data, 0);
-#ifdef WITH_SAVE_BMP
-		//if (SUCCEEDED(hr))
-		{
-			nFrame++;
-			wchar_t szFileName[200];
-			swprintf(szFileName, sizeof(szFileName), L"SCREENSHOT%u.BMP", nFrame);
 
-			DirectX::SaveWICTextureToFile(_device_ctx, iobuffer->input.data, GUID_ContainerFormatBmp, szFileName, &GUID_WICPixelFormat32bppBGRA);
-		}
-#endif
+		::SetEvent(_event);
+	}
+	else if (input->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+	{
+		iobuffer = _iobuffer_queue.get_available();
+		if (!iobuffer)
+			return sirius::library::video::transform::codec::png::compressor::err_code_t::fail;
+
+		iobuffer->input.timestamp = input->timestamp;
+		iobuffer->input.data_size = input->data_size;
+		memmove((uint8_t*)iobuffer->input.data, input->data, iobuffer->input.data_size);
+
 		::SetEvent(_event);
 	}
 
@@ -183,56 +482,124 @@ void sirius::library::video::transform::codec::png::compressor::core::process(vo
 			{
 				before_encode_timestamp = iobuffer->input.timestamp;
 
-				HRESULT hr = E_FAIL;
-				D3D11_TEXTURE2D_DESC desc;
-				iobuffer->input.data->GetDesc(&desc);
-
-				D3D11_MAPPED_SUBRESOURCE sub_resource;
-				hr = _device_ctx->Map((ID3D11Resource*)iobuffer->input.data, 0, D3D11_MAP_READ, 0, &sub_resource);
-				if (SUCCEEDED(hr))
+				if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
 				{
-					uint8_t * pixels = (uint8_t*)sub_resource.pData;
-					//convert((int32_t*)pixels, (int32_t*)_rgba_buffer, _context->width * _context->height * 4);
-					memcpy(_rgba_buffer, pixels, _context->width * _context->height * 4);
-					_device_ctx->Unmap((ID3D11Resource*)iobuffer->input.data, 0);
-#if defined(WITH_SAVE_BMP)
-					HINSTANCE module_handle = ::GetModuleHandleA("sirius_png_compressor.dll");
-					char module_path[MAX_PATH] = { 0 };
-					char * module_name = module_path;
-					module_name += GetModuleFileNameA(module_handle, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-					if (module_name != module_path)
+					HRESULT hr = E_FAIL;
+					D3D11_TEXTURE2D_DESC desc;
+					ID3D11Texture2D * input = (ID3D11Texture2D*)iobuffer->input.data;
+					input->GetDesc(&desc);
+
+					D3D11_MAPPED_SUBRESOURCE sub_resource;
+					hr = _device_ctx->Map((ID3D11Resource*)iobuffer->input.data, 0, D3D11_MAP_READ, 0, &sub_resource);
+					if (SUCCEEDED(hr))
 					{
-						CHAR * slash = strrchr(module_path, '\\');
-						if (slash != NULL)
+						uint8_t * pixels = (uint8_t*)sub_resource.pData;
+						memcpy(_rgba_buffer, pixels, _context->width * _context->height * 4);
+						_device_ctx->Unmap((ID3D11Resource*)iobuffer->input.data, 0);
+
+						liq_attr * liq = liq_attr_create();
+						liq_set_speed(liq, _context->speed);
+						liq_set_max_colors(liq, _context->max_colors);
+
+						int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
+						png8_image_t qntpng = { 0 };
+						liq_image * rgba = liq_image_create_rgba(liq, _rgba_buffer, _context->width, _context->height, _context->gamma);
+						liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
+
+						liq_result * remap = nullptr;
+						liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
+						if (liqerr == LIQ_OK)
 						{
-							module_name = slash + 1;
-							_strset_s(module_name, strlen(module_name) + 1, 0);
+							liq_set_output_gamma(remap, 0.45455);
+							liq_set_dithering_level(remap, _context->floyd);
+
+							qntpng.width = liq_image_get_width(rgba);
+							qntpng.height = liq_image_get_height(rgba);
+							qntpng.gamma = liq_get_output_gamma(remap);
+							qntpng.output_color = RWPNG_SRGB;
+							qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
+							qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
+
+							if (!qntpng.indexed_data || !qntpng.row_pointers)
+							{
+								iobuffer = _iobuffer_queue.get_pending();
+								continue;
+								status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+							}
+
+							for (size_t row = 0; row < qntpng.height; row++)
+								qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
+
+							const liq_palette *palette = liq_get_palette(remap);
+							qntpng.num_palette = palette->count;
+
+							liqerr = liq_write_remapped_image_rows(remap, rgba, qntpng.row_pointers);
+							if (liqerr != LIQ_OK)
+								status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
+
+							palette = liq_get_palette(remap);
+							qntpng.num_palette = palette->count;
+							for (unsigned int i = 0; i < palette->count; i++)
+							{
+								const liq_color px = palette->entries[i];
+#if 1
+								qntpng.palette[i].r = px.r;
+								qntpng.palette[i].g = px.g;
+								qntpng.palette[i].b = px.b;
+								qntpng.palette[i].a = px.a;
+#else
+								qntpng.palette[i].r = px.b;
+								qntpng.palette[i].g = px.g;
+								qntpng.palette[i].b = px.r;
+								qntpng.palette[i].a = px.a;
+#endif
+							}
+
+							double palette_error = liq_get_quantization_error(remap);
+							if (palette_error >= 0)
+							{
+								quality_percent = liq_get_quantization_quality(remap);
+								//verbose_printf(options, "  mapped image to new colors...MSE=%.3f (Q=%d)", palette_error, quality_percent);
+							}
+							liq_result_destroy(remap);
+						}
+						else if (liqerr == LIQ_QUALITY_TOO_LOW)
+						{
+							status = sirius::library::video::transform::codec::compressor::err_code_t::too_low_quality;
 						}
 						else
 						{
-							_strset_s(module_path, strlen(module_path) + 1, 0);
+							status = sirius::library::video::transform::codec::compressor::err_code_t::invalid_argument;
 						}
+
+						if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
+						{
+							qntpng.fast_compression = _context->fast_compression;
+							//qntpng.chunks = input_image_rwpng.chunks; input_image_rwpng.chunks = NULL;
+							status = write_png_image8(&qntpng, &iobuffer->output);
+						}
+						if (rgba)
+							liq_image_destroy(rgba);
+						free_png_image8(&qntpng);
+						liq_attr_destroy(liq);
+
+						if (_front)
+							_front->after_process_callback(iobuffer->output.data, iobuffer->output.data_size, before_encode_timestamp, after_encode_timestamp);
+						iobuffer->output.data_size = 0;
 					}
 
-					char tempname[MAX_PATH] = { 0 };
-					GetTempFileNameA(module_path, NULL, 0, tempname);
-					_snprintf_s(tempname, sizeof(tempname) - 1, "%s.bmp", tempname);
-
-					wchar_t * wtempname = nullptr;
-					sirius::stringhelper::convert_multibyte2wide(tempname, &wtempname);
-
-					sirius::image::creator imgcreator(_context->width, _context->height);
-					memcpy(imgcreator.pixel_buffer, pixels, _context->width * _context->height * 4);
-					imgcreator.save(wtempname);
-
-					if (wtempname)
-						::SysFreeString(wtempname);
-#endif
+					iobuffer = _iobuffer_queue.get_pending();
+					continue;
+				}
+				else if(_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+				{
+					uint8_t * pixels = (uint8_t*)iobuffer->input.data;
+					memcpy(_rgba_buffer, pixels, _context->width * _context->height * 4);
 
 					liq_attr * liq = liq_attr_create();
 					liq_set_speed(liq, _context->speed);
 					liq_set_max_colors(liq, _context->max_colors);
-					
+
 					int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
 					png8_image_t qntpng = { 0 };
 					liq_image * rgba = liq_image_create_rgba(liq, _rgba_buffer, _context->width, _context->height, _context->gamma);
@@ -254,8 +621,8 @@ void sirius::library::video::transform::codec::png::compressor::core::process(vo
 
 						if (!qntpng.indexed_data || !qntpng.row_pointers)
 						{
-							//iobuffer = _iobuffer_queue.get_pending();
-							//continue;
+							iobuffer = _iobuffer_queue.get_pending();
+							continue;
 							status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
 						}
 
@@ -274,18 +641,22 @@ void sirius::library::video::transform::codec::png::compressor::core::process(vo
 						for (unsigned int i = 0; i < palette->count; i++)
 						{
 							const liq_color px = palette->entries[i];
+#if 0
 							qntpng.palette[i].r = px.r;
 							qntpng.palette[i].g = px.g;
 							qntpng.palette[i].b = px.b;
 							qntpng.palette[i].a = px.a;
+#else
+							qntpng.palette[i].r = px.b;
+							qntpng.palette[i].g = px.g;
+							qntpng.palette[i].b = px.r;
+							qntpng.palette[i].a = px.a;
+#endif
 						}
 
 						double palette_error = liq_get_quantization_error(remap);
 						if (palette_error >= 0)
-						{
 							quality_percent = liq_get_quantization_quality(remap);
-							//verbose_printf(options, "  mapped image to new colors...MSE=%.3f (Q=%d)", palette_error, quality_percent);
-						}
 						liq_result_destroy(remap);
 					}
 					else if (liqerr == LIQ_QUALITY_TOO_LOW)
@@ -300,7 +671,6 @@ void sirius::library::video::transform::codec::png::compressor::core::process(vo
 					if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
 					{
 						qntpng.fast_compression = _context->fast_compression;
-						//qntpng.chunks = input_image_rwpng.chunks; input_image_rwpng.chunks = NULL;
 						status = write_png_image8(&qntpng, &iobuffer->output);
 					}
 					if (rgba)
@@ -308,42 +678,14 @@ void sirius::library::video::transform::codec::png::compressor::core::process(vo
 					free_png_image8(&qntpng);
 					liq_attr_destroy(liq);
 
-#if defined(WITH_SAVE_PNG)
-					HINSTANCE module_handle = ::GetModuleHandleA("sirius_png_compressor.dll");
-					char module_path[MAX_PATH] = { 0 };
-					char * module_name = module_path;
-					module_name += GetModuleFileNameA(module_handle, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-					if (module_name != module_path)
-					{
-						CHAR * slash = strrchr(module_path, '\\');
-						if (slash != NULL)
-						{
-							module_name = slash + 1;
-							_strset_s(module_name, strlen(module_name) + 1, 0);
-						}
-						else
-						{
-							_strset_s(module_path, strlen(module_path) + 1, 0);
-						}
-					}
-
-					char tempname[MAX_PATH] = { 0 };
-					GetTempFileNameA(module_path, NULL, 0, tempname);
-					_snprintf_s(tempname, sizeof(tempname) - 1, "%s.png", tempname);
-
-					DWORD nwritten = 0;
-					HANDLE f = ::CreateFileA(tempname, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-					::WriteFile(f, iobuffer->output.data, iobuffer->output.data_size, &nwritten, NULL);
-					::CloseHandle(f);
-#endif
-
-					if(_front)
+					if (_front)
 						_front->after_process_callback(iobuffer->output.data, iobuffer->output.data_size, before_encode_timestamp, after_encode_timestamp);
 					iobuffer->output.data_size = 0;
+
+					iobuffer = _iobuffer_queue.get_pending();
+					continue;
 				}
 
-				iobuffer = _iobuffer_queue.get_pending();
-				continue;
 			}
 			_state = sirius::library::video::transform::codec::png::compressor::state_t::compressed;
 		}
@@ -357,9 +699,22 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::allocat
 
 	if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
 	{
+		for (uint32_t i = 0; i < _context->nbuffer; i++)
+		{
+			_iobuffer[i].input.data_capacity = _context->width * _context->height * 4;
+			_iobuffer[i].input.data_size = 0;
+			_iobuffer[i].input.data = static_cast<uint8_t*>(malloc(_iobuffer[i].input.data_capacity));
+
+			_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::png::compressor::core::MAX_PNG_SIZE;
+			_iobuffer[i].output.data_size = 0;
+			_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
+		}
+	}
+	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
+	{
 		D3D11_TEXTURE2D_DESC desc;
 		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.Width = _context->width;
 		desc.Height = _context->height;
 		desc.MipLevels = 1;
@@ -376,20 +731,15 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::allocat
 			if (SUCCEEDED(hr))
 			{
 				_iobuffer[i].input.data = tex;
-				_iobuffer[i].input.data->AddRef();
-				tex->Release();
 			}
 
 			_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::png::compressor::core::MAX_PNG_SIZE;
 			_iobuffer[i].output.data_size = 0;
 			_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
 		}
-	}
-	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
-	{
-		D3D11_TEXTURE2D_DESC desc;
+
 		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.Width = _context->width;
 		desc.Height = _context->height;
 		desc.MipLevels = 1;
@@ -399,20 +749,7 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::allocat
 		desc.MiscFlags = 0;
 		desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 		desc.CPUAccessFlags = 0;
-		ID3D11Texture2D * tex = NULL;
-		for (uint32_t i = 0; i < _context->nbuffer; i++)
-		{
-			HRESULT hr = _device->CreateTexture2D(&desc, NULL, &tex);
-			if (SUCCEEDED(hr))
-			{
-				_iobuffer[i].input.data = tex;
-				_iobuffer[i].input.data->AddRef();
-				tex->Release();
-			}
-			_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::png::compressor::core::MAX_PNG_SIZE;
-			_iobuffer[i].output.data_size = 0;
-			_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
-		}
+		_device->CreateTexture2D(&desc, NULL, &_intermediate_tex);
 	}
 	
 	return sirius::library::video::transform::codec::png::compressor::err_code_t::success;
@@ -420,13 +757,30 @@ int32_t sirius::library::video::transform::codec::png::compressor::core::allocat
 
 int32_t sirius::library::video::transform::codec::png::compressor::core::release_io_buffers(void)
 {
-	if ((_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host) ||
-		(_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11))
+	if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::d3d11)
 	{
 		for (uint32_t i = 0; i < _context->nbuffer; i++)
 		{
-			_iobuffer[i].input.data->Release();
+			ID3D11Texture2D * input = (ID3D11Texture2D*)_iobuffer[i].input.data;
+			input->Release();
 			_iobuffer[i].input.data = NULL;
+
+			if (_iobuffer[i].output.data)
+				free(_iobuffer[i].output.data);
+			_iobuffer[i].output.data = nullptr;
+		}
+	}
+	else if (_context->memtype == sirius::library::video::transform::codec::png::compressor::video_memory_type_t::host)
+	{
+		for (uint32_t i = 0; i < _context->nbuffer; i++)
+		{
+			if (_iobuffer[i].input.data)
+				free(_iobuffer[i].input.data);
+			_iobuffer[i].input.data = nullptr;
+
+			if (_iobuffer[i].output.data)
+				free(_iobuffer[i].output.data);
+			_iobuffer[i].output.data = nullptr;
 		}
 	}
 
@@ -621,21 +975,4 @@ void sirius::library::video::transform::codec::png::compressor::core::free_png_i
 
 	png_free_chunks(image->chunks);
 	image->chunks = NULL;
-}
-
-void sirius::library::video::transform::codec::png::compressor::core::convert(int32_t * RGBA, int32_t * BGRA, int32_t size)
-{
-	// assumes RGBA and BGRA are 16 byte aligned
-	// assumes size % 4 = 0
-
-	for (std::size_t i = 0; i < size; i += 4)
-	{
-		__m128i rgba = _mm_load_si128(reinterpret_cast<__m128i*>(RGBA + i));
-		__m128i mask = _mm_set1_epi32(0xff000000);
-		__m128i b = _mm_and_si128(_mm_slli_si128(rgba, 2), mask);
-		__m128i r = _mm_srli_si128(_mm_and_si128(rgba, mask), 2);
-		mask = _mm_set1_epi32(0x00ff00ff);
-		__m128i bgra = _mm_or_si128(r, _mm_or_si128(b, _mm_and_si128(rgba, mask)));
-		_mm_store_si128(reinterpret_cast<__m128i*>(BGRA + i), bgra);
-	}
 }

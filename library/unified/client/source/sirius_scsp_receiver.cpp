@@ -22,21 +22,30 @@ void sirius::library::unified::scsp::receiver::stop(void)
 	sirius::library::net::scsp::client::stop();
 }
 
-void sirius::library::unified::scsp::receiver::on_begin_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts)
+void sirius::library::unified::scsp::receiver::on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height)
 {
 	_recv_video = true;
 
 	if (_front)
-		_front->on_begin_video(smt, data, data_size, dts, cts);
+		_front->on_begin_video(codec, width, height, block_width, block_height);
 }
 
-void sirius::library::unified::scsp::receiver::on_recv_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts)
+void sirius::library::unified::scsp::receiver::on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts)
 {
 	if (!_recv_video)
 		return;
 
 	if (_front)
-		_front->on_recv_video(smt, data, data_size, dts, cts);
+		_front->on_recv_video(codec, data, length, dts, cts);
+}
+
+void sirius::library::unified::scsp::receiver::on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts)
+{
+	if (!_recv_video)
+		return;
+
+	if (_front)
+		_front->on_recv_video(codec, count, index, data, length, dts, cts);
 }
 
 void sirius::library::unified::scsp::receiver::on_end_video(void)

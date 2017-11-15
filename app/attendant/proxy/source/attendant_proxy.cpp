@@ -85,58 +85,6 @@ int32_t sirius::app::attendant::proxy::core::initialize(sirius::app::attendant::
 	_context = context;
 	switch (_context->type)
 	{
-		case sirius::app::attendant::proxy::attendant_type_t::desktop :
-		{
-			if (!_framework_context && !_framework)
-			{
-				HINSTANCE module_handle = ::GetModuleHandleA("sirius_attendant_proxy.dll");
-				char module_path[MAX_PATH] = { 0 };
-				char * module_name = module_path;
-				module_name += GetModuleFileNameA(module_handle, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-				if (module_name != module_path)
-				{
-					CHAR * slash = strrchr(module_path, '\\');
-					if (slash != NULL)
-					{
-						module_name = slash + 1;
-						_strset_s(module_name, strlen(module_name) + 1, 0);
-					}
-					else
-					{
-						_strset_s(module_path, strlen(module_path) + 1, 0);
-					}
-				}
-				if (strlen(module_path)>0)
-				{
-					SetDllDirectoryA(module_path);
-					_hmodule = ::LoadLibraryA("sirius_desktop_server_framework.dll");
-					if (_hmodule)
-					{
-						fpn_create_server_framework pfn_create = (fpn_create_server_framework)::GetProcAddress(_hmodule, "create_server_framework");
-						if (pfn_create)
-						{
-							_framework = (pfn_create)();
-							if (!_framework)
-							{
-								FreeLibrary(_hmodule);
-								_hmodule = NULL;
-							}
-						}
-						else
-						{
-							FreeLibrary(_hmodule);
-							_hmodule = NULL;
-						}
-					}
-				}
-
-				_framework_context = new (std::nothrow) sirius::library::framework::server::base::context_t();
-				if (_framework && strlen(_client_uuid) > 0)
-					_framework->set_notification_callee(this);
-				_front->_initialized = TRUE;
-			}
-			break;
-		}
 		case sirius::app::attendant::proxy::attendant_type_t::web :
 		{
 			if (!_framework_context && !_framework)
@@ -201,7 +149,6 @@ int32_t sirius::app::attendant::proxy::core::release(void)
 		fpn_destory_server_framework pfn_destroy = (fpn_destory_server_framework)::GetProcAddress(_hmodule, "destroy_server_framework");
 		if (_framework)
 		{
-			_framework->stop();
 			(pfn_destroy)(&_framework);
 			_framework = nullptr;
 		}
@@ -299,6 +246,9 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->video_height	= _context->video_height;
 		_framework_context->video_fps		= _context->video_fps;
 		_framework_context->video_nbuffer	= _context->video_nbuffer;
+		_framework_context->video_process_type = _context->video_process_type;
+		_framework_context->video_block_width = _context->video_block_width;
+		_framework_context->video_block_height = _context->video_block_height;
 
 		_framework_context->gpuindex		= _context->gpuindex;
 		_framework_context->present			= _context->present;
@@ -323,6 +273,8 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 			_unified_context.video_width	= _context->video_width;
 			_unified_context.video_height	= _context->video_height;
 			_unified_context.video_fps		= _context->video_fps;
+			_unified_context.video_block_width = _context->video_block_width;
+			_unified_context.video_block_height = _context->video_block_height;
 
 			if (_unified_context.video_codec != sirius::library::unified::server::video_submedia_type_t::unknown)
 			{
@@ -362,7 +314,10 @@ int32_t sirius::app::attendant::proxy::core::stop(void)
 	}
 
 	code = _framework->stop();
+	if (code != sirius::app::attendant::proxy::err_code_t::success)
+		return code;
 
+	code = _framework->close();
 	if (code != sirius::app::attendant::proxy::err_code_t::success)
 		return code;
 
