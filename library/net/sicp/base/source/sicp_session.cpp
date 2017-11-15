@@ -355,8 +355,7 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 
 #if defined(WITH_NEW_PROTOCOL)
 		data_indication_callback((const char *)dst_uuid.to_string_ntoh().c_str(), (const char *)src_uuid.to_string_ntoh().c_str(),
-								 header.command, header.version, _precv_buffer + pkt_header_size, header.length, 
-								 sirius::library::net::session::downcasted_shared_from_this<sirius::library::net::sicp::session>());
+								 header.command, header.version, _precv_buffer + pkt_header_size, header.length, std::static_pointer_cast<sirius::library::net::sicp::session>(shared_from_this()));
 #else
 		data_indication_callback((const char *)dst_uuid.to_string_ntoh().c_str(), (const char *)src_uuid.to_string_ntoh().c_str(),
 			header.command, header.version, _precv_buffer + pkt_header_size, header.length - pkt_header_size,

@@ -14,9 +14,6 @@ sirius::library::unified::server::server(void)
 
 sirius::library::unified::server::~server(void)
 {
-	release();
-	release_video_compressor();
-
 	if (_core)
 		delete _core;
 	_core = nullptr;

@@ -9,6 +9,11 @@
 #include "include/cef_browser.h"
 #include "include/cef_render_handler.h"
 
+#if defined(WITH_ATTENDANT_PROXY)
+#include <sirius_cpu_video_capturer.h>
+#pragma comment(lib, "sirius_cpu_video_capturer.lib")
+#endif
+
 namespace client {
 
 class OsrRenderer {

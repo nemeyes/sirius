@@ -29,8 +29,9 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
-					virtual void on_begin_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts);
-					virtual void on_recv_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts);
+					virtual void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height);
+					virtual void on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts);
+					virtual void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts);
 					virtual void on_end_video(void);
 
 				private:
@@ -42,7 +43,9 @@ namespace sirius
 					void * _video_renderer_context;
 
 					CRITICAL_SECTION			_vcs;
-					uint8_t *					_video_buffer;
+					uint8_t *					_decoder_buffer;
+					uint8_t *					_render_buffer;
+					uint8_t *					_processing_buffer;
 				};
 			};
 		};

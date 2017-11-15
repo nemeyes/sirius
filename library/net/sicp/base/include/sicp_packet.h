@@ -16,7 +16,6 @@ namespace sirius
 		{
 			namespace sicp
 			{
-#if defined(WITH_NEW_PROTOCOL)
 				typedef struct _packet_header_t
 				{
 					char  pid;
@@ -26,17 +25,6 @@ namespace sirius
 					uint16_t command;
 					uint32_t length;
 				} packet_header_t;
-#else
-				typedef struct _packet_header_t
-				{
-					uint16_t command;
-					uint8_t  version;
-					uint8_t  type;		// 0:binary, 1:json.
-					uint32_t length;	// header 를 포함한 총 길이.
-					char  src[16];
-					char  dst[16];
-				} packet_header_t;
-#endif
 			};
 		};
 	};

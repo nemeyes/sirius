@@ -24,14 +24,6 @@ namespace sirius
 					: public sirius::library::net::session
 				{
 				public:
-					typedef struct _msg_type_t
-					{
-						static const int32_t binary = 0x00;
-						static const int32_t json = 0x01;
-						static const int32_t xml = 0x02;
-						static const int32_t max_type = 0x03;
-					} msg_type_t;
-
 					static const uint8_t protocol_version = 0x0;
 
 				public:

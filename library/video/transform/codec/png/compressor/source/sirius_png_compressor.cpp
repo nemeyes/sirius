@@ -73,14 +73,12 @@ int32_t sirius::library::video::transform::codec::png::compressor::stop(void)
 	return _core->stop();
 }
 
+int32_t sirius::library::video::transform::codec::png::compressor::compress(sirius::library::video::transform::codec::png::compressor::entity_t * input, sirius::library::video::transform::codec::png::compressor::entity_t * bitstream)
+{
+	return _core->compress(input, bitstream);
+}
+
 int32_t sirius::library::video::transform::codec::png::compressor::compress(sirius::library::video::transform::codec::compressor::entity_t * input)
 {
 	return _core->compress(input);
 }
-
-/*
-void sirius::library::video::transform::codec::png::compressor::after_process_callback(uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
-{
-
-}
-*/

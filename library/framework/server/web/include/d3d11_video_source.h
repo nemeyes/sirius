@@ -1,5 +1,5 @@
-#ifndef _VIDEO_SOURCE_H_
-#define _VIDEO_SOURCE_H_
+#ifndef _D3D11_VIDEO_SOURCE_H_
+#define _D3D11_VIDEO_SOURCE_H_
 
 #include <sirius_d3d11_video_capturer.h>
 #include <sirius_web_server_framework.h>
@@ -12,14 +12,14 @@ namespace sirius
 		{
 			namespace server
 			{
-				class web::video_source
+				class web::d3d11_video_source
 					: public sirius::library::video::source::d3d11::capturer::handler
 				{
 				public:
-					video_source(sirius::library::framework::server::web::core * framework);
-					virtual ~video_source(void);
+					d3d11_video_source(sirius::library::framework::server::web::core * framework);
+					virtual ~d3d11_video_source(void);
 
-					int32_t start(int32_t fps, int32_t player_type);
+					int32_t start(int32_t fps, int32_t player_type = sirius::library::framework::server::web::attendant_type_t::web);
 					int32_t stop(void);
 
 				private:

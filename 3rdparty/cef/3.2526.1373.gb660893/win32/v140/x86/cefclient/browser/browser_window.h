@@ -27,7 +27,7 @@ class BrowserWindow : public ClientHandler::Delegate {
 
     // Called when the BrowserWindow has been destroyed.
     virtual void OnBrowserWindowDestroyed() = 0;
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) = 0;
 #endif
     // Set the window URL address.
@@ -113,7 +113,7 @@ class BrowserWindow : public ClientHandler::Delegate {
   void OnBrowserCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
   void OnBrowserClosing(CefRefPtr<CefBrowser> browser) OVERRIDE;
   void OnBrowserClosed(CefRefPtr<CefBrowser> browser) OVERRIDE;
- #if defined(WITH_SIRIUS_ATTENDANT_PROXY)
+ #if defined(WITH_ATTENDANT_PROXY)
   void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) OVERRIDE;
 #endif
   void OnSetAddress(const std::string& url) OVERRIDE;

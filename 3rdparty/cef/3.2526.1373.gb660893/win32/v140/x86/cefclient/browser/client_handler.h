@@ -46,7 +46,7 @@ class ClientHandler : public CefClient,
 
     // Called when the browser has been closed.
     virtual void OnBrowserClosed(CefRefPtr<CefBrowser> browser) = 0;
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser,
 		CefRefPtr<CefFrame> frame) = 0;
 #endif
@@ -182,7 +182,7 @@ class ClientHandler : public CefClient,
                      CefEventHandle os_event,
                      bool* is_keyboard_shortcut) OVERRIDE;
 
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
   void OnLoadStart(CefRefPtr<CefBrowser> browser,
 	  CefRefPtr<CefFrame> frame) OVERRIDE;
 

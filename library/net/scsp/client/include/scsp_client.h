@@ -45,7 +45,7 @@ namespace sirius
 
 					void av_stream_callback(const char * msg, int32_t length);
 
-					void push_video_packet(sirius::library::net::scsp::cmd_stream_data_t * packet, uint8_t * data, int32_t length);
+					void push_video_packet(int32_t count, uint8_t * data, int32_t length);
 
 				private:
 					sirius::library::net::scsp::client * _front;
@@ -53,6 +53,8 @@ namespace sirius
 					int32_t _video_width;
 					int32_t _video_height;
 					int32_t _video_fps;
+					int32_t _video_block_width;
+					int32_t _video_block_height;
 					int32_t _state;
 					CRITICAL_SECTION _state_cs;
 					int32_t _receive_option;

@@ -250,91 +250,104 @@ void OsrRenderer::OnPaint(CefRefPtr<CefBrowser> browser,
                           CefRenderHandler::PaintElementType type,
                           const CefRenderHandler::RectList& dirtyRects,
                           const void* buffer, int width, int height) {
+
+#if defined(WITH_ATTENDANT_PROXY)
+	sirius::library::video::source::cpu::capturer::instance().post(sirius::library::video::source::cpu::capturer::video_submedia_type_t::rgb32, (uint8_t*)buffer, width, height);
+#endif
+
   if (!initialized_)
     Initialize();
 
-  if (settings_.transparent) {
-    // Enable alpha blending.
-    glEnable(GL_BLEND); VERIFY_NO_ERROR;
+#if defined(WITH_ATTENDANT_PROXY)
+  if (sirius::library::video::source::cpu::capturer::context_t::instance().present)
+  {
+#endif
+
+	  if (settings_.transparent) {
+		// Enable alpha blending.
+		glEnable(GL_BLEND); VERIFY_NO_ERROR;
+	  }
+
+	  // Enable 2D textures.
+	  glEnable(GL_TEXTURE_2D); VERIFY_NO_ERROR;
+
+	  DCHECK_NE(texture_id_, 0U);
+	  glBindTexture(GL_TEXTURE_2D, texture_id_); VERIFY_NO_ERROR;
+
+	  if (type == PET_VIEW) {
+		int old_width = view_width_;
+		int old_height = view_height_;
+
+		view_width_ = width;
+		view_height_ = height;
+
+		if (settings_.show_update_rect)
+		  update_rect_ = dirtyRects[0];
+
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, view_width_); VERIFY_NO_ERROR;
+
+		if (old_width != view_width_ || old_height != view_height_ ||
+			(dirtyRects.size() == 1 &&
+			 dirtyRects[0] == CefRect(0, 0, view_width_, view_height_))) {
+		  // Update/resize the whole texture.
+		  glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0); VERIFY_NO_ERROR;
+		  glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); VERIFY_NO_ERROR;
+		  glTexImage2D(
+			  GL_TEXTURE_2D, 0, GL_RGBA, view_width_, view_height_, 0,
+			  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buffer); VERIFY_NO_ERROR;
+		} else {
+		  // Update just the dirty rectangles.
+		  CefRenderHandler::RectList::const_iterator i = dirtyRects.begin();
+		  for (; i != dirtyRects.end(); ++i) {
+			const CefRect& rect = *i;
+			DCHECK(rect.x + rect.width <= view_width_);
+			DCHECK(rect.y + rect.height <= view_height_);
+			glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect.x); VERIFY_NO_ERROR;
+			glPixelStorei(GL_UNPACK_SKIP_ROWS, rect.y); VERIFY_NO_ERROR;
+			glTexSubImage2D(GL_TEXTURE_2D, 0, rect.x, rect.y, rect.width,
+							rect.height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+							buffer); VERIFY_NO_ERROR;
+		  }
+		}
+	  } else if (type == PET_POPUP && popup_rect_.width > 0 &&
+				 popup_rect_.height > 0) {
+		int skip_pixels = 0, x = popup_rect_.x;
+		int skip_rows = 0, y = popup_rect_.y;
+		int w = width;
+		int h = height;
+
+		// Adjust the popup to fit inside the view.
+		if (x < 0) {
+		  skip_pixels = -x;
+		  x = 0;
+		}
+		if (y < 0) {
+		  skip_rows = -y;
+		  y = 0;
+		}
+		if (x + w > view_width_)
+		  w -= x + w - view_width_;
+		if (y + h > view_height_)
+		  h -= y + h - view_height_;
+
+		// Update the popup rectangle.
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, width); VERIFY_NO_ERROR;
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, skip_pixels); VERIFY_NO_ERROR;
+		glPixelStorei(GL_UNPACK_SKIP_ROWS, skip_rows); VERIFY_NO_ERROR;
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_BGRA,
+						GL_UNSIGNED_INT_8_8_8_8_REV, buffer); VERIFY_NO_ERROR;
+	  }
+
+	  // Disable 2D textures.
+	  glDisable(GL_TEXTURE_2D); VERIFY_NO_ERROR;
+
+	  if (settings_.transparent) {
+		// Disable alpha blending.
+		glDisable(GL_BLEND); VERIFY_NO_ERROR;
+	  }
+#if defined(WITH_ATTENDANT_PROXY)
   }
-
-  // Enable 2D textures.
-  glEnable(GL_TEXTURE_2D); VERIFY_NO_ERROR;
-
-  DCHECK_NE(texture_id_, 0U);
-  glBindTexture(GL_TEXTURE_2D, texture_id_); VERIFY_NO_ERROR;
-
-  if (type == PET_VIEW) {
-    int old_width = view_width_;
-    int old_height = view_height_;
-
-    view_width_ = width;
-    view_height_ = height;
-
-    if (settings_.show_update_rect)
-      update_rect_ = dirtyRects[0];
-
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, view_width_); VERIFY_NO_ERROR;
-
-    if (old_width != view_width_ || old_height != view_height_ ||
-        (dirtyRects.size() == 1 &&
-         dirtyRects[0] == CefRect(0, 0, view_width_, view_height_))) {
-      // Update/resize the whole texture.
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0); VERIFY_NO_ERROR;
-      glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); VERIFY_NO_ERROR;
-      glTexImage2D(
-          GL_TEXTURE_2D, 0, GL_RGBA, view_width_, view_height_, 0,
-          GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buffer); VERIFY_NO_ERROR;
-    } else {
-      // Update just the dirty rectangles.
-      CefRenderHandler::RectList::const_iterator i = dirtyRects.begin();
-      for (; i != dirtyRects.end(); ++i) {
-        const CefRect& rect = *i;
-        DCHECK(rect.x + rect.width <= view_width_);
-        DCHECK(rect.y + rect.height <= view_height_);
-        glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect.x); VERIFY_NO_ERROR;
-        glPixelStorei(GL_UNPACK_SKIP_ROWS, rect.y); VERIFY_NO_ERROR;
-        glTexSubImage2D(GL_TEXTURE_2D, 0, rect.x, rect.y, rect.width,
-                        rect.height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
-                        buffer); VERIFY_NO_ERROR;
-      }
-    }
-  } else if (type == PET_POPUP && popup_rect_.width > 0 &&
-             popup_rect_.height > 0) {
-    int skip_pixels = 0, x = popup_rect_.x;
-    int skip_rows = 0, y = popup_rect_.y;
-    int w = width;
-    int h = height;
-
-    // Adjust the popup to fit inside the view.
-    if (x < 0) {
-      skip_pixels = -x;
-      x = 0;
-    }
-    if (y < 0) {
-      skip_rows = -y;
-      y = 0;
-    }
-    if (x + w > view_width_)
-      w -= x + w - view_width_;
-    if (y + h > view_height_)
-      h -= y + h - view_height_;
-
-    // Update the popup rectangle.
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, width); VERIFY_NO_ERROR;
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, skip_pixels); VERIFY_NO_ERROR;
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, skip_rows); VERIFY_NO_ERROR;
-    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_BGRA,
-                    GL_UNSIGNED_INT_8_8_8_8_REV, buffer); VERIFY_NO_ERROR;
-  }
-
-  // Disable 2D textures.
-  glDisable(GL_TEXTURE_2D); VERIFY_NO_ERROR;
-
-  if (settings_.transparent) {
-    // Disable alpha blending.
-    glDisable(GL_BLEND); VERIFY_NO_ERROR;
-  }
+#endif
 }
 
 void OsrRenderer::SetSpin(float spinX, float spinY) {

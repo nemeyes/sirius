@@ -7,7 +7,8 @@
 #include "web_server_framework.h"
 
 sirius::library::framework::server::web::core::core(void)
-	: _video_source(nullptr)
+	: _d3d11_video_source(nullptr)
+	, _host_video_source(nullptr)
 	, _notifier(nullptr)
 	, _gyro_enabled_attitude(true)
 	, _gyro_enabled_gravity(false)
@@ -16,19 +17,13 @@ sirius::library::framework::server::web::core::core(void)
 	, _gyro_enabled_user_acceleration(false)
 	, _gyro_updateinterval(0.15f)
 {
-	_video_source = new sirius::library::framework::server::web::video_source(this);
 	_notifier = new sirius::library::misc::notification::internal::notifier();
-
 	while (_xml_msg_que.empty() == false)
 		_xml_msg_que.pop();
 }
 
-
 sirius::library::framework::server::web::core::~core()
 {
-	sirius::library::unified::server::instance().release_video_compressor();
-	SIRIUS_SAFE_DELETE(_video_source);
-
 	if (_notifier)
 	{
 		delete _notifier;
@@ -49,23 +44,29 @@ int32_t sirius::library::framework::server::web::core::open(sirius::library::fra
 {
 	memcpy((void*)&_context, (void*)context, sizeof(sirius::library::framework::server::web::context_t));
 
-	//char log[MAX_PATH] = { 0 };
-	//sprintf_s(log, MAX_PATH, "%s()_%d : parent window handle=%p, player_type:%d,port_num:%d", __FUNCTION__, __LINE__, _config.hwnd,_config.player_type,config->port_number);
-	//OutputDebugStringA(log);
-
 	LOGGER::make_trace_log(SLVSC, "%s()_%d : parent window handle=%d", __FUNCTION__, __LINE__, _context.hwnd);
 
-	_video_source->start(_context.video_fps, 0);
-	LOGGER::make_trace_log(SLVSC, "%s()_%d : capture video=%d", __FUNCTION__, __LINE__, _context.video_fps);
+	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
+	{
+		_d3d11_video_source = new sirius::library::framework::server::web::d3d11_video_source(this);
+		_d3d11_video_source->start(_context.video_fps, sirius::library::framework::server::web::attendant_type_t::web);
+	}
+	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
+	{
+		_host_video_source = new sirius::library::framework::server::web::host_video_source(this);
+		_host_video_source->start(_context.video_fps, sirius::library::framework::server::web::attendant_type_t::web);
+	}
 
 	if (!sirius::library::unified::server::instance().is_video_compressor_initialized())
 	{
 		_venc_context.gpuindex		= context->gpuindex;
-		_venc_context.memtype		= sirius::library::video::transform::codec::compressor::video_memory_type_t::host;
-		_venc_context.codec			= sirius::library::video::transform::codec::compressor::video_submedia_type_t::png;
+		_venc_context.memtype		= context->video_process_type;
+		_venc_context.codec			= context->video_codec;
 		_venc_context.width			= context->video_width;
 		_venc_context.height		= context->video_height;
 		_venc_context.fps			= context->video_fps;
+		_venc_context.block_width	= context->video_block_width;
+		_venc_context.block_height	= context->video_block_height;
 		_venc_context.nbuffer		= context->video_nbuffer;
 	}
 	return sirius::library::framework::server::web::err_code_t::success;
@@ -73,7 +74,25 @@ int32_t sirius::library::framework::server::web::core::open(sirius::library::fra
 
 int32_t sirius::library::framework::server::web::core::close(void)
 {
-	_video_source->stop();
+	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
+	{
+		if (_d3d11_video_source)
+		{
+			_d3d11_video_source->stop();
+			delete _d3d11_video_source;
+			_d3d11_video_source = nullptr;
+		}
+	}
+	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
+	{
+		if (_host_video_source)
+		{
+			_host_video_source->stop();
+			delete _host_video_source;
+			_host_video_source = nullptr;
+		}
+	}
+
 
 	if (_context.hwnd)
 		PostMessageA(_context.hwnd, WM_CLOSE, 0L, 0L);

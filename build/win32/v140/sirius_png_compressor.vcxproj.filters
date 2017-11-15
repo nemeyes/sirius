@@ -60,6 +60,9 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\png\compressor\include\png_compressor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_processor.h">
+      <Filter>compressor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\library\video\transform\codec\png\compressor\source\png_compressor.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_processor.cpp">
+      <Filter>compressor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

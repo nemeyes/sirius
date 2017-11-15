@@ -47,7 +47,7 @@ sirius::library::net::server::~server(void)
 {
 	if (_server)
 	{
-		_server->stop();
+		//_server->stop();
 		_server->release();
 		delete _server;
 		_server = nullptr;

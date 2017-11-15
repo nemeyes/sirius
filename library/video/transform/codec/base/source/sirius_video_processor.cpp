@@ -25,7 +25,7 @@ long long sirius::library::video::transform::codec::processor::elapsed_milliseco
 	return sirius::library::misc::timestamp::generator::instance().elapsed_milliseconds();
 }
 
-int32_t sirius::library::video::transform::codec::processor::initialize_d3d11(ID3D11Device * d3d11_device, int32_t iwidth, int32_t iheight, int32_t ifps, int32_t owidth, int32_t oheight, int32_t ofps)
+int32_t sirius::library::video::transform::codec::processor::initialize_d3d11(ID3D11Device * d3d11_device, int32_t iwidth, int32_t iheight, int32_t ifps, int32_t owidth, int32_t oheight, int32_t ofps, DXGI_FORMAT oformat)
 {
 	HRESULT hr = S_OK;
 	int32_t status = sirius::library::video::transform::codec::processor::err_code_t::fail;
@@ -60,7 +60,7 @@ int32_t sirius::library::video::transform::codec::processor::initialize_d3d11(ID
 			break;
 
 		UINT flags;
-		DXGI_FORMAT output_format = DXGI_FORMAT_NV12;
+		DXGI_FORMAT output_format = oformat;
 		hr = _d3d11_video_processor_enum->CheckVideoProcessorFormat(output_format, &flags);
 		if (FAILED(hr) || (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT) == 0)
 			break;

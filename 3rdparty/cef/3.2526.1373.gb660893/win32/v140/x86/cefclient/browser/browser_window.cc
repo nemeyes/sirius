@@ -59,7 +59,7 @@ void BrowserWindow::OnBrowserClosed(CefRefPtr<CefBrowser> browser) {
   // |this| may be deleted.
   delegate_->OnBrowserWindowDestroyed();
 }
-#ifdef WITH_SIRIUS_ATTENDANT_PROXY
+#ifdef WITH_ATTENDANT_PROXY
 void BrowserWindow::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
 {
 	REQUIRE_MAIN_THREAD();

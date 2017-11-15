@@ -2,7 +2,8 @@
 #define _WEB_SERVER_FRAMEWORK_H_
 
 #include "sirius_web_server_framework.h"
-#include "video_source.h"
+#include "d3d11_video_source.h"
+#include "host_video_source.h"
 
 #include <sirius_unified_server.h>
 #include <sirius_log4cplus_logger.h>
@@ -19,7 +20,8 @@ namespace sirius
 				class web::core
 				{
 				public:
-					friend class video_source;
+					friend class d3d11_video_source;
+					friend class host_video_source;
 
 					typedef struct _handle_data_t 
 					{
@@ -114,7 +116,8 @@ namespace sirius
 					
 
 				private:
-					video_source * _video_source;
+					d3d11_video_source * _d3d11_video_source;
+					host_video_source * _host_video_source;
 					HANDLE _video_file;
 
 					sirius::library::framework::server::web::context_t _context;

@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5E961D9E-1491-4318-8866-1AC20E04F8FB}</ProjectGuid>
+    <ProjectGuid>{1565E734-6CFA-4871-ACA7-DA5CA77B442F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>cyrus_d3d11_desktop_capturer</RootNamespace>
+    <RootNamespace>sirius_partial_png_compressor</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -91,16 +91,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_VIDEO_LIB;EXPORT_VIDEO_SOURCE_CAPTURER_LIB;EXPORT_D3D11_DESKTOP_CAPTURE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\source\base\include;..\..\..\library\video\source\d3d11\desktop\include;..\..\..\library\video\source\d3d11\capturer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\misc\timestamp\generator\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt;..\..\..\library\video\transform\codec\partial\png\compressor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libpng16.lib;Simd.lib;sirius_timestamp_generator.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,7 +109,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;CYRUS_D3D11_DESKTOP_CAPTURER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;SIRIUS_PARTIAL_PNG_COMPRESSOR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -125,18 +125,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_VIDEO_LIB;EXPORT_VIDEO_SOURCE_CAPTURER_LIB;EXPORT_D3D11_DESKTOP_CAPTURE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\source\base\include;..\..\..\library\video\source\d3d11\desktop\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\misc\timestamp\generator\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt;..\..\..\library\video\transform\codec\partial\png\compressor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;d3d11.lib;dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;libpng16.lib;Simd.lib;sirius_timestamp_generator.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
@@ -148,7 +148,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;CYRUS_D3D11_DESKTOP_CAPTURER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;SIRIUS_PARTIAL_PNG_COMPRESSOR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -159,56 +159,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\base\include\resource.h" />
     <ClInclude Include="..\..\..\library\video\base\include\sirius_video.h" />
-    <ClInclude Include="..\..\..\library\video\source\base\include\sirius_video_source_capturer.h" />
-    <ClInclude Include="..\..\..\library\video\source\d3d11\desktop\include\d3d11_desktop_capturer.h" />
-    <ClInclude Include="..\..\..\library\video\source\d3d11\desktop\include\d3d11_display_manager.h" />
-    <ClInclude Include="..\..\..\library\video\source\d3d11\desktop\include\d3d11_duplication_manager.h" />
-    <ClInclude Include="..\..\..\library\video\source\d3d11\desktop\include\d3d11_output_manager.h" />
-    <ClInclude Include="..\..\..\library\video\source\d3d11\desktop\include\sirius_d3d11_desktop_capturer.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_compressor.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_processor.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\sirius_partial_png_compressor.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\libpng_compressor.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\partial_png_compressor.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mediancut.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mempool.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\nearest.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\video\base\source\sirius_video.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\base\source\sirius_video_source_capturer.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\d3d11\desktop\source\d3d11_desktop_capturer.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\d3d11\desktop\source\d3d11_display_manager.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\d3d11\desktop\source\d3d11_duplication_manager.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\d3d11\desktop\source\d3d11_output_manager.cpp" />
-    <ClCompile Include="..\..\..\library\video\source\d3d11\desktop\source\sirius_d3d11_desktop_capturer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\..\library\video\source\d3d11\desktop\shader\pixel_shader.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\library\video\source\d3d11\desktop\include\pixel_shader.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ObjectFileOutput>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\library\video\source\d3d11\desktop\include\pixel_shader.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="..\..\..\library\video\source\d3d11\desktop\shader\vertex_shader.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\library\video\source\d3d11\desktop\include\vertex_shader.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ObjectFileOutput>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\library\video\source\d3d11\desktop\include\vertex_shader.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_processor.cpp" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mediancut.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mempool.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\nearest.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\sirius_partial_png_compressor.cpp" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\partial_png_compressor.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

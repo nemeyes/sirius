@@ -172,7 +172,6 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 	reader.parse(msg, root);
 
 	int32_t stream_type = 0;
-	int32_t stream_subtype = 0;
 	if (root["type"].isInt())
 		stream_type = root.get("type", 0).asInt();
 
@@ -189,7 +188,8 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 			root["video_width"] = _context->video_width;
 			root["video_height"] = _context->video_height;
 			root["video_fps"] = _context->video_fps;
-
+			root["video_block_width"] = _context->video_block_width;
+			root["video_block_height"] = _context->video_block_height;
 		}
 		res_code = sirius::base::err_code_t::success;
 	}
@@ -208,8 +208,8 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 	LOGGER::make_trace_log(SLNS, "%s(), %d : client uuid=%s, client uuid=%s, msg=%s, length=%d", __FUNCTION__, __LINE__, client_uuid, control_uuid.c_str(), res_json.c_str(), res_json.size());
 
 	data_request((char*)client_uuid, CMD_PLAY_RES, (char*)res_json.c_str(), res_json.size());
-	LOGGER::make_info_log(SLNS, "[Stream Response] - Command:%d", CMD_PLAY_RES);
-	LOGGER::make_info_log(SLNS, "%s(),%d, Stream Response Packet -> streamType : %d, streamSubType : %d, rcode : %d", __FUNCTION__, __LINE__, stream_type, stream_subtype, res_code);
+	LOGGER::make_info_log(SLNS, "[stream response] - command:%d", CMD_PLAY_RES);
+	LOGGER::make_info_log(SLNS, "%s(),%d, stream response packet -> type : %d, rcode : %d", __FUNCTION__, __LINE__, stream_type, res_code);
 	if (res_code == sirius::base::err_code_t::success)
 	{
 		if (stream_type == sirius::library::net::scsp::server::media_type_t::video)

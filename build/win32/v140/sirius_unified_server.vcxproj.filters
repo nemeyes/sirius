@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\..\base\include\sirius_string.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\library\unified\server\include\partial_png_compressor_wrapper.h">
+      <Filter>compressor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\unified\server\source\sirius_unified_server.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\base\source\sirius_string.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\unified\server\source\partial_png_compressor_wrapper.cpp">
+      <Filter>compressor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

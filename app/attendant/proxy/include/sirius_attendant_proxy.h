@@ -48,6 +48,9 @@ namespace sirius
 					int32_t video_height;
 					int32_t video_fps;
 					int32_t video_nbuffer;
+					int32_t video_process_type;
+					int32_t video_block_width;
+					int32_t video_block_height;
 
 					int32_t gpuindex;
 					int32_t present;
@@ -74,6 +77,9 @@ namespace sirius
 						, video_height(720)
 						, video_fps(0)
 						, video_nbuffer(2)
+						, video_process_type(sirius::app::attendant::proxy::video_memory_type_t::host)
+						, video_block_width(128)
+						, video_block_height(72)
 						, gpuindex(0)
 						, present(false)
 						, repeat(true)

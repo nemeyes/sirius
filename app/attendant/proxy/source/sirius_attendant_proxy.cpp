@@ -128,6 +128,16 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_nbuffer = _wtoi(value.c_str());
 	}
+	if (param.end() != (iter = param.find(L"video_block_width")))
+	{
+		value = iter->second;
+		context->video_block_width = _wtoi(value.c_str());
+	}
+	if (param.end() != (iter = param.find(L"video_block_height")))
+	{
+		value = iter->second;
+		context->video_block_height = _wtoi(value.c_str());
+	}
 	if (param.end() != (iter = param.find(L"gpu_index")))
 	{
 		value = iter->second;
@@ -174,7 +184,19 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else if (!_wcsicmp(value.c_str(), L"original"))
 			context->render_type = sirius::app::attendant::proxy::render_type_t::original;
 	}
-
+	if (param.end() != (iter = param.find(L"off-screen-rendering-enabled")))
+	{
+		context->video_process_type = sirius::app::attendant::proxy::video_memory_type_t::host;
+		if (param.end() != (iter = param.find(L"off-screen-frame-rate")))
+		{
+			value = iter->second;
+			context->video_fps = _wtoi(value.c_str());
+		}
+	}
+	else
+	{
+		context->video_process_type = sirius::app::attendant::proxy::video_memory_type_t::d3d11;
+	}
 	return true;
 }
 
@@ -199,13 +221,12 @@ sirius::app::attendant::proxy::proxy(void)
 	, _key_pressed(FALSE)
 	, _initialized(FALSE)
 {
-	//cap_log4cplus_logger::create("configuration\\log.properties", streamer, "NULL");
+
 }
 
 sirius::app::attendant::proxy::~proxy(void)
 {
-	release();
-	//sirius::library::log::log4cplus::logger::destroy();
+	//release();
 }
 
 int32_t sirius::app::attendant::proxy::initialize(void)
@@ -257,6 +278,7 @@ int32_t sirius::app::attendant::proxy::release(void)
 		delete _core;
 		_core = nullptr;
 	}
+	sirius::library::log::log4cplus::logger::destroy();
 	return status;
 }
 

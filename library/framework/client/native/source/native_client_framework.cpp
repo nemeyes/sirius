@@ -3,23 +3,38 @@
 #include <sirius_locks.h>
 #include <sirius_png_decompressor.h>
 #include <sirius_ddraw_renderer.h>
-#include <sirius_log4cplus_logger.h> 
+#include <sirius_log4cplus_logger.h>
+
+#include <Simd\SimdLib.h>
 
 sirius::library::framework::client::native::core::core(void)
 {
 	::InitializeCriticalSection(&_vcs);
-	_video_buffer = static_cast<uint8_t*>(malloc(VIDEO_BUFFER_SIZE));
+	_decoder_buffer = static_cast<uint8_t*>(malloc(VIDEO_BUFFER_SIZE));
+	_render_buffer = static_cast<uint8_t*>(malloc(VIDEO_BUFFER_SIZE));
+	_processing_buffer = static_cast<uint8_t*>(malloc(VIDEO_BUFFER_SIZE));
 }
 
 sirius::library::framework::client::native::core::~core(void)
 {
-	stop();
 	{
 		sirius::autolock mutex(&_vcs);
-		if (_video_buffer)
+		if (_processing_buffer)
 		{
-			free(_video_buffer);
-			_video_buffer = nullptr;
+			free(_processing_buffer);
+			_processing_buffer = nullptr;
+		}
+
+		if (_render_buffer)
+		{
+			free(_render_buffer);
+			_render_buffer = nullptr;
+		}
+
+		if (_decoder_buffer)
+		{
+			free(_decoder_buffer);
+			_decoder_buffer = nullptr;
 		}
 	}
 
@@ -38,11 +53,14 @@ int32_t sirius::library::framework::client::native::core::stop(void)
 	return sirius::library::unified::client::stop();
 }
 
-void sirius::library::framework::client::native::core::on_begin_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts)
+void sirius::library::framework::client::native::core::on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height)
 {
 	sirius::autolock mutex(&_vcs);
 
-	if (!_video_buffer)
+	if (!_render_buffer)
+		return;
+
+	if (!_decoder_buffer)
 		return;
 
 	if (_video_decompressor)
@@ -83,57 +101,37 @@ void sirius::library::framework::client::native::core::on_begin_video(int32_t sm
 
 	do
 	{
-		//RECT rect;
-		//::GetWindowRect(_hwnd, &rect);
-		//video_decoder_config->owidth = rect.right - rect.left;
-		//video_decoder_config->oheight = rect.bottom - rect.top;
-		//dctx->owidth = video_decoder_config->iwidth;
-		//dctx->oheight = video_decoder_config->iheight;
-		//dctx->codec = sirius::library::video::codec::ff::decoder::video_submedia_type_t::h264;
-		//dctx->cs = sirius::library::video::codec::ff::decoder::video_submedia_type_t::rgb32;
-		dctx->width = 1280;
-		dctx->height = 720;
-
-		rctx->hwnd = _hwnd;
-		rctx->width = dctx->width;
-		rctx->height = dctx->height;
+		if (block_width != -1 && block_height != -1)
+		{
+			dctx->width = block_width;
+			dctx->height = block_height;
+			rctx->hwnd = _hwnd;
+			rctx->width = width;
+			rctx->height = height;
+		}
+		else
+		{
+			dctx->width = width;
+			dctx->height = height;
+			rctx->hwnd = _hwnd;
+			rctx->width = width;
+			rctx->height = height;
+		}
 
 		int32_t decode_err = decompressor->initialize(dctx);
 		int32_t render_err = renderer->initialize(rctx);
 
-		if (decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success)
-		{
-			sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-			encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
-			encoded.data = (void*)data;
-			encoded.data_size = data_size;
-
-			sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
-			decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
-			decoded.data = _video_buffer;
-			decoded.data_capacity = VIDEO_BUFFER_SIZE;
-
-			decode_err = decompressor->decompress(&encoded, &decoded);
-			if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
-			{
-				if (render_err == sirius::library::video::sink::ddraw::renderer::err_code_t::success)
-				{
-					sirius::library::video::sink::ddraw::renderer::entity_t render;
-					render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
-					render.data = decoded.data;
-					render.data_size = decoded.data_size;
-					renderer->render(&render);
-				}
-			}
-		}
 	} while (0);
 }
 
-void sirius::library::framework::client::native::core::on_recv_video(int32_t smt, const uint8_t * data, size_t data_size, long long dts, long long cts)
+void sirius::library::framework::client::native::core::on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts)
 {
 	sirius::autolock mutex(&_vcs);
 
-	if (!_video_buffer)
+	if (!_render_buffer)
+		return;
+
+	if (!_decoder_buffer)
 		return;
 
 	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
@@ -149,9 +147,9 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t smt
 	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 
 	encoded.data = (uint8_t*)data;
-	encoded.data_size = data_size;
+	encoded.data_size = length;
 
-	decoded.data = _video_buffer;
+	decoded.data = _decoder_buffer;
 	decoded.data_capacity = VIDEO_BUFFER_SIZE;
 
 	int32_t decode_err = decompressor->decompress(&encoded, &decoded);
@@ -162,6 +160,69 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t smt
 		render.data = decoded.data;
 		render.data_size = decoded.data_size;
 		renderer->render(&render);
+	}
+}
+
+void sirius::library::framework::client::native::core::on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts)
+{
+	sirius::autolock mutex(&_vcs);
+
+	if (!_render_buffer)
+		return;
+
+	if (!_decoder_buffer)
+		return;
+
+	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+
+	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
+	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
+
+
+	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
+	encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
+	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
+	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
+
+	SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
+	SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+
+	for (int32_t x = 0; x < count; x++)
+	{
+		encoded.data = data[x];
+		encoded.data_size = length[x];
+
+		decoded.data = _decoder_buffer;
+		decoded.data_capacity = VIDEO_BUFFER_SIZE;
+
+		int32_t decode_err = decompressor->decompress(&encoded, &decoded);
+		if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
+		{
+			int32_t hblock_cnt = rctx->height / dctx->height;
+			int32_t wblock_cnt = rctx->width / dctx->width;
+			int32_t h = index[x] / hblock_cnt;
+			int32_t w = index[x] % wblock_cnt;
+
+			h = h * dctx->height;
+			w = w * dctx->width;
+
+			for (int32_t bh = 0; bh < dctx->height; bh++)
+			{
+				int32_t src_index = bh * (dctx->width << 2);
+				int32_t dst_index = (h + bh) * (rctx->width << 2) + (w << 2);
+				memmove(_render_buffer + dst_index, _decoder_buffer + src_index, (dctx->width << 2));
+			}
+		}
+
+		if (x == (count - 1))
+		{
+			sirius::library::video::sink::ddraw::renderer::entity_t render;
+			render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
+			render.data = _render_buffer;
+			render.data_size = rctx->height * (rctx->width << 2);
+			renderer->render(&render);
+		}
 	}
 }
 

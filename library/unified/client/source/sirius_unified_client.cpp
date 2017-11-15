@@ -10,7 +10,7 @@ sirius::library::unified::client::~client(void)
 {
 	if (_core)
 	{
-		_core->stop();
+		//_core->stop();
 		delete _core;
 		_core = nullptr;
 	}
