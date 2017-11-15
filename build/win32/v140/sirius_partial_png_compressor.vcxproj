@@ -136,8 +136,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;libpng16.lib;Simd.lib;sirius_timestamp_generator.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalDependencies>libpng16.lib;Simd.lib;sirius_timestamp_generator.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

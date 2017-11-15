@@ -135,9 +135,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;d3d11.lib;dxgi.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

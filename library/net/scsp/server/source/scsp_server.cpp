@@ -236,7 +236,7 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 	}
 	else
 	{
-		LOGGER::make_error_log("sirius::library::net::scsp::server", "%s(),%d : client_uuid=%s, Attendant_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
+		LOGGER::make_error_log("sirius::library::net::scsp::server", "%s(),%d : client_uuid=%s, attendant_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
 	}
 	return res_code;
 }

@@ -28,7 +28,7 @@ int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::se
 	if (_video_data == nullptr)
 		_video_data = new uint8_t[MAX_VIDEO_ES_SIZE];
 
-	LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, address=%s, Attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->address, context->portnumber, context->uuid);
+	LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, address=%s, attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->address, context->portnumber, context->uuid);
 
 	_context = context;
 	_context->portnumber = _context->portnumber/* + port_number_base */;
