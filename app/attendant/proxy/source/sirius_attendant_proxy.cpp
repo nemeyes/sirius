@@ -52,25 +52,15 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		wcscpy_s(context->uuid, value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"device_id")))
+	if (param.end() != (iter = param.find(L"client_id")))
 	{
 		value = iter->second;
-		wcscpy_s(context->device_id, value.c_str());
-	}
-	if (param.end() != (iter = param.find(L"control_server_address")))
-	{
-		value = iter->second;
-		wcscpy_s(context->control_server_address, value.c_str());
+		wcscpy_s(context->client_id, value.c_str());
 	}
 	if (param.end() != (iter = param.find(L"control_server_portnumber")))
 	{
 		value = iter->second;
-		context->control_server_portnumber = _wtoi(value.c_str());
-	}
-	if (param.end() != (iter = param.find(L"streamer_address")))
-	{
-		value = iter->second;
-		wcscpy_s(context->streamer_address, value.c_str());
+		context->controller_portnumber = _wtoi(value.c_str());
 	}
 	if (param.end() != (iter = param.find(L"streamer_portnumber")))
 	{
@@ -151,23 +141,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->present = false;
 	}
-	if (param.end() != (iter = param.find(L"enable_repeat")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->repeat = true;
-		else
-			context->repeat = false;
-	}
-
-	if (param.end() != (iter = param.find(L"device_type")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"settop"))
-			context->device_type = sirius::app::attendant::proxy::client_device_type_t::settop;
-		else if (!_wcsicmp(value.c_str(), L"mobile"))
-			context->device_type = sirius::app::attendant::proxy::client_device_type_t::mobile;
-	}
 	if (param.end() != (iter = param.find(L"play_after_connect")))
 	{
 		value = iter->second;
@@ -175,14 +148,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 			context->play_after_connect = true;
 		else
 			context->play_after_connect = false;
-	}
-	if (param.end() != (iter = param.find(L"render_type")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"stretch"))
-			context->render_type = sirius::app::attendant::proxy::render_type_t::stretch;
-		else if (!_wcsicmp(value.c_str(), L"original"))
-			context->render_type = sirius::app::attendant::proxy::render_type_t::original;
 	}
 	if (param.end() != (iter = param.find(L"off-screen-rendering-enabled")))
 	{
@@ -232,9 +197,9 @@ sirius::app::attendant::proxy::~proxy(void)
 int32_t sirius::app::attendant::proxy::initialize(void)
 {
 	sirius::app::attendant::proxy::context_t * context = sirius::app::attendant::proxy::instance().context();
-	int str_size = WideCharToMultiByte(CP_ACP, 0, context->device_id, -1, NULL, 0, NULL, NULL);
+	int str_size = WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, NULL, 0, NULL, NULL);
 	char* str_ptr = new char[str_size];
-	WideCharToMultiByte(CP_ACP, 0, context->device_id, -1, str_ptr, str_size, 0, 0);
+	WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, str_ptr, str_size, 0, 0);
 	sirius::library::log::log4cplus::logger::create("configuration\\log.ini", SLNS, str_ptr);
 	if (str_ptr)
 	{

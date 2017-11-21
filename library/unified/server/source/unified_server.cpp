@@ -28,13 +28,10 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 	_context = context;
 
 	sirius::string uuid = _context->uuid;
-	sirius::string address = _context->address;
-
 	sirius::library::net::scsp::server * streamer = new sirius::library::net::scsp::server();
 	sirius::library::net::scsp::server::context_t * streamer_context = new sirius::library::net::scsp::server::context_t();
 
 	strncpy_s(streamer_context->uuid, uuid.wtoa().c_str(), uuid.size() + 1);
-	strncpy_s(streamer_context->address, address.wtoa().c_str(), address.size() + 1);
 	streamer_context->portnumber = _context->portnumber;
 	streamer_context->video_codec = _context->video_codec;
 	streamer_context->video_width = _context->video_width;

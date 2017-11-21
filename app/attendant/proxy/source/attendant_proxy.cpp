@@ -169,9 +169,7 @@ int32_t sirius::app::attendant::proxy::core::release(void)
 int32_t sirius::app::attendant::proxy::core::connect(void)
 {
 	int32_t status = sirius::app::attendant::proxy::err_code_t::fail;
-	char * ascii_address = nullptr;
-	sirius::stringhelper::convert_wide2multibyte(_context->control_server_address, &ascii_address);
-
+	
 	if ((_context != nullptr) && (_unifiedstate == sirius::app::attendant::proxy::err_code_t::fail))
 	{
 		_unified_context.video_codec = _context->video_codec;
@@ -179,7 +177,6 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		_unified_context.video_height = _context->video_height;
 		_unified_context.video_fps = _context->video_fps;
 		wcsncpy_s(_unified_context.uuid, _context->uuid, sizeof(_unified_context.uuid));
-		wcsncpy_s(_unified_context.address, _context->streamer_address, sizeof(_unified_context.address));
 		_unified_context.portnumber = _context->streamer_portnumber;
 
 		if(_unified_context.video_codec!= sirius::library::unified::server::video_submedia_type_t::unknown)
@@ -194,19 +191,12 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		}
 	}
 
-	if (ascii_address)
-	{
-		bool ret = sirius::library::net::sicp::client::connect(ascii_address, _context->control_server_portnumber, _context->reconnect ? true : false);
-		if (ret)
-			status = sirius::app::attendant::proxy::err_code_t::success;
-		else
-			status = sirius::app::attendant::proxy::err_code_t::fail;
+	bool ret = sirius::library::net::sicp::client::connect("127.0.0.1", _context->controller_portnumber, _context->reconnect ? true : false);
+	if (ret)
+		status = sirius::app::attendant::proxy::err_code_t::success;
+	else
+		status = sirius::app::attendant::proxy::err_code_t::fail;
 
-		if (ascii_address)
-			free(ascii_address);
-	}
-
-	ascii_address = nullptr;
 	return status;
 }
 
@@ -252,21 +242,16 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 
 		_framework_context->gpuindex		= _context->gpuindex;
 		_framework_context->present			= _context->present;
-		_framework_context->repeat			= _context->repeat;
-		_framework_context->device_type		= _context->device_type;
 		_framework_context->hwnd			= _context->hwnd;
 		_framework_context->type			= _context->type;
 
 		_framework_context->user_data		= _context->user_data;
 		wcsncpy_s(_framework_context->uuid, _context->uuid, sizeof(_framework_context->uuid));
-		wcsncpy_s(_framework_context->address, _context->streamer_address, sizeof(_framework_context->address));
-		_framework_context->portnumber		= _context->streamer_portnumber;
-		_framework_context->render_type		= _context->render_type;
+		_framework_context->portnumber		= _context->controller_portnumber;
 
 		if (_unifiedstate == sirius::app::attendant::proxy::err_code_t::fail)
 		{
 			wcsncpy_s(_unified_context.uuid, _context->uuid, sizeof(_unified_context.uuid));
-			wcsncpy_s(_unified_context.address, _context->streamer_address, sizeof(_unified_context.address));
 			_unified_context.portnumber		= _context->streamer_portnumber;
 
 			_unified_context.video_codec	= _context->video_codec;

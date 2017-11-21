@@ -20,7 +20,7 @@ sirius::library::net::scsp::server::~server(void)
 
 int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::server::context_t * context)
 {
-	if (!context || !context->address || strlen(context->address) < 1)
+	if (!context)
 		return sirius::library::net::scsp::server::err_code_t::fail;
 
 	int32_t status = sirius::library::net::scsp::server::err_code_t::success;
@@ -28,7 +28,7 @@ int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::se
 	if (_video_data == nullptr)
 		_video_data = new uint8_t[MAX_VIDEO_ES_SIZE];
 
-	LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, address=%s, attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->address, context->portnumber, context->uuid);
+	LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->portnumber, context->uuid);
 
 	_context = context;
 	_context->portnumber = _context->portnumber/* + port_number_base */;
