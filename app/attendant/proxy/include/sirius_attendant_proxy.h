@@ -54,20 +54,15 @@ namespace sirius
 
 					int32_t gpuindex;
 					int32_t present;
-					int32_t repeat;
-					int32_t device_type;
 					HWND	hwnd;
 					void *	user_data;
 
 					wchar_t uuid[MAX_PATH];
 					wchar_t client_uuid[MAX_PATH];
-					wchar_t device_id[MAX_PATH];
-					wchar_t control_server_address[MAX_PATH];
-					int32_t control_server_portnumber;
-					wchar_t streamer_address[MAX_PATH];
+					wchar_t client_id[MAX_PATH];
+					int32_t controller_portnumber;
 					int32_t streamer_portnumber;
 					int32_t play_after_connect;
-					int32_t render_type;
 
 					_context_t(void)
 						: type(sirius::app::attendant::proxy::attendant_type_t::web)
@@ -82,21 +77,16 @@ namespace sirius
 						, video_block_height(72)
 						, gpuindex(0)
 						, present(false)
-						, repeat(true)
-						, device_type(0)
 						, hwnd(NULL)
 						, user_data(NULL)
-						, control_server_portnumber(15000)
+						, controller_portnumber(5000)
 						, streamer_portnumber(0)
 						, play_after_connect(0)
-						, render_type(0)
 					{
 						memset(url, 0x00, sizeof(url));
 						memset(uuid, 0x00, sizeof(uuid));
-						memset(device_id, 0x00, sizeof(device_id));
+						memset(client_id, 0x00, sizeof(client_id));
 						memset(client_uuid, 0x00, sizeof(uuid));
-						memset(control_server_address, 0x00, sizeof(control_server_address));
-						memset(streamer_address, 0x00, sizeof(streamer_address));
 					}
 
 					~_context_t(void)

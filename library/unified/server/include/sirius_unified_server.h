@@ -25,7 +25,6 @@ namespace sirius
 				typedef struct EXP_UNIFIED_SERVER_CLASS _context_t
 				{
 					wchar_t uuid[64];
-					wchar_t address[MAX_PATH];
 					int32_t portnumber;
 					int32_t video_codec;
 					int32_t video_width;
@@ -43,7 +42,6 @@ namespace sirius
 						, video_block_height(72)
 					{
 						memset(uuid, 0x00, sizeof(uuid));
-						memset(address, 0x00, sizeof(address));
 					}
 				} context_t;
 
