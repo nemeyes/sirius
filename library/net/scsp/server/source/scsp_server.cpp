@@ -53,8 +53,8 @@ int32_t sirius::library::net::scsp::server::core::stop(void)
 	bool status = sirius::library::net::sicp::server::stop();
 	if (status)
 	{
+		LOGGER::make_info_log(SLNSC, "%s, %d, port_number=%d, attendant_number=%d", __FUNCTION__, __LINE__, _context->portnumber, _context->portnumber - port_number_base);
 		status = sirius::base::err_code_t::success;
-		LOGGER::make_info_log(SLNS, "%s, %d publish_end success", __FUNCTION__, __LINE__);
 	}
 	else
 	{
@@ -84,6 +84,8 @@ int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, si
 			{
 				std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t> peer = *dst_uuid_iter;
 				data_request((char*)peer->uuid, CMD_VIDEO_STREAM_DATA, reinterpret_cast<char*>(bytes), nbytes);
+				if (_video_index <= 4)
+					LOGGER::make_info_log(SLNS, "%s(), %d, video data request (video_index:%d)", __FUNCTION__, __LINE__, _video_index);
 			}
 		}
 		else
@@ -230,13 +232,13 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 		}
 		else
 		{
-			LOGGER::make_error_log("sirius::library::net::scsp::server", "%s(),%d : client uuid = %s msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, msg, res_json.c_str());
+			LOGGER::make_error_log(SLNS, "%s(), %d : client uuid = %s msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, msg, res_json.c_str());
 			res_code = -1;
 		}
 	}
 	else
 	{
-		LOGGER::make_error_log("sirius::library::net::scsp::server", "%s(),%d : client_uuid=%s, attendant_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
+		LOGGER::make_error_log(SLNS, "%s(), %d : client_uuid=%s, attendant_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
 	}
 	return res_code;
 }

@@ -26,8 +26,12 @@
 
 static log4cplus::SharedAppenderPtr _append;
 static log4cplus::SharedAppenderPtr _append_error;
+static log4cplus::SharedAppenderPtr _append_attendant;
+static log4cplus::SharedAppenderPtr _append_attendant_error;
 static log4cplus::Logger			_logger_coordinator;
 static log4cplus::Logger			_logger_error;
+static log4cplus::Logger			_logger_attendant;
+static log4cplus::Logger			_logger_attendant_error;
 #endif
 
 sirius::library::log::log4cplus::logger::critical_section::critical_section(void)
@@ -141,6 +145,8 @@ char	sirius::library::log::log4cplus::logger::_device_log_name[MAX_PATH];
 char	sirius::library::log::log4cplus::logger::_module_path[MAX_PATH];
 TCHAR	sirius::library::log::log4cplus::logger::_wc_last_file_name[MAX_PATH];
 TCHAR	sirius::library::log::log4cplus::logger::wc_last_error_file_name[MAX_PATH];
+TCHAR	sirius::library::log::log4cplus::logger::wc_last_attendant_file_name[MAX_PATH];
+TCHAR	sirius::library::log::log4cplus::logger::wc_last_attendant_error_file_name[MAX_PATH];
 SYSTEMTIME					sirius::library::log::log4cplus::logger::_sys_time;
 _WIN32_FILE_ATTRIBUTE_DATA  sirius::library::log::log4cplus::logger::_file_att_data;
 fpn_file_changed			sirius::library::log::log4cplus::logger::_pfn_file_changed;
@@ -173,6 +179,7 @@ bool sirius::library::log::log4cplus::logger::first_log_directory_check(const ch
 	char _directory_name[MAX_PATH] = { 0, };
 	TCHAR file_name[MAX_PATH] = { 0, };
 	char folder_path[MAX_PATH] = { 0, };
+	char file_name_final[MAX_PATH] = { 0, };
 	if (::PathFileExists(L"D:\\Log\\"))
 		sprintf_s(folder_path, "D:\\Log");
 	else
@@ -181,8 +188,16 @@ bool sirius::library::log::log4cplus::logger::first_log_directory_check(const ch
 
 		::GetModuleFileName(_self, file_name, MAX_PATH);
 		::PathRemoveFileSpec(file_name);
-
-		sprintf_s(folder_path, "%ls\\Log", file_name);
+		int file_name_size = WideCharToMultiByte(CP_ACP, 0, file_name, -1, NULL, 0, NULL, NULL);
+		char* str_ptr = new char[file_name_size];
+		WideCharToMultiByte(CP_ACP, 0, file_name, -1, str_ptr, file_name_size, 0, 0);
+		char *ptr = strstr(str_ptr, "apps");
+		int len = strlen(ptr) - 3;
+		if (ptr != NULL)
+		{
+			strncpy_s(file_name_final, sizeof(file_name_final), str_ptr, file_name_size - len);
+			sprintf_s(folder_path, "%s\\Log", file_name_final);
+		}
 	}
 
 	SYSTEMTIME _time;
@@ -229,7 +244,14 @@ bool sirius::library::log::log4cplus::logger::first_log_directory_check(const ch
 						CreateDirectory(szPathBuffer, NULL);
 				}
 			}
+			if (strcmp(log_type, SLNS) == 0 || strcmp(log_type, SLNSC) == 0)
+			{
+				log_configuration(SLNSC);
+				streamer_log_init(_device_id, SLNS);
+			}
+			else
 			log_configuration(log_type);
+
 			return true;
 		}
 	}
@@ -244,17 +266,7 @@ void sirius::library::log::log4cplus::logger::log_directory_check(const char * s
 	char _directory_name[MAX_PATH] = { 0, };
 	TCHAR file_name[MAX_PATH] = { 0, };
 	char folder_path[MAX_PATH] = { 0, };
-	if (::PathFileExists(L"D:\\Log\\"))
-		sprintf_s(folder_path, "D:\\Log");
-	else
-	{
-		_self = ::GetModuleHandleA("sirius_log4cplus_logger.dll");
-
-		::GetModuleFileName(_self, file_name, MAX_PATH);
-		::PathRemoveFileSpec(file_name);
-
-		sprintf_s(folder_path, "%ls\\Log", file_name);
-	}
+	char file_name_final[MAX_PATH] = { 0, };
 
 	SYSTEMTIME _time;
 	GetLocalTime(&_time);
@@ -264,6 +276,25 @@ void sirius::library::log::log4cplus::logger::log_directory_check(const char * s
 
 	if (_time.wYear != _sys_time.wYear || _time.wMonth != _sys_time.wMonth || _time.wDay != _sys_time.wDay )
 	{
+	if (::PathFileExists(L"D:\\Log\\"))
+		sprintf_s(folder_path, "D:\\Log");
+	else
+	{
+		_self = ::GetModuleHandleA("sirius_log4cplus_logger.dll");
+
+		::GetModuleFileName(_self, file_name, MAX_PATH);
+		::PathRemoveFileSpec(file_name);
+			int file_name_size = WideCharToMultiByte(CP_ACP, 0, file_name, -1, NULL, 0, NULL, NULL);
+			char* str_ptr = new char[file_name_size];
+			WideCharToMultiByte(CP_ACP, 0, file_name, -1, str_ptr, file_name_size, 0, 0);
+			char *ptr = strstr(str_ptr, "apps");
+			int len = strlen(ptr) - 3;
+			if (ptr != NULL)
+			{
+				strncpy_s(file_name_final, sizeof(file_name_final), str_ptr, file_name_size - len);
+				sprintf_s(folder_path, "%s\\Log", file_name_final);
+			}
+	}
 		memcpy(&_sys_time, &_time, sizeof(SYSTEMTIME));
 	
 		test_log("in , %d/%d/%d, _sys_time=%d/%d/%d, secion=%s", 
@@ -304,6 +335,12 @@ void sirius::library::log::log4cplus::logger::log_directory_check(const char * s
 				}
 			}
 		}
+		if (strcmp(secion, SLNS) == 0 || strcmp(secion, SLNSC) == 0)
+		{
+			log_configuration(SLNSC);
+			streamer_log_init(_device_id, SLNS);
+		}
+		else
 		log_configuration(secion);
 	}
 #endif
@@ -321,7 +358,6 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 	WCHAR wc_error_buffer[MAX_PATH] = { 0 };
 	WCHAR wstr[MAX_PATH] = { 0 };
 	WCHAR wstr_error[MAX_PATH] = { 0 };
-	char * change_device_id;
 
 	int str_len = strlen((char *)_wc_last_file_name);
 	if (str_len > 0)
@@ -331,18 +367,6 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 	::PathRemoveFileSpec(_wc_last_file_name);
 	::PathAppend(_wc_last_file_name, wc_file_name);
 
-	change_device_id = replace_all(_device_id, ":", "-");
-
-	if (strlen(change_device_id) > 0)
-	{
-		sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\sirius_%s.log", _device_log_name, change_device_id);
-		MultiByteToWideChar(CP_ACP, 0, SLNS, -1, wc_buffer, MAX_PATH);
-		if (strcmp(secion, SLNS) == 0)
-		{
-			_log_type = streamer;
-		}
-	} else 
-	{
 		if (strcmp(secion, SAC) == 0)
 		{
 			sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\emulator.log", _log_name);
@@ -358,16 +382,25 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 		else if (strcmp(secion, SAW) == 0)
 		{
 			sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\watchdog.log", _log_name);
-			MultiByteToWideChar(CP_ACP, 0, SAC, -1, wc_buffer, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, SAW, -1, wc_buffer, MAX_PATH);
 			_log_type = watchdog;
 		}
+	else if (strcmp(secion, SLNSC) == 0)
+	{
+		sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\streamer.log", _log_name);
+		MultiByteToWideChar(CP_ACP, 0, SLNSC, -1, wc_buffer, MAX_PATH);
+		_log_type = streamer_create;
+	}
+	else if (strcmp(secion, SLNS) == 0)
+	{
+
+	}
 		else
 		{
 			sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\sirius_%s.log", _log_name, GEN_VER_VERSION_STRING);
-			MultiByteToWideChar(CP_ACP, 0, SAC, -1, wc_buffer, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, SAA, -1, wc_buffer, MAX_PATH);
 			_log_type = arbitrator;
 		}
-	}
 
 	test_log("%s_%d: log_filename=%s", __FUNCTION__, __LINE__, mb_file_name);
 
@@ -386,20 +419,20 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 	_logger_coordinator.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
 
 
-	if (strlen(change_device_id) > 0)
+	/*if (strlen(change_device_id) > 0)
 	{
 		MultiByteToWideChar(CP_ACP, 0, SLVSC, -1, wc_buffer, MAX_PATH);
 		_logger_coordinator = ::log4cplus::Logger::getInstance(wc_buffer);
 		_logger_coordinator.addAppender(_append);
 		_logger_coordinator.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
 
-		/*
+		
 		MultiByteToWideChar(CP_ACP, 0, CAPAC, -1, wc_buffer, MAX_PATH);
 		_logger_coordinator = ::log4cplus::Logger::getInstance(wc_buffer);
 		_logger_coordinator.addAppender(_append);
 		_logger_coordinator.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
-		*/
-	}
+		
+	}*/
 
 	int str_last_len = strlen((char *)wc_last_error_file_name);
 	if (str_last_len > 0)
@@ -860,13 +893,13 @@ bool sirius::library::log::log4cplus::logger::file_changed()
 	}
 	else if (_log_type == streamer)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNIS"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNS"), _T(""), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, streamer);
 
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLVSC"), _T(""), value, MAX_PATH, file_name);
+	/*	::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLVSC"), _T(""), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
-		log_level_change(_change_log_type, video_source);
+		log_level_change(_change_log_type, video_source);*/
 	}
 	else if (_log_type == client)
 	{
@@ -917,6 +950,73 @@ void sirius::library::log::log4cplus::logger::log_level_change(int log_level, in
 #if !defined(WITH_DISABLE)
 	scopped_lock mutex(&g_log4cplus_critical_section);
 	_logger_coordinator.setLogLevel(log_level);
+#endif
+}
+
+void sirius::library::log::log4cplus::logger::streamer_log_init(const char * device_id, const char * log_type)
+{
+#if !defined(WITH_DISABLE)
+	char * change_device_id;
+	WCHAR wc_attendant_file_name[MAX_PATH] = { 0 };
+	WCHAR wc_attendant_buffer[MAX_PATH] = { 0 };
+	WCHAR wstr_attendant[MAX_PATH] = { 0 };
+	WCHAR wc_error_file_name[MAX_PATH] = { 0 };
+	WCHAR wc_error_buffer[MAX_PATH] = { 0 };
+	WCHAR wstr_error[MAX_PATH] = { 0 };
+	CHAR mb_attendant_file_name[MAX_PATH] = { 0 };
+	CHAR mb_error_file_name[MAX_PATH] = { 0 };
+
+	memcpy(_device_id, device_id, MAX_PATH);
+	if (strlen(_device_id) > 0)
+	{
+		change_device_id = replace_all(_device_id, ":", "-");
+		int str__len = strlen((char *)wc_last_attendant_file_name);
+		if (str__len > 0)
+			_append_attendant->close();
+
+		::GetModuleFileName(NULL, wc_last_attendant_file_name, MAX_PATH);
+		::PathRemoveFileSpec(wc_last_attendant_file_name);
+		::PathAppend(wc_last_attendant_file_name, wc_attendant_file_name);
+
+		sprintf_s(mb_attendant_file_name, sizeof(mb_attendant_file_name), "%s\\sirius_%s.log", _device_log_name, change_device_id);
+		MultiByteToWideChar(CP_ACP, 0, mb_attendant_file_name, -1, wc_attendant_file_name, MAX_PATH);
+
+		_append_attendant = new ::log4cplus::RollingFileAppender(wc_attendant_file_name, 50 * 1024 * 1024, 50);
+		sprintf_s(_pattern, MAX_PATH, "%s", "%-8p %D{%y/%m/%d  %H:%M:%S:%q} - %m%n");
+
+		MultiByteToWideChar(CP_ACP, 0, _pattern, strlen(_pattern), wstr_attendant, MAX_PATH);
+		std::auto_ptr<::log4cplus::Layout> _layout_error(new ::log4cplus::PatternLayout(wstr_attendant));
+		_append_attendant->setName(wc_attendant_file_name);
+		MultiByteToWideChar(CP_ACP, 0, SLNS, -1, wc_attendant_buffer, MAX_PATH);
+		_logger_attendant = ::log4cplus::Logger::getInstance(wc_attendant_buffer);
+		_logger_attendant.addAppender(_append_attendant);
+		_logger_attendant.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
+		_append_attendant->setLayout(_layout_error);
+		_log_type = streamer;
+
+		int str_last_len = strlen((char *)wc_last_attendant_error_file_name);
+		if (str_last_len > 0)
+			_append_attendant_error->close();
+
+		::GetModuleFileName(NULL, wc_last_attendant_error_file_name, MAX_PATH);
+		::PathRemoveFileSpec(wc_last_attendant_error_file_name);
+		::PathAppend(wc_last_attendant_error_file_name, wc_error_file_name);
+
+		sprintf_s(mb_error_file_name, sizeof(mb_error_file_name), "%s\\sirius_error.log", _log_name);
+		MultiByteToWideChar(CP_ACP, 0, mb_error_file_name, -1, wc_error_file_name, MAX_PATH);
+
+		_append_attendant_error = new ::log4cplus::RollingFileAppender(wc_error_file_name, 50 * 1024 * 1024, 50);
+		sprintf_s(_pattern, MAX_PATH, "%s", "%-8p %D{%y/%m/%d  %H:%M:%S:%q} - %m%n");
+
+		MultiByteToWideChar(CP_ACP, 0, _pattern, strlen(_pattern), wstr_error, MAX_PATH);
+		std::auto_ptr<::log4cplus::Layout> _layout_err(new ::log4cplus::PatternLayout(wstr_error));
+		_append_attendant_error->setName(wc_error_file_name);
+		MultiByteToWideChar(CP_ACP, 0, SBE, -1, wc_error_buffer, MAX_PATH);
+		_logger_attendant_error = ::log4cplus::Logger::getInstance(wc_error_buffer);
+		_logger_attendant_error.addAppender(_append_attendant_error);
+		_logger_attendant_error.setLogLevel(::log4cplus::ERROR_LOG_LEVEL);
+		_append_attendant_error->setLayout(_layout_err);
+	}
 #endif
 }
 

@@ -197,15 +197,18 @@ sirius::app::attendant::proxy::~proxy(void)
 int32_t sirius::app::attendant::proxy::initialize(void)
 {
 	sirius::app::attendant::proxy::context_t * context = sirius::app::attendant::proxy::instance().context();
-	int str_size = WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, NULL, 0, NULL, NULL);
+	/*int str_size = WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, NULL, 0, NULL, NULL);
 	char* str_ptr = new char[str_size];
 	WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, str_ptr, str_size, 0, 0);
-	sirius::library::log::log4cplus::logger::create("configuration\\log.ini", SLNS, str_ptr);
+	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNS, str_ptr);
+	
 	if (str_ptr)
 	{
 		delete [] str_ptr;
 		str_ptr = NULL;
-	}
+	}*/
+	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNSC, "");
+
 	char * mb_uuid = nullptr;
 	char * mb_client_uuid = nullptr;
 	sirius::stringhelper::convert_wide2multibyte((wchar_t*)context->uuid, &mb_uuid);

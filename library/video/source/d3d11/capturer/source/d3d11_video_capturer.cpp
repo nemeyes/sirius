@@ -41,7 +41,7 @@ HRESULT STDMETHODCALLTYPE create_device_hook(IDXGIAdapter* pAdapter, D3D_DRIVER_
 		if (!createDXGIFactory1)
 		{
 			hres = E_FAIL;
-			LOGGER::make_error_log(SLVSC, "Could not retrieve CreateDXGIFactory address.");
+			LOGGER::make_error_log(SLNS, "%s(), %d, Could not retrieve CreateDXGIFactory address.", __FUNCTION__, __LINE__);
 		}
 
 		IDXGIFactory1 *factory;

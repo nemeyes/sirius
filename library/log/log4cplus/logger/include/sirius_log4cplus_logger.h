@@ -31,6 +31,7 @@ typedef enum _logger_type_t
 	client,
 	controller,
 	streamer,
+	streamer_create,
 	video_source,
 	watchdog,
 	logger_type_end
@@ -109,6 +110,7 @@ namespace sirius
 					static bool file_monitor_start();
 					static bool file_monitor_stop();
 					static void log_level_change(int log_level, int log_type);
+					static void streamer_log_init(const char * device_id, const char * log_type);
 					static const char * get_device_id() { return _device_id; };
 				private:
 					logger(const char * configuration_path, const char * log_type, char * device_id);
@@ -131,6 +133,8 @@ namespace sirius
 					static char _module_path[MAX_PATH];
 					static TCHAR _wc_last_file_name[MAX_PATH];
 					static TCHAR wc_last_error_file_name[MAX_PATH];
+					static TCHAR wc_last_attendant_file_name[MAX_PATH];
+					static TCHAR wc_last_attendant_error_file_name[MAX_PATH];
 					static SYSTEMTIME _sys_time;
 					static int	_section_log_update[logger_type_end];
 					static _WIN32_FILE_ATTRIBUTE_DATA _file_att_data;
@@ -159,7 +163,7 @@ static sirius::library::log::log4cplus::logger::critical_section g_log4cplus_cri
 
 #define SLNC	"sirius.library.net.controller"
 #define SLNS	"sirius.library.net.streamer"
-
+#define SLNSC		"sirius.library.net.streamer.create"
 #define SLVSC	"sirius.library.video.source.capturer"
 
 #define log_create(theProperties,default_section) \
@@ -167,6 +171,7 @@ sirius::library::log::log4cplus::logger::create(#theProperties) ; \
 sirius::library::log::log4cplus::logger::set_section((const char *) #default_section) ; \
 
 #define log_destroy() sirius::library::log::log4cplus::logger::destroy() 
+#define log_streamer_init() sirius::library::log::log4cplus::logger::streamer_log_init()
 
 #define log_fatal(_fmt_,...) sirius::library::log::log4cplus::logger::make_fatal_log(sirius::library::log::log4cplus::logger::get_section(), _fmt_,__VA_ARGS__)
 #define log_error(_fmt_,...) sirius::library::log::log4cplus::logger::make_error_log(sirius::library::log::log4cplus::logger::get_section(), _fmt_,__VA_ARGS__)
