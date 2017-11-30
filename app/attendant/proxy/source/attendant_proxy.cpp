@@ -289,8 +289,6 @@ int32_t sirius::app::attendant::proxy::core::stop(void)
 	if (_mediastate == sirius::app::attendant::proxy::mediastate_t::paused)
 		return sirius::app::attendant::proxy::err_code_t::success;
 
-	LOGGER::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
-
 	int32_t code = sirius::app::attendant::proxy::err_code_t::fail;
 	if (!_framework)
 	{

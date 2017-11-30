@@ -226,11 +226,11 @@ void sirius::library::video::source::d3d11::capturer::proxy::fix_sample_count(ID
 		{
 			if (FAILED(hr = ((ID3D11Device*)_device)->CreateTexture2D(&description, NULL, &_copy_texture)))
 			{
-				LOGGER::make_error_log(SLVSC, "%s()_%d : HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
+				LOGGER::make_error_log(SLNS, "%s(), %d, HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
 				if (hr == DXGI_ERROR_DEVICE_REMOVED)
 				{
 					hr = ((ID3D11Device*)_device)->GetDeviceRemovedReason();
-					LOGGER::make_error_log(SLVSC, "%s()_%d : HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
+					LOGGER::make_error_log(SLNS, "%s(), %d, HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
 				}
 			}
 		}
@@ -246,7 +246,7 @@ void sirius::library::video::source::d3d11::capturer::proxy::fix_sample_count(ID
 			}
 			else
 			{
-				LOGGER::make_error_log(SLVSC, "%s()_%d : HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
+				LOGGER::make_error_log(SLNS, "%s(), %d, HRESULT(0x%x", __FUNCTION__, __LINE__, hr);
 			}
 		}
 		else
@@ -259,7 +259,7 @@ void sirius::library::video::source::d3d11::capturer::proxy::fix_sample_count(ID
 	}
 	else
 	{
-		LOGGER::make_error_log(SLVSC, "%s()_%d : sirius_CRITICAL createTexture Failed", __FUNCTION__, __LINE__);
+		LOGGER::make_error_log(SLNS, "%s(), %d, sirius_CRITICAL createTexture Failed", __FUNCTION__, __LINE__);
 	}
 
 }

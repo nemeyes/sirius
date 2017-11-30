@@ -275,7 +275,7 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 
 	if (_precv_buffer == nullptr)
 	{
-		LOGGER::make_error_log(SAC, "%s, %d, _precv_buffer_nullptr_error recv_packet=%d", __FUNCTION__, __LINE__, this->fd());
+		LOGGER::make_error_log(SAA, "%s, %d, _precv_buffer_nullptr_error recv_packet=%d", __FUNCTION__, __LINE__, this->fd());
 		LOGGER::make_error_log(SLNS, "%s, %d, _precv_buffer_nullptr_error recv_packet=%d", __FUNCTION__, __LINE__, this->fd());
 		//printf("recv_packet %d", this->fd());
 		return -1;
@@ -321,16 +321,16 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 
 		if (_processor && !_processor->check_valid_command_id(header.command))
 		{
-			//snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u], header.PayloadType[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version, header.type);
-			LOGGER::make_error_log(SAC, "%s, %d, invalid_packet_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
+			snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version);
+			LOGGER::make_error_log(SAA, "%s, %d, invalid_packet_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
 			LOGGER::make_error_log(SLNS, "%s, %d, invalid_packet_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
 			return -1;  // invalid packet
 		}
 
 		if (header.version > sirius::library::net::sicp::session::protocol_version)    // 프로토콜 버전 체크
 		{
-			//snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u], header.PayloadType[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version, header.type);
-			LOGGER::make_error_log(SAC, "%s, %d, protocol_version_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
+			snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version);
+			LOGGER::make_error_log(SAA, "%s, %d, protocol_version_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
 			LOGGER::make_error_log(SLNS, "%s, %d, protocol_version_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
 			return -2;
 		}

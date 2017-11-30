@@ -65,9 +65,9 @@ namespace sirius
 			static const int32_t unsupported_media_file = 1407;
 			static const int32_t invalid_media_file = 1408;
 			static const int32_t corrupted_media_file = 1409;
-			static const int32_t not_found_amadeus_ini = 1501;
+			static const int32_t not_found_sirius_ini = 1501;
 			static const int32_t not_found_applist_json = 1502;
-			static const int32_t not_found_amadeus_ip = 1503;
+			static const int32_t not_found_sirius_ip = 1503;
 			static const int32_t port_is_already_use = 1504;
 
 

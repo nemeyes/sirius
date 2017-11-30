@@ -28,7 +28,7 @@ int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::se
 	if (_video_data == nullptr)
 		_video_data = new uint8_t[MAX_VIDEO_ES_SIZE];
 
-	LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->portnumber, context->uuid);
+	//LOGGER::make_trace_log(SLNS, "%s(), %d : vsmt=%d, attendant_number=%d, uuid=%s", __FUNCTION__, __LINE__, context->video_codec, context->portnumber, context->uuid);
 
 	_context = context;
 	_context->portnumber = _context->portnumber/* + port_number_base */;
@@ -42,7 +42,7 @@ int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::se
 
 	_core = new sirius::library::net::scsp::server::core(SERVER_UUID, this);
 	_core->start(context);
-	LOGGER::make_info_log(SLNS, "%s, %d port_number=%d, device_id=%s, attendant_number=%d", __FUNCTION__, __LINE__, _context->portnumber, LOGGER::get_device_id(), _context->portnumber - port_number_base);
+	LOGGER::make_info_log(SLNSC, "%s(), %d, port_number=%d, attendant_number=%d", __FUNCTION__, __LINE__, _context->portnumber, _context->portnumber - port_number_base);
 
 	return sirius::library::net::scsp::server::err_code_t::success;
 }
@@ -76,7 +76,7 @@ int32_t sirius::library::net::scsp::server::post_video(uint8_t * bytes, size_t n
 	int32_t data_pos = 0;
 
 	if (MAX_VIDEO_ES_SIZE < nbytes)
-		LOGGER::make_error_log(SLNS, "%s(), %d [MINOR] Streaming error(error_code:%d) MAX_VIDEO_ES_SIZE_OVER MAX=%d, size=%d)", __FUNCTION__, __LINE__, sirius::library::net::scsp::server::err_code_t::max_es_size_over, MAX_VIDEO_ES_SIZE, nbytes);
+		LOGGER::make_error_log(SLNS, "%s(), %d, [MINOR] streaming video size error(error_code:%d) max_video_es_size_over, max=%d, size=%d)", __FUNCTION__, __LINE__, sirius::library::net::scsp::server::err_code_t::max_es_size_over, MAX_VIDEO_ES_SIZE, nbytes);
 
 	if ((_video_data != nullptr) && (_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
 	{
