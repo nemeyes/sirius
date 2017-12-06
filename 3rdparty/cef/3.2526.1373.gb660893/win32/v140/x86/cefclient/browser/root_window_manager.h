@@ -31,6 +31,7 @@ class RootWindowManager : public RootWindow::Delegate {
   scoped_refptr<RootWindow> CreateRootWindow(
       bool with_controls,
       bool with_osr,
+	  bool present,
       const CefRect& bounds,
       const std::string& url);
 

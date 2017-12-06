@@ -177,7 +177,7 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		_unified_context.video_height = _context->video_height;
 		_unified_context.video_fps = _context->video_fps;
 		wcsncpy_s(_unified_context.uuid, _context->uuid, sizeof(_unified_context.uuid));
-		_unified_context.portnumber = _context->streamer_portnumber;
+		_unified_context.portnumber = STREAMER_PORTNUMBER + _context->id;
 
 		if(_unified_context.video_codec!= sirius::library::unified::server::video_submedia_type_t::unknown)
 		{
@@ -252,7 +252,7 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		if (_unifiedstate == sirius::app::attendant::proxy::err_code_t::fail)
 		{
 			wcsncpy_s(_unified_context.uuid, _context->uuid, sizeof(_unified_context.uuid));
-			_unified_context.portnumber		= _context->streamer_portnumber;
+			_unified_context.portnumber		= STREAMER_PORTNUMBER + _context->id;
 
 			_unified_context.video_codec	= _context->video_codec;
 			_unified_context.video_width	= _context->video_width;
@@ -275,7 +275,7 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		code = _framework->open(_framework_context);
 		if (code != sirius::app::attendant::proxy::err_code_t::success)
 		{
-			LOGGER::make_error_log(SAA, "%s(),%d, unsupported_media_file url : %S, slot_uuid : %S", __FUNCTION__, __LINE__, _framework_context->url[0], _framework_context->uuid);
+			LOGGER::make_error_log(SAA, "%s(),%d, unsupported_media_file url : %S, attendant_uuid : %S", __FUNCTION__, __LINE__, _framework_context->url, _framework_context->uuid);
 			return code;
 		}
 
@@ -621,7 +621,7 @@ void sirius::app::attendant::proxy::core::create_session_callback(void)
 	Json::Value noti_packet;
 	Json::StyledWriter writer;
 	size_t noti_size = 0;
-	noti_packet["attendant_number"] = _context->streamer_portnumber;
+	noti_packet["attendant_number"] = _context->id;
 	noti_packet["attendant_uuid"] = _context->uuid;
 	std::string noti_string = writer.write(noti_packet);
 
@@ -632,7 +632,7 @@ void sirius::app::attendant::proxy::core::create_session_callback(void)
 		noti_msg = static_cast<char*>(malloc(noti_size + 1));
 		memcpy((void*)(noti_msg), noti_string.c_str(), noti_size + 1);
 		data_request(SERVER_UUID, CMD_START_ATTENDANT_REQ, noti_msg, noti_size);
-		LOGGER::make_info_log(SLNS, "[Slot Connect Request] - %s(), %d, Command:%d, slotNum %d, slotUuid:%S", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_REQ, _context->streamer_portnumber, _context->uuid);
+		LOGGER::make_info_log(SLNS, "[attendant connect request] - %s(), %d, command:%d, attendant_id %d, attendant_uuid:%S", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_REQ, _context->id, _context->uuid);
 		free(noti_msg);
 		noti_msg = nullptr;
 	}

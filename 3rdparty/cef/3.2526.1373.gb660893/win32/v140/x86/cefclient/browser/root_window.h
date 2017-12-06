@@ -66,6 +66,7 @@ class RootWindow :
   virtual void Init(RootWindow::Delegate* delegate,
                     bool with_controls,
                     bool with_osr,
+					bool present,
                     const CefRect& bounds,
                     const CefBrowserSettings& settings,
                     const std::string& url) = 0;

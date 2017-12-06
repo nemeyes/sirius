@@ -44,14 +44,11 @@ namespace sirius
 						int32_t video_block_height;
 						int32_t gpuindex;		//gpu
 						int32_t present;	//gpu
-						int32_t repeat;	//gpu
-						int32_t device_type;
 						wchar_t uuid[MAX_PATH];
 						wchar_t address[MAX_PATH];
 						int32_t portnumber;
 						int32_t type;
 						HWND	hwnd;
-						int32_t render_type;
 						void *	user_data;
 						_context_t(void)
 							: video_codec(sirius::library::framework::server::base::video_submedia_type_t::unknown)
@@ -64,12 +61,9 @@ namespace sirius
 							, video_block_height(0)
 							, gpuindex(sirius::library::framework::server::base::client_device_type_t::settop)
 							, present(false)
-							, repeat(false)
-							, device_type(0)
 							, portnumber(15000)
 							, hwnd(NULL)
 							, type(sirius::library::framework::server::base::attendant_type_t::web) //web
-							, render_type(0)
 							, user_data(NULL)
 						{
 							memset(url, 0x00, sizeof(url));

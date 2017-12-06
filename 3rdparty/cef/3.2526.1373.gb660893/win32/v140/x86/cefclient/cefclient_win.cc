@@ -131,9 +131,10 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 
   // Create the first window.
   context->GetRootWindowManager()->CreateRootWindow(
-      true,  // Show controls.
+      false,  // Show controls.
       settings.windowless_rendering_enabled ? true : false,
-      CefRect(0, 0, 1280, 720),       // Use default system size.
+	  present,
+      CefRect(0, 0, 1282, 722),       // Use default system size.
       std::string());   // Use default URL.
 
   // Run the message loop. This will block until Quit() is called by the

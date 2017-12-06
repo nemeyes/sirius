@@ -119,6 +119,7 @@ void RunNewWindowTest(CefRefPtr<CefBrowser> browser) {
   MainContext::Get()->GetRootWindowManager()->CreateRootWindow(
       true,             // Show controls.
       browser->GetHost()->IsWindowRenderingDisabled(),
+	  true,
       CefRect(),        // Use default system size.
       std::string());   // Use default URL.
 }

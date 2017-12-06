@@ -44,22 +44,6 @@ public:
 	void on_play_streaming(void);
 	void on_stop_streaming(void);
 
-	void on_pre_playback_end(void);
-	void on_playback_end(void);
-	void on_post_playback_end(void);
-
-	void on_pre_playback_totaltime(int32_t tottime);
-	void on_playback_totaltime(int32_t tottime);
-	void on_post_playback_totaltime(int32_t tottime);
-
-	void on_pre_playback_currenttime(int32_t curtime);
-	void on_playback_currenttime(int32_t curtime);
-	void on_post_playback_currenttime(int32_t curtime);
-
-	void on_pre_playback_currentrate(float currate);
-	void on_playback_currentrate(float currate);
-	void on_post_playback_currentrate(float currate);
-
 	void on_pre_xml(const char * msg, size_t length);
 	void on_xml(const char * msg, size_t length);
 	void on_post_xml(const char * msg, size_t length);

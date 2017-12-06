@@ -132,6 +132,7 @@ RootWindowWin::~RootWindowWin() {
 void RootWindowWin::Init(RootWindow::Delegate* delegate,
                          bool with_controls,
                          bool with_osr,
+						 bool present,
                          const CefRect& bounds,
                          const CefBrowserSettings& settings,
                          const std::string& url) {
@@ -141,6 +142,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
   delegate_ = delegate;
   with_controls_ = with_controls;
   with_osr_ = with_osr;
+  present_ = present;
 
   start_rect_.left = bounds.x;
   start_rect_.top = bounds.y;
@@ -213,8 +215,11 @@ void RootWindowWin::Show(ShowMode mode) {
       break;
   }
 
-  ShowWindow(hwnd_, nCmdShow);
-  UpdateWindow(hwnd_);
+  if (present_)
+  {
+	  ShowWindow(hwnd_, nCmdShow);
+	  UpdateWindow(hwnd_);
+  }
 }
 
 void RootWindowWin::Hide() {
@@ -306,7 +311,7 @@ void RootWindowWin::CreateRootWindow(const CefBrowserSettings& settings) {
   find_message_id_ = RegisterWindowMessage(FINDMSGSTRING);
   CHECK(find_message_id_);
 
-  const DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
+  const DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
   int x, y, width, height;
   if (::IsRectEmpty(&start_rect_)) {

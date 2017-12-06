@@ -118,47 +118,12 @@ void client_controller::on_pre_create_session(void)
 void client_controller::on_create_session(void)
 {
 	HWND hwnd = _front->GetSafeHwnd();
-	::PostMessage(hwnd, WM_CREATING_SLOT_BEGIN_MESSAGE, 0, 0);
+	::PostMessage(hwnd, WM_CREATING_ATTENDANT_BEGIN_MESSAGE, 0, 0);
 
-	CString appId = L"";
-	CString deviceId = L"";
-	CString deviceType = L"";
-	CString envirType = L"";
-	CString modelType = L"";
-	int32_t slot_resolution = 0;
-	int32_t width = 0;
-	int32_t height = 0;
+	CString device_id = L"";
 
-	_front->_ctrl_client_app_id.GetWindowTextW(appId);
-	_front->_ctrl_client_device_id.GetWindowTextW(deviceId);
-	_front->_ctrl_client_device_type.GetWindowTextW(deviceType);
-	_front->_ctrl_client_environment_type.GetWindowTextW(envirType);
-	_front->_ctrl_client_model_name.GetWindowTextW(modelType);
-	slot_resolution = _front->_ctrl_attendant_resolution.GetCurSel();
-
-
-	if (slot_resolution == 0)	//720p
-	{
-		width = 1280;
-		height = 720;
-	}
-	else if (slot_resolution == 1)	//1080p
-	{
-		width = 1920;
-		height = 1080;
-	}
-	else if (slot_resolution == 2)	//4k
-	{
-		width = 3840;
-		height = 2160;
-	}
-	else if (slot_resolution == 3)	//8k
-	{
-		width = 7680;
-		height = 4320;
-	}
-
-	connect_attendant((LPWSTR)(LPCWSTR)appId, (LPWSTR)(LPCWSTR)deviceId, (LPWSTR)(LPCWSTR)deviceType, (LPWSTR)(LPCWSTR)envirType, (LPWSTR)(LPCWSTR)modelType, width, height, -1);
+	_front->_ctrl_device_id.GetWindowTextW(device_id);
+	//connect_attendant((LPWSTR)(LPCWSTR)appId, (LPWSTR)(LPCWSTR)deviceId, (LPWSTR)(LPCWSTR)deviceType, (LPWSTR)(LPCWSTR)envirType, (LPWSTR)(LPCWSTR)modelType, width, height, -1);
 }
 
 void client_controller::on_post_create_session(void)
@@ -203,7 +168,7 @@ void client_controller::on_pre_connect_attendant(int32_t code, wchar_t * msg)
 	HWND hwnd = _front->GetSafeHwnd();
 	if (code == 0)
 	{
-		::PostMessage(hwnd, WM_CREATING_SLOT_END_MESSAGE, 0, 0);
+		::PostMessage(hwnd, WM_CREATING_ATTENDANT_END_MESSAGE, 0, 0);
 	}
 	else
 	{
@@ -266,75 +231,6 @@ void client_controller::on_stop_streaming(void)
 {
 	if (_framework)
 		_framework->stop();
-}
-
-void client_controller::on_pre_playback_end(void)
-{
-
-}
-
-void client_controller::on_playback_end(void)
-{
-	_front->_current_time = 0;
-	_front->_current_rate = 1;
-	_front->UpdateTimeInfo();
-}
-
-void client_controller::on_post_playback_end(void)
-{
-
-}
-
-void client_controller::on_pre_playback_totaltime(int32_t tottime)
-{
-
-}
-
-void client_controller::on_playback_totaltime(int32_t tottime)
-{
-	_front->_total_time = tottime;
-	_front->UpdateTimeInfo();
-}
-
-void client_controller::on_post_playback_totaltime(int32_t tottime)
-{
-
-}
-
-void client_controller::on_pre_playback_currenttime(int32_t curtime)
-{
-
-}
-
-void client_controller::on_playback_currenttime(int32_t curtime)
-{
-	_front->_current_time = curtime;
-	_front->UpdateTimeInfo();
-}
-
-void client_controller::on_post_playback_currenttime(int32_t curtime)
-{
-
-}
-
-void client_controller::on_pre_playback_currentrate(float currate)
-{
-
-}
-
-void client_controller::on_playback_currentrate(float currate)
-{
-	_front->_current_rate = currate;
-	CWnd * wnd = (CWnd*)_front->GetDlgItem(IDC_STATIC_RATE);
-	CString str;
-	str.Format(L"%.1fX", _front->_current_rate);
-	wnd->SetWindowText(str);
-	wnd->Invalidate();
-}
-
-void client_controller::on_post_playback_currentrate(float currate)
-{
-
 }
 
 void client_controller::on_pre_xml(const char * msg, size_t length)
