@@ -30,23 +30,11 @@ namespace sirius
 				int32_t		set_using_mouse(BOOL value);
 				int32_t		set_key_stroke(int32_t interval);
 
-				//IPC Client
 				int32_t		connect(wchar_t * address, int32_t portnumber, BOOL reconnection);
 				int32_t		disconnect(void);
 
-				//CreateSlot
 				int32_t		connect_attendant(wchar_t * appid, wchar_t * deviceid, wchar_t * devicetype, wchar_t * envtype, wchar_t * modeltype, int32_t width, int32_t height, int32_t gpuindex);
 				int32_t		disconnect_attendant(void);
-
-				//360 player seek
-				int32_t		seek_to(int32_t second);
-				int32_t		key_up_play_toggle(void);
-				int32_t		key_up_backward(void);
-				int32_t		key_up_forward(void);
-				int32_t		key_up_reverse(void);
-
-				int32_t		key_down_seek(int32_t diff);
-				int32_t		key_up_seek(void);
 
 				int32_t		key_up(int32_t value);
 				int32_t		key_down(int32_t value);
@@ -69,10 +57,6 @@ namespace sirius
 				void	disconnect_attendant_callback(const char * dst, const char * src, const char * msg, size_t length);
 				void	attendant_info_callback(const char * dst, const char * src, const char * msg, size_t length);
 
-				void	playback_end_callback(const char * dst, const char * src, const char * msg, size_t length);
-				void	playback_totaltime_callback(const char * dst, const char * src, const char * msg, size_t length);
-				void	playback_currenttime_callback(const char * dst, const char * src, const char * msg, size_t length);
-				void	playback_currentrate_callback(const char * dst, const char * src, const char * msg, size_t length);
 				void	xml_callback(const char * dst, const char * src, const char * msg, size_t length);
 				void	error_callback(const char * dst, const char * src, const char * msg, size_t length);
 
@@ -95,10 +79,6 @@ namespace sirius
 				char		_szattendant_uuid[64];
 				wchar_t		_szwattendant_uuid[64];
 				int32_t		_streamer_portnumber;
-
-
-				virtual void keydown_seek_callback(int32_t diff);
-				virtual void keyup_seek_callback(void);
 
 				//Keyboard callback
 				virtual void keyup_callback(int32_t value);

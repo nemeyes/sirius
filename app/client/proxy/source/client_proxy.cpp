@@ -26,10 +26,6 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINST
 	add_command(new sirius::app::client::connect_attendant_res_cmd(this));
 	add_command(new sirius::app::client::disconnect_attendant_res_cmd(this));
 	add_command(new sirius::app::client::attendant_info_ind_cmd(this));
-	add_command(new sirius::app::client::playback_end_ind_cmd(this));
-	add_command(new sirius::app::client::playback_totaltime_ind_cmd(this));
-	add_command(new sirius::app::client::playback_currenttime_ind_cmd(this));
-	add_command(new sirius::app::client::playback_currentrate_ind_cmd(this));
 	add_command(new sirius::app::client::xml_ind_cmd(this));
 	add_command(new sirius::app::client::error_ind_cmd(this));
 
@@ -111,13 +107,13 @@ const int32_t sirius::app::client::proxy::core::streamer_portnumber(void)
 
 int32_t sirius::app::client::proxy::core::set_using_mouse(BOOL value)
 {
-	set_using_mouse(value ? true : false);
+	sirius::library::user::event::dinput::receiver::set_using_mouse(value ? true : false);
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
 int32_t sirius::app::client::proxy::core::set_key_stroke(int32_t interval)
 {
-	set_keystroke(interval);
+	sirius::library::user::event::dinput::receiver::set_keystroke(interval);
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
@@ -233,71 +229,6 @@ int32_t sirius::app::client::proxy::core::disconnect_attendant(void)
 		data_request(SERVER_UUID, CMD_DISCONNECT_ATTENDANT_REQ, (char*)req_msg.c_str(), req_msg.size() + 1);
 	_recv_attendant_info = FALSE;
 
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::seek_to(int32_t second)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_SEEK_POS_T noti;
-		memset(&noti, 0x00, sizeof(CMD_SEEK_POS_T));
-		noti.second = htonl(second);
-		data_request(_szattendant_uuid, CMD_SEEK_POS, (char*)&noti, sizeof(CMD_SEEK_POS_T));
-	}
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::key_up_play_toggle(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-		data_request(_szattendant_uuid, CMD_PLAY_TOGGLE, NULL, 0);
-
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::key_up_backward(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-		data_request(_szattendant_uuid, CMD_BACKWARD, NULL, 0);
-
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::key_up_forward(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-		data_request(_szattendant_uuid, CMD_FORWARD, NULL, 0);
-
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::key_up_reverse(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-		data_request(_szattendant_uuid, CMD_REVERSE, NULL, 0);
-
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::key_down_seek(int32_t diff)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_SEEK_KEY_DOWN_T noti;
-		memset(&noti, 0x00, sizeof(CMD_SEEK_KEY_DOWN_T));
-		noti.diff = htonl(diff);
-		data_request(_szattendant_uuid, CMD_SEEK_KEY_DOWN, (char*)&noti, sizeof(CMD_SEEK_KEY_DOWN_T));
-	}
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t	sirius::app::client::proxy::core::key_up_seek(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		data_request(_szattendant_uuid, CMD_SEEK_KEY_UP, NULL, 0);
-	}
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
@@ -539,11 +470,11 @@ void sirius::app::client::proxy::core::attendant_info_callback(const char * dst,
 		}
 	}
 
-	std::string slot_uuid = packet.get("attendant_uuid", -1).asString();
-	if (slot_uuid.size()>0)
+	std::string attndnt_uuid = packet.get("attendant_uuid", -1).asString();
+	if (attndnt_uuid.size()>0)
 	{
 		memset(_szattendant_uuid, 0x00, sizeof(_szattendant_uuid));
-		strncpy_s(_szattendant_uuid, sizeof(_szattendant_uuid), slot_uuid.c_str(), slot_uuid.size() + 1);
+		strncpy_s(_szattendant_uuid, sizeof(_szattendant_uuid), attndnt_uuid.c_str(), attndnt_uuid.size() + 1);
 
 		wchar_t * attendant_uuid = nullptr;
 		sirius::stringhelper::convert_multibyte2wide(_szattendant_uuid, &attendant_uuid);
@@ -564,7 +495,7 @@ void sirius::app::client::proxy::core::attendant_info_callback(const char * dst,
 
 	wchar_t * attendant_uuid = nullptr;
 	wchar_t * address = nullptr;
-	sirius::stringhelper::convert_multibyte2wide((char*)slot_uuid.c_str(), &attendant_uuid);
+	sirius::stringhelper::convert_multibyte2wide((char*)attndnt_uuid.c_str(), &attendant_uuid);
 	sirius::stringhelper::convert_multibyte2wide((char*)streamer_addr.c_str(), &address);
 
 	if (_front)
@@ -589,93 +520,6 @@ void sirius::app::client::proxy::core::attendant_info_callback(const char * dst,
 
 	if (address)
 		::SysFreeString(address);
-}
-
-void sirius::app::client::proxy::core::playback_end_callback(const char * dst, const char * src, const char * msg, size_t length)
-{
-	if (_front)
-		_front->on_pre_playback_end();
-
-	if (_front)
-		_front->on_playback_end();
-
-	if (_front)
-		_front->on_post_playback_end();
-}
-
-void sirius::app::client::proxy::core::playback_totaltime_callback(const char * dst, const char * src, const char * msg, size_t length)
-{
-	char* total_time_msg = (char*)malloc(length + 1);
-	strncpy_s(total_time_msg, length + 1, msg, length);
-
-	int32_t total_time = 0;
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(total_time_msg, root);
-	if (root["value"].isInt())
-		total_time = root.get("value", 0).asInt();
-
-	free(total_time_msg);
-	total_time_msg = nullptr;
-
-	if (_front)
-		_front->on_pre_playback_totaltime(total_time);
-
-	if (_front)
-		_front->on_playback_totaltime(total_time);
-
-	if (_front)
-		_front->on_post_playback_totaltime(total_time);
-}
-
-void sirius::app::client::proxy::core::playback_currenttime_callback(const char * dst, const char * src, const char * msg, size_t length)
-{
-	char* current_time_msg = (char*)malloc(length + 1);
-	strncpy_s(current_time_msg, length + 1, msg, length);
-
-	int32_t current_time = 0;
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(current_time_msg, root);
-	if (root["value"].isInt())
-		current_time = root.get("value", 0).asInt();
-
-	free(current_time_msg);
-	current_time_msg = nullptr;
-
-	if (_front)
-		_front->on_pre_playback_currenttime(current_time);
-
-	if (_front)
-		_front->on_playback_currenttime(current_time);
-
-	if (_front)
-		_front->on_post_playback_currenttime(current_time);
-}
-
-void sirius::app::client::proxy::core::playback_currentrate_callback(const char * dst, const char * src, const char * msg, size_t length)
-{
-	char* current_rate_msg = (char*)malloc(length + 1);
-	strncpy_s(current_rate_msg, length + 1, msg, length);
-
-	float current_rate = 0.f;
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(current_rate_msg, root);
-	if (root["value"].isInt())
-		current_rate = root.get("value", 0).asFloat();
-
-	free(current_rate_msg);
-	current_rate_msg = nullptr;
-
-	if (_front)
-		_front->on_pre_playback_currentrate(current_rate);
-
-	if (_front)
-		_front->on_playback_currentrate(current_rate);
-
-	if (_front)
-		_front->on_post_playback_currentrate(current_rate);
 }
 
 void sirius::app::client::proxy::core::xml_callback(const char * dst, const char * src, const char * msg, size_t length)
@@ -739,23 +583,6 @@ void sirius::app::client::proxy::core::keydown_callback(int32_t value)
 	}
 }
 
-void sirius::app::client::proxy::core::keydown_seek_callback(int32_t diff)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_SEEK_KEY_DOWN_T noti;
-		memset(&noti, 0x00, sizeof(CMD_SEEK_KEY_DOWN_T));
-		noti.diff = htonl(diff);
-		data_request(_szattendant_uuid, CMD_SEEK_KEY_DOWN, (char*)&noti, sizeof(CMD_SEEK_KEY_DOWN_T));
-	}
-}
-
-void sirius::app::client::proxy::core::keyup_seek_callback(void)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-		data_request(_szattendant_uuid, CMD_SEEK_KEY_UP, NULL, 0);
-}
-
 void sirius::app::client::proxy::core::mouse_move_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
@@ -811,31 +638,6 @@ void sirius::app::client::proxy::core::mouse_right_button_up_callback(int32_t po
 		data_request(_szattendant_uuid, CMD_MOUSE_RBU_IND, (char*)&noti, sizeof(CMD_MOUSE_RBU_IND_T));
 	}
 }
-
-/*
-void sirius::app::client::proxy::core::mouse_left_button_down_move_callback(int32_t pos_x, int32_t pos_y)
-{
-if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-{
-CMD_MOUSE_LBD_MOVE_IND_T noti;
-noti.x_translation = htonl(pos_x);
-noti.x_translation = htonl(pos_y);
-data_request(_szattendant_uuid, CMD_MOUSE_LBD_MOVE_IND, (char*)&noti, sizeof(CMD_MOUSE_LBD_MOVE_IND_T));
-
-}
-}
-
-void sirius::app::client::proxy::core::mouse_right_button_down_move_callback(int32_t pos_x, int32_t pos_y)
-{
-if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-{
-CMD_MOUSE_RBD_MOVE_IND_T noti;
-noti.x_translation = htonl(pos_x);
-noti.y_translation = htonl(pos_y);
-data_request(_szattendant_uuid, CMD_MOUSE_RBD_MOVE_IND, (char*)&noti, sizeof(CMD_MOUSE_RBD_MOVE_IND_T));
-}
-}
-*/
 
 void sirius::app::client::proxy::core::mouse_left_button_double_callback(int32_t pos_x, int32_t pos_y)
 {

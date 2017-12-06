@@ -128,6 +128,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\misc\notification\internal\notifier\include;..\..\..\library\misc\injector\include;..\..\..\library\video\base\include;..\..\..\library\video\source\base\include;..\..\..\library\video\source\d3d11\capturer\include;..\..\..\library\video\source\cpu\capturer\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\unified\server\include;..\..\..\library\framework\server\base\include;..\..\..\library\framework\server\web\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,10 +136,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>sirius_log4cplus_logger.lib;sirius_internal_notifier.lib;sirius_cpu_video_capturer.lib;sirius_d3d11_video_capturer.lib;sirius_unified_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;sirius_log4cplus_logger.lib;sirius_internal_notifier.lib;sirius_cpu_video_capturer.lib;sirius_d3d11_video_capturer.lib;sirius_unified_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ForceSymbolReferences>
-      </ForceSymbolReferences>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

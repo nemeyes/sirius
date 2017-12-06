@@ -79,20 +79,23 @@ namespace sirius
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor * _front;
 								sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;
-								int32_t _state;
-								bool	_run;
-								HANDLE	_thread;
-								HANDLE	_event;
 
-								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t _iobuffer[MAX_IO_BUFFERS];
-								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t> _iobuffer_queue;
+								CRITICAL_SECTION	_cs;
+								int32_t				_state;
+								bool				_run;
+								HANDLE				_thread;
+								HANDLE				_event;
 
+								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t					_iobuffer[MAX_IO_BUFFERS];
+								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t>	_iobuffer_queue;
 
 								uint8_t *	_rgba_buffer;
 
-								ATL::CComPtr<ID3D11Device> _device;
-								ATL::CComPtr<ID3D11DeviceContext> _device_ctx;
-								ATL::CComPtr<ID3D11Texture2D> _intermediate_tex;
+								ATL::CComPtr<ID3D11Device>			_device;
+								ATL::CComPtr<ID3D11DeviceContext>	_device_ctx;
+								ATL::CComPtr<ID3D11Texture2D>		_intermediate_tex;
+
+								CRITICAL_SECTION					_device_ctx_cs;
 
 								sirius::library::video::transform::codec::libpng::compressor * _real_compressor;
 							};

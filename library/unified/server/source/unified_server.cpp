@@ -103,9 +103,9 @@ int32_t sirius::library::unified::server::core::initialize_video_compressor(siri
 	if (status != sirius::library::unified::server::err_code_t::success)
 	{
 		if (_context)
-			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, Slot_Num:%d", __FUNCTION__, __LINE__, _context->portnumber);
+			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, attendant_number:%d", __FUNCTION__, __LINE__, _context->portnumber);
 		else
-			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, Slot_Num:Not Found Slot Num", __FUNCTION__, __LINE__);
+			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, attendant_number:not found attendant_number", __FUNCTION__, __LINE__);
 
 		return status;
 	}

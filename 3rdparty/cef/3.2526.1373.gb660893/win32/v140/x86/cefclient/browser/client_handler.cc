@@ -496,7 +496,7 @@ bool ClientHandler::OnOpenURLFromTab(
     // Handle middle-click and ctrl + left-click by opening the URL in a new
     // browser window.
     MainContext::Get()->GetRootWindowManager()->CreateRootWindow(
-        true, is_osr(), CefRect(), target_url);
+        true, is_osr(), true, CefRect(), target_url);
     return true;
   }
 

@@ -19,6 +19,7 @@ xcopy /Y /S %work_dir%\3rdparty\cef\3.2526.1373.gb660893\win32\v140\x86\resource
 xcopy /Y /S %work_dir%\3rdparty\cef\3.2526.1373.gb660893\win32\v140\x86\%build_mode%\*.*				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y /S %work_dir%\platform\win32\v140\x86\%build_mode%\bin\configuration\*.*					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\configuration\
 
+IF /i %build_mode%=="release" xcopy /Y %work_dir%\3rdparty\gperftools\v2_6_1\win32\v140\x86\bin\libtcmalloc_minimal.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\3rdparty\simd\v4_0_58_1229\win32\v140\x86\bin\Simd.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\zlib1.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\libpng16.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\

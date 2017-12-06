@@ -79,12 +79,6 @@ CSiriusClientDlg * clientDlg = nullptr;
 CSiriusClientDlg::CSiriusClientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_CLOUDMEDIAEDGECLIENT_DIALOG, pParent)
 	, _auto_start(false)
-	, _playing_time(0)
-	, _total_time(0)
-	, _current_time(0)
-	, _current_rate(0)
-	, _pause(FALSE)
-	, _sub_app_connection(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	clientDlg = this;
@@ -95,14 +89,9 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_ADDRESS, _ctrl_address);
 	DDX_Control(pDX, IDC_EDIT_PORT_NUMBER, _ctrl_port_number);
-	DDX_Control(pDX, IDC_EDIT_CLIENT_APP_ID, _ctrl_client_app_id);
-	DDX_Control(pDX, IDC_EDIT_CLIENT_STB_ID, _ctrl_client_device_id);
+	DDX_Control(pDX, IDC_EDIT_CLIENT_STB_ID, _ctrl_device_id);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
-	DDX_Control(pDX, IDC_COMBO_DEVICE_TYPE, _ctrl_client_device_type);
-	DDX_Control(pDX, IDC_COMBO_ENVIRONMENT_TYPE, _ctrl_client_environment_type);
-	DDX_Control(pDX, IDC_EDIT_MODEL_NAME, _ctrl_client_model_name);
-	DDX_Control(pDX, IDC_COMBO_RESOLUTION, _ctrl_attendant_resolution);
 	DDX_Control(pDX, IDC_EDIT_KEYSTROKE_INTERVAL, _ctrl_keystroke_interval);
 }
 
@@ -114,9 +103,8 @@ BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
 	ON_MESSAGE(WM_CONNECTION_END_MESSAGE, &CSiriusClientDlg::OnConnectionEnd)
 	ON_MESSAGE(WM_DISCONNECTION_BEGIN_MESSAGE, &CSiriusClientDlg::OnDisconnectionBegin)
 	ON_MESSAGE(WM_DISCONNECTION_END_MESSAGE, &CSiriusClientDlg::OnDisconnectionEnd)
-	ON_MESSAGE(WM_CREATING_SLOT_BEGIN_MESSAGE, &CSiriusClientDlg::OnCreatingSlotBegin)
-	ON_MESSAGE(WM_CREATING_SLOT_END_MESSAGE, &CSiriusClientDlg::OnCreatingSlotEnd)
-	ON_MESSAGE(WM_SUB_APP_CONNECT_MESSAGE, &CSiriusClientDlg::OnSubAppConnect)
+	ON_MESSAGE(WM_CREATING_ATTENDANT_BEGIN_MESSAGE, &CSiriusClientDlg::OnCreatingAttendantBegin)
+	ON_MESSAGE(WM_CREATING_ATTENDANT_END_MESSAGE, &CSiriusClientDlg::OnCreatingAttendantEnd)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN, &CSiriusClientDlg::OnBnClickedButtonOpen)
 	ON_BN_CLICKED(IDC_BUTTON_PLAY, &CSiriusClientDlg::OnBnClickedButtonPlay)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSiriusClientDlg::OnBnClickedButtonStop)
@@ -131,13 +119,7 @@ BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
 	ON_WM_RBUTTONDBLCLK()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
-	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER_SEEK_BAR, &CSiriusClientDlg::OnReleasedSeekBar)
 	ON_WM_HSCROLL()
-	ON_BN_CLICKED(IDC_PLAY_TOGGLE, &CSiriusClientDlg::OnBnClickedPlayToggle)
-	ON_BN_CLICKED(IDC_BACKWARD, &CSiriusClientDlg::OnBnClickedBackward)
-	ON_BN_CLICKED(IDC_FORWARD, &CSiriusClientDlg::OnBnClickedForward)
-	ON_BN_CLICKED(IDC_REVERSE, &CSiriusClientDlg::OnBnClickedReverse)
-	ON_BN_CLICKED(IDC_CHECK_KEYSTROKE, &CSiriusClientDlg::OnBnClickedKeystroke)
 	ON_WM_WINDOWPOSCHANGED()
 	ON_BN_CLICKED(IDC_FIND_FILE_BUTTON, &CSiriusClientDlg::OnBnClickedFindFileButton)
 END_MESSAGE_MAP()
@@ -254,36 +236,16 @@ BOOL CSiriusClientDlg::OnInitDialog()
 	CheckDlgButton(IDC_CHECK_KEYSTROKE, FALSE);
 	GetDlgItem(IDC_EDIT_KEYSTROKE_INTERVAL)->EnableWindow(FALSE);
 	
-	_ctrl_client_app_id.SetWindowTextW(Config.get_attendant_app_id().c_str());
-	_ctrl_client_device_id.SetWindowTextW(Config.get_attendant_device_id().c_str());
+	_ctrl_device_id.SetWindowTextW(Config.get_attendant_device_id().c_str());
 	_ctrl_url.SetWindowTextW(Config.get_url().c_str());
 	_ctrl_port.SetWindowTextW(Config.get_port().c_str());
 
 	if(_auto_start)
 		SendDlgItemMessage(IDC_BUTTON_CONNECT, BM_CLICK);
 
-	if (_playing_time > 0)
-		SetTimer(TIMER_ID_PLAYING_TIME, _playing_time,NULL);
 	
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetRange(0, 100);
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetPageSize(1);
-
-	_ctrl_client_device_type.AddString(L"unknown");
-	_ctrl_client_device_type.AddString(L"settop");
-	_ctrl_client_device_type.AddString(L"mobile");
-	_ctrl_client_device_type.SetCurSel(0);
-
-	_ctrl_client_environment_type.AddString(L"unknown");
-	_ctrl_client_environment_type.AddString(L"android");
-	_ctrl_client_environment_type.AddString(L"ios");
-	_ctrl_client_environment_type.AddString(L"native");
-	_ctrl_client_environment_type.SetCurSel(0);
-
-	_ctrl_attendant_resolution.AddString(L"720p");
-	_ctrl_attendant_resolution.AddString(L"1080p");
-	_ctrl_attendant_resolution.AddString(L"4k");
-	_ctrl_attendant_resolution.AddString(L"8k");
-	_ctrl_attendant_resolution.SetCurSel(0);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -314,8 +276,7 @@ BOOL CSiriusClientDlg::DestroyWindow()
 			
 	_ctrl_address.GetWindowText(server_address);
 	_ctrl_port_number.GetWindowText(server_port);
-	_ctrl_client_app_id.GetWindowText(attendant_app_id);
-	_ctrl_client_device_id.GetWindowText(attendant_device_id);
+	_ctrl_device_id.GetWindowText(attendant_device_id);
 	_ctrl_url.GetWindowText(url);
 	_ctrl_port.GetWindowText(port);
 
@@ -370,18 +331,16 @@ void CSiriusClientDlg::OnPaint()
 	}
 	else
 	{
-		if (!_pause)
-		{
-			CBrush brush;
-			brush.CreateSolidBrush(RGB(0, 0, 0));
+		CBrush brush;
+		brush.CreateSolidBrush(RGB(0, 0, 0));
 
-			CRect rect;
-			CWnd * video_view = GetDlgItem(IDC_STATIC_VIDEO_VIEW);
-			CDC * video_view_dc = video_view->GetDC();
-			video_view->GetClientRect(rect);
-			video_view_dc->FillRect(rect, &brush);
-			brush.DeleteObject();
-		}
+		CRect rect;
+		CWnd * video_view = GetDlgItem(IDC_STATIC_VIDEO_VIEW);
+		CDC * video_view_dc = video_view->GetDC();
+		video_view->GetClientRect(rect);
+		video_view_dc->FillRect(rect, &brush);
+		brush.DeleteObject();
+
 		CDialogEx::OnPaint();
 	}
 }
@@ -424,62 +383,29 @@ afx_msg LRESULT CSiriusClientDlg::OnDisconnectionBegin(WPARAM wParam, LPARAM lPa
 }
 
 afx_msg LRESULT CSiriusClientDlg::OnDisconnectionEnd(WPARAM wParam, LPARAM lParam)
-{
-	
-	if (!_sub_app_connection)
-	{
-		SetServerStatus(L"disconnected.");
-		CWnd * wnd_disconnect = GetDlgItem(IDC_BUTTON_CONNECT);
-		if (wnd_disconnect)
-			wnd_disconnect->EnableWindow(TRUE);
-
-		wnd_disconnect = GetDlgItem(IDC_BUTTON_DISCONNECT);
-		if (wnd_disconnect)
-			wnd_disconnect->EnableWindow(FALSE);
-	}
-	else
-	{	
-	
-		SetServerStatus(L"connected.");
-		CWnd * wnd_disconnect = GetDlgItem(IDC_BUTTON_DISCONNECT);
-		if (wnd_disconnect)
-			wnd_disconnect->EnableWindow(TRUE);
-		
-	}
-	return 0;
-}
-
-afx_msg LRESULT CSiriusClientDlg::OnCreatingSlotBegin(WPARAM wParam, LPARAM lParam)
-{
-	SetServerStatus(L"creating slot.");
-
-	return 0;
-}
-
-afx_msg LRESULT CSiriusClientDlg::OnCreatingSlotEnd(WPARAM wParam, LPARAM lParam)
-{
-	SetServerStatus(L"created slot.");
-
-	return 0;
-}
-
-afx_msg LRESULT CSiriusClientDlg::OnSubAppConnect(WPARAM wParam, LPARAM lParam)
 {	
-	_sub_app_connection = true;
+	SetServerStatus(L"disconnected.");
+	CWnd * wnd_disconnect = GetDlgItem(IDC_BUTTON_CONNECT);
+	if (wnd_disconnect)
+		wnd_disconnect->EnableWindow(TRUE);
 
-	int32_t server_port_number = 0;
-	CString server_address;
-	_ctrl_address.GetWindowTextW(server_address);
+	wnd_disconnect = GetDlgItem(IDC_BUTTON_DISCONNECT);
+	if (wnd_disconnect)
+		wnd_disconnect->EnableWindow(FALSE);
 
-	CString str_server_port_number;
-	_ctrl_port_number.GetWindowTextW(str_server_port_number);
-	server_port_number = _ttoi(str_server_port_number);
-	
-	_prev_client = _client;
-	_client = nullptr;
+	return 0;
+}
 
-	_client = new client_controller(this);
-	_client->connect((LPWSTR)(LPCWSTR)server_address, server_port_number, TRUE);
+afx_msg LRESULT CSiriusClientDlg::OnCreatingAttendantBegin(WPARAM wParam, LPARAM lParam)
+{
+	SetServerStatus(L"creating attendant.");
+
+	return 0;
+}
+
+afx_msg LRESULT CSiriusClientDlg::OnCreatingAttendantEnd(WPARAM wParam, LPARAM lParam)
+{
+	SetServerStatus(L"created attendant.");
 
 	return 0;
 }
@@ -545,14 +471,6 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 		delete _client;
 		_client = nullptr;
 	}
-	if (_prev_client)
-	{
-		_prev_client->disconnect();
-		delete _prev_client;
-		_prev_client = nullptr;
-	}
-
-	_sub_app_connection = false;
 	
 	BOOL reconnection = IsDlgButtonChecked(IDC_CHECK_RETRY_CONNECTION);
 
@@ -569,29 +487,6 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection);
 
 	EnableConnectButton(FALSE);
-	//EnableDisconnectButton(TRUE);
-
-	int _attndnt_resol = _ctrl_attendant_resolution.GetCurSel();
-	if (_attndnt_resol == 0)	//720p
-	{
-		_width = 1280;
-		_height = 720;
-	}
-	else if (_attndnt_resol == 1)	//1080p
-	{
-		_width = 1920;
-		_height = 1080;
-	}
-	else if (_attndnt_resol == 2)	//4k
-	{
-		_width = 3840;
-		_height = 2160;
-	}
-	else if (_attndnt_resol == 3)	//8k
-	{
-		_width = 7680;
-		_height = 4320;
-	}
 }
 
 void CSiriusClientDlg::OnBnClickedButtonDisconnect()
@@ -601,28 +496,8 @@ void CSiriusClientDlg::OnBnClickedButtonDisconnect()
 	{
 		_client->disconnect();
 	}
-	if (_prev_client)
-	{
-		_prev_client->disconnect();
-	}
 
-	{//controls update
-		_total_time = 0;
-		_current_time = 0; 
-		_current_rate = 1;
-		UpdateTimeInfo();
-		CWnd* pWnd = (CWnd*)GetDlgItem(IDC_STATIC_RATE);	
-		pWnd->SetWindowText(L"1.0X");
-		pWnd->Invalidate();
-		_pause = FALSE;
-		pWnd = (CWnd*)GetDlgItem(IDC_PLAY_TOGGLE);
-		pWnd->SetWindowText(L"▶");
-		pWnd->Invalidate();
-	}
-	//EnableConnectButton(TRUE);
 	EnableDisconnectButton(FALSE);
-
-	_sub_app_connection = false;
 }
 
 bool CSiriusClientDlg::ParseArgument(int argc, wchar_t * argv[])
@@ -670,11 +545,6 @@ bool CSiriusClientDlg::ParseArgument(int argc, wchar_t * argv[])
 		value = iter->second;
 		if(wcscmp(L"true",value.c_str()) == 0)
 			_auto_start = true;
-	}
-	if (param.end() != (iter = param.find(L"playing_time")))
-	{
-		value = iter->second;
-		_playing_time = (_wtoi(value.c_str())*1000); // 초
 	}
 
 	return true;
@@ -849,8 +719,8 @@ void CSiriusClientDlg::ClientPointToServerPoint(CPoint point, CPoint* output)
 		float normX = (float)point.x / (float)width;
 		float normY = (float)point.y / (float)height;
 
-		int x = normX * _width;
-		int y = normY * _height;
+		int x = normX * 1280;// _width;
+		int y = normY * 720;// _height;
 
 		output->SetPoint(x, y);
 	}
@@ -859,120 +729,6 @@ void CSiriusClientDlg::ClientPointToServerPoint(CPoint point, CPoint* output)
 		output->SetPoint(-1, -1);
 	}
 }
-
-void CSiriusClientDlg::UpdateTimeInfo()
-{
-	/*
-	{//Update Time Text
-		CWnd* pWnd = (CWnd*)GetDlgItem(IDC_STATIC_SEEK_BAR);
-		CString str;
-		str.Format(L"%02d:%02d:%02d / %02d:%02d:%02d",
-			_current_time / 3600, _current_time % 3600 / 60, _current_time % 60,
-			_total_time / 3600, _total_time % 3600 / 60, _total_time % 60);
-		pWnd->SetWindowText(str);
-		pWnd->Invalidate();
-	}
-	{//Update Slider Pos
-		CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR);
-		if(_total_time)
-			pSlider->SetPos(100 * _current_time / _total_time);
-		else
-			pSlider->SetPos(0);
-	}
-	*/
-}
-
-void CSiriusClientDlg::OnReleasedSeekBar(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	if (_client)
-	{
-		int second = (int)_total_time * _clicked_pos / 100;
-		_client->seek_to(second);
-	}
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	*pResult = 0;
-}
-
-
-void CSiriusClientDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-{
-	if (_client == NULL)
-		return;
-
-	POINT point = { 0, 0 };
-	
-	GetCursorPos(&point);
-	CRect rect;
-	GetDlgItem(IDC_SLIDER_SEEK_BAR)->GetClientRect(rect);
-	ClientToScreen(rect);
-	_clicked_pos = (point.x - rect.left - 24) * 100/ 228;
-
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
-	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
-}
-
-
-void CSiriusClientDlg::OnBnClickedPlayToggle()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (_client)
-	{
-		_client->key_up_play_toggle();
-
-		{//UI
-			_pause = !_pause;
-			CWnd* pWnd = (CWnd*)GetDlgItem(IDC_PLAY_TOGGLE);
-			if (_pause == TRUE)
-				pWnd->SetWindowText(L"▶");
-			else
-				pWnd->SetWindowText(L"||");
-			pWnd->Invalidate();
-		}
-	}
-}
-
-void CSiriusClientDlg::OnBnClickedBackward()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (_client)
-		_client->key_up_backward();
-}
-
-
-void CSiriusClientDlg::OnBnClickedForward()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (_client)
-		_client->key_up_forward();
-}
-
-
-void CSiriusClientDlg::OnBnClickedReverse()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if(_client)
-		_client->key_up_reverse();
-}
-
-
-void CSiriusClientDlg::OnBnClickedKeystroke()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	INT use_keystroke = IsDlgButtonChecked(IDC_CHECK_KEYSTROKE);
-
-	if (use_keystroke)
-	{
-		GetDlgItem(IDC_EDIT_KEYSTROKE_INTERVAL)->EnableWindow(TRUE);
-		_keystroke_interval = 100;
-	}
-	else
-	{
-		GetDlgItem(IDC_EDIT_KEYSTROKE_INTERVAL)->EnableWindow(FALSE);
-		_keystroke_interval = 0;
-	}
-}
-
 
 void CSiriusClientDlg::OnWindowPosChanged(WINDOWPOS* lpwndpos)
 {

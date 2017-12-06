@@ -23,6 +23,7 @@ namespace sirius
 			{
 				class core;
 			public:
+				static const int32_t STREAMER_PORTNUMBER = 7000;
 				typedef struct _netstate_t
 				{
 					static const int32_t connecting = 0;
@@ -57,11 +58,11 @@ namespace sirius
 					HWND	hwnd;
 					void *	user_data;
 
+					int32_t id;
 					wchar_t uuid[MAX_PATH];
 					wchar_t client_uuid[MAX_PATH];
 					wchar_t client_id[MAX_PATH];
 					int32_t controller_portnumber;
-					int32_t streamer_portnumber;
 					int32_t play_after_connect;
 
 					_context_t(void)
@@ -79,8 +80,8 @@ namespace sirius
 						, present(false)
 						, hwnd(NULL)
 						, user_data(NULL)
+						, id(0)
 						, controller_portnumber(5000)
-						, streamer_portnumber(0)
 						, play_after_connect(0)
 					{
 						memset(url, 0x00, sizeof(url));

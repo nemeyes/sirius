@@ -71,67 +71,6 @@ namespace sirius
 
 			};
 
-			class playback_end_ind_cmd : public client_cmd
-			{
-			public:
-				playback_end_ind_cmd(sirius::app::client::proxy::core * prxy)
-					: client_cmd(prxy, CMD_PLAYBACK_END_IND)
-				{}
-				virtual ~playback_end_ind_cmd(void)
-				{}
-
-				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
-				{
-
-					_proxy->playback_end_callback(dst, src, msg, length);
-				}
-			};
-
-			class playback_totaltime_ind_cmd : public client_cmd
-			{
-			public:
-				playback_totaltime_ind_cmd(sirius::app::client::proxy::core * prxy)
-					: client_cmd(prxy, CMD_PLAYBACK_TOTALTIME_IND)
-				{}
-				virtual ~playback_totaltime_ind_cmd(void)
-				{}
-
-				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
-				{
-					_proxy->playback_totaltime_callback(dst, src, msg, length);
-				}
-			};
-
-			class playback_currenttime_ind_cmd : public client_cmd
-			{
-			public:
-				playback_currenttime_ind_cmd(sirius::app::client::proxy::core * prxy)
-					: client_cmd(prxy, CMD_PLAYBACK_CURRENTTIME_IND)
-				{}
-				virtual ~playback_currenttime_ind_cmd(void)
-				{}
-
-				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
-				{
-					_proxy->playback_currenttime_callback(dst, src, msg, length);
-				}
-			};
-
-			class playback_currentrate_ind_cmd : public client_cmd
-			{
-			public:
-				playback_currentrate_ind_cmd(sirius::app::client::proxy::core * prxy)
-					: client_cmd(prxy, CMD_PLAYBACK_CURRENTRATE_IND)
-				{}
-				virtual ~playback_currentrate_ind_cmd(void)
-				{}
-
-				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
-				{
-					_proxy->playback_currentrate_callback(dst, src, msg, length);
-				}
-			};
-
 			class xml_ind_cmd : public client_cmd
 			{
 			public:

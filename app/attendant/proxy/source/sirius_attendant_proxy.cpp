@@ -62,10 +62,10 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->controller_portnumber = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"streamer_portnumber")))
+	if (param.end() != (iter = param.find(L"id")))
 	{
 		value = iter->second;
-		context->streamer_portnumber = _wtoi(value.c_str());
+		context->id = _wtoi(value.c_str());
 	}
 	if (param.end() != (iter = param.find(L"reconnect")))
 	{

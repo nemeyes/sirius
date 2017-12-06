@@ -32,6 +32,7 @@ namespace client {
 		void Init(RootWindow::Delegate* delegate,
 			bool with_controls,
 			bool with_osr,
+			bool present,
 			const CefRect& rect,
 			const CefBrowserSettings& settings,
 			const std::string& url) OVERRIDE;
@@ -112,6 +113,7 @@ namespace client {
 		RootWindow::Delegate* delegate_;
 		bool with_controls_;
 		bool with_osr_;
+		bool present_;
 		bool is_popup_;
 		RECT start_rect_;
 		scoped_ptr<BrowserWindow> browser_window_;

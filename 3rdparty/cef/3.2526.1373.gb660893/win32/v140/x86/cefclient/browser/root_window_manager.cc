@@ -61,13 +61,14 @@ RootWindowManager::~RootWindowManager() {
 scoped_refptr<RootWindow> RootWindowManager::CreateRootWindow(
     bool with_controls,
     bool with_osr,
+	bool present,
     const CefRect& bounds,
     const std::string& url) {
   CefBrowserSettings settings;
   MainContext::Get()->PopulateBrowserSettings(&settings);
 
   scoped_refptr<RootWindow> root_window = RootWindow::Create();
-  root_window->Init(this, with_controls, with_osr, bounds, settings,
+  root_window->Init(this, with_controls, with_osr, present, bounds, settings,
                     url.empty() ? MainContext::Get()->GetMainURL() : url);
 
   // Store a reference to the root window on the main thread.

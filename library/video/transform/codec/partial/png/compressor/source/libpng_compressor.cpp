@@ -368,7 +368,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 #if defined(WITH_IPP)
 	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
 #else
-	png_set_compression_strategy(png_ptr, Z_RLE);
+	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
 #endif
 	// Palette images generally don't gain anything from filtering
 	png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);

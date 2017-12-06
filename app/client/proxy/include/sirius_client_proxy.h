@@ -60,15 +60,6 @@ namespace sirius
 					int32_t connect_attendant(wchar_t * appid, wchar_t * deviceid, wchar_t * devicetype, wchar_t * envtype, wchar_t * modeltype, int32_t width, int32_t height, int32_t gpuindex);
 					int32_t disconnect_attendant(void);
 
-					int32_t seek_to(int32_t second);
-					int32_t key_up_play_toggle(void);
-					int32_t key_up_backward(void);
-					int32_t key_up_forward(void);
-					int32_t key_up_reverse(void);
-
-					int32_t	key_down_seek(int32_t diff);
-					int32_t	key_up_seek(void);
-
 					int32_t	key_up(int32_t value);
 					int32_t	key_down(int32_t value);
 
@@ -113,22 +104,6 @@ namespace sirius
 					virtual void on_play_streaming(void) = 0;
 					virtual void on_stop_streaming(void) = 0;
 
-					virtual void on_pre_playback_end(void) = 0;
-					virtual void on_playback_end(void) = 0;
-					virtual void on_post_playback_end(void) = 0;
-
-					virtual void on_pre_playback_totaltime(int32_t tottime) = 0;
-					virtual void on_playback_totaltime(int32_t tottime) = 0;
-					virtual void on_post_playback_totaltime(int32_t tottime) = 0;
-
-					virtual void on_pre_playback_currenttime(int32_t curtime) = 0;
-					virtual void on_playback_currenttime(int32_t curtime) = 0;
-					virtual void on_post_playback_currenttime(int32_t curtime) = 0;
-
-					virtual void on_pre_playback_currentrate(float currate) = 0;
-					virtual void on_playback_currentrate(float currate) = 0;
-					virtual void on_post_playback_currentrate(float currate) = 0;
-
 					virtual void on_pre_xml(const char * msg, size_t length) = 0;
 					virtual void on_xml(const char * msg, size_t length) = 0;
 					virtual void on_post_xml(const char * msg, size_t length) = 0;
@@ -160,15 +135,6 @@ namespace sirius
 
 				int32_t connect_attendant(wchar_t * appId, wchar_t * stbId, wchar_t * deviceType, wchar_t * envType, wchar_t * modelType, int32_t width, int32_t height, int32_t gpuIndex);
 				int32_t disconnect_attendant(void);
-
-				int32_t seek_to(int32_t second);
-				int32_t key_up_play_toggle(void);
-				int32_t key_up_backward(void);
-				int32_t key_up_forward(void);
-				int32_t key_up_reverse(void);
-
-				int32_t	key_down_seek(int32_t diff);
-				int32_t	key_up_seek(void);
 
 				int32_t	key_up(int32_t value);
 				int32_t	key_down(int32_t value);
@@ -214,22 +180,6 @@ namespace sirius
 				void on_open_streaming(wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber, BOOL reconnection);
 				void on_play_streaming(void);
 				void on_stop_streaming(void);
-
-				void on_pre_playback_end(void);
-				void on_playback_end(void);
-				void on_post_playback_end(void);
-
-				void on_pre_playback_totaltime(int32_t tottime);
-				void on_playback_totaltime(int32_t tottime);
-				void on_post_playback_totaltime(int32_t tottime);
-
-				void on_pre_playback_currenttime(int32_t curtime);
-				void on_playback_currenttime(int32_t curtime);
-				void on_post_playback_currenttime(int32_t curtime);
-
-				void on_pre_playback_currentrate(float currate);
-				void on_playback_currentrate(float currate);
-				void on_post_playback_currentrate(float currate);
 
 				void on_pre_xml(const char * msg, size_t length);
 				void on_xml(const char * msg, size_t length);
