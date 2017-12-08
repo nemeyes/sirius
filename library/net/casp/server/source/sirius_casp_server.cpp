@@ -142,41 +142,31 @@ int32_t sirius::library::net::casp::server::publish_video(uint8_t * vps, size_t 
 
 int32_t sirius::library::net::casp::server::publish_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long timestamp)
 {
-	const uint8_t contents_count = 1;
+	const uint8_t contents_count = count;
 	int32_t data_pos = 0;
 	if ((_video_data != nullptr) && (_core->state_start(sirius::library::net::casp::server::server::media_type_t::video) != sirius::library::net::casp::server::stream_state_t::state_stopped))
 	{
 		uint8_t * video_data = _video_data;
+		int32_t stream_type = sirius::library::net::casp::server::media_type_t::video;
+		
 		for (int32_t x = 0; x < count; x++)
 		{
-			int32_t stream_type = sirius::library::net::casp::server::media_type_t::video;
-			//data_pos = set_casp_payload(_video_data, stream_type, data_pos, contents_count, 0, sizeof(video_data)[x], timestamp);
-			
-			uint32_t max_data_size, frame_index;
-			if (stream_type == sirius::library::net::casp::server::media_type_t::video)
-			{
-				max_data_size = MAX_VIDEO_ES_SIZE;
-				frame_index = _frame_index_video;
-			}
-			else
-				return sirius::library::net::casp::server::err_code_t::fail;
+			sirius::library::net::casp::stream_packet_t single_packet_header;
+			single_packet_header.stream_data.count = count;
+			single_packet_header.stream_data.data.length = htonl(size[x]);
+			single_packet_header.stream_data.data.index = htonl(_frame_index_video);
+			single_packet_header.stream_data.data.timestamp = htonll(timestamp);
+			memmove(video_data, &single_packet_header, sizeof(single_packet_header));
+			video_data += sizeof(sirius::library::net::casp::stream_packet_t);
 
-			sirius::library::net::casp::stream_packet_t* packet = (sirius::library::net::casp::stream_packet_t*)_video_data;
-			packet->stream_data.count = count;
-			nsize = size[x];
-			packet->stream_data.data.length = htonl(nsize);
-			packet->stream_data.data.index = htonl(index[x]);
-			packet->stream_data.data.timestamp = htonll(timestamp);
-			data_pos += sizeof(sirius::library::net::casp::stream_packet_t);
-
-			data_pos = set_sps_pps(data_pos, nullptr, 0, nullptr, 0, nullptr, 0);
-			data_pos = set_es_stream(_video_data, stream_type, data_pos, compressed[x], size[x]);
+			memmove(video_data, compressed[x], size[x]);
+			video_data += size[x];
 			_frame_index_video++;
 		}
 		if (_core)
 		{
-			_core->publish_video(_video_data, data_pos, timestamp);
-			_network_usage.video_transferred_bytes += data_pos;
+			_core->publish_video(_video_data, video_data - _video_data, timestamp);
+			_network_usage.video_transferred_bytes += (video_data - _video_data);
 		}
 	}
 	return 0;
@@ -215,7 +205,7 @@ int32_t sirius::library::net::casp::server::set_casp_payload(uint8_t * data, uin
 	packet->header.type = 0x00;
 #endif
 
-	packet->stream_data.count = 1;
+	packet->stream_data.count = contents_count;
 	packet->stream_data.data.length = htonl(nb + es_header_size);
 	packet->stream_data.data.index = htonl(frame_index);
 	packet->stream_data.data.timestamp = htonll(timestamp);
