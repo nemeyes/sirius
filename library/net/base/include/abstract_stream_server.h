@@ -73,6 +73,15 @@ namespace sirius
 
 
 				protected:
+#if defined(WITH_CASP)
+					int32_t _vsmt;
+					int32_t _asmt;
+					char _address[MAX_PATH];
+					int32_t _port_number;
+					int32_t _slot_number;
+					char _uuid[MAX_PATH];
+					server::proxy * _controller;
+#endif
 					sirius::library::net::stream::server::network_usage_t		_network_usage;
 				};
 			};
