@@ -24,6 +24,7 @@ xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\libpng16.dll			%w
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_casp_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompressor.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
