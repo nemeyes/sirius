@@ -154,14 +154,13 @@ int32_t sirius::library::net::casp::server::publish_video(int32_t count, int32_t
 			sirius::library::net::casp::stream_packet_t single_packet_header;
 			single_packet_header.stream_data.count = count;
 			single_packet_header.stream_data.data.length = htonl(size[x]);
-			single_packet_header.stream_data.data.index = htonl(_frame_index_video);
+			single_packet_header.stream_data.data.index = htonl(index[x]);
 			single_packet_header.stream_data.data.timestamp = htonll(timestamp);
 			memmove(video_data, &single_packet_header, sizeof(single_packet_header));
 			video_data += sizeof(sirius::library::net::casp::stream_packet_t);
 
 			memmove(video_data, compressed[x], size[x]);
 			video_data += size[x];
-			_frame_index_video++;
 		}
 		if (_core)
 		{

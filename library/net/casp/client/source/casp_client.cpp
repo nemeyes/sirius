@@ -159,9 +159,9 @@ void sirius::library::net::casp::client::core::push_video_packet(sirius::library
 		_s_video_interval = _e_video_interval;
 	}
 
-	int32_t count = ntohl(header->count);
+	int32_t count = header->count;
 	uint8_t * packet = data;
-
+	
 	if (count == 1)
 	{
 		sirius::library::net::casp::stream_packet_t single_packet_header;

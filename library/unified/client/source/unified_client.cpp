@@ -4,8 +4,6 @@
 
 #include <shlwapi.h>
 
-//#define CASP_PROTOCOL
-
 sirius::library::unified::client::core::core(sirius::library::unified::client * front)
 	: _front(front)
 	, _state(sirius::library::unified::client::state_t::none)
@@ -60,7 +58,7 @@ int32_t sirius::library::unified::client::core::play(void)
 		}
 		else
 		{
-#ifdef CASP_PROTOCOL
+#ifdef WITH_CASP
 			_casp_receiver = new sirius::library::unified::casp::receiver(_front);
 			_casp_receiver->play(_url, _port, _recv_option, _repeat);	
 #else
