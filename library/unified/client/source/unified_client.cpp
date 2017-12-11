@@ -4,7 +4,7 @@
 
 #include <shlwapi.h>
 
-#define CASP_PROTOCOL
+//#define CASP_PROTOCOL
 
 sirius::library::unified::client::core::core(sirius::library::unified::client * front)
 	: _front(front)
