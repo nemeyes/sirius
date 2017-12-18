@@ -92,7 +92,6 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_STB_ID, _ctrl_device_id);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
-	DDX_Control(pDX, IDC_EDIT_KEYSTROKE_INTERVAL, _ctrl_keystroke_interval);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
@@ -234,9 +233,9 @@ BOOL CSiriusClientDlg::OnInitDialog()
 	CheckDlgButton(IDC_CHECK_RETRY_CONNECTION, TRUE);
 	CheckDlgButton(IDC_CHECK_AUTO_RECONNECTION, TRUE);
 	CheckDlgButton(IDC_CHECK_KEYSTROKE, FALSE);
-	GetDlgItem(IDC_EDIT_KEYSTROKE_INTERVAL)->EnableWindow(FALSE);
 	
-	_ctrl_device_id.SetWindowTextW(Config.get_attendant_device_id().c_str());
+	const wchar_t * device_id = Config.get_attendant_device_id().c_str();
+	_ctrl_device_id.SetWindowTextW(device_id);
 	_ctrl_url.SetWindowTextW(Config.get_url().c_str());
 	_ctrl_port.SetWindowTextW(Config.get_port().c_str());
 
