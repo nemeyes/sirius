@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\base\include\resource.h" />
+    <ClInclude Include="..\..\..\library\unified\client\include\sirius_casp_receiver.h" />
     <ClInclude Include="..\..\..\library\unified\client\include\sirius_file_receiver.h" />
     <ClInclude Include="..\..\..\library\unified\client\include\sirius_receiver.h" />
     <ClInclude Include="..\..\..\library\unified\client\include\sirius_scsp_receiver.h" />
@@ -27,6 +28,7 @@
     <ClInclude Include="..\..\..\library\unified\client\include\unified_client.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\library\unified\client\source\sirius_casp_receiver.cpp" />
     <ClCompile Include="..\..\..\library\unified\client\source\sirius_file_receiver.cpp" />
     <ClCompile Include="..\..\..\library\unified\client\source\sirius_receiver.cpp" />
     <ClCompile Include="..\..\..\library\unified\client\source\sirius_scsp_receiver.cpp" />
@@ -112,13 +114,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_UNIFIED_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\net\scsp\base\include;..\..\..\library\net\scsp\client\include;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\net\scsp\base\include;..\..\..\library\net\scsp\client\include;..\..\..\library\net\casp\base\include;..\..\..\library\net\casp\client\include;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shlwapi.lib;sirius_scsp_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;sirius_scsp_client.lib;sirius_casp_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -146,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_UNIFIED_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\net\scsp\base\include;..\..\..\library\net\scsp\client\include;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\net\scsp\base\include;..\..\..\library\net\scsp\client\include;..\..\..\library\net\casp\base\include;..\..\..\library\net\casp\client\include;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
@@ -154,7 +156,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;Shlwapi.lib;sirius_scsp_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;Shlwapi.lib;sirius_scsp_client.lib;sirius_casp_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>

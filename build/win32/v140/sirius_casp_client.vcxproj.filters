@@ -13,48 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{87ffc0a9-629e-4a0a-bcae-faf1549b46db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="casp_base">
+      <UniqueIdentifier>{688fed91-2229-485e-b372-8316cc66fa43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_unified_client.h">
+    <ClInclude Include="..\..\..\library\net\casp\base\include\commands_payload.h">
+      <Filter>casp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\casp\base\include\commands_client.h">
+      <Filter>casp_base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\casp\client\include\casp_client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\unified_client.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_scsp_receiver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_receiver.h">
+    <ClInclude Include="..\..\..\library\net\casp\client\include\sirius_casp_client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\base\include\resource.h">
       <Filter>리소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_file_receiver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_casp_receiver.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_unified_client.cpp">
+    <ClCompile Include="..\..\..\library\net\casp\client\source\casp_client.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\unified_client.cpp">
+    <ClCompile Include="..\..\..\library\net\casp\client\source\sirius_casp_client.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_receiver.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_scsp_receiver.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_file_receiver.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_casp_receiver.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

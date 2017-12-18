@@ -50,6 +50,9 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_casp_server.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_casp_server.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_server.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_server.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
