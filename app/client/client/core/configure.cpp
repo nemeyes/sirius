@@ -36,9 +36,6 @@ bool configure::load()
 	::GetPrivateProfileString(_T("SERVER"), _T("PORT"), _T("3390"), value, MAX_PATH, szFileName);
 	_server_port = value;
 
-	::GetPrivateProfileString(_T("ATTENDANT"), _T("APP_ID"), _T("100"), value, MAX_PATH, szFileName);
-	_attendant_app_id = value;
-
 	::GetPrivateProfileString(_T("ATTENDANT"), _T("DEVICE_ID"), _T("aa:bb:cc:dd:ff:ee"), value, MAX_PATH, szFileName);
 	_attendant_device_id = value;
 
@@ -66,8 +63,7 @@ bool configure::save()
 
 	::WritePrivateProfileString(_T("SERVER"), _T("ADDRESS"),_server_address.c_str(), szFileName);
 	::WritePrivateProfileString(_T("SERVER"), _T("PORT"), _server_port.c_str(), szFileName);
-	::WritePrivateProfileString(_T("ATTENDANT"), _T("APP_ID"), _attendant_app_id.c_str(), szFileName);
-	::WritePrivateProfileString(_T("ATTENDANT"), _T("STB_ID"), _attendant_device_id.c_str(), szFileName);
+	::WritePrivateProfileString(_T("ATTENDANT"), _T("DEVICE_ID"), _attendant_device_id.c_str(), szFileName);
 	::WritePrivateProfileString(_T("PLAY"), _T("URL"), _url.c_str(), szFileName);
 	::WritePrivateProfileString(_T("PLAY"), _T("PORT"), _port.c_str(), szFileName);
 	::WritePrivateProfileString(_T("CSR"), _T("URL"), _csr_url.c_str(), szFileName);
