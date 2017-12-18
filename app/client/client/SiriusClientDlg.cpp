@@ -478,10 +478,6 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 	CString server_port_number;
 	_ctrl_address.GetWindowTextW(server_address);
 	_ctrl_port_number.GetWindowTextW(server_port_number);
-	
-	CString keystroke_interval;
-	_ctrl_keystroke_interval.GetWindowTextW(keystroke_interval);
-	_keystroke_interval = _ttoi(keystroke_interval);
 
 	_client = new client_controller(this);
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection);

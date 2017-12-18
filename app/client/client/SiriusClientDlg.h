@@ -44,9 +44,9 @@ private:
 		
 	sirius::library::framework::client::base *	_framework;
 	HMODULE _hmodule;
-
 	bool	_auto_start;
-	int32_t _keystroke_interval;
+	int32_t _video_width;
+	int32_t _video_height;
 
 public:
 	char _version[MAX_PATH];

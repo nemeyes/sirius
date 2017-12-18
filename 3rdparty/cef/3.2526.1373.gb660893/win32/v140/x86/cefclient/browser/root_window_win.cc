@@ -133,6 +133,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
                          bool with_controls,
                          bool with_osr,
 						 bool present,
+						 void * hwnd,
                          const CefRect& bounds,
                          const CefBrowserSettings& settings,
                          const std::string& url) {
@@ -143,6 +144,10 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
   with_controls_ = with_controls;
   with_osr_ = with_osr;
   present_ = present;
+  if (hwnd)
+	  outter_hwnd_ = (HWND*)hwnd;
+  else
+	  outter_hwnd_ = nullptr;
 
   start_rect_.left = bounds.x;
   start_rect_.top = bounds.y;
@@ -337,6 +342,11 @@ void RootWindowWin::CreateRootWindow(const CefBrowserSettings& settings) {
                        NULL, NULL, hInstance, NULL);
   CHECK(hwnd_);
 
+  if (outter_hwnd_)
+  {
+	  (*outter_hwnd_) = hwnd_;
+  }
+
   // Associate |this| with the main window.
   SetUserDataPtr(hwnd_, this);
 
@@ -455,7 +465,7 @@ void RootWindowWin::read_injection_js()
 {
 	char path[MAX_PATH] = { 0 };
 	if (GetModuleFileNameA(GetModuleHandleA(NULL), path, MAX_PATH) == 0) {
-		OutputDebugStringA("error read_injection_js");
+		OutputDebugStringA("error read_injection_js\n");
 		return;
 	}
 	*(strrchr(path, '\\') + 1) = 0;
@@ -469,7 +479,7 @@ void RootWindowWin::read_injection_js()
 	javascript_injection_ = buffer.str();
 	OutputDebugStringA(injection_path.c_str());
 	OutputDebugStringA(javascript_injection_.ToString().c_str());
-	OutputDebugStringA("read_injection_js OK");
+	OutputDebugStringA("read_injection_js OK\n");
 
 }
 #endif
@@ -881,7 +891,7 @@ void RootWindowWin::OnDestroyed() {
 #ifdef WITH_ATTENDANT_PROXY
 void RootWindowWin::OnKeyEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	OutputDebugStringA("OnKeyEvent-------------------");
+	OutputDebugStringA("========================OnKeyEvent========================\n");
 
 	CefKeyEvent event;
 	event.windows_key_code = wParam;
@@ -1079,7 +1089,7 @@ void RootWindowWin::OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 }
 void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
 {
-	OutputDebugStringA("============RootWindowWin::OnLoadStart============");
+	OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
 
 
 	frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
@@ -1100,7 +1110,7 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
 #endif
-  OutputDebugStringA("============RootWindowWin::OnBrowserCreated============");
+  OutputDebugStringA("========================RootWindowWin::OnBrowserCreated========================\n");
 }
 
 void RootWindowWin::OnBrowserWindowDestroyed() {

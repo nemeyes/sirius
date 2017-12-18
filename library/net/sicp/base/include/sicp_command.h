@@ -135,45 +135,44 @@ namespace sirius
 				};
 
 #if defined(WITH_WORKING_AS_SERVER)
-				class create_session_req_cmd : public abstract_command
+				class create_session_req : public abstract_command
 				{
 				public:
-					create_session_req_cmd(sirius::library::net::sicp::processor * prcsr);
-					virtual ~create_session_req_cmd(void);
+					create_session_req(sirius::library::net::sicp::processor * prcsr);
+					virtual ~create_session_req(void);
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
 				};
 #else
-				class create_session_res_cmd : public abstract_command
+				class create_session_res : public abstract_command
 				{
 				public:
-					create_session_res_cmd(sirius::library::net::sicp::processor * prcsr);
-					virtual ~create_session_res_cmd(void);
+					create_session_res(sirius::library::net::sicp::processor * prcsr);
+					virtual ~create_session_res(void);
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
 				};
 #endif
-				class destroy_session_ind_cmd : public abstract_command
+				class destroy_session_noti : public abstract_command
 				{
 				public:
-					destroy_session_ind_cmd(sirius::library::net::sicp::processor * prcsr);
-					virtual ~destroy_session_ind_cmd(void);
+					destroy_session_noti(sirius::library::net::sicp::processor * prcsr);
+					virtual ~destroy_session_noti(void);
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
 				};
 
 
-
-				class keepalive_req_cmd : public abstract_command
+				class keepalive_req : public abstract_command
 				{
 				public:
-					keepalive_req_cmd(sirius::library::net::sicp::processor * prcsr);
-					virtual ~keepalive_req_cmd(void);
+					keepalive_req(sirius::library::net::sicp::processor * prcsr);
+					virtual ~keepalive_req(void);
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
 				};
 
-				class keepalive_res_cmd : public abstract_command
+				class keepalive_res : public abstract_command
 				{
 				public:
-					keepalive_res_cmd(sirius::library::net::sicp::processor * prcsr);
-					virtual ~keepalive_res_cmd(void);
+					keepalive_res(sirius::library::net::sicp::processor * prcsr);
+					virtual ~keepalive_res(void);
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
 				};
 			};

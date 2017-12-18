@@ -66,27 +66,17 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
     app = new ClientAppRenderer();
   else if (process_type == ClientApp::OtherProcess)
     app = new ClientAppOther();
+
 #ifdef WITH_ATTENDANT_PROXY
+  sirius::app::attendant::proxy * proxy = nullptr;
   if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {
 	  wchar_t * command = GetCommandLine();
 	  int32_t argc = 0;
+
+	  proxy = new sirius::app::attendant::proxy();
 	  LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
-	  if (sirius::app::attendant::proxy::parse_argument(argc, argv))
-	  {
-		  sirius::app::attendant::proxy::instance().initialize();
-		  if (sirius::app::attendant::proxy::instance().is_initialized())
-		  {
-			  if (sirius::app::attendant::proxy::instance().context()->play_after_connect)
-			  {
-				  sirius::app::attendant::proxy::instance().connect();
-			  }
-			  else
-			  {
-				  sirius::app::attendant::proxy::instance().play();
-			  }
-		  }
-	  }
+	  sirius::app::attendant::proxy::parse_argument(argc, argv, proxy->context());
   }
 #endif
 
@@ -129,25 +119,65 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 
 #endif
 
-  // Create the first window.
-  context->GetRootWindowManager()->CreateRootWindow(
-      false,  // Show controls.
-      settings.windowless_rendering_enabled ? true : false,
-	  present,
-      CefRect(0, 0, 1282, 722),       // Use default system size.
-      std::string());   // Use default URL.
+  if (proxy)
+  {
+	  context->GetRootWindowManager()->CreateRootWindow(
+		  false,  // Show controls.
+		  settings.windowless_rendering_enabled ? true : false,
+		  present,
+		  &proxy->context()->hwnd,
+		  CefRect(0, 0, 1282, 722),       // Use default system size.
+		  std::string());   // Use default URL.
+
+	  proxy->initialize();
+	  if (proxy->is_initialized())
+	  {
+		  if (proxy->context()->play_after_connect)
+		  {
+			  proxy->connect();
+		  }
+		  else
+		  {
+			  proxy->play();
+		  }
+	  }
+  }
+  else
+  {
+	  // Create the first window.
+	  context->GetRootWindowManager()->CreateRootWindow(
+		  false,  // Show controls.
+		  settings.windowless_rendering_enabled ? true : false,
+		  present,
+		  &proxy->context()->hwnd,
+		  CefRect(0, 0, 1282, 722),       // Use default system size.
+		  std::string());   // Use default URL.
+  }
+
+
 
   // Run the message loop. This will block until Quit() is called by the
   // RootWindowManager after all windows have been destroyed.
   int result = message_loop->Run();
 
 #ifdef WITH_ATTENDANT_PROXY
-  if (sirius::app::attendant::proxy::instance().is_initialized())
+  if (proxy)
   {
-	  sirius::app::attendant::proxy::instance().stop();
-	  if (sirius::app::attendant::proxy::instance().context()->play_after_connect)
-		  sirius::app::attendant::proxy::instance().disconnect();
-	  sirius::app::attendant::proxy::instance().release();
+	  if (proxy->is_initialized())
+	  {
+		  if (proxy->context()->play_after_connect)
+		  {
+			  proxy->stop();
+			  proxy->disconnect();
+		  }
+		  else
+		  {
+			  proxy->stop();
+		  }
+		  proxy->release();
+	  }
+	  delete proxy;
+	  proxy = nullptr;
   }
 #endif
   // Shut down CEF.

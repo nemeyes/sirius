@@ -56,6 +56,7 @@ namespace sirius
 						virtual int32_t play(void);
 						virtual int32_t pause(void);
 						virtual int32_t stop(void);
+						virtual int32_t invalidate(void);
 
 						virtual int32_t compress(sirius::library::video::transform::codec::compressor::entity_t * input, sirius::library::video::transform::codec::compressor::entity_t * bitstream);
 						virtual int32_t compress(sirius::library::video::transform::codec::compressor::entity_t * input);

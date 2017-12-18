@@ -14,12 +14,13 @@ sirius::library::net::sicp::abstract_client::abstract_client(int32_t mtu, int32_
 
 	sirius::library::net::sicp::base::initialize();
 
-	add_command(new create_session_res_cmd(this));
-	add_command(new destroy_session_ind_cmd(this));
-#if defined(WITH_KEEPALIVE)
-	add_command(new keepalive_req_cmd(this));
-	add_command(new keepalive_res_cmd(this));
-#endif
+	add_command(new create_session_res(this));
+	add_command(new destroy_session_noti(this));
+
+	if (_use_keep_alive)
+	{
+		add_command(new keepalive_res(this));
+	}
 }
 
 sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size,int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast)
@@ -27,19 +28,20 @@ sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, 
 	, sirius::library::net::sicp::base(command_thread_pool_count)
 	, _use_keep_alive(use_keep_alive)
 {
-	memcpy(_uuid, UNDEFINED_UUID, sizeof(_uuid));
+	strncpy_s(_uuid, uuid, sizeof(_uuid));
 
 	::InitializeCriticalSection(&_session_cs);
 	::InitializeCriticalSection(&_commands_cs);
 
 	sirius::library::net::sicp::base::initialize();
 
-	add_command(new create_session_res_cmd(this));
-	add_command(new destroy_session_ind_cmd(this));
-#if defined(WITH_KEEPALIVE)
-	add_command(new keepalive_req_cmd(this));
-	add_command(new keepalive_res_cmd(this));
-#endif
+	add_command(new create_session_res(this));
+	add_command(new destroy_session_noti(this));
+
+	if (_use_keep_alive)
+	{
+		add_command(new keepalive_res(this));
+	}
 }
 
 sirius::library::net::sicp::abstract_client::~abstract_client(void)
@@ -229,19 +231,11 @@ void sirius::library::net::sicp::abstract_client::process(void)
 			{
 				if ((!sicp_session->assoc_flag()) && ((elapsed_millisec % 3000) == 0))
 					sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, nullptr, 0);
-#if defined(WITH_KEEPALIVE)
-				sicp_session->update_hb_end_time();
-				if (sicp_session->check_hb())
+
+				if (_use_keep_alive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
 				{
-					CMD_KEEPALIVE_PAYLOAD_T payload;
-					memset(&payload, 0x00, sizeof(CMD_KEEPALIVE_PAYLOAD_T));
-					payload.code = CMD_ERR_CODE_FAIL;
-					sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, reinterpret_cast<char*>(&payload), sizeof(CMD_KEEPALIVE_PAYLOAD_T));
-					sicp_session->update_hb_start_time();
+					sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, nullptr, 0);
 				}
-#endif
-				//if (elapsed_millisec % 10000 == 0)
-				//	polling_callback(sicp_session);
 
 				::Sleep(msleep);
 				elapsed_millisec += msleep;
@@ -259,14 +253,24 @@ void sirius::library::net::sicp::abstract_client::process(void)
 				sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(_session);
 		}
 
-		if (sicp_session && sicp_session->assoc_flag())
+		if (sicp_session)
 		{
-			sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_DESTROY_SESSION_INDICATION, nullptr, 0);
-			destroy_session_completion_callback(sicp_session);
-			sicp_session->close();
+			if (sicp_session->assoc_flag())
+			{
+				sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_DESTROY_SESSION_INDICATION, nullptr, 0);
+				destroy_session_completion_callback(sicp_session);
+				sicp_session->close();
 
-			wait_command_thread_end();
-			enable_close_waiting_flag(true);
+				wait_command_thread_end();
+				enable_close_waiting_flag(true);
+			}
+			else
+			{
+				sicp_session->close();
+
+				wait_command_thread_end();
+				enable_close_waiting_flag(true);
+			}
 		}
 
 		for (int32_t count = 0; _bwaiting; count++)

@@ -1,12 +1,6 @@
 #include "sirius_unified_server.h"
 #include "unified_server.h"
 
-sirius::library::unified::server & sirius::library::unified::server::instance(void)
-{
-	static sirius::library::unified::server _instance;
-	return _instance;
-}
-
 sirius::library::unified::server::server(void)
 {
 	_core = new sirius::library::unified::server::core();

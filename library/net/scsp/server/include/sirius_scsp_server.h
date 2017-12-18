@@ -47,10 +47,9 @@ namespace sirius
 
 				private:
 					sirius::library::net::scsp::server::context_t * _context;
-					sirius::library::net::scsp::server::core * _core;
-					//int32_t _frame_index_video;
-					uint8_t * _video_data;
-					int32_t _state;
+					sirius::library::net::scsp::server::core *		_core;
+					uint8_t *	_video_data;
+					int32_t		_state;
 				};
 			};
 		};

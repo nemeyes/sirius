@@ -32,6 +32,7 @@ class RootWindowManager : public RootWindow::Delegate {
       bool with_controls,
       bool with_osr,
 	  bool present,
+	  void * hwnd,
       const CefRect& bounds,
       const std::string& url);
 

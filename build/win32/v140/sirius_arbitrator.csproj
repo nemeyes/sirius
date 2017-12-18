@@ -14,6 +14,21 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +50,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FirstFloor.ModernUI">
+      <HintPath>..\..\..\app\server\arbitrator\Bin\FirstFloor.ModernUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Windows.Shell">
+      <HintPath>..\..\..\app\server\arbitrator\Bin\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -55,6 +76,51 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\..\..\app\server\arbitrator\BingImage.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ContentLoaderImages.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ContentLoaderIntro.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernBBCodeBlock.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernButton.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernDialog.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernFrame.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernMenu.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernProgressRing.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsModernWindow.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesButton.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesDataGrid.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesDate.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesItemsControl.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesProgressBar.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesSampleForm.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesSlider.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesText.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\LoremIpsum.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\LoremIpsumList.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\LoremIpsumSplit.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\CancelNavigateSample.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\ErrorSample.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\Sample.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\SettingsAppearance.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Contents\SettingsAppearanceViewModel.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\FlickrImageLoader.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\LoremIpsumLoader.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\ContentLoader.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\ControlsModern.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\ControlsStyles.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\DpiAwareness.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\DpiAwarenessViewModel.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\Introduction.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\LayoutBasic.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\LayoutList.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\LayoutSplit.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\LayoutTab.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\LayoutWireframe.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\Navigation.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\Pages\Settings.xaml.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\SampleDisabledCommand.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\SampleFormViewModel.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\SampleMsgBoxCommand.cs" />
+    <Compile Include="..\..\..\app\server\arbitrator\SampleParameterCommand.cs" />
     <Page Include="..\..\..\app\server\arbitrator\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,33 +133,275 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.add.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.adobe.bridge.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.arrow.collapsed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.arrow.corner.up.right.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.arrow.down.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.arrow.expand.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.box.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.camera.flash.off.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.camera.flash.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.camera.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.cards.club.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.cards.diamond.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.cards.heart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.cards.spade.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\appbar.check.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\ModernUI.BingImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\ModernUI.HelloKitty.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\ModernUI.Love.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Assets\ModernUI.Snowflakes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ContentLoaderImages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ContentLoaderIntro.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernBBCodeBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernFrame.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernProgressRing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsModernWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesDataGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesDate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesItemsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesSampleForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesSlider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ControlsStylesText.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\LoremIpsum.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\LoremIpsumList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\LoremIpsumSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\CancelNavigateSample.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\ErrorSample.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\ModernFrame\Sample.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Contents\SettingsAppearance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\ContentLoader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\ControlsModern.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\ControlsStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\DpiAwareness.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\Introduction.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\LayoutBasic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\LayoutList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\LayoutSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\LayoutTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\LayoutWireframe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\Navigation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\..\app\server\arbitrator\Pages\Settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\app\server\arbitrator\Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
+      <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\..\..\app\server\arbitrator\Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+      <Link>Properties\Resources.Designer.cs</Link>
     </Compile>
     <Compile Include="..\..\..\app\server\arbitrator\Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
     <EmbeddedResource Include="..\..\..\app\server\arbitrator\Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Link>Properties\Resources.resx</Link>
     </EmbeddedResource>
     <None Include="..\..\..\app\server\arbitrator\Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <Link>Properties\Settings.settings</Link>
     </None>
     <AppDesigner Include="..\..\..\app\server\arbitrator\Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\app\server\arbitrator\App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\..\..\app\server\arbitrator\Assets\background.kitty.png" />
+    <Resource Include="..\..\..\app\server\arbitrator\Assets\background.love.jpg" />
+    <Resource Include="..\..\..\app\server\arbitrator\Assets\background.snowflakes.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

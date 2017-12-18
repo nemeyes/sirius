@@ -10,20 +10,30 @@ sirius::library::framework::server::web::core::core(void)
 	: _d3d11_video_source(nullptr)
 	, _host_video_source(nullptr)
 	, _notifier(nullptr)
-	, _gyro_enabled_attitude(true)
-	, _gyro_enabled_gravity(false)
-	, _gyro_enabled_rotation_rate(false)
-	, _gyro_enabled_rotation_rate_unbiased(false)
-	, _gyro_enabled_user_acceleration(false)
-	, _gyro_updateinterval(0.15f)
+	, _unified_server_ctx(nullptr)
+	, _unified_server(nullptr)
 {
 	_notifier = new sirius::library::misc::notification::internal::notifier();
 	while (_xml_msg_que.empty() == false)
 		_xml_msg_que.pop();
+
+	_unified_server_ctx = new sirius::library::unified::server::context_t();
+	_unified_server = new sirius::library::unified::server();
 }
 
 sirius::library::framework::server::web::core::~core()
 {
+	if (_unified_server_ctx)
+	{
+		delete _unified_server_ctx;
+		_unified_server_ctx = nullptr;
+	}
+	if (_unified_server)
+	{
+		delete _unified_server;
+		_unified_server = nullptr;
+	}
+
 	if (_notifier)
 	{
 		delete _notifier;
@@ -40,24 +50,32 @@ void sirius::library::framework::server::web::core::set_notification_callee(siri
 	_notifier->enable_notification(TRUE);
 }
 
-int32_t sirius::library::framework::server::web::core::open(sirius::library::framework::server::web::context_t * context)
+int32_t sirius::library::framework::server::web::core::initialize(sirius::library::framework::server::web::context_t * context)
 {
-	memcpy((void*)&_context, (void*)context, sizeof(sirius::library::framework::server::web::context_t));
+	int32_t status = sirius::library::framework::server::web::err_code_t::fail;
 
-	LOGGER::make_trace_log(SLVSC, "%s()_%d : parent window handle=%d", __FUNCTION__, __LINE__, _context.hwnd);
+	memmove((void*)&_context, (void*)context, sizeof(sirius::library::framework::server::web::context_t));
 
-	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
+	_unified_server_ctx->video_codec = context->video_codec;
+	_unified_server_ctx->video_width = context->video_width;
+	_unified_server_ctx->video_height = context->video_height;
+	_unified_server_ctx->video_fps = context->video_fps;
+	_unified_server_ctx->video_block_width = context->video_block_width;
+	_unified_server_ctx->video_block_height = context->video_block_height;
+	wcsncpy_s(_unified_server_ctx->uuid, context->uuid, sizeof(_unified_server_ctx->uuid));
+	_unified_server_ctx->portnumber = context->portnumber;
+
+	if (_unified_server_ctx->video_codec != sirius::library::unified::server::video_submedia_type_t::unknown)
 	{
-		_d3d11_video_source = new sirius::library::framework::server::web::d3d11_video_source(this);
-		_d3d11_video_source->start(_context.video_fps, sirius::library::framework::server::web::attendant_type_t::web);
-	}
-	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
-	{
-		_host_video_source = new sirius::library::framework::server::web::host_video_source(this);
-		_host_video_source->start(_context.video_fps, sirius::library::framework::server::web::attendant_type_t::web);
+		status = _unified_server->initialize(_unified_server_ctx);
+		if (status != sirius::library::framework::server::web::err_code_t::success)
+		{
+			_unified_server->release();
+			return status;
+		}
 	}
 
-	if (!sirius::library::unified::server::instance().is_video_compressor_initialized())
+	if (!_unified_server->is_video_compressor_initialized())
 	{
 		_venc_context.gpuindex		= context->gpuindex;
 		_venc_context.memtype		= context->video_process_type;
@@ -65,14 +83,41 @@ int32_t sirius::library::framework::server::web::core::open(sirius::library::fra
 		_venc_context.width			= context->video_width;
 		_venc_context.height		= context->video_height;
 		_venc_context.fps			= context->video_fps;
+		_venc_context.nbuffer		= context->video_nbuffer;
 		_venc_context.block_width	= context->video_block_width;
 		_venc_context.block_height	= context->video_block_height;
-		_venc_context.nbuffer		= context->video_nbuffer;
+		_venc_context.compression_level		= context->video_compression_level;
+		_venc_context.quantization_colors	= context->video_qauntization_colors;
 	}
 	return sirius::library::framework::server::web::err_code_t::success;
 }
 
-int32_t sirius::library::framework::server::web::core::close(void)
+int32_t sirius::library::framework::server::web::core::release(void)
+{
+	return _unified_server->release();
+}
+
+int32_t sirius::library::framework::server::web::core::play(void)
+{
+	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
+	{
+		_d3d11_video_source = new sirius::library::framework::server::web::d3d11_video_source(this);
+		_d3d11_video_source->start(_context.video_fps);
+	}
+	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
+	{
+		_host_video_source = new sirius::library::framework::server::web::host_video_source(this);
+		_host_video_source->start(_context.video_fps, 0);
+	}
+	return sirius::library::framework::server::web::err_code_t::success;
+}
+
+int32_t sirius::library::framework::server::web::core::pause(void)
+{
+	return sirius::library::framework::server::web::err_code_t::success;
+}
+
+int32_t sirius::library::framework::server::web::core::stop(void)
 {
 	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
 	{
@@ -93,66 +138,12 @@ int32_t sirius::library::framework::server::web::core::close(void)
 		}
 	}
 
-
-	if (_context.hwnd)
-		PostMessageA(_context.hwnd, WM_CLOSE, 0L, 0L);
-
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::play(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::pause(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::stop(void)
-{
 	return sirius::library::framework::server::web::err_code_t::success;
 }
 
 int32_t sirius::library::framework::server::web::core::state(void) const
 {
 	return sirius::library::framework::server::web::state_t::unknown;
-}
-
-int32_t sirius::library::framework::server::web::core::seek(int32_t diff)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::seek_to(int32_t second)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::seek_stop(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::forward(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::backward(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::reverse(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
-}
-
-int32_t sirius::library::framework::server::web::core::play_toggle(void)
-{
-	return sirius::library::framework::server::web::err_code_t::success;
 }
 
 void sirius::library::framework::server::web::core::post_msg_key(HWND hwnd, int32_t msg, int32_t key_code, bool extended)
@@ -237,140 +228,15 @@ void sirius::library::framework::server::web::core::on_mouse_wheel(int32_t pos_x
 
 }
 
-void sirius::library::framework::server::web::core::on_gyro(float x, float y, float z)
-{
-
-}
-
-void sirius::library::framework::server::web::core::on_pinch_zoom(float delta)
-{
-
-}
-
-void sirius::library::framework::server::web::core::on_gyro_attitude(float x, float y, float z, float w)
-{
-	//_gyro_attitude.x = y;
-	//_gyro_attitude.y = -x;
-	//_gyro_attitude.z = z;
-	//_gyro_attitude.w = w;
-	_gyro_attitude.x = x;
-	_gyro_attitude.y = y;
-	_gyro_attitude.z = z;
-	_gyro_attitude.w = w;
-}
-
-void sirius::library::framework::server::web::core::on_gyro_gravity(float x, float y, float z)
-{
-	_gyro_gravity.x = x;
-	_gyro_gravity.y = y;
-	_gyro_gravity.z = z;
-}
-
-void sirius::library::framework::server::web::core::on_gyro_rotation_rate(float x, float y, float z)
-{
-	_gyro_rotation_rate.x = x;
-	_gyro_rotation_rate.y = y;
-	_gyro_rotation_rate.z = z;
-}
-
-void sirius::library::framework::server::web::core::on_gyro_rotation_rate_unbiased(float x, float y, float z)
-{
-	_gyro_rotation_rate_unbiased.x = x;
-	_gyro_rotation_rate_unbiased.y = y;
-	_gyro_rotation_rate_unbiased.z = z;
-}
-
-void sirius::library::framework::server::web::core::on_gyro_user_acceleration(float x, float y, float z)
-{
-	_gyro_user_acceleration.x = x;
-	_gyro_user_acceleration.y = y;
-	_gyro_user_acceleration.z = z;
-}
-
-void sirius::library::framework::server::web::core::on_gyro_enabled_attitude(bool state)
-{
-	_gyro_enabled_attitude = state;
-
-	if (!_gyro_enabled_attitude &&
-		!_gyro_enabled_gravity &&
-		!_gyro_enabled_rotation_rate &&
-		!_gyro_enabled_rotation_rate_unbiased &&
-		!_gyro_enabled_user_acceleration)
-	{
-		_gyro_updateinterval = -1.0f;
-	}
-}
-
-void sirius::library::framework::server::web::core::on_gyro_enabled_gravity(bool state)
-{
-	_gyro_enabled_gravity = state;
-
-	if (!_gyro_enabled_attitude &&
-		!_gyro_enabled_gravity &&
-		!_gyro_enabled_rotation_rate &&
-		!_gyro_enabled_rotation_rate_unbiased &&
-		!_gyro_enabled_user_acceleration)
-	{
-		_gyro_updateinterval = -1.0f;
-	}
-}
-
-void sirius::library::framework::server::web::core::on_gyro_enabled_rotation_rate(bool state)
-{
-	_gyro_enabled_rotation_rate = state;
-
-	if (!_gyro_enabled_attitude &&
-		!_gyro_enabled_gravity &&
-		!_gyro_enabled_rotation_rate &&
-		!_gyro_enabled_rotation_rate_unbiased &&
-		!_gyro_enabled_user_acceleration)
-	{
-		_gyro_updateinterval = -1.0f;
-	}
-}
-
-void sirius::library::framework::server::web::core::on_gyro_enabled_rotation_rate_unbiased(bool state)
-{
-	_gyro_enabled_rotation_rate_unbiased = state;
-
-	if (!_gyro_enabled_attitude &&
-		!_gyro_enabled_gravity &&
-		!_gyro_enabled_rotation_rate &&
-		!_gyro_enabled_rotation_rate_unbiased &&
-		!_gyro_enabled_user_acceleration)
-	{
-		_gyro_updateinterval = -1.0f;
-	}
-}
-
-void sirius::library::framework::server::web::core::on_gyro_enabled_user_acceleration(bool state)
-{
-	_gyro_enabled_user_acceleration = state;
-
-	if (!_gyro_enabled_attitude &&
-		!_gyro_enabled_gravity &&
-		!_gyro_enabled_rotation_rate &&
-		!_gyro_enabled_rotation_rate_unbiased &&
-		!_gyro_enabled_user_acceleration)
-	{
-		_gyro_updateinterval = -1.0f;
-	}
-}
-
-void sirius::library::framework::server::web::core::on_gyro_updateinterval(float interval)
-{
-	_gyro_updateinterval = interval;
-}
-
-void sirius::library::framework::server::web::core::on_infoxml(const char * msg, int32_t length)
+void sirius::library::framework::server::web::core::on_info_xml(const uint8_t * msg, int32_t length)
 {
 	st_xml_msg st_msg;
 	st_msg.size = length;
-	st_msg.msg = msg;
+	st_msg.msg =(const char*)msg;
 	_xml_msg_que.push(st_msg);
 }
 
-int* sirius::library::framework::server::web::core::get_xml_msg()
+int* sirius::library::framework::server::web::core::get_xml_msg(void)
 {
 	if (_xml_msg_que.empty())
 		return nullptr;
@@ -382,196 +248,44 @@ int* sirius::library::framework::server::web::core::get_xml_msg()
 	return (int*)front.msg.c_str();
 }
 
-void sirius::library::framework::server::web::core::send_xml_msg(char* msg)
+void sirius::library::framework::server::web::core::send_xml_msg(uint8_t * msg)
 {
 	VARIANT var;
 	var.vt = VT_LPSTR;
-	var.pcVal = msg;
+	var.pcVal = (char*)msg;
 	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::info_xml, var);
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled(bool state)
-{
-	set_gyro_enabled_attitude(state);
-	set_gyro_enabled_gravity(state);
-	set_gyro_enabled_rotation_rate(state);
-	set_gyro_enabled_rotation_rate_unbiased(state);
-	set_gyro_enabled_user_acceleration(state);
-}
-
-bool sirius::library::framework::server::web::core::get_gyro_enabled_attitude()
-{
-	return _gyro_enabled_attitude;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled_attitude(bool state)
-{
-	BOOL state_4byte;
-	if (state) state_4byte = TRUE;
-	else state_4byte = FALSE;
-
-	VARIANT var;
-	var.vt = VT_I4;
-	var.intVal = state_4byte;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_enabled_attitude, var);
-}
-
-bool sirius::library::framework::server::web::core::get_gyro_enabled_gravity()
-{
-	return _gyro_enabled_gravity;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled_gravity(bool state)
-{
-	BOOL state_4byte;
-	if (state) state_4byte = TRUE;
-	else state_4byte = FALSE;
-
-	VARIANT var;
-	var.vt = VT_I4;
-	var.intVal = state_4byte;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_enabled_gravity, var);
-}
-
-bool sirius::library::framework::server::web::core::get_gyro_enabled_rotation_rate()
-{
-	return _gyro_enabled_rotation_rate;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled_rotation_rate(bool state)
-{
-	BOOL state_4byte;
-	if (state) state_4byte = TRUE;
-	else state_4byte = FALSE;
-
-	VARIANT var;
-	var.vt = VT_I4;
-	var.intVal = state_4byte;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_enabled_rotation_rate, var);
-}
-
-bool sirius::library::framework::server::web::core::get_gyro_enabled_rotation_rate_unbiased()
-{
-	return _gyro_enabled_rotation_rate_unbiased;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled_rotation_rate_unbiased(bool state)
-{
-	BOOL state_4byte;
-	if (state) state_4byte = TRUE;
-	else state_4byte = FALSE;
-
-	VARIANT var;
-	var.vt = VT_I4;
-	var.intVal = state_4byte;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_enabled_rotation_rate_unbiased, var);
-}
-
-bool sirius::library::framework::server::web::core::get_gyro_enabled_user_acceleration()
-{
-	return _gyro_enabled_user_acceleration;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_enabled_user_acceleration(bool state)
-{
-	BOOL state_4byte;
-	if (state) state_4byte = TRUE;
-	else state_4byte = FALSE;
-
-	VARIANT var;
-	var.vt = VT_I4;
-	var.intVal = state_4byte;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_enabled_user_acceleration, var);
-}
-
-float sirius::library::framework::server::web::core::get_gyro_updateinterval()
-{
-	return _gyro_updateinterval;
-}
-
-void sirius::library::framework::server::web::core::set_gyro_updateinterval(float interval)
-{
-	VARIANT var;
-	var.vt = VT_R4;
-	var.fltVal = interval;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::gyro_interval, var);
-}
-
-gyro_data sirius::library::framework::server::web::core::get_attitude()
-{
-	return _gyro_attitude;
-}
-
-gyro_data sirius::library::framework::server::web::core::get_gravity()
-{
-	return _gyro_gravity;
-}
-
-gyro_data sirius::library::framework::server::web::core::get_rotation_rate()
-{
-	return _gyro_rotation_rate;
-}
-
-gyro_data sirius::library::framework::server::web::core::get_rotation_rate_unbiased()
-{
-	return _gyro_rotation_rate_unbiased;
-}
-
-gyro_data sirius::library::framework::server::web::core::get_user_acceleration()
-{
-	return _gyro_user_acceleration;
 }
 
 void sirius::library::framework::server::web::core::on_video_initialize(void * device, int32_t hwnd, int32_t smt, int32_t width, int32_t height)
 {
-	int32_t ret;
-
-	//char log[MAX_PATH] = { 0 };
-	//sprintf_s(log, MAX_PATH, "on_video_initialize hwnd:%p", hwnd);
-	//OutputDebugStringA(log);
-
-	if (sirius::library::unified::server::instance().is_video_compressor_initialized())
+	int32_t status;
+	if (_unified_server->is_video_compressor_initialized())
 		on_video_release();
 
-	//if (!sirius::library::unified::server::instance().is_video_compressor_initialized())
-	{
-		_venc_context.device = device;
-		_venc_context.origin_width = width;
-		_venc_context.origin_height = height;
+	_venc_context.device = device;
+	_venc_context.origin_width = width;
+	_venc_context.origin_height = height;
 		
-		int pid = 0;
-		if (_context.type == sirius::library::framework::server::web::attendant_type_t::web)
-		{
-			pid = get_parent_pid();
-		}
-		else
-		{
-			pid = GetCurrentProcessId();
-		}
-		
-		_context.hwnd = (HWND)find_main_window(pid);
-		ret = sirius::library::unified::server::instance().initialize_video_compressor(&_venc_context);
-		LOGGER::make_trace_log(SLVSC, "%s()_%d : iwidth=%d, iheight=%d, ret=%d hwnd=%p ", __FUNCTION__, __LINE__, _venc_context.origin_width, _venc_context.origin_height, ret, hwnd);
-	}
+	status = _unified_server->initialize_video_compressor(&_venc_context);
 }
 
 void sirius::library::framework::server::web::core::on_video_receive(sirius::library::video::source::capturer::entity_t * captured)
 {
-	if (sirius::library::unified::server::instance().is_video_compressor_initialized())
+	if (_unified_server->is_video_compressor_initialized())
 	{
 		sirius::library::video::transform::codec::compressor::entity_t input;
 		input.memtype = captured->memtype;
 		input.data = captured->data;
 		input.data_size = captured->data_size;
 		input.data_capacity = captured->data_size;
-		sirius::library::unified::server::instance().compress(&input);
+		_unified_server->compress(&input);
 	}
 }
 
 void sirius::library::framework::server::web::core::on_video_release(void)
 {
-	if(sirius::library::unified::server::instance().is_video_compressor_initialized())
-		sirius::library::unified::server::instance().release_video_compressor();
+	if(_unified_server->is_video_compressor_initialized())
+		_unified_server->release_video_compressor();
 }
 
 int32_t sirius::library::framework::server::web::core::get_parent_pid(void)

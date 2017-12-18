@@ -25,14 +25,13 @@ sirius::library::net::scsp::server::core::core(const char * uuid, sirius::librar
 	: sirius::library::net::sicp::server(uuid, MTU_SIZE, 1024 * 1024 * 2, 1024 * 1024 * 2, 1024 * 1024 * 4, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, false, false)
 	, _context(nullptr)
 	, _front(front)
-	, _video_index(0)
 {
 	add_command(new sirius::library::net::scsp::play_req_cmd(this));
 }
 
 sirius::library::net::scsp::server::core::~core(void)
 {
-	stop();
+
 }
 
 int32_t sirius::library::net::scsp::server::core::start(sirius::library::net::scsp::server::context_t * context)
@@ -67,7 +66,7 @@ int32_t sirius::library::net::scsp::server::core::stop(void)
 
 int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, size_t nbytes, long long timestamp)
 {
-	int32_t res_code = sirius::library::net::scsp::server::err_code_t::success;
+	int32_t status = sirius::library::net::scsp::server::err_code_t::success;
 
 	if (state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped)
 	{
@@ -84,31 +83,24 @@ int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, si
 			{
 				std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t> peer = *dst_uuid_iter;
 				data_request((char*)peer->uuid, CMD_VIDEO_STREAM_DATA, reinterpret_cast<char*>(bytes), nbytes);
-				if (_video_index <= 4)
-					LOGGER::make_info_log(SLNS, "%s(), %d, video data request (video_index:%d)", __FUNCTION__, __LINE__, _video_index);
 			}
 		}
 		else
 		{
 			_video_conf.state = sirius::library::net::scsp::server::state_t::stopped;
-			LOGGER::make_info_log(SLNS, "%s()_%d video_conf(state_stopped) ", __FUNCTION__, __LINE__);
 		}
 	}
 	else
 	{
-		res_code = sirius::library::net::scsp::server::err_code_t::not_implemented;
+		status = sirius::library::net::scsp::server::err_code_t::not_implemented;
 	}
-	_video_index++;
-	return res_code;
+	return status;
 }
 
 int32_t sirius::library::net::scsp::server::core::play(int32_t flags)
 {
 	if (_context && _context->controller)
-	{
-		LOGGER::make_trace_log(SLNS, "%s()_%d : flags=%d", __FUNCTION__, __LINE__, flags);
 		return _context->controller->play(flags);
-	}
 	return sirius::library::net::scsp::server::err_code_t::fail;
 }
 
@@ -123,7 +115,13 @@ int32_t sirius::library::net::scsp::server::core::stop(int32_t flags)
 {
 	if (_context && _context->controller)
 		return _context->controller->stop(flags);
+	return sirius::library::net::scsp::server::err_code_t::fail;
+}
 
+int32_t sirius::library::net::scsp::server::core::invalidate(void)
+{
+	if (_context && _context->controller)
+		return _context->controller->invalidate();
 	return sirius::library::net::scsp::server::err_code_t::fail;
 }
 
@@ -140,7 +138,6 @@ void sirius::library::net::scsp::server::core::destroy_session_callback(const ch
 	{
 		sirius::autolock mutex(&_video_conf.cs);
 
-		//dst_uuid_iter = std::find(_video_conf.peers.begin(), _video_conf.peers.end(), uuid);
 		for (dst_uuid_iter = _video_conf.peers.begin(); dst_uuid_iter != _video_conf.peers.end(); dst_uuid_iter++)
 		{
 			if (!strncmp((*dst_uuid_iter)->uuid, uuid, sizeof((*dst_uuid_iter)->uuid)))
@@ -157,8 +154,9 @@ void sirius::library::net::scsp::server::core::destroy_session_callback(const ch
 	}
 }
 
-int32_t sirius::library::net::scsp::server::core::play_callback(const char * client_uuid, const char * msg, int length, SOCKET clientsocket)
+int32_t sirius::library::net::scsp::server::core::play_callback(const char * client_uuid, int32_t type, const char * attendant_uuid)
 {
+/*
 	int32_t res_code = sirius::base::err_code_t::fail;
 
 	if (!_context)
@@ -241,6 +239,69 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 		LOGGER::make_error_log(SLNS, "%s(), %d : client_uuid=%s, attendant_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
 	}
 	return res_code;
+*/
+	int32_t status = sirius::library::net::scsp::server::err_code_t::fail;
+
+	if (!_context)
+		return sirius::library::net::scsp::server::err_code_t::fail;
+
+	Json::Value wpacket;
+	Json::StyledWriter writer;
+	if (type == sirius::library::net::scsp::server::media_type_t::video)
+	{
+		if (type == sirius::library::net::scsp::server::media_type_t::video)
+		{
+			wpacket["type"] = type;
+			wpacket["codec"] = _context->video_codec;
+			wpacket["video_width"] = _context->video_width;
+			wpacket["video_height"] = _context->video_height;
+			wpacket["video_fps"] = _context->video_fps;
+			wpacket["video_block_width"] = _context->video_block_width;
+			wpacket["video_block_height"] = _context->video_block_height;
+		}
+		status = sirius::library::net::scsp::server::err_code_t::success;
+	}
+	else
+	{
+		status = sirius::library::net::scsp::server::err_code_t::fail;
+	}
+
+	wpacket["rcode"] = status;
+	std::string response = writer.write(wpacket);
+	data_request((char*)client_uuid, CMD_PLAY_RES, (char*)response.c_str(), response.size());
+
+	if (status == sirius::library::net::scsp::server::err_code_t::success)
+	{
+		if (type == sirius::library::net::scsp::server::media_type_t::video)
+		{
+			{
+				sirius::autolock mutex(&_video_conf.cs);
+
+				std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t> peer = std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t>(new sirius::library::net::scsp::server::core::stream_session_info_t);
+				strncpy_s(peer->uuid, client_uuid, sizeof(peer->uuid));
+				_video_conf.peers.push_back(peer);
+				if (_video_conf.state != sirius::library::net::scsp::server::state_t::begin_publishing)
+				{
+					_video_conf.state = sirius::library::net::scsp::server::state_t::begin_publishing;
+					play(sirius::library::net::scsp::server::media_type_t::video);
+				}
+				else
+				{
+					invalidate();
+				}
+			}
+
+		}
+		else
+		{
+			status = -1;
+		}
+	}
+	else
+	{
+		//LOGGER::make_error_log("sirius::library::net::scsp::server", "%s(),%d : client_uuid=%s, container_uuid=%s, msg=%s, res_msg=%s", __FUNCTION__, __LINE__, client_uuid, _context->uuid, msg, res_json.c_str());
+	}
+	return status;
 }
 
 int32_t sirius::library::net::scsp::server::core::state(int32_t type)

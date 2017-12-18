@@ -29,9 +29,11 @@ namespace sirius
 						int32_t post(int32_t smt, uint8_t * video, int32_t width, int32_t height);
 
 					private:
-						bool _brecv;
-						uint8_t * _buffer;
-						int32_t _buffer_size;
+						bool		_brecv;
+						uint8_t *	_buffer;
+						int32_t		_buffer_size;
+
+						sirius::library::video::source::cpu::capturer::context_t * _context;
 					};
 				};
 			};

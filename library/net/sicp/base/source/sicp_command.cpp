@@ -122,14 +122,14 @@ void sirius::library::net::sicp::abstract_command::__execute(void)
 }
 
 #if defined(WITH_WORKING_AS_SERVER)
-sirius::library::net::sicp::create_session_req_cmd::create_session_req_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::create_session_req::create_session_req(sirius::library::net::sicp::processor * prcsr)
 		: abstract_command(prcsr, CMD_CREATE_SESSION_REQUEST)
 {}
 
-sirius::library::net::sicp::create_session_req_cmd::~create_session_req_cmd(void)
+sirius::library::net::sicp::create_session_req::~create_session_req(void)
 {}
 
-void sirius::library::net::sicp::create_session_req_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::create_session_req::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	CMD_CREATE_SESSION_RES_T res;
 	memset(&res, 0x00, sizeof(CMD_CREATE_SESSION_RES_T));
@@ -183,14 +183,14 @@ void sirius::library::net::sicp::create_session_req_cmd::execute(const char * ds
 }
 
 #else
-sirius::library::net::sicp::create_session_res_cmd::create_session_res_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::create_session_res::create_session_res(sirius::library::net::sicp::processor * prcsr)
 	: abstract_command(prcsr, CMD_CREATE_SESSION_RESPONSE)
 {}
 
-sirius::library::net::sicp::create_session_res_cmd::~create_session_res_cmd(void)
+sirius::library::net::sicp::create_session_res::~create_session_res(void)
 {}
 
-void sirius::library::net::sicp::create_session_res_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::create_session_res::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	CMD_CREATE_SESSION_RES_T payload;
 	memset(&payload, 0x00, sizeof(CMD_CREATE_SESSION_RES_T));
@@ -207,14 +207,14 @@ void sirius::library::net::sicp::create_session_res_cmd::execute(const char * ds
 #endif
 
 #if defined(WITH_WORKING_AS_SERVER)
-sirius::library::net::sicp::destroy_session_ind_cmd::destroy_session_ind_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_DESTROY_SESSION_INDICATION)
 {}
 
-sirius::library::net::sicp::destroy_session_ind_cmd::~destroy_session_ind_cmd(void)
+sirius::library::net::sicp::destroy_session_noti::~destroy_session_noti(void)
 {}
 
-void sirius::library::net::sicp::destroy_session_ind_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	if (!session->assoc_flag())	//이미 Leave 되어 있으면 처리를 하지 않는다.
 		return;
@@ -224,37 +224,37 @@ void sirius::library::net::sicp::destroy_session_ind_cmd::execute(const char * d
 		_processor->destroy_session_completion_callback(src, session);
 }
 #else
-sirius::library::net::sicp::destroy_session_ind_cmd::destroy_session_ind_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_DESTROY_SESSION_INDICATION)
 {}
 
-sirius::library::net::sicp::destroy_session_ind_cmd::~destroy_session_ind_cmd(void)
+sirius::library::net::sicp::destroy_session_noti::~destroy_session_noti(void)
 {}
 
-void sirius::library::net::sicp::destroy_session_ind_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	_processor->enable_disconnect_flag(true);
 }
 #endif
 
-sirius::library::net::sicp::keepalive_req_cmd::keepalive_req_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::keepalive_req::keepalive_req(sirius::library::net::sicp::processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_KEEPALIVE_REQUEST)
 {}
 
-sirius::library::net::sicp::keepalive_req_cmd::~keepalive_req_cmd(void)
+sirius::library::net::sicp::keepalive_req::~keepalive_req(void)
 {}
 
-void sirius::library::net::sicp::keepalive_req_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::keepalive_req::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	session->push_send_packet(SERVER_UUID, uuid(), CMD_KEEPALIVE_RESPONSE, nullptr, 0);
 }
 
-sirius::library::net::sicp::keepalive_res_cmd::keepalive_res_cmd(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::keepalive_res::keepalive_res(sirius::library::net::sicp::processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_KEEPALIVE_RESPONSE)
 {}
 
-sirius::library::net::sicp::keepalive_res_cmd::~keepalive_res_cmd(void)
+sirius::library::net::sicp::keepalive_res::~keepalive_res(void)
 {}
 
-void sirius::library::net::sicp::keepalive_res_cmd::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::keepalive_res::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {}

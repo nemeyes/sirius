@@ -67,6 +67,7 @@ class RootWindow :
                     bool with_controls,
                     bool with_osr,
 					bool present,
+					void * hwnd,
                     const CefRect& bounds,
                     const CefBrowserSettings& settings,
                     const std::string& url) = 0;

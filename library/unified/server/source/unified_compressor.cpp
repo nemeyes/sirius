@@ -44,7 +44,6 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 	{
 		case sirius::library::unified::server::video_submedia_type_t::png :
 		{
-#if defined(WITH_PARTIAL_COMPRESSION)
 			_venc_ctx = new  sirius::library::unified::partialpng::compressor::context_t();
 			_venc = new sirius::library::unified::partialpng::compressor(this);
 
@@ -56,12 +55,13 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->width = _external_venc_ctx->width;
 			venc_ctx->height = _external_venc_ctx->height;
 			venc_ctx->nbuffer = _external_venc_ctx->nbuffer;
-			venc_ctx->block_width = 128;
-			venc_ctx->block_height = 72;
+			venc_ctx->block_width = _external_venc_ctx->block_width;
+			venc_ctx->block_height = _external_venc_ctx->block_height;
+			venc_ctx->compression_level = _external_venc_ctx->compression_level;
 			venc_ctx->gamma = 1 / 2.2f;
 			venc_ctx->floyd = 0.5f;
 			venc_ctx->speed = 10;
-			venc_ctx->max_colors = 128;
+			venc_ctx->max_colors = _external_venc_ctx->quantization_colors;
 			venc_ctx->min_quality = 50;
 			venc_ctx->max_quality = 80;
 			venc_ctx->fast_compression = true;
@@ -75,44 +75,6 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 				if (_play_flag & sirius::library::unified::server::media_type_t::video)
 					venc->play();
 			}
-#else
-			_venc_ctx = new sirius::library::unified::png::compressor::context_t();
-			_venc = new sirius::library::unified::png::compressor(this);
-
-			sirius::library::unified::png::compressor::context_t * venc_ctx = static_cast<sirius::library::unified::png::compressor::context_t*>(_venc_ctx);
-			sirius::library::unified::png::compressor * venc = static_cast<sirius::library::unified::png::compressor*>(_venc);
-
-			venc_ctx->memtype = _external_venc_ctx->memtype;
-			venc_ctx->device = _external_venc_ctx->device;
-			venc_ctx->width = _external_venc_ctx->width;
-			venc_ctx->height = _external_venc_ctx->height;
-			venc_ctx->nbuffer = _external_venc_ctx->nbuffer;
-			venc_ctx->gamma = 1/2.2f;
-			venc_ctx->floyd = 0.5f;
-			venc_ctx->speed = 10;
-			venc_ctx->max_colors = 128;
-			venc_ctx->min_quality = 50;
-			venc_ctx->max_quality = 80;
-			venc_ctx->fast_compression = true;
-			venc->initialize(venc_ctx);
-			if (_external_venc_ctx->play_after_init)
-			{
-				venc->play();
-			}
-			else
-			{
-				if (_play_flag & sirius::library::unified::server::media_type_t::video)
-					venc->play();
-			}
-#endif
-			break;
-		}
-		case sirius::library::unified::server::video_submedia_type_t::jpeg :
-		{
-			break;
-		}
-		case sirius::library::unified::server::video_submedia_type_t::dxt :
-		{
 			break;
 		}
 	}
@@ -200,6 +162,20 @@ int32_t sirius::library::unified::compressor::stop(int32_t flag)
 
 		if (_venc)
 			status |= _venc->stop();
+	}
+
+	return status;
+}
+
+int32_t	sirius::library::unified::compressor::invalidate(void)
+{
+	int32_t status = sirius::library::unified::server::err_code_t::success;
+	//if (flag & elastics::app::static_view::lib::unified::server::media_type_t::video)
+	{
+		sirius::exclusive_scopedlock mutex(&_venc_lock);
+
+		if (_venc)
+			status |= _venc->invalidate();
 	}
 
 	return status;

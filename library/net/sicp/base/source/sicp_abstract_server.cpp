@@ -9,22 +9,25 @@ sirius::library::net::sicp::abstract_server::abstract_server(int32_t mtu, int32_
 	, _sequence(0)
 {
 	::InitializeCriticalSection(&_assoc_sessions_cs);
+	::InitializeCriticalSection(&_closed_sessions_cs);
 	strncpy_s(_uuid, uuid, strlen(uuid)+1);
 
 	sirius::library::net::sicp::base::initialize();
 
-	add_command(new create_session_req_cmd(this));
-	add_command(new destroy_session_ind_cmd(this));
-#if defined(WITH_KEEPALIVE)
-	add_command(new keepalive_req_cmd(this));
-	add_command(new keepalive_res_cmd(this));
-#endif
+	add_command(new create_session_req(this));
+	add_command(new destroy_session_noti(this));
+
+	if (_use_keep_alive)
+	{
+		add_command(new keepalive_req(this));
+	}
 }
 
 sirius::library::net::sicp::abstract_server::~abstract_server(void)
 {
 	clear_command_list();
 	sirius::library::net::sicp::base::release();
+	::DeleteCriticalSection(&_closed_sessions_cs);
 	::DeleteCriticalSection(&_assoc_sessions_cs);
 }
 
@@ -165,97 +168,136 @@ void sirius::library::net::sicp::abstract_server::destroy_session_callback(std::
 	unregister_assoc_client(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 }
 
-int32_t sirius::library::net::sicp::abstract_server::clean_conn_client(bool force_clean)
+int32_t sirius::library::net::sicp::abstract_server::clean_conn_session(bool force_clean)
 {
-	std::vector<std::shared_ptr<sirius::library::net::session>>::iterator iter;
+	std::vector<std::shared_ptr<sirius::library::net::session>> finalized_sessions;
+	std::vector<std::shared_ptr<sirius::library::net::session>> connected_sessions;
 
+	{
+		sirius::autolock lock(&_conn_sessions_cs);
+		if (_conn_sessions.size() > 0)
+		{
+			connected_sessions = _conn_sessions;
+			_conn_sessions.clear();
+		}
+	}
+
+	std::vector<std::shared_ptr<sirius::library::net::session>>::iterator iter;
 	uint64_t now = ::GetTickCount64();
-	iter = _conn_sessions.begin();
-	while (iter != _conn_sessions.end())
+	iter = connected_sessions.begin();
+	while (iter != connected_sessions.end())
 	{
 		std::shared_ptr<sirius::library::net::sicp::session> ses = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(*iter);
-		uint64_t interval = now - ses->get_last_access_tm();
-		if (interval > 10000)
+		int64_t interval = now - ses->get_last_access_tm();
+		if (interval > KEEPALIVE_INTERVAL)
 		{
-			if ((!ses->connected_flag() && ses->fd() != INVALID_SOCKET && ses.use_count() == 2 && strlen(ses->uuid()) == 0) || force_clean)
+			if (ses->connected_flag() || force_clean)
 			{
-				//assoc 이전에 종료된 세션 정리.
+				ses->connected_flag(false);
 				ses->close();
 			}
+		}
+		else
+		{
+			finalized_sessions.push_back(ses);
 		}
 		++iter;
 	}
 
-
-	// 종료된 세션 정리.
-	iter = _conn_sessions.begin();
-	while (iter != _conn_sessions.end())
 	{
-		std::shared_ptr<sirius::library::net::sicp::session> ses = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(*iter);
-		int64_t interval = now - ses->get_last_access_tm();
-		if (interval > 5000)
+		sirius::autolock lock(&_conn_sessions_cs);
+		if (finalized_sessions.size() > 0)
 		{
-			if ((!ses->connected_flag() && ses->fd() == INVALID_SOCKET && !ses->assoc_flag() && ses.use_count() == 2) || force_clean)
-			{
-				iter = _conn_sessions.erase(iter);
-			}
-			else
-				++iter;
+			_conn_sessions = finalized_sessions;
 		}
-		else
-			++iter;
 	}
+
 	return _conn_sessions.size();
 }
 
 int32_t sirius::library::net::sicp::abstract_server::clean_assoc_session(bool force_clean)
 {
-	sirius::autolock lock(&_assoc_sessions_cs);
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> associated_sessions;
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> closed_sessions;
+
+
+	{
+		sirius::autolock lock(&_assoc_sessions_cs);
+		if (_assoc_sessions.size() > 0)
+		{
+			associated_sessions = _assoc_sessions;
+			_assoc_sessions.clear();
+		}
+	}
+
+
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
-
 	uint64_t now = ::GetTickCount64();
-	iter = _assoc_sessions.begin();
-
-	for (; iter != _assoc_sessions.end();)
+	iter = associated_sessions.begin();
+	while (iter != associated_sessions.end())
 	{
 		std::shared_ptr<sirius::library::net::sicp::session> ses = iter->second;
 		uint64_t interval = now - ses->get_last_access_tm();
-		//		ses->_interval = interval;
-		if (interval > 20000)
+		if (interval > KEEPALIVE_INTERVAL)
 		{
-			if ((!ses->connected_flag() && ses->assoc_flag() && ses->fd() != INVALID_SOCKET) || force_clean)
+			if ((ses->fd() != INVALID_SOCKET) || force_clean)
 			{
-				destroy_session_completion_callback(ses->uuid(), ses);
-				ses->assoc_flag(false);
+				if (ses->assoc_flag())
+				{
+					destroy_session_completion_callback(ses->uuid(), ses);
+					ses->assoc_flag(false);
+				}
 				ses->close();
 			}
+			_closed_sessions.insert(std::make_pair(iter->first, iter->second));
 		}
-
+		else
+		{
+			finalized_sessions.insert(std::make_pair(iter->first, iter->second));
+		}
 		++iter;
 	}
 
-	iter = _assoc_sessions.begin();
-	for (; iter != _assoc_sessions.end();)
+	{
+		sirius::autolock lock(&_assoc_sessions_cs);
+		if (finalized_sessions.size() > 0)
+		{
+			_assoc_sessions = finalized_sessions;
+		}
+	}
+
+	{
+		sirius::autolock lock(&_closed_sessions_cs);
+		if (_closed_sessions.size() > 0)
+		{
+			closed_sessions = _closed_sessions;
+			_closed_sessions.clear();
+		}
+	}
+
+	finalized_sessions.clear();
+	now = ::GetTickCount64();
+	iter = closed_sessions.begin();
+	while (iter != closed_sessions.end())
 	{
 		std::shared_ptr<sirius::library::net::sicp::session> ses = iter->second;
-		int64_t interval = now - ses->get_last_access_tm();
-		if (interval > 5000)
+		uint64_t interval = now - ses->get_last_access_tm();
+		if (interval <= DESTROY_INTERVAL)
 		{
-			if ((!ses->connected_flag() && ses->fd() == INVALID_SOCKET) || force_clean)
-			{
-				if(ses->assoc_flag())
-					destroy_session_completion_callback(ses->uuid(), ses);
-
-				ses->assoc_flag(false);
-				ses->update_last_access_tm();
-				iter = _assoc_sessions.erase(iter);
-			}
-			else
-				++iter;
+			finalized_sessions.insert(std::make_pair(iter->first, iter->second));
 		}
-		else
-			++iter;
+		++iter;
 	}
+
+	{
+		sirius::autolock lock(&_closed_sessions_cs);
+		if (finalized_sessions.size() > 0)
+		{
+			_closed_sessions = finalized_sessions;
+		}
+	}
+
 	return _assoc_sessions.size();
 }
 
@@ -326,15 +368,11 @@ void sirius::library::net::sicp::abstract_server::remove_command(int32_t command
 void sirius::library::net::sicp::abstract_server::create_session_completion_callback(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	create_session_callback(uuid);
-	//if (_front)
-	//	_front->create_session_callback(uuid);
 }
 
 void sirius::library::net::sicp::abstract_server::destroy_session_completion_callback(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	destroy_session_callback(uuid);
-	//if (_front)
-	//	_front->destroy_session_callback(uuid);
 }
 
 void sirius::library::net::sicp::abstract_server::clear_command_list(void)
@@ -350,41 +388,26 @@ void sirius::library::net::sicp::abstract_server::clear_command_list(void)
 
 void sirius::library::net::sicp::abstract_server::process(void)
 {
+	const unsigned long msleep = 100;
+	const unsigned long onesec = 1000;
+	long long elapsed_millisec = 0;
+
 	_server->start(_address, _port_number, _io_thread_pool_count);
-	int ac = 0, cc = 0;
 	while (_run)
 	{
-#if defined(WITH_KEEPALIVE)
-		std::map<std::string, std::shared_ptr<ic::session>> sessions = get_clients();
-		std::map<std::string, std::shared_ptr<ic::session>>::iterator iter;
-		for (iter = sessions.begin(); iter != sessions.end(); iter++)
+		clean_conn_session();
+
+		if (_use_keep_alive)
 		{
-			std::shared_ptr<ic::session> session = (*iter).second;
-			session->update_hb_end_time();
-			if (session->check_hb())
-			{
-				CMD_KEEPALIVE_PAYLOAD_T payload;
-				memset(&payload, 0x00, sizeof(CMD_KEEPALIVE_PAYLOAD_T));
-				payload.code = CMD_ERR_CODE_FAIL;
-				session->push_send_packet(session->uuid(), _uuid, CMD_KEEPALIVE_REQUEST, reinterpret_cast<char*>(&payload), sizeof(CMD_KEEPALIVE_PAYLOAD_T));
-				session->update_hb_start_time();
-			}
+			clean_conn_session();
 		}
-#endif
 
-		cc = clean_conn_client();
-		::Sleep(500);
-
-		if (!_use_keep_alive)
-			continue;
-
-		ac = clean_assoc_session();
-		
-		//polling_callback();
+		::Sleep(msleep);
+		elapsed_millisec += msleep;
 	}
 
 	clean_assoc_session(true);
-	clean_conn_client(true);
+	clean_conn_session(true);
 
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> sessions = get_assoc_clients();
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;

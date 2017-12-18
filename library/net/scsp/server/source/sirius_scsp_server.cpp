@@ -15,7 +15,7 @@ sirius::library::net::scsp::server::server(void)
 
 sirius::library::net::scsp::server::~server(void)
 {
-	stop();
+
 }
 
 int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::server::context_t * context)
@@ -72,12 +72,6 @@ int32_t framenumber = 0;
 
 int32_t sirius::library::net::scsp::server::post_video(uint8_t * bytes, size_t nbytes, long long timestamp)
 {
-	const uint8_t contents_count = 1;
-	int32_t data_pos = 0;
-
-	if (MAX_VIDEO_ES_SIZE < nbytes)
-		LOGGER::make_error_log(SLNS, "%s(), %d, [MINOR] streaming video size error(error_code:%d) max_video_es_size_over, max=%d, size=%d)", __FUNCTION__, __LINE__, sirius::library::net::scsp::server::err_code_t::max_es_size_over, MAX_VIDEO_ES_SIZE, nbytes);
-
 	if ((_video_data != nullptr) && (_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
 	{
 		uint8_t * video_data = _video_data;

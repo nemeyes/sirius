@@ -7,10 +7,8 @@
 
 #include "attendant_proxy.h"
 
-bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[])
+bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[], sirius::app::attendant::proxy::context_t * context)
 {
-	sirius::app::attendant::proxy::context_t * context = sirius::app::attendant::proxy::instance().context();
-
 	wchar_t * pargv;
 	std::map<std::wstring, std::wstring> param;
 	for (int32_t i = 1; i < argc; i++)
@@ -42,20 +40,10 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 
 	std::map<std::wstring, std::wstring>::iterator iter;
 	std::wstring value;
-	if (param.end() != (iter = param.find(L"client_uuid")))
-	{
-		value = iter->second;
-		wcscpy_s(context->client_uuid, value.c_str());
-	}
 	if (param.end() != (iter = param.find(L"uuid")))
 	{
 		value = iter->second;
 		wcscpy_s(context->uuid, value.c_str());
-	}
-	if (param.end() != (iter = param.find(L"client_id")))
-	{
-		value = iter->second;
-		wcscpy_s(context->client_id, value.c_str());
 	}
 	if (param.end() != (iter = param.find(L"control_server_portnumber")))
 	{
@@ -128,6 +116,16 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_block_height = _wtoi(value.c_str());
 	}
+	if (param.end() != (iter = param.find(L"video_compression_level")))
+	{
+		value = iter->second;
+		context->video_compression_level = _wtoi(value.c_str());
+	}
+	if (param.end() != (iter = param.find(L"video_quantization_colors")))
+	{
+		value = iter->second;
+		context->video_quantization_colors = _wtoi(value.c_str());
+	}
 	if (param.end() != (iter = param.find(L"gpu_index")))
 	{
 		value = iter->second;
@@ -165,12 +163,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 	return true;
 }
 
-sirius::app::attendant::proxy & sirius::app::attendant::proxy::instance(void)
-{
-	static sirius::app::attendant::proxy _instance;
-	return _instance;
-}
-
 sirius::app::attendant::proxy::context_t * sirius::app::attendant::proxy::context(void)
 {
 	return &_context;
@@ -196,40 +188,19 @@ sirius::app::attendant::proxy::~proxy(void)
 
 int32_t sirius::app::attendant::proxy::initialize(void)
 {
-	sirius::app::attendant::proxy::context_t * context = sirius::app::attendant::proxy::instance().context();
-	/*int str_size = WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, NULL, 0, NULL, NULL);
-	char* str_ptr = new char[str_size];
-	WideCharToMultiByte(CP_ACP, 0, context->client_id, -1, str_ptr, str_size, 0, 0);
-	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNS, str_ptr);
-	
-	if (str_ptr)
-	{
-		delete [] str_ptr;
-		str_ptr = NULL;
-	}*/
+	sirius::app::attendant::proxy::context_t * context = this->context();
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNSC, "");
 
 	char * mb_uuid = nullptr;
-	char * mb_client_uuid = nullptr;
 	sirius::stringhelper::convert_wide2multibyte((wchar_t*)context->uuid, &mb_uuid);
-	sirius::stringhelper::convert_wide2multibyte((wchar_t*)context->client_uuid, &mb_client_uuid);
 
 	if (mb_uuid && strlen(mb_uuid) > 0)
 	{
-		if (mb_client_uuid && strlen(mb_client_uuid) > 0)
-		{
-			_core = new sirius::app::attendant::proxy::core(this, mb_uuid, mb_client_uuid);
-		}
-		else
-		{
-			_core = new sirius::app::attendant::proxy::core(this, mb_uuid, nullptr);
-		}
+		_core = new sirius::app::attendant::proxy::core(this, mb_uuid);
 	}
 
 	if (mb_uuid)
 		free(mb_uuid);
-	if (mb_client_uuid)
-		free(mb_client_uuid);
 
 	if (_core)
 		return _core->initialize(context);
@@ -278,32 +249,28 @@ int32_t sirius::app::attendant::proxy::stop(void)
 	return sirius::app::attendant::proxy::err_code_t::fail;
 }
 
-int32_t sirius::app::attendant::proxy::play_toggle(void)
+void sirius::app::attendant::proxy::on_connect_attendant(int32_t code)
 {
 	if (_core)
-		return _core->play_toggle();
-	return sirius::app::attendant::proxy::err_code_t::fail;
+		_core->on_connect_attendant(code);
 }
 
-int32_t sirius::app::attendant::proxy::backward(void)
+void sirius::app::attendant::proxy::on_disconnect_attendant(void)
 {
 	if (_core)
-		return _core->backward();
-	return sirius::app::attendant::proxy::err_code_t::fail;
+		_core->on_disconnect_attendant();
 }
 
-int32_t sirius::app::attendant::proxy::forward(void)
+void sirius::app::attendant::proxy::on_start_attendant(const char * client_uuid, const char * client_id)
 {
 	if (_core)
-		return _core->forward();
-	return sirius::app::attendant::proxy::err_code_t::fail;
+		_core->on_start_attendant(client_uuid, client_id);
 }
 
-int32_t sirius::app::attendant::proxy::reverse(void)
+void sirius::app::attendant::proxy::on_stop_attendant(const char * client_uuid)
 {
 	if (_core)
-		return _core->reverse();
-	return sirius::app::attendant::proxy::err_code_t::fail;
+		_core->on_stop_attendant(client_uuid);
 }
 
 void sirius::app::attendant::proxy::on_destroy(void)
@@ -328,7 +295,7 @@ void sirius::app::attendant::proxy::on_key_down(int8_t type, int32_t key)
 {
 	if (_core)
 	{
-#if defined(_DEBUG)
+/*
 		if (context()->play_after_connect == false)
 		{
 			if (_key_pressed == FALSE)
@@ -338,16 +305,15 @@ void sirius::app::attendant::proxy::on_key_down(int8_t type, int32_t key)
 				{
 				//case VK_NUMPAD4 :	if(_core) _core->Seek(-10);		break;
 				//case VK_NUMPAD6 :	if(_core) _core->Seek(10);		break;
-				case VK_NUMPAD3 :	if(_core) _core->forward();		break;
-				case VK_NUMPAD1 :	if(_core) _core->backward();	break;
-				case VK_NUMPAD2 :	if(_core) _core->reverse();		break;
-				case VK_NUMPAD0 :	if(_core) _core->play_toggle();	break;
+				//case VK_NUMPAD3 :	if(_core) _core->forward();		break;
+				//case VK_NUMPAD1 :	if(_core) _core->backward();	break;
+				//case VK_NUMPAD2 :	if(_core) _core->reverse();		break;
+				//case VK_NUMPAD0 :	if(_core) _core->play_toggle();	break;
 				}
 			}
 		}		
-#endif
+#*/
 		_core->on_key_down(type, key);
-		//LOGGER::make_debug_log("keycontrol", "%s(), [key] = %d", __FUNCTION__, key);
 	}
 }
 
@@ -399,122 +365,20 @@ void sirius::app::attendant::proxy::on_mouse_wheel(int32_t pos_x, int32_t pos_y,
 		_core->on_mouse_wheel(pos_x, pos_y, wheel_z);
 }
 
-void sirius::app::attendant::proxy::on_gyro(float x, float y, float z)
+void sirius::app::attendant::proxy::app_to_attendant(uint8_t * packet, int32_t len)
 {
 	if (_core)
-		_core->on_gyro(x, y, z);
+		_core->app_to_attendant(packet, len);
 }
 
-void sirius::app::attendant::proxy::on_pinch_zoom(float delta)
+void sirius::app::attendant::proxy::on_attendant_to_app(uint8_t * packet, int32_t len)
 {
 	if (_core)
-		_core->on_pinch_zoom(delta);
+		_core->on_attendant_to_app(packet, len);
 }
 
-void sirius::app::attendant::proxy::on_gyro_attitude(float x, float y, float z, float w)
+void sirius::app::attendant::proxy::set_attendant_cb(FuncPtrCallback fncallback)
 {
 	if (_core)
-		_core->on_gyro_attitude(x, y, z, w);
-}
-
-void sirius::app::attendant::proxy::on_gyro_gravity(float x, float y, float z)
-{
-	if (_core)
-		_core->on_gyro_gravity(x, y, z);
-}
-
-void sirius::app::attendant::proxy::on_gyro_rotation_rate(float x, float y, float z)
-{
-	if (_core)
-		_core->on_gyro_rotation_rate(x, y, z);
-}
-
-void sirius::app::attendant::proxy::on_gyro_rotation_rate_unbiased(float x, float y, float z)
-{
-	if (_core)
-		_core->on_gyro_rotation_rate_unbiased(x, y, z);
-}
-
-void sirius::app::attendant::proxy::on_gyro_user_acceleration(float x, float y, float z)
-{
-	if (_core)
-		_core->on_gyro_user_acceleration(x, y, z);
-}
-
-void sirius::app::attendant::proxy::on_gyro_enabled_attitude(bool state)
-{
-	if (_core)
-		_core->on_gyro_enabled_attitude(state);
-}
-
-void sirius::app::attendant::proxy::on_gyro_enabled_gravity(bool state)
-{
-	if (_core)
-		_core->on_gyro_enabled_gravity(state);
-}
-
-void sirius::app::attendant::proxy::on_gyro_enabled_rotation_rate(bool state)
-{
-	if (_core)
-		_core->on_gyro_enabled_rotation_rate(state);
-}
-
-void sirius::app::attendant::proxy::on_gyro_enabled_rotation_rate_unbiased(bool state)
-{
-	if (_core)
-		_core->on_gyro_enabled_rotation_rate_unbiased(state);
-}
-
-void sirius::app::attendant::proxy::on_gyro_enabled_user_acceleration(bool state)
-{
-	if (_core)
-		_core->on_gyro_enabled_user_acceleration(state);
-}
-
-void sirius::app::attendant::proxy::on_gyro_update_interval(float interval)
-{
-	if (_core)
-		_core->on_gyro_update_interval(interval);
-}
-
-void sirius::app::attendant::proxy::on_ar_view_mat(float m00, float m01, float m02, float m03,
-	float m10, float m11, float m12, float m13,
-	float m20, float m21, float m22, float m23,
-	float m30, float m31, float m32, float m33)
-{
-	if (_core)
-		_core->on_ar_view_mat(m00, m01, m02, m03,
-			m10, m11, m12, m13,
-			m20, m21, m22, m23,
-			m30, m31, m32, m33);
-}
-
-void sirius::app::attendant::proxy::on_ar_proj_mat(float m00, float m01, float m02, float m03,
-	float m10, float m11, float m12, float m13,
-	float m20, float m21, float m22, float m23,
-	float m30, float m31, float m32, float m33)
-{
-	if (_core)
-		_core->on_ar_proj_mat(m00, m01, m02, m03,
-			m10, m11, m12, m13,
-			m20, m21, m22, m23,
-			m30, m31, m32, m33);
-}
-
-void sirius::app::attendant::proxy::send(char * packet, int len)
-{
-	if (_core)
-		_core->on_app_to_container_xml(packet, len);
-}
-
-void sirius::app::attendant::proxy::on_container_to_app(char * packet, int len)
-{
-	if (_core)
-		_core->on_container_to_app(packet, len);
-}
-
-void sirius::app::attendant::proxy::set_webcontainer_callback(FuncPtrCallback fncallback)
-{
-	if (_core)
-		_core->set_callback(fncallback);
+		_core->set_attendant_cb(fncallback);
 }

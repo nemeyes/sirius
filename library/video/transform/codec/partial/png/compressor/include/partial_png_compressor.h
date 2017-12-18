@@ -51,7 +51,6 @@ namespace sirius
 								typedef struct _buffer_t
 								{
 									sirius::library::video::transform::codec::partial::png::compressor::core::ibuffer_t	input;
-									//sirius::library::video::transform::codec::partial::png::compressor::core::obuffer_t	output;
 								} buffer_t;
 
 							public:
@@ -66,6 +65,7 @@ namespace sirius
 								int32_t play(void);
 								int32_t pause(void);
 								int32_t stop(void);
+								int32_t invalidate(void);
 
 								int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::entity_t * bitstream);
 								int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input);
@@ -89,8 +89,6 @@ namespace sirius
 								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t					_iobuffer[MAX_IO_BUFFERS];
 								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t>	_iobuffer_queue;
 
-								uint8_t *	_rgba_buffer;
-
 								ATL::CComPtr<ID3D11Device>			_device;
 								ATL::CComPtr<ID3D11DeviceContext>	_device_ctx;
 								ATL::CComPtr<ID3D11Texture2D>		_intermediate_tex;
@@ -98,6 +96,7 @@ namespace sirius
 								CRITICAL_SECTION					_device_ctx_cs;
 
 								sirius::library::video::transform::codec::libpng::compressor * _real_compressor;
+								bool _invalidate;
 							};
 						};
 					};
