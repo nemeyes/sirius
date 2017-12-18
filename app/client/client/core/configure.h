@@ -21,9 +21,12 @@ public:
 	sirius::string & get_server_address() {	return _server_address;}
 	sirius::string & get_server_port() { return _server_port; }
 	
-	sirius::string & get_attendant_app_id() { return _attendant_app_id; }
-	sirius::string & get_attendant_device_id() { return _attendant_device_id; };
+	sirius::string & get_attendant_app_id() 
+	{ 
+		return _attendant_app_id; 
+	}
 	
+	sirius::string & get_attendant_device_id();
 	sirius::string & get_url() { return _url; };
 	sirius::string & get_port() { return _port; };
 	

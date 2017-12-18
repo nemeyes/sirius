@@ -36,10 +36,10 @@ bool configure::load()
 	::GetPrivateProfileString(_T("SERVER"), _T("PORT"), _T("3390"), value, MAX_PATH, szFileName);
 	_server_port = value;
 
-	::GetPrivateProfileString(_T("SLOT"), _T("APP_ID"), _T("100"), value, MAX_PATH, szFileName);
+	::GetPrivateProfileString(_T("ATTENDANT"), _T("APP_ID"), _T("100"), value, MAX_PATH, szFileName);
 	_attendant_app_id = value;
 
-	::GetPrivateProfileString(_T("SLOT"), _T("DEVICE_ID"), _T("aa:bb:cc:dd:ff:ee"), value, MAX_PATH, szFileName);
+	::GetPrivateProfileString(_T("ATTENDANT"), _T("DEVICE_ID"), _T("aa:bb:cc:dd:ff:ee"), value, MAX_PATH, szFileName);
 	_attendant_device_id = value;
 
 	::GetPrivateProfileString(_T("PLAY"), _T("URL"), _T("127.0.0.1"), value, MAX_PATH, szFileName);
@@ -75,3 +75,8 @@ bool configure::save()
 
 	return true;
 }
+
+sirius::string & configure::get_attendant_device_id()
+{
+	return _attendant_device_id;
+};

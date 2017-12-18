@@ -38,7 +38,6 @@ private:
 	CEdit		_ctrl_device_id;
 	CEdit		_ctrl_url;
 	CEdit		_ctrl_port;
-	CEdit		_ctrl_keystroke_interval;
 
 	client_controller * _client;
 		
