@@ -65,6 +65,11 @@ int32_t sirius::library::video::transform::codec::compressor::stop(void)
 	return sirius::library::video::transform::codec::compressor::err_code_t::not_implemented;
 }
 
+int32_t sirius::library::video::transform::codec::compressor::invalidate(void)
+{
+	return sirius::library::video::transform::codec::compressor::err_code_t::not_implemented;
+}
+
 int32_t sirius::library::video::transform::codec::compressor::compress(sirius::library::video::transform::codec::compressor::entity_t * input)
 {
 	return sirius::library::video::transform::codec::compressor::err_code_t::not_implemented;

@@ -80,17 +80,17 @@ namespace sirius
 					int32_t play(int32_t flags);
 					int32_t pause(int32_t flags);
 					int32_t stop(int32_t flags);
+					int32_t invalidate(void);
 
 					void	create_session_callback(const char * uuid);
 					void	destroy_session_callback(const char * uuid);
 
-					int32_t play_callback(const char * client_uuid, const char * msg, int length, SOCKET clientsocket);
+					int32_t play_callback(const char * client_uuid, int32_t type, const char * attendant_uuid);
 					int32_t state(int32_t type);
 				private:
 					sirius::library::net::scsp::server::context_t * _context;
 					sirius::library::net::scsp::server * _front;
 					sirius::library::net::scsp::server::core::stream_conf_t	_video_conf;
-					uint32_t _video_index;
 				};
 			};
 		};

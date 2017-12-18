@@ -33,6 +33,7 @@ namespace client {
 			bool with_controls,
 			bool with_osr,
 			bool present,
+			void * hwnd,
 			const CefRect& rect,
 			const CefBrowserSettings& settings,
 			const std::string& url) OVERRIDE;
@@ -114,6 +115,7 @@ namespace client {
 		bool with_controls_;
 		bool with_osr_;
 		bool present_;
+		HWND * outter_hwnd_;
 		bool is_popup_;
 		RECT start_rect_;
 		scoped_ptr<BrowserWindow> browser_window_;

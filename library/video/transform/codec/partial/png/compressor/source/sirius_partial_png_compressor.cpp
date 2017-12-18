@@ -79,6 +79,11 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::stop
 	return _core->stop();
 }
 
+int32_t sirius::library::video::transform::codec::partial::png::compressor::invalidate(void)
+{
+	return _core->invalidate();
+}
+
 int32_t sirius::library::video::transform::codec::partial::png::compressor::compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::entity_t * bitstream)
 {
 	return _core->compress(input, bitstream);

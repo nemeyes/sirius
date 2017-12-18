@@ -15,7 +15,7 @@ sirius::library::video::transform::codec::partial::png::compressor::core::core(s
 	, _event(INVALID_HANDLE_VALUE)
 	, _thread(INVALID_HANDLE_VALUE)
 	, _run(false)
-	, _rgba_buffer(nullptr)
+	, _invalidate(false)
 {
 	::InitializeCriticalSection(&_cs);
 	::InitializeCriticalSection(&_device_ctx_cs);
@@ -64,10 +64,6 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 	{
 
 	}
-
-	int32_t nbuffer = _context->width*_context->height * 4;
-	_rgba_buffer = static_cast<uint8_t*>(malloc(nbuffer));
-	memset(_rgba_buffer, 0x00, nbuffer);
 
 	status = _real_compressor->initialize(_context);
 	if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
@@ -118,10 +114,6 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 
 	}
 
-	if (_rgba_buffer)
-		free(_rgba_buffer);
-	_rgba_buffer = nullptr;
-
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::released;
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -138,6 +130,12 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 
 int32_t sirius::library::video::transform::codec::partial::png::compressor::core::stop(void)
 {
+	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
+}
+
+int32_t sirius::library::video::transform::codec::partial::png::compressor::core::invalidate(void)
+{
+	_invalidate = true;
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
@@ -667,12 +665,6 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 			_iobuffer[i].input.data_capacity = _context->width * _context->height * 4;
 			_iobuffer[i].input.data_size = 0;
 			_iobuffer[i].input.data = static_cast<uint8_t*>(malloc(_iobuffer[i].input.data_capacity));
-
-			/*
-			_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::partial::png::compressor::core::MAX_PNG_SIZE;
-			_iobuffer[i].output.data_size = 0;
-			_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
-			*/
 		}
 	}
 	else if (_context->memtype == sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::d3d11)
@@ -697,28 +689,7 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 			{
 				_iobuffer[i].input.data = tex;
 			}
-
-			/*
-			_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::partial::png::compressor::core::MAX_PNG_SIZE;
-			_iobuffer[i].output.data_size = 0;
-			_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
-			*/
 		}
-
-		/*
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.Width = _context->width;
-		desc.Height = _context->height;
-		desc.MipLevels = 1;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.MiscFlags = 0;
-		desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0;
-		_device->CreateTexture2D(&desc, NULL, &_intermediate_tex);
-		*/
 	}
 
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
@@ -733,12 +704,6 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 			ID3D11Texture2D * input = (ID3D11Texture2D*)_iobuffer[i].input.data;
 			input->Release();
 			_iobuffer[i].input.data = NULL;
-
-			/*
-			if (_iobuffer[i].output.data)
-				free(_iobuffer[i].output.data);
-			_iobuffer[i].output.data = nullptr;
-			*/
 		}
 	}
 	else if (_context->memtype == sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host)
@@ -748,12 +713,6 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 			if (_iobuffer[i].input.data)
 				free(_iobuffer[i].input.data);
 			_iobuffer[i].input.data = nullptr;
-
-			/*
-			if (_iobuffer[i].output.data)
-				free(_iobuffer[i].output.data);
-			_iobuffer[i].output.data = nullptr;
-			*/
 		}
 	}
 

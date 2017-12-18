@@ -52,16 +52,14 @@ namespace sirius
 					int32_t video_process_type;
 					int32_t video_block_width;
 					int32_t video_block_height;
-
+					int32_t video_compression_level;
+					int32_t video_quantization_colors;
 					int32_t gpuindex;
 					int32_t present;
 					HWND	hwnd;
 					void *	user_data;
-
 					int32_t id;
 					wchar_t uuid[MAX_PATH];
-					wchar_t client_uuid[MAX_PATH];
-					wchar_t client_id[MAX_PATH];
 					int32_t controller_portnumber;
 					int32_t play_after_connect;
 
@@ -76,6 +74,8 @@ namespace sirius
 						, video_process_type(sirius::app::attendant::proxy::video_memory_type_t::host)
 						, video_block_width(128)
 						, video_block_height(72)
+						, video_compression_level(-1)
+						, video_quantization_colors(128)
 						, gpuindex(0)
 						, present(false)
 						, hwnd(NULL)
@@ -86,8 +86,6 @@ namespace sirius
 					{
 						memset(url, 0x00, sizeof(url));
 						memset(uuid, 0x00, sizeof(uuid));
-						memset(client_id, 0x00, sizeof(client_id));
-						memset(client_uuid, 0x00, sizeof(uuid));
 					}
 
 					~_context_t(void)
@@ -97,8 +95,10 @@ namespace sirius
 				} context_t;
 
 
-				static bool parse_argument(int32_t argc, wchar_t * argv[]);
-				static sirius::app::attendant::proxy & instance(void);
+				static bool parse_argument(int32_t argc, wchar_t * argv[], sirius::app::attendant::proxy::context_t * context);
+
+				proxy(void);
+				virtual ~proxy(void);
 
 				virtual sirius::app::attendant::proxy::context_t * context(void);
 
@@ -113,11 +113,10 @@ namespace sirius
 				virtual int32_t play(void);
 				virtual int32_t stop(void);
 
-				int32_t play_toggle(void);
-				int32_t backward(void);
-				int32_t forward(void);
-				int32_t reverse(void);
-
+				virtual void on_connect_attendant(int32_t code);
+				virtual void on_disconnect_attendant(void);
+				virtual void on_start_attendant(const char * client_uuid, const char * client_id);
+				virtual void on_stop_attendant(const char * client_uuid);
 				virtual void on_destroy(void);
 
 				virtual void on_key_up(int8_t type, int32_t key);
@@ -132,41 +131,9 @@ namespace sirius
 				virtual void on_mouse_rb_dclick(int32_t pos_x, int32_t pos_y);
 				virtual void on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
 
-				virtual void on_gyro(float x, float y, float z);
-				virtual void on_pinch_zoom(float delta);
-
-				virtual void on_gyro_attitude(float x, float y, float z, float w);
-				virtual void on_gyro_gravity(float x, float y, float z);
-				virtual void on_gyro_rotation_rate(float x, float y, float z);
-				virtual void on_gyro_rotation_rate_unbiased(float x, float y, float z);
-				virtual void on_gyro_user_acceleration(float x, float y, float z);
-
-				virtual void on_gyro_enabled_attitude(bool state);
-				virtual void on_gyro_enabled_gravity(bool state);
-				virtual void on_gyro_enabled_rotation_rate(bool state);
-				virtual void on_gyro_enabled_rotation_rate_unbiased(bool state);
-				virtual void on_gyro_enabled_user_acceleration(bool state);
-				virtual void on_gyro_update_interval(float interval);
-
-				virtual void on_ar_view_mat(float m00, float m01, float m02, float m03,
-					float m10, float m11, float m12, float m13,
-					float m20, float m21, float m22, float m23,
-					float m30, float m31, float m32, float m33);
-				virtual void on_ar_proj_mat(float m00, float m01, float m02, float m03,
-					float m10, float m11, float m12, float m13,
-					float m20, float m21, float m22, float m23,
-					float m30, float m31, float m32, float m33);
-
-				void send(char * packet, int len);
-				void on_container_to_app(char * packet, int len);
-				void set_webcontainer_callback(FuncPtrCallback fncallback);
-
-				virtual void OnAssocCompletion(void) {}
-				virtual void OnLeaveCompletion(void) {}
-
-			private:
-				proxy(void);
-				virtual ~proxy(void);
+				void app_to_attendant(uint8_t * packet, int32_t len);
+				void on_attendant_to_app(uint8_t * packet, int32_t len);
+				void set_attendant_cb(FuncPtrCallback fncallback);
 
 			private:
 				sirius::app::attendant::proxy::context_t _context;

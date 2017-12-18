@@ -27,6 +27,7 @@ namespace sirius
 						virtual int32_t play(int32_t flags) = 0;
 						virtual int32_t pause(int32_t flags) = 0;
 						virtual int32_t stop(int32_t flags) = 0;
+						virtual int32_t invalidate(void) = 0;
 					};
 
 					typedef struct EXP_SERVER_BASE_CLASS _context_t

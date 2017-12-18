@@ -56,9 +56,11 @@ namespace sirius
 					int32_t width;
 					int32_t height;
 					int32_t fps;
+					int32_t nbuffer;
 					int32_t block_width;
 					int32_t block_height;
-					int32_t nbuffer;
+					int32_t compression_level;
+					int32_t quantization_colors;
 					bool	play_after_init;
 					_video_compressor_context_t(void)
 						: gpuindex(0)
@@ -70,9 +72,11 @@ namespace sirius
 						, width(0)
 						, height(0)
 						, fps(0)
+						, nbuffer(1)
 						, block_width(0)
 						, block_height(0)
-						, nbuffer(1)
+						, compression_level(-1)
+						, quantization_colors(128)
 						, play_after_init(false)
 					{
 					
@@ -88,7 +92,8 @@ namespace sirius
 					}
 				} network_usage_t;
 
-				static sirius::library::unified::server & instance(void);
+				server(void);
+				~server(void);
 
 				int32_t initialize(sirius::library::unified::server::context_t * context);
 				int32_t release(void);
@@ -101,13 +106,10 @@ namespace sirius
 				sirius::library::unified::server::network_usage_t & get_network_usage(void);
 
 			private:
-				server(void);
 				server(sirius::library::unified::server & clone);
-				~server(void);
 
 			private:
 				sirius::library::unified::server::core * _core;
-
 				void * _vcmprs_config;
 			};
 		};

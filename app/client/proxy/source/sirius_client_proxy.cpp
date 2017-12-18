@@ -58,27 +58,7 @@ const int32_t sirius::app::client::proxy::handler::streamer_portnumber(void)
 	return portnumber;
 }
 
-int32_t sirius::app::client::proxy::handler::set_using_mouse(BOOL value)
-{
-	int32_t status = sirius::app::client::proxy::err_code_t::fail;
-
-	if (_proxy)
-		status = _proxy->set_using_mouse(value);
-
-	return status;
-}
-
-int32_t sirius::app::client::proxy::handler::set_key_stroke(int32_t interval)
-{
-	int32_t status = sirius::app::client::proxy::err_code_t::fail;
-
-	if (_proxy)
-		status = _proxy->set_key_stroke(interval);
-
-	return status;
-}
-
-int32_t sirius::app::client::proxy::handler::connect(wchar_t * address, int32_t portnumber, BOOL reconnection)
+int32_t sirius::app::client::proxy::handler::connect(wchar_t * address, int32_t portnumber, bool reconnection)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
@@ -98,22 +78,22 @@ int32_t sirius::app::client::proxy::handler::disconnect(void)
 	return status;
 }
 
-int32_t sirius::app::client::proxy::handler::connect_attendant(wchar_t * appid, wchar_t * deviceid, wchar_t * devicetype, wchar_t * envtype, wchar_t * modeltype, int32_t width, int32_t height, int32_t gpuindex)
+int32_t sirius::app::client::proxy::handler::connect_client(wchar_t * id)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_proxy)
-		status = _proxy->connect_attendant(appid, deviceid, devicetype, envtype, modeltype, width, height, gpuindex);
+		status = _proxy->connect_client(id);
 
 	return status;
 }
 
-int32_t sirius::app::client::proxy::handler::disconnect_attendant(void)
+int32_t sirius::app::client::proxy::handler::disconnect_client(void)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_proxy)
-		status = _proxy->disconnect_attendant();
+		status = _proxy->disconnect_client();
 
 	return status;
 }
@@ -285,27 +265,7 @@ const int32_t sirius::app::client::proxy::streamer_portnumber(void)
 	return streamingPortNumber;
 }
 
-int32_t sirius::app::client::proxy::set_using_mouse(BOOL value)
-{
-	int32_t status = sirius::app::client::proxy::err_code_t::fail;
-
-	if (_core)
-		status = _core->set_using_mouse(value);
-
-	return status;
-}
-
-int32_t sirius::app::client::proxy::set_key_stroke(int32_t interval)
-{
-	int32_t status = sirius::app::client::proxy::err_code_t::fail;
-
-	if (_core)
-		status = _core->set_key_stroke(interval);
-
-	return status;
-}
-
-int32_t sirius::app::client::proxy::connect(wchar_t * address, int32_t portnumber, BOOL reconnection)
+int32_t sirius::app::client::proxy::connect(wchar_t * address, int32_t portnumber, bool reconnection)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
@@ -325,22 +285,22 @@ int32_t sirius::app::client::proxy::disconnect(void)
 	return status;
 }
 
-int32_t sirius::app::client::proxy::connect_attendant(wchar_t * appid, wchar_t * deviceid, wchar_t * devicetype, wchar_t * envtype, wchar_t * modeltype, int32_t width, int32_t height, int32_t gpuindex)
+int32_t sirius::app::client::proxy::connect_client(wchar_t * id)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_core)
-		status = _core->connect_attendant(appid, deviceid, devicetype, envtype, modeltype, width, height, gpuindex);
+		status = _core->connect_client(id);
 
 	return status;
 }
 
-int32_t sirius::app::client::proxy::disconnect_attendant(void)
+int32_t sirius::app::client::proxy::disconnect_client(void)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_core)
-		status = _core->disconnect_attendant();
+		status = _core->disconnect_client();
 
 	return status;
 }
@@ -446,13 +406,13 @@ int32_t sirius::app::client::proxy::mouse_rb_up(int32_t pos_x, int32_t pos_y)
 }
 
 //CALLBACK
-void sirius::app::client::proxy::on_pre_connect(wchar_t * address, int32_t portNumber, BOOL reconnection)
+void sirius::app::client::proxy::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
 {
 	if (_handler)
 		_handler->on_pre_connect(address, portNumber, reconnection);
 }
 
-void sirius::app::client::proxy::on_post_connect(wchar_t * address, int32_t portNumber, BOOL reconnection)
+void sirius::app::client::proxy::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection)
 {
 	if (_handler)
 		_handler->on_post_connect(address, portNumber, reconnection);
@@ -488,24 +448,6 @@ void sirius::app::client::proxy::on_post_create_session(void)
 		_handler->on_post_create_session();
 }
 
-void sirius::app::client::proxy::on_pre_keepalive(void)
-{
-	if (_handler)
-		_handler->on_pre_keepalive();
-}
-
-void sirius::app::client::proxy::on_keepalive(void)
-{
-	if (_handler)
-		_handler->on_keepalive();
-}
-
-void sirius::app::client::proxy::on_post_keepalive(void)
-{
-	if (_handler)
-		_handler->on_post_keepalive();
-}
-
 void sirius::app::client::proxy::on_pre_destroy_session(void)
 {
 	if (_handler)
@@ -524,58 +466,58 @@ void sirius::app::client::proxy::on_post_destroy_session(void)
 		_handler->on_post_destroy_session();
 }
 
-void sirius::app::client::proxy::on_pre_connect_attendant(int32_t code, wchar_t * msg)
+void sirius::app::client::proxy::on_pre_connect_client(int32_t code, wchar_t * msg)
 {
 	if (_handler)
-		_handler->on_pre_connect_attendant(code, msg);
+		_handler->on_pre_connect_client(code, msg);
 }
 
-void sirius::app::client::proxy::on_connect_attendant(int32_t code, wchar_t * msg)
+void sirius::app::client::proxy::on_connect_client(int32_t code, wchar_t * msg)
 {
 	if (_handler)
-		_handler->on_connect_attendant(code, msg);
+		_handler->on_connect_client(code, msg);
 }
 
-void sirius::app::client::proxy::on_post_connect_attendant(int32_t code, wchar_t * msg)
+void sirius::app::client::proxy::on_post_connect_client(int32_t code, wchar_t * msg)
 {
 	if (_handler)
-		_handler->on_post_connect_attendant(code, msg);
+		_handler->on_post_connect_client(code, msg);
 }
 
-void sirius::app::client::proxy::on_pre_disconnect_attendant(void)
+void sirius::app::client::proxy::on_pre_disconnect_client(int32_t code)
 {
 	if (_handler)
-		_handler->on_pre_disconnect_attendant();
+		_handler->on_pre_disconnect_client(code);
 }
 
-void sirius::app::client::proxy::on_disconnect_attendant(void)
+void sirius::app::client::proxy::on_disconnect_client(int32_t code)
 {
 	if (_handler)
-		_handler->on_disconnect_attendant();
+		_handler->on_disconnect_client(code);
 }
 
-void sirius::app::client::proxy::on_post_disconnect_attendant(void)
+void sirius::app::client::proxy::on_post_disconnect_client(int32_t  code)
 {
 	if (_handler)
-		_handler->on_post_disconnect_attendant();
+		_handler->on_post_disconnect_client(code);
 }
 
-void sirius::app::client::proxy::on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber)
+void sirius::app::client::proxy::on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
 	if (_handler)
-		_handler->on_pre_attendant_info(code, attendant_uuid, streamer_address, streamer_portnumber);
+		_handler->on_pre_attendant_info(code, attendant_uuid, streamer_portnumber, video_width, video_height);
 }
 
-void sirius::app::client::proxy::on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber)
+void sirius::app::client::proxy::on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
 	if (_handler)
-		_handler->on_post_attendant_info(code, attendant_uuid, streamer_address, streamer_portnumber);
+		_handler->on_post_attendant_info(code, attendant_uuid, streamer_portnumber, video_width, video_height);
 }
 
-void sirius::app::client::proxy::on_open_streaming(wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber, BOOL reconnection)
+void sirius::app::client::proxy::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection)
 {
 	if (_handler)
-		_handler->on_open_streaming(attendant_uuid, streamer_address, streamer_portnumber, reconnection);
+		_handler->on_open_streaming(attendant_uuid, streamer_portnumber, reconnection);
 }
 
 void sirius::app::client::proxy::on_play_streaming(void)

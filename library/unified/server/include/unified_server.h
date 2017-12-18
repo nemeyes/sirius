@@ -33,6 +33,7 @@ namespace sirius
 				int32_t play(int32_t flags);
 				int32_t pause(int32_t flags);
 				int32_t stop(int32_t flags);
+				int32_t invalidate(void);
 
 				int32_t publish_video(uint8_t * bytes, int32_t nbytes, long long before_encode_timestamp, long long after_encode_timestamp);
 				int32_t publish_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);

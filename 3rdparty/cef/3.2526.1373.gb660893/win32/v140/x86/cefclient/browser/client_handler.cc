@@ -496,7 +496,7 @@ bool ClientHandler::OnOpenURLFromTab(
     // Handle middle-click and ctrl + left-click by opening the URL in a new
     // browser window.
     MainContext::Get()->GetRootWindowManager()->CreateRootWindow(
-        true, is_osr(), true, CefRect(), target_url);
+        true, is_osr(), true, nullptr, CefRect(), target_url);
     return true;
   }
 
@@ -831,7 +831,7 @@ bool ClientHandler::ExecuteTestMenu(int command_id) {
 void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame) {
 	CEF_REQUIRE_UI_THREAD();
-	OutputDebugStringA("=====ClientHandler::OnLoadStart========================");
+	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
 	if (delegate_)
 			delegate_->OnLoadStart(browser, frame);
 //	if (!csb::CSBGlobal::getInstance().getJavaScriptInjection().empty()) {
@@ -845,7 +845,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	int httpStatusCode) {
 	CEF_REQUIRE_UI_THREAD();
 
-	OutputDebugStringA("=====ClientHandler::OnLoadEnd========================");
+	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
 //	if (delegate_)
 //		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
 	return;

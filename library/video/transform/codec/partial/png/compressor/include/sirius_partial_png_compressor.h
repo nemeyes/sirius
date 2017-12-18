@@ -34,6 +34,7 @@ namespace sirius
 								{
 									int32_t block_width;
 									int32_t block_height;
+									int32_t compression_level;
 									double	gamma;
 									float	floyd;
 									int32_t speed;
@@ -56,6 +57,7 @@ namespace sirius
 								virtual int32_t play(void);
 								virtual int32_t pause(void);
 								virtual int32_t stop(void);
+								virtual int32_t invalidate(void);
 
 								virtual int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::entity_t * bitstream);
 								virtual int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input);

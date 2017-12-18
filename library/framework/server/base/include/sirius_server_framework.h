@@ -33,8 +33,8 @@ namespace sirius
 
 					typedef struct _context_t
 					{
-						wchar_t url[MAX_PATH];	//source
-						int32_t video_codec;	//video
+						wchar_t url[MAX_PATH];
+						int32_t video_codec;
 						int32_t video_width;
 						int32_t video_height;
 						int32_t video_fps;
@@ -42,10 +42,11 @@ namespace sirius
 						int32_t video_process_type;
 						int32_t video_block_width;
 						int32_t video_block_height;
-						int32_t gpuindex;		//gpu
-						int32_t present;	//gpu
+						int32_t video_compression_level;
+						int32_t video_qauntization_colors;
+						int32_t gpuindex;
+						int32_t present;
 						wchar_t uuid[MAX_PATH];
-						wchar_t address[MAX_PATH];
 						int32_t portnumber;
 						int32_t type;
 						HWND	hwnd;
@@ -59,16 +60,17 @@ namespace sirius
 							, video_process_type(sirius::library::framework::server::base::video_memory_type_t::host)
 							, video_block_width(0)
 							, video_block_height(0)
-							, gpuindex(sirius::library::framework::server::base::client_device_type_t::settop)
+							, video_compression_level(-1)
+							, video_qauntization_colors(128)
+							, gpuindex(0)
 							, present(false)
-							, portnumber(15000)
+							, portnumber(7000)
 							, hwnd(NULL)
 							, type(sirius::library::framework::server::base::attendant_type_t::web) //web
 							, user_data(NULL)
 						{
 							memset(url, 0x00, sizeof(url));
 							memset(uuid, 0x00, sizeof(uuid));
-							memset(address, 0x00, sizeof(address));
 						}
 
 						~_context_t(void)
@@ -138,21 +140,14 @@ namespace sirius
 					} gpu_desc_t;
 
 					virtual void		set_notification_callee(sirius::library::misc::notification::internal::notifier::callee * callee) = 0;
-					virtual int32_t		open(sirius::library::framework::server::base::context_t * context) = 0;
-					virtual int32_t		close(void) = 0;
+					virtual int32_t		initialize(sirius::library::framework::server::base::context_t * context) = 0;
+					virtual int32_t		release(void) = 0;
 					virtual int32_t		play(void) = 0;
 					virtual int32_t		pause(void) = 0;
 					virtual int32_t		stop(void) = 0;
 					virtual int32_t		state(void) const = 0;
 					virtual void		on_keyup(int32_t key) = 0;
 					virtual void		on_keydown(int32_t key) = 0;
-					virtual int32_t		seek(int32_t diff) = 0;
-					virtual int32_t		seek_to(int32_t second) = 0;
-					virtual int32_t		seek_stop(void) = 0;
-					virtual int32_t		forward(void) = 0;
-					virtual int32_t		backward(void) = 0;
-					virtual int32_t		reverse(void) = 0;
-					virtual int32_t		play_toggle(void) = 0;
 					virtual void		on_L_mouse_down(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_L_mouse_up(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_R_mouse_down(int32_t pos_x, int32_t pos_y) = 0;
@@ -161,32 +156,7 @@ namespace sirius
 					virtual void		on_R_mouse_dclick(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_mouse_move(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_delta) = 0;
-					virtual void		on_gyro(float x, float y, float z) = 0;
-					virtual void		on_pinch_zoom(float delta) = 0;
-
-					virtual void		on_gyro_attitude(float x, float y, float z, float w) = 0;
-					virtual void		on_gyro_gravity(float x, float y, float z) = 0;
-					virtual void		on_gyro_rotation_rate(float x, float y, float z) = 0;
-					virtual void		on_gyro_rotation_rate_unbiased(float x, float y, float z) = 0;
-					virtual void		on_gyro_user_acceleration(float x, float y, float z) = 0;
-
-					virtual void		on_gyro_enabled_attitude(bool state) = 0;
-					virtual void		on_gyro_enabled_gravity(bool state) = 0;
-					virtual void		on_gyro_enabled_rotation_rate(bool state) = 0;
-					virtual void		on_gyro_enabled_rotation_rate_unbiased(bool state) = 0;
-					virtual void		on_gyro_enabled_user_acceleration(bool state) = 0;
-					virtual void		on_gyro_updateinterval(float interval) = 0;
-
-					virtual void on_ar_view_mat(float m00, float m01, float m02, float m03,
-						float m10, float m11, float m12, float m13,
-						float m20, float m21, float m22, float m23,
-						float m30, float m31, float m32, float m33) = 0;
-					virtual void on_ar_proj_mat(float m00, float m01, float m02, float m03,
-						float m10, float m11, float m12, float m13,
-						float m20, float m21, float m22, float m23,
-						float m30, float m31, float m32, float m33) = 0;
-
-					virtual void		on_infoxml(const char * msg, int32_t length) = 0;
+					virtual void		on_info_xml(const uint8_t * msg, int32_t length) = 0;
 				};
 			};
 		};

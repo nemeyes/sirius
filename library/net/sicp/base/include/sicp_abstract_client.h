@@ -19,6 +19,11 @@ namespace sirius
 					, public sirius::library::net::sicp::base
 				{
 				public:
+					static const int32_t KEEPALIVE_INTERVAL = 5000;
+					static const int32_t KEEPALIVE_INTERVAL_MARGIN = 2000;
+
+
+				public:
 					abstract_client(int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size,int32_t recv_buffer_size, int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast);
 					abstract_client(const char * uuid, int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size,int32_t recv_buffer_size, int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast);
 					

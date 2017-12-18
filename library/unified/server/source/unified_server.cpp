@@ -114,19 +114,9 @@ int32_t sirius::library::unified::server::core::initialize_video_compressor(siri
 
 	int32_t status = _unified_compressor->initialize_video_compressor(context);
 	if (status != sirius::library::unified::server::err_code_t::success)
-	{
-		if (_context)
-			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, attendant_number:%d", __FUNCTION__, __LINE__, _context->portnumber);
-		else
-			LOGGER::make_error_log(SLNS, "%s(), %d, initialize_video_compressor fail, attendant_number:not found attendant_number", __FUNCTION__, __LINE__);
-
 		return status;
-	}
-
+	
 	_vcmprs_initialized = true;
-
-	LOGGER::make_info_log(SLNS, "%s(), %d, initialize_video_compressor success", __FUNCTION__, __LINE__);
-
 	return status;
 }
 
@@ -174,6 +164,11 @@ int32_t sirius::library::unified::server::core::pause(int32_t flags)
 int32_t sirius::library::unified::server::core::stop(int32_t flags)
 {
 	return _unified_compressor->stop(flags);
+}
+
+int32_t sirius::library::unified::server::core::invalidate(void)
+{
+	return _unified_compressor->invalidate();
 }
 
 int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, int32_t nbytes, long long before_encode_timestamp, long long after_encode_timestamp)

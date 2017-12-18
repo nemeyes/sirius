@@ -16,23 +16,15 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINST
 	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, 1500, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, true, true, sirius::app::client::proxy::ethernet_type_t::tcp, false)
 	, _state(sirius::app::client::proxy::state_t::disconnected)
 	, _front(front)
-	, _instance(instance)
-	, _hwnd(hwnd)
-	, _dxkey_input_initialized(FALSE)
-	, _reconnection(FALSE)
-	, _recv_attendant_info(FALSE)
+	, _reconnection(false)
+	, _recv_attendant_info(false)
 	, _streamer_portnumber(-1)
 {
-	add_command(new sirius::app::client::connect_attendant_res_cmd(this));
-	add_command(new sirius::app::client::disconnect_attendant_res_cmd(this));
-	add_command(new sirius::app::client::attendant_info_ind_cmd(this));
-	add_command(new sirius::app::client::xml_ind_cmd(this));
-	add_command(new sirius::app::client::error_ind_cmd(this));
-
-	add_command(CMD_PLAYBACK_TOTALTIME_IND);
-	add_command(CMD_PLAYBACK_CURRENTTIME_IND);
-	add_command(CMD_PLAYBACK_END_IND);
-	add_command(CMD_PLAYBACK_CURRENTRATE_IND);
+	add_command(new sirius::app::client::connect_client_res(this));
+	add_command(new sirius::app::client::disconnect_client_res(this));
+	add_command(new sirius::app::client::container_info_noti(this));
+	add_command(new sirius::app::client::xml_noti(this));
+	add_command(new sirius::app::client::error_noti(this));
 
 	add_command(CMD_PLAY_RES);
 	add_command(CMD_VIDEO_STREAM_DATA);
@@ -47,28 +39,6 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINST
 	add_command(CMD_MOUSE_LB_DCLICK_IND);
 	add_command(CMD_MOUSE_RB_DCLICK_IND);
 	add_command(CMD_MOUSE_WHEEL_IND);
-	add_command(CMD_SEEK_KEY_DOWN);
-	add_command(CMD_SEEK_KEY_UP);
-	add_command(CMD_SEEK_POS);
-	add_command(CMD_PLAY_TOGGLE);
-	add_command(CMD_BACKWARD);
-	add_command(CMD_FORWARD);
-	add_command(CMD_REVERSE);
-
-	add_command(CMD_GYRO_IND);
-	add_command(CMD_PINCH_ZOOM_IND);
-	//	add_command(CMD_GYRO_ROT_IND);
-	add_command(CMD_GYRO_ATTITUDE);
-	add_command(CMD_GYRO_GRAVITY);
-	add_command(CMD_GYRO_ROTATION_RATE);
-	add_command(CMD_GYRO_ROTATION_RATE_UNBIASED);
-	add_command(CMD_GYRO_ACCELERATION);
-	add_command(CMD_GYRO_ENABLED_ATTITUDE);
-	add_command(CMD_GYRO_ENABLED_GRAVITY);
-	add_command(CMD_GYRO_ENABLED_ROTATION_RATE);
-	add_command(CMD_GYRO_ENABLED_ROTATION_RATE_UNBIASED);
-	add_command(CMD_GYRO_ENABLED_USER_ACCELERATION);
-	add_command(CMD_GYRO_UPDATEINTERVAL);
 
 
 	memset(_szattendant_uuid, 0x00, sizeof(_szattendant_uuid));
@@ -77,7 +47,6 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINST
 sirius::app::client::proxy::core::~core(void)
 {
 	disconnect();
-	release();
 }
 
 int32_t sirius::app::client::proxy::core::state(void)
@@ -105,19 +74,7 @@ const int32_t sirius::app::client::proxy::core::streamer_portnumber(void)
 	return _streamer_portnumber;
 }
 
-int32_t sirius::app::client::proxy::core::set_using_mouse(BOOL value)
-{
-	sirius::library::user::event::dinput::receiver::set_using_mouse(value ? true : false);
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::set_key_stroke(int32_t interval)
-{
-	sirius::library::user::event::dinput::receiver::set_keystroke(interval);
-	return sirius::app::client::proxy::err_code_t::success;
-}
-
-int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t portnumber, BOOL reconnection)
+int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t portnumber, bool reconnection)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 	if (_front)
@@ -134,7 +91,7 @@ int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t por
 		_reconnection = reconnection;
 
 		_state = sirius::app::client::proxy::state_t::connecting;
-		if (sirius::library::net::sicp::client::connect(_address, portnumber, _reconnection ? true : false))
+		if (sirius::library::net::sicp::client::connect(_address, portnumber, _reconnection))
 			status = sirius::app::client::proxy::err_code_t::success;
 
 		free(ascii_address);
@@ -168,66 +125,33 @@ int32_t sirius::app::client::proxy::core::disconnect(void)
 	return status;
 }
 
-int32_t sirius::app::client::proxy::core::connect_attendant(wchar_t * appid, wchar_t * deviceid, wchar_t * devicetype, wchar_t * envtype, wchar_t * modeltype, int32_t width, int32_t height, int32_t gpuindex)
+int32_t sirius::app::client::proxy::core::connect_client(wchar_t * id)
 {
-	char * app_id = nullptr;
-	char * device_id = nullptr;
-	char * device_t = nullptr;
-	char * envir_t = nullptr;
-	char * model = nullptr;
+	char * client_id = nullptr;
 
-	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)appid, &app_id);
-	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)deviceid, &device_id);
-	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)devicetype, &device_t);
-	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)envtype, &envir_t);
-	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)modeltype, &model);
-	if (app_id && device_id && strlen(app_id) > 0 && strlen(device_id) > 0)
+	sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)id, &client_id);
+	if (client_id && strlen(client_id) > 0)
 	{
-		Json::Value packet;
+		Json::Value wpacket;
 		Json::StyledWriter writer;
 
-		packet["appid"] = app_id;
-		packet["deviceid"] = device_id;
-		packet["devicetype"] = device_t;
-		packet["environmenttype"] = envir_t;
-		if (strcmp(model, "") != 0)
-			packet["model"] = model;
+		wpacket["id"] = client_id;
+		std::string request = writer.write(wpacket);
+		if (request.size() > 0)
+			data_request(SERVER_UUID, CMD_CONNECT_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 
-		packet["width"] = width;
-		packet["height"] = height;
-
-		if (gpuindex >= 0)
-			packet["gpuindex"] = gpuindex;
-
-		std::string json = writer.write(packet);
-		if (json.size() > 0)
-			data_request(SERVER_UUID, CMD_CONNECT_ATTENDANT_REQ, (char*)json.c_str(), json.size() + 1);
-
-		free(app_id);
-		free(device_id);
-		free(device_t);
-		free(envir_t);
-		free(model);
-		app_id = nullptr;
-		device_id = nullptr;
-		device_t = nullptr;
-		envir_t = nullptr;
-		model = nullptr;
+		free(client_id);
+		client_id = nullptr;
 	}
-	_recv_attendant_info = FALSE;
+	_recv_attendant_info = false;
 
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::client::proxy::core::disconnect_attendant(void)
+int32_t sirius::app::client::proxy::core::disconnect_client(void)
 {
-	Json::Value packet;
-	Json::StyledWriter writer;
-	packet["message"] = "disconnect_attendant";
-	std::string req_msg = writer.write(packet);
-	if (req_msg.size() > 0)
-		data_request(SERVER_UUID, CMD_DISCONNECT_ATTENDANT_REQ, (char*)req_msg.c_str(), req_msg.size() + 1);
-	_recv_attendant_info = FALSE;
+	data_request(SERVER_UUID, CMD_DISCONNECT_CLIENT_REQ, NULL, 0);
+	_recv_attendant_info = false;
 
 	return sirius::app::client::proxy::err_code_t::success;
 }
@@ -362,13 +286,6 @@ void sirius::app::client::proxy::core::create_session_callback(void)
 	if (_front)
 		_front->on_pre_create_session();
 
-
-	if (!_dxkey_input_initialized && (_instance != NULL) && (_hwnd != INVALID_HANDLE_VALUE) && (_hwnd != NULL))
-	{
-		sirius::library::user::event::dinput::receiver::initialize(_instance, _hwnd);
-		_dxkey_input_initialized = TRUE;
-	}
-
 	if (_front)
 		_front->on_create_session();
 
@@ -386,12 +303,6 @@ void sirius::app::client::proxy::core::destroy_session_callback(void)
 	if (_front)
 		_front->on_destroy_session();
 
-	if (_dxkey_input_initialized)
-	{
-		sirius::library::user::event::dinput::receiver::release();
-		_dxkey_input_initialized = FALSE;
-	}
-
 	_state = sirius::app::client::proxy::state_t::disconnected;
 
 	if (_front)
@@ -401,128 +312,79 @@ void sirius::app::client::proxy::core::destroy_session_callback(void)
 		_front->on_post_destroy_session();
 }
 
-void sirius::app::client::proxy::core::connect_attendant_callback(const char * dst, const char * src, const char * msg, size_t length)
+void sirius::app::client::proxy::core::connect_client_callback(int32_t code, const char * msg)
 {
-	Json::Value packet;
-	Json::Reader reader;
-	reader.parse(msg, packet);
-
-	int32_t rcode = -1;
-	if (packet["rcode"].isInt())
-		rcode = packet["rcode"].asInt();
-
-	std::string multibyte_rcode = packet["msg"].asString();
-
-	wchar_t * resMsg;
-	sirius::stringhelper::convert_multibyte2wide((char*)multibyte_rcode.c_str(), &resMsg);
+	wchar_t * wmsg;
+	sirius::stringhelper::convert_multibyte2wide((char*)msg, &wmsg);
 
 	if (_front)
-		_front->on_pre_connect_attendant(rcode, resMsg);
+		_front->on_pre_connect_client(code, wmsg);
 
-	if (rcode == 0)
+	if (code == 0)
 	{
 		if (_front)
-			_front->on_connect_attendant(rcode, resMsg);
+			_front->on_connect_client(code, wmsg);
 	}
 	else
 	{
-		disconnect_attendant();
+		disconnect_client();
 	}
 
 	if (_front)
-		_front->on_post_connect_attendant(rcode, resMsg);
+		_front->on_post_connect_client(code, wmsg);
 
-	SysFreeString(resMsg);
+	SysFreeString(wmsg);
 }
 
-void sirius::app::client::proxy::core::disconnect_attendant_callback(const char * dst, const char * src, const char * msg, size_t length)
+void sirius::app::client::proxy::core::disconnect_client_callback(int32_t code)
 {
-	Json::Value packet;
-	Json::Reader reader;
-	reader.parse(msg, packet);
+	if (_front)
+		_front->on_pre_disconnect_client(code);
 
 	if (_front)
-		_front->on_pre_disconnect_attendant();
-
-	if (_front)
-		_front->on_disconnect_attendant();
+		_front->on_disconnect_client(code);
 
 	disconnect();
 
 	if (_front)
-		_front->on_post_disconnect_attendant();
+		_front->on_post_disconnect_client(code);
 }
 
-void sirius::app::client::proxy::core::attendant_info_callback(const char * dst, const char * src, const char * msg, size_t length)
+void sirius::app::client::proxy::core::attendant_info_callback(int32_t code, const char * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
-	int32_t rcode = -1;
-	int32_t streamer_portnumber = -1;
-	Json::Value packet;
-	Json::Reader reader;
-	reader.parse(msg, packet);
+	memset(_szattendant_uuid, 0x00, sizeof(_szattendant_uuid));
+	strncpy_s(_szattendant_uuid, sizeof(_szattendant_uuid), attendant_uuid, strlen(attendant_uuid) + 1);
 
-	if (packet["rcode"].isInt())
+	wchar_t * wattendant_uuid = nullptr;
+	sirius::stringhelper::convert_multibyte2wide(_szattendant_uuid, &wattendant_uuid);
+	if (wattendant_uuid)
 	{
-		rcode = packet.get("rcode", 1).asInt();
-		if (rcode != 0)
-		{
-			disconnect_attendant();
-		}
+		memset(_szwattendant_uuid, 0x00, sizeof(_szwattendant_uuid));
+		wcsncpy_s(_szwattendant_uuid, wattendant_uuid, wcslen(wattendant_uuid) + 1);
+		::SysFreeString(wattendant_uuid);
+		wattendant_uuid = nullptr;
 	}
-
-	std::string attndnt_uuid = packet.get("attendant_uuid", -1).asString();
-	if (attndnt_uuid.size()>0)
-	{
-		memset(_szattendant_uuid, 0x00, sizeof(_szattendant_uuid));
-		strncpy_s(_szattendant_uuid, sizeof(_szattendant_uuid), attndnt_uuid.c_str(), attndnt_uuid.size() + 1);
-
-		wchar_t * attendant_uuid = nullptr;
-		sirius::stringhelper::convert_multibyte2wide(_szattendant_uuid, &attendant_uuid);
-		if (attendant_uuid)
-		{
-			memset(_szwattendant_uuid, 0x00, sizeof(_szwattendant_uuid));
-			wcsncpy_s(_szwattendant_uuid, attendant_uuid, wcslen(attendant_uuid) + 1);
-			::SysFreeString(attendant_uuid);
-			attendant_uuid = nullptr;
-		}
-
-		_recv_attendant_info = TRUE;
-	}
-
-	std::string streamer_addr = packet.get("address", -1).asString();
-	if (packet["port"].isInt())
-		streamer_portnumber = packet.get("port", -1).asInt();
-
-	wchar_t * attendant_uuid = nullptr;
-	wchar_t * address = nullptr;
-	sirius::stringhelper::convert_multibyte2wide((char*)attndnt_uuid.c_str(), &attendant_uuid);
-	sirius::stringhelper::convert_multibyte2wide((char*)streamer_addr.c_str(), &address);
+	_recv_attendant_info = true;
 
 	if (_front)
-		_front->on_pre_attendant_info(rcode, attendant_uuid, address, streamer_portnumber);
+		_front->on_pre_attendant_info(code, _szwattendant_uuid, streamer_portnumber, video_width, video_height);
 
-	if (rcode != -1 && _recv_attendant_info && streamer_portnumber>0 && address && wcslen(address) > 0)
+	if ((code == sirius::app::client::proxy::err_code_t::success) && _recv_attendant_info && (streamer_portnumber>0))
 	{
 		_streamer_portnumber = streamer_portnumber;
 		if (_front)
 		{
 			_front->on_stop_streaming();
-			_front->on_open_streaming(attendant_uuid, address, streamer_portnumber, _reconnection);
+			_front->on_open_streaming(_szwattendant_uuid, streamer_portnumber, _reconnection);
 			_front->on_play_streaming();
 		}
 	}
 
 	if (_front)
-		_front->on_post_attendant_info(rcode, attendant_uuid, address, streamer_portnumber);
-
-	if (attendant_uuid)
-		::SysFreeString(attendant_uuid);
-
-	if (address)
-		::SysFreeString(address);
+		_front->on_post_attendant_info(code, _szwattendant_uuid, streamer_portnumber, video_width, video_height);
 }
 
-void sirius::app::client::proxy::core::xml_callback(const char * dst, const char * src, const char * msg, size_t length)
+void sirius::app::client::proxy::core::xml_callback(const char * msg, size_t length)
 {
 	if (_front)
 		_front->on_pre_xml(msg, length);
@@ -534,142 +396,14 @@ void sirius::app::client::proxy::core::xml_callback(const char * dst, const char
 		_front->on_post_xml(msg, length);
 }
 
-void sirius::app::client::proxy::core::error_callback(const char * dst, const char * src, const char * msg, size_t length)
+void sirius::app::client::proxy::core::error_callback(int32_t code)
 {
-	char * error_msg = (char*)malloc(length + 1);
-	strncpy_s(error_msg, length + 1, msg, length);
-
-	int32_t error_code = 0;
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(error_msg, root);
-	if (root["value"].isInt())
-		error_code = root.get("value", 0).asInt();
-
-	free(error_msg);
-	error_msg = nullptr;
+	if (_front)
+		_front->on_pre_error(code);
 
 	if (_front)
-		_front->on_pre_error(error_code);
+		_front->on_error(code);
 
 	if (_front)
-		_front->on_error(error_code);
-
-	if (_front)
-		_front->on_post_error(error_code);
+		_front->on_post_error(code);
 }
-
-void sirius::app::client::proxy::core::keyup_callback(int32_t value)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_KEY_UP_IND_T noti;
-		memset(&noti, 0x00, sizeof(CMD_KEY_UP_IND_T));
-		noti.input_type = 0;
-		noti.key_code = htonl(value);//ntohl(value);
-		data_request(_szattendant_uuid, CMD_KEY_UP_IND, (char*)&noti, sizeof(CMD_KEY_UP_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::keydown_callback(int32_t value)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_KEY_DOWN_IND_T noti;
-		memset(&noti, 0x00, sizeof(CMD_KEY_DOWN_IND_T));
-		noti.input_type = 0;
-		noti.key_code = htonl(value);//ntohl(value);
-		data_request(_szattendant_uuid, CMD_KEY_DOWN_IND, (char*)&noti, sizeof(CMD_KEY_DOWN_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_move_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_MOVE_IND_T noti;
-		memset(&noti, 0x00, sizeof(CMD_MOUSE_MOVE_IND_T));
-		noti.x_translation = htonl(pos_x);
-		noti.y_translation = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_MOVE_IND, (char*)&noti, sizeof(CMD_MOUSE_MOVE_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_left_button_down_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_LBD_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_LBD_IND, (char*)&noti, sizeof(CMD_MOUSE_LBD_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_left_button_up_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_LBU_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_LBU_IND, (char*)&noti, sizeof(CMD_MOUSE_LBU_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_right_button_down_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_RBD_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_RBD_IND, (char*)&noti, sizeof(CMD_MOUSE_RBD_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_right_button_up_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_RBU_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_RBU_IND, (char*)&noti, sizeof(CMD_MOUSE_RBU_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_left_button_double_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_LB_DCLICK_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_LB_DCLICK_IND, (char*)&noti, sizeof(CMD_MOUSE_LB_DCLICK_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mosue_right_button_double_callback(int32_t pos_x, int32_t pos_y)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_RB_DCLICK_IND_T noti;
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_RB_DCLICK_IND, (char*)&noti, sizeof(CMD_MOUSE_RB_DCLICK_IND_T));
-	}
-}
-
-void sirius::app::client::proxy::core::mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_delta)
-{
-	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
-	{
-		CMD_MOUSE_WHEEL_IND_T noti;
-		noti.z_delta = htonl(wheel_delta);
-		noti.x = htonl(pos_x);
-		noti.y = htonl(pos_y);
-		data_request(_szattendant_uuid, CMD_MOUSE_WHEEL_IND, (char*)&noti, sizeof(CMD_MOUSE_WHEEL_IND_T));
-	}
-}
-

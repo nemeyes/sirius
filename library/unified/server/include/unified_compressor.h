@@ -36,6 +36,7 @@ namespace sirius
 				int32_t		play(int32_t flag);
 				int32_t		pause(int32_t flag);
 				int32_t		stop(int32_t flag);
+				int32_t		invalidate(void);
 
 			private:
 				void after_video_compressing_callback(uint8_t * data, size_t size, long long before_encode_timestamp, long long after_encode_timestamp);

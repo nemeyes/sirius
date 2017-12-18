@@ -20,7 +20,6 @@ client_controller::client_controller(CSiriusClientDlg * front)
 	HINSTANCE inst = AfxGetInstanceHandle();
 	HWND hwnd = _front->GetSafeHwnd();
 	_controller = new sirius::app::client::proxy(this, inst, hwnd);
-	_controller->set_key_stroke(_front->_keystroke_interval);
 }
 
 client_controller::~client_controller(void)
@@ -32,13 +31,15 @@ client_controller::~client_controller(void)
 	}
 }
 
-void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, BOOL reconnection)
+void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 	::PostMessage(hwnd, WM_CONNECTION_BEGIN_MESSAGE, 0, 0);
+	memset(_address, 0x00, sizeof(_address));
+	wcsncpy_s(_address, address, sizeof(_address) / sizeof(wchar_t) - 1);
 }
 
-void client_controller::on_post_connect(wchar_t * address, int32_t portNumber, BOOL reconnection)
+void client_controller::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 
@@ -121,27 +122,11 @@ void client_controller::on_create_session(void)
 	::PostMessage(hwnd, WM_CREATING_ATTENDANT_BEGIN_MESSAGE, 0, 0);
 
 	CString device_id = L"";
-
 	_front->_ctrl_device_id.GetWindowTextW(device_id);
-	//connect_attendant((LPWSTR)(LPCWSTR)appId, (LPWSTR)(LPCWSTR)deviceId, (LPWSTR)(LPCWSTR)deviceType, (LPWSTR)(LPCWSTR)envirType, (LPWSTR)(LPCWSTR)modelType, width, height, -1);
+	connect_client((LPWSTR)(LPCWSTR)device_id);
 }
 
 void client_controller::on_post_create_session(void)
-{
-
-}
-
-void client_controller::on_pre_keepalive(void)
-{
-
-}
-
-void client_controller::on_keepalive(void)
-{
-
-}
-
-void client_controller::on_post_keepalive(void)
 {
 
 }
@@ -163,7 +148,7 @@ void client_controller::on_post_destroy_session(void)
 
 }
 
-void client_controller::on_pre_connect_attendant(int32_t code, wchar_t * msg)
+void client_controller::on_pre_connect_client(int32_t code, wchar_t * msg)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 	if (code == 0)
@@ -176,48 +161,51 @@ void client_controller::on_pre_connect_attendant(int32_t code, wchar_t * msg)
 	}
 }
 
-void client_controller::on_connect_attendant(int32_t code, wchar_t * msg)
+void client_controller::on_connect_client(int32_t code, wchar_t * msg)
 {
 
 }
 
-void client_controller::on_post_connect_attendant(int32_t code, wchar_t * msg)
+void client_controller::on_post_connect_client(int32_t code, wchar_t * msg)
 {
 
 }
 
-void client_controller::on_pre_disconnect_attendant(void)
+void client_controller::on_pre_disconnect_client(int32_t code)
 {
 
 }
 
-void client_controller::on_disconnect_attendant(void)
+void client_controller::on_disconnect_client(int32_t code)
 {
 
 }
 
-void client_controller::on_post_disconnect_attendant(void)
+void client_controller::on_post_disconnect_client(int32_t code)
 {
 
 }
 
-void client_controller::on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber)
+void client_controller::on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
 	wchar_t title[500] = { 0 };
 	_snwprintf_s(title, sizeof(title), L"sirius_client attendant_uuid=%s, port=%d", attendant_uuid, streamer_portnumber);
 	_front->SetWindowTextW(title);
+
+	_front->_video_width = video_width;
+	_front->_video_height = video_height;
 }
 
-void client_controller::on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber)
+void client_controller::on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
 
 }
 
-void client_controller::on_open_streaming(wchar_t * attendant_uuid, wchar_t * streamer_address, int32_t streamer_portnumber, BOOL reconnection)
+void client_controller::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection)
 {
 	HWND hwnd = ::GetDlgItem(_front->GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW);
 	if (_framework)
-		_framework->open(streamer_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection ? true : false);
+		_framework->open(_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection);
 }
 
 void client_controller::on_play_streaming(void)
