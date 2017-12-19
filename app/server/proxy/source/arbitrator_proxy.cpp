@@ -427,28 +427,43 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 
 	}
 
+	bool attendant_created = false;
+
 	while (_run)
 	{
-		int32_t count = (get_attendant_count()) >> 1;
-		int32_t percent = ((float)count / (float)max_attendant_instance_count) * 100;
-
-		if (percent < 100)
+		if (!attendant_created)
 		{
-			if (_context && _context->handler)
-				_context->handler->on_attendant_create(percent);
-		}
-		else
-		{
-			int32_t count = get_launcher_count();
-			if (count==0)
+			if (max_attendant_instance_count > 0)
 			{
-				if (_context && _context->handler)
-					_context->handler->on_attendant_create(percent);
+				int32_t count = (get_attendant_count()) >> 1;
+				int32_t percent = ((float)count / (float)max_attendant_instance_count) * 100;
+
+				if (percent < 100)
+				{
+					if (_context && _context->handler)
+						_context->handler->on_attendant_create(percent);
+				}
+				else
+				{
+					int32_t count = get_launcher_count();
+					if (count == 0)
+					{
+						if (_context && _context->handler)
+							_context->handler->on_attendant_create(percent);
+
+						attendant_created = true;
+					}
+				}
+			}
+			else
+			{
+				_context->handler->on_attendant_create(100);
+				attendant_created = true;
 			}
 		}
-
 		::Sleep(10);
 	}
+
 
 	if (_context && _context->handler)
 		_context->handler->on_stop();

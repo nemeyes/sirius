@@ -112,6 +112,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_performance_monitor"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_arbitrator_launcher", "sirius_arbitrator_launcher.vcxproj", "{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_warbitrator", "sirius_warbitrator.vcxproj", "{11554DBA-8863-4036-AA42-25BC66656731}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -538,6 +540,18 @@ Global
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9}.Release|x64.Build.0 = Release|x64
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9}.Release|x86.ActiveCfg = Release|Win32
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9}.Release|x86.Build.0 = Release|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|ARM.ActiveCfg = Debug|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|x64.ActiveCfg = Debug|x64
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|x64.Build.0 = Debug|x64
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|x86.ActiveCfg = Debug|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Debug|x86.Build.0 = Debug|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|Any CPU.ActiveCfg = Release|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|ARM.ActiveCfg = Release|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x64.ActiveCfg = Release|x64
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x64.Build.0 = Release|x64
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x86.ActiveCfg = Release|Win32
+		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -593,5 +607,6 @@ Global
 		{B60E58E5-F7FD-44E1-8AAB-C227DA6A4D59} = {72CE39BA-0A83-4218-BA40-DF689E3A57A8}
 		{7117EFB8-6D3D-4597-B715-0BD09225507D} = {0468767A-10F1-49B3-9FBC-19F8DC182E40}
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
+		{11554DBA-8863-4036-AA42-25BC66656731} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
 	EndGlobalSection
 EndGlobal
