@@ -244,7 +244,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 			data_request(attendant.uuid, CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 			{
 				sirius::autolock lock(&_attendant_cs);
-				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, uuid);
+				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
 			}
 		}
 	}
@@ -255,14 +255,14 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::success;
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	return status;
 }
 
 void sirius::app::server::arbitrator::proxy::core::disconnect_attendant_callback(const char * uuid)
 {
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle, uuid);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 }
 
 void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(const char * uuid, const char * id, int32_t code)
@@ -271,7 +271,7 @@ void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(cons
 	{
 		sirius::autolock lock(&_attendant_cs);
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running, uuid);
+		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	}
 }
 
@@ -281,7 +281,7 @@ void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const
 	{
 		sirius::autolock lock(&_attendant_cs);
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	}
 }
 
@@ -316,6 +316,15 @@ void sirius::app::server::arbitrator::proxy::core::create_session_callback(const
 void sirius::app::server::arbitrator::proxy::core::destroy_session_callback(const char * uuid)
 {
 	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "destroy_session_callback");
+
+	sirius::autolock lock(&_attendant_cs);
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
+	//{
+	//	sirius::autolock lock(&_attendant_cs);
+	//	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	//	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+	//}
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)

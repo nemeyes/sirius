@@ -489,7 +489,7 @@ void CSiriusClientDlg::OnBnClickedButtonDisconnect()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (_client)
 	{
-		_client->disconnect();
+		_client->disconnect_client();
 	}
 
 	EnableDisconnectButton(FALSE);
@@ -706,18 +706,36 @@ void CSiriusClientDlg::ClientPointToServerPoint(CPoint point, CPoint* output)
 	GetDlgItem(IDC_STATIC_VIDEO_VIEW)->GetWindowRect(&clientRC);
 	ScreenToClient(&clientRC);
 
-	if (PtInRect(&clientRC, point))
+	if (_video_width > 0 && _video_height > 0)
 	{
-		int width = clientRC.right - clientRC.left;
-		int height = clientRC.bottom - clientRC.top;
+		int32_t cwidth = clientRC.right - clientRC.left;
+		int32_t cheight = clientRC.bottom - clientRC.top;
 
-		float normX = (float)point.x / (float)width;
-		float normY = (float)point.y / (float)height;
+		int32_t vheight = ((float)_video_height / (float)_video_width) * (float)cwidth;
+		int32_t margin = (cheight - vheight) >> 1;
 
-		int x = normX * 1280;// _width;
-		int y = normY * 720;// _height;
+		RECT roiRC = clientRC;
+		roiRC.bottom = roiRC.bottom - margin;
+		roiRC.top = roiRC.top + margin;
+		if (PtInRect(&roiRC, point))
+		{
+			int32_t width = clientRC.right - clientRC.left;
+			int32_t height = clientRC.bottom - clientRC.top;
 
-		output->SetPoint(x, y);
+			//float point_y = ((float)point.y * (float)vheight) / (float)height;
+			float normX = (float)point.x / (float)width;
+			float normY = (float)(point.y - margin) / (float)vheight;
+			//float normY = (float)point_y / (float)vheight;
+
+			int x = normX * _video_width;// _width;
+			int y = normY * _video_height;// _height;
+
+			output->SetPoint(x, y);
+		}
+		else
+		{
+			output->SetPoint(-1, -1);
+		}
 	}
 	else
 	{
@@ -743,4 +761,27 @@ void CSiriusClientDlg::OnBnClickedFindFileButton()
 		filename = dlg->GetPathName();
 		_ctrl_url.SetWindowTextW(filename);
 	}
+}
+
+
+BOOL CSiriusClientDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+		{
+			if (_client)
+				_client->key_down(pMsg->wParam);
+			return TRUE;
+		}
+		if (_client)
+			_client->key_down(pMsg->wParam);
+	}
+	else if (pMsg->message == WM_KEYUP)
+	{
+		if (_client)
+			_client->key_up(pMsg->wParam);
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
