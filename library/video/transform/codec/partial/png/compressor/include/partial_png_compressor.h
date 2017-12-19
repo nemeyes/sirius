@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <setjmp.h>
+#include <map>
 
 #include <sirius_template_queue.h>
 #include <sirius_video_processor.h>
@@ -47,6 +48,26 @@ namespace sirius
 										, timestamp(0)
 									{}
 								} ibuffer_t;
+
+								typedef struct _compressed_cache_image_t
+								{
+									uint8_t	*	cache;
+									int32_t		cache_size;
+									int32_t		cache_capacity;
+									_compressed_cache_image_t(void)
+										: cache_capacity(1024 * 512)
+									{
+										cache = static_cast<uint8_t*>(malloc(cache_capacity));
+									}
+
+									~_compressed_cache_image_t(void)
+									{
+										if (cache)
+											free(cache);
+										cache = nullptr;
+									}
+								} compressed_cache_image_t;
+
 
 								typedef struct _buffer_t
 								{
@@ -96,6 +117,9 @@ namespace sirius
 								CRITICAL_SECTION					_device_ctx_cs;
 
 								sirius::library::video::transform::codec::libpng::compressor * _real_compressor;
+
+								
+								std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*> _indexed_cache_image;
 								bool _invalidate;
 							};
 						};

@@ -120,6 +120,9 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 
 int32_t sirius::library::video::transform::codec::partial::png::compressor::core::play(void)
 {
+	_invalidate = true;
+	if (_event != NULL && _event != INVALID_HANDLE_VALUE)
+		::SetEvent(_event);
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
@@ -136,6 +139,8 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 int32_t sirius::library::video::transform::codec::partial::png::compressor::core::invalidate(void)
 {
 	_invalidate = true;
+	if(_event != NULL && _event != INVALID_HANDLE_VALUE)
+		::SetEvent(_event);
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
@@ -276,6 +281,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 	int32_t		process_data_capacity = (_context->width * _context->height) << 2;
 	int32_t		process_data_size = 0;
+	int32_t		last_process_data_size = 0;
 	uint8_t *	process_data = (uint8_t*)malloc(process_data_capacity);
 	long long	process_timestamp = 0;
 	while (_run)
@@ -315,17 +321,47 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 			}
 			else if (_context->memtype == sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host)
 			{
-				sirius::autolock lock(&_cs);
-				iobuffer = _iobuffer_queue.get_pending();
-				if (!iobuffer)
+				if (_invalidate)
 				{
-					_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
-					continue;
-				}
+					if (prev_me_filled)
+					{
+						prev_me_filled = false;
+						process_data_size = last_process_data_size;
+					}
+					else
+					{
+						sirius::autolock lock(&_cs);
+						iobuffer = _iobuffer_queue.get_pending();
+						if (!iobuffer)
+						{
+							_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+							continue;
+						}
 
-				process_data_size = iobuffer->input.data_size;
-				process_timestamp = iobuffer->input.timestamp;
-				memmove(process_data, iobuffer->input.data, process_data_size);
+						process_data_size = iobuffer->input.data_size;
+						process_timestamp = iobuffer->input.timestamp;
+						memmove(process_data, iobuffer->input.data, process_data_size);
+
+						last_process_data_size = process_data_size;
+					}
+					_invalidate = false;
+				}
+				else
+				{
+					sirius::autolock lock(&_cs);
+					iobuffer = _iobuffer_queue.get_pending();
+					if (!iobuffer)
+					{
+						_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+						continue;
+					}
+
+					process_data_size = iobuffer->input.data_size;
+					process_timestamp = iobuffer->input.timestamp;
+					memmove(process_data, iobuffer->input.data, process_data_size);
+
+					last_process_data_size = process_data_size;
+				}
 			}
 
 			while (process_data_size>0)
