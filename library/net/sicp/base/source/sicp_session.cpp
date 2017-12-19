@@ -86,7 +86,6 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 
 		if (send_buffer)
 		{
-#if defined(WITH_NEW_PROTOCOL)
 			sirius::library::net::sicp::packet_header_t header;
 			header.pid = 'S';
 			memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
@@ -94,15 +93,7 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 			header.version = sirius::library::net::sicp::session::protocol_version;
 			header.command = htons(cmd);
 			header.length = htonl(pkt_payload_size);
-#else
-			sirius::library::net::sicp::packet_header_t header;
-			header.command = htons(cmd);
-			header.version = sirius::library::net::sicp::session::protocol_version;
-			header.type = msg_type;
-			header.length = htonl(pkt_header_size + pkt_payload_size);
-			memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-			memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-#endif
+		
 			memmove(send_buffer->packet, &header, pkt_header_size);
 			if (pkt_payload_size > 0)
 				memmove(send_buffer->packet + pkt_header_size, pkt_payload, pkt_payload_size);
@@ -177,29 +168,17 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 					{
 						pkt_payload_size = pkt_totalsize;
 
-#if defined(WITH_NEW_PROTOCOL)
 						sirius::library::net::sicp::packet_header_t header;
 						header.pid = 'S';
 						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
 						memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
 						header.version = sirius::library::net::sicp::session::protocol_version;
 						header.command = htons(cmd);
-						header.length = htonl(pkt_payload_size);
-#else
-						sirius::library::net::sicp::packet_header_t header;
-						header.command = htons(cmd);
-						header.version = sirius::library::net::sicp::session::protocol_version;
-						header.type = msg_type;
-						header.length = htonl(pkt_payload_size);
-						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-						memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-#endif
+						header.length = htonl(length);
 						memmove(send_buffer->packet, &header, pkt_header_size);
 						if (length > 0)
 							memmove(send_buffer->packet + pkt_header_size, pkt_payload, length);
 						send_buffer->send_size = pkt_payload_size;
-
-						//LOGGER::make_trace_log(CAPS, "%s()_%d : header.length=%d, length=%d ", __FUNCTION__, __LINE__, pkt_payload_size, send_buffer->size);
 					}
 					else
 					{
@@ -210,7 +189,6 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 
 						memmove(send_buffer->packet, pkt_payload, pkt_payload_size);
 						send_buffer->send_size = pkt_payload_size;
-						//LOGGER::make_trace_log(CAPS, "%s()_%d : length=%d ", __FUNCTION__, __LINE__, send_buffer->size);
 					}
 				}
 				else
@@ -219,7 +197,6 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 					{
 						pkt_payload_size = _mtu - pkt_header_size;
 
-#if defined(WITH_NEW_PROTOCOL)
 						sirius::library::net::sicp::packet_header_t header;
 						header.pid = 'S';
 						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
@@ -227,20 +204,10 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 						header.version = sirius::library::net::sicp::session::protocol_version;
 						header.command = htons(cmd);
 						header.length = htonl(pkt_totalsize);
-#else
-						sirius::library::net::sicp::packet_header_t header;
-						header.command = htons(cmd);
-						header.version = sirius::library::net::sicp::session::protocol_version;
-						header.type = msg_type;
-						header.length = htonl(pkt_totalsize);
-						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-						memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-#endif
 						memmove(send_buffer->packet, &header, pkt_header_size);
 						memmove(send_buffer->packet + pkt_header_size, pkt_payload, pkt_payload_size);
 						pkt_payload += pkt_payload_size;
 						send_buffer->send_size = pkt_header_size + pkt_payload_size;
-						//LOGGER::make_trace_log(CAPS, "%s()_%d : header.length=%d, length=%d ", __FUNCTION__, __LINE__, pkt_totalsize, send_buffer->size);
 					}
 					else
 					{
@@ -249,7 +216,6 @@ void sirius::library::net::sicp::session::push_send_packet(const char * dst, con
 						memmove(send_buffer->packet, pkt_payload, pkt_payload_size);
 						pkt_payload += pkt_payload_size;
 						send_buffer->send_size = pkt_payload_size;
-						//LOGGER::make_trace_log(CAPS, "%s()_%d : length=%d ", __FUNCTION__, __LINE__, send_buffer->size);
 					}
 				}
 
