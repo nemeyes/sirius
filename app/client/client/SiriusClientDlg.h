@@ -93,4 +93,5 @@ public:
 	bool ParseArgument(int argc, wchar_t * argv[]);
 	void ClientPointToServerPoint(CPoint point, CPoint * output);
 
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

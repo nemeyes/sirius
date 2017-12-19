@@ -148,7 +148,7 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::update(sirius::app::
 	return status;
 }
 
-int32_t sirius::app::server::arbitrator::db::attendant_dao::update(int32_t state, const char * uuid, sqlite3 * connection)
+int32_t sirius::app::server::arbitrator::db::attendant_dao::update(int32_t state, int32_t type, const char * uuid, sqlite3 * connection)
 {
 	int32_t status = sirius::app::server::arbitrator::db::attendant_dao::err_code_t::fail;
 	if (!uuid)
@@ -162,9 +162,13 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::update(int32_t state
 	else
 		conn = connection;
 
+	
 	std::string sql = "UPDATE tb_attendant SET ";
 	sql += "state=? ";
-	sql += "WHERE uuid=?";
+	if (type==sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant)
+		sql += "WHERE uuid=?";
+	else if (type == sirius::app::server::arbitrator::db::attendant_dao::type_t::client)
+		sql += "WHERE client_uuid=?";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
