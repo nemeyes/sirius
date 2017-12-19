@@ -30,26 +30,26 @@ namespace sirius
 				int32_t play(void);
 				int32_t stop(void);
 
-				void	on_connect_attendant(int32_t code);
-				void	on_disconnect_attendant(void);
-				void	on_start_attendant(const char * client_uuid, const char * client_id);
-				void	on_stop_attendant(const char * client_uuid);
-				void	on_destroy(void);
+				void	connect_attendant_callback(int32_t code);
+				void	disconnect_attendant_callback(void);
+				void	start_attendant_callback(const char * client_uuid, const char * client_id);
+				void	stop_attendant_callback(const char * client_uuid);
+				void	destroy_callback(void);
 
-				void	on_key_up(int8_t type, int32_t key);
-				void	on_key_down(int8_t type, int32_t key);
+				void	key_up_callback(int8_t type, int32_t key);
+				void	key_down_callback(int8_t type, int32_t key);
 
-				void	on_mouse_move(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_lbd(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_lbu(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_rbd(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_rbu(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_lb_dclick(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_rb_dclick(int32_t pos_x, int32_t pos_y);
-				void	on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
+				void	mouse_move_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_lbd_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_lbu_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_rbd_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_rbu_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_lb_dclick_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_rb_dclick_callback(int32_t pos_x, int32_t pos_y);
+				void	mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
 
 				void	app_to_attendant(uint8_t * packet, int32_t len);
-				void	on_attendant_to_app(uint8_t * packet, int32_t len);
+				void	attendant_to_app_callback(uint8_t * packet, int32_t len);
 				void	set_attendant_cb(FuncPtrCallback fncallback) { _callback = fncallback; }
 
 				FuncPtrCallback _callback;
@@ -59,8 +59,6 @@ namespace sirius
 
 				void create_session_callback(void);
 				void destroy_session_callback(void);
-
-				static void __stdcall alive_timer_callback(LPVOID args, DWORD low, DWORD high);
 
 				void on_recv_notification(int32_t type, char* msg, int32_t size);
 

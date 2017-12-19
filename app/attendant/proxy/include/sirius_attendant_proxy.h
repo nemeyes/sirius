@@ -113,26 +113,26 @@ namespace sirius
 				virtual int32_t play(void);
 				virtual int32_t stop(void);
 
-				virtual void on_connect_attendant(int32_t code);
-				virtual void on_disconnect_attendant(void);
-				virtual void on_start_attendant(const char * client_uuid, const char * client_id);
-				virtual void on_stop_attendant(const char * client_uuid);
-				virtual void on_destroy(void);
+				virtual void connect_attendant_callback(int32_t code);
+				virtual void disconnect_attendant_callback(void);
+				virtual void start_attendant_callback(const char * client_uuid, const char * client_id);
+				virtual void stop_attendant_callback(const char * client_uuid);
+				virtual void destroy_callback(void);
 
-				virtual void on_key_up(int8_t type, int32_t key);
-				virtual void on_key_down(int8_t type, int32_t key);
+				virtual void key_up_callback(int8_t type, int32_t key);
+				virtual void key_down_callback(int8_t type, int32_t key);
 
-				virtual void on_mouse_move(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_lbd(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_lbu(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_rbd(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_rbu(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_lb_dclick(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_rb_dclick(int32_t pos_x, int32_t pos_y);
-				virtual void on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
+				virtual void mouse_move_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_lbd_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_lbu_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_rbd_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_rbu_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_lb_dclick_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_rb_dclick_callback(int32_t pos_x, int32_t pos_y);
+				virtual void mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
 
 				void app_to_attendant(uint8_t * packet, int32_t len);
-				void on_attendant_to_app(uint8_t * packet, int32_t len);
+				void attendant_to_app_callback(uint8_t * packet, int32_t len);
 				void set_attendant_cb(FuncPtrCallback fncallback);
 
 			private:
