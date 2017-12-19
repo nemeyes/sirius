@@ -22,7 +22,7 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINST
 {
 	add_command(new sirius::app::client::connect_client_res(this));
 	add_command(new sirius::app::client::disconnect_client_res(this));
-	add_command(new sirius::app::client::container_info_noti(this));
+	add_command(new sirius::app::client::attendant_info_noti(this));
 	add_command(new sirius::app::client::xml_noti(this));
 	add_command(new sirius::app::client::error_noti(this));
 
@@ -138,7 +138,7 @@ int32_t sirius::app::client::proxy::core::connect_client(wchar_t * id)
 		wpacket["id"] = client_id;
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
-			data_request(SERVER_UUID, CMD_CONNECT_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
+			data_request(SERVER_UUID, CMD_CONNECT_CLIENT_REQ, (char*)request.c_str(), request.size() + 1);
 
 		free(client_id);
 		client_id = nullptr;

@@ -73,19 +73,19 @@ namespace sirius
 				}
 			};
 
-			class container_info_noti : public sirius::app::client::abstract_client_cmd
+			class attendant_info_noti : public sirius::app::client::abstract_client_cmd
 			{
 			public:
-				container_info_noti(sirius::app::client::proxy::core * prxy)
+				attendant_info_noti(sirius::app::client::proxy::core * prxy)
 					: sirius::app::client::abstract_client_cmd(prxy, CMD_ATTENDANT_INFO_IND)
 				{}
-				virtual ~container_info_noti(void)
+				virtual ~attendant_info_noti(void)
 				{}
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
 					int32_t rcode = -1;
-					std::string container_uuid = "";
+					std::string attendant_uuid = "";
 					int32_t streamer_portnumber = -1;
 					int32_t video_width = -1;
 					int32_t video_height = -1;
@@ -95,12 +95,12 @@ namespace sirius
 					reader.parse(msg, rpacket);
 
 					rcode = rpacket.get("rcode", sirius::app::client::proxy::err_code_t::fail).asInt();
-					container_uuid = rpacket.get("attendant_uuid", -1).asString();
+					attendant_uuid = rpacket.get("attendant_uuid", -1).asString();
 					streamer_portnumber = rpacket.get("streamer_portnumber", -1).asInt();
 					video_width = rpacket.get("video_width", -1).asInt();
 					video_height = rpacket.get("video_height", -1).asInt();
 
-					_proxy->attendant_info_callback(rcode, container_uuid.c_str(), streamer_portnumber, video_width, video_height);
+					_proxy->attendant_info_callback(rcode, attendant_uuid.c_str(), streamer_portnumber, video_width, video_height);
 				}
 			};
 

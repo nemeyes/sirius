@@ -298,7 +298,7 @@ void sirius::app::attendant::proxy::core::destroy_session_callback(void)
 		::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);
 }
 
-void sirius::app::attendant::proxy::core::on_connect_attendant(int32_t code)
+void sirius::app::attendant::proxy::core::connect_attendant_callback(int32_t code)
 {
 	if (code == sirius::app::attendant::proxy::err_code_t::success)
 	{
@@ -306,7 +306,7 @@ void sirius::app::attendant::proxy::core::on_connect_attendant(int32_t code)
 	}
 }
 
-void sirius::app::attendant::proxy::core::on_disconnect_attendant(void)
+void sirius::app::attendant::proxy::core::disconnect_attendant_callback(void)
 {
 	int32_t status = sirius::app::attendant::proxy::err_code_t::success;
 
@@ -322,7 +322,7 @@ void sirius::app::attendant::proxy::core::on_disconnect_attendant(void)
 	disconnect();
 }
 
-void sirius::app::attendant::proxy::core::on_start_attendant(const char * client_uuid, const char * client_id)
+void sirius::app::attendant::proxy::core::start_attendant_callback(const char * client_uuid, const char * client_id)
 {
 	Json::Value wpacket;
 	Json::StyledWriter writer;
@@ -342,7 +342,7 @@ void sirius::app::attendant::proxy::core::on_start_attendant(const char * client
 
 	if (uuid && strlen(uuid) > 0)
 	{
-		npacket["container_uuid"] = uuid;
+		npacket["attendant_uuid"] = uuid;
 		npacket["streamer_portnumber"] = STREAMER_PORTNUMBER + _context->id;
 		npacket["video_width"] = _context->video_width;
 		npacket["video_height"] = _context->video_height;
@@ -357,7 +357,7 @@ void sirius::app::attendant::proxy::core::on_start_attendant(const char * client
 	}
 }
 
-void sirius::app::attendant::proxy::core::on_stop_attendant(const char * client_uuid)
+void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * client_uuid)
 {
 	Json::Value wpacket;
 	Json::StyledWriter writer;
@@ -369,12 +369,12 @@ void sirius::app::attendant::proxy::core::on_stop_attendant(const char * client_
 	}
 }
 
-void sirius::app::attendant::proxy::core::on_destroy(void)
+void sirius::app::attendant::proxy::core::destroy_callback(void)
 {	
 
 }
 
-void sirius::app::attendant::proxy::core::on_key_up(int8_t type, int32_t key)
+void sirius::app::attendant::proxy::core::key_up_callback(int8_t type, int32_t key)
 {
 	if (type == sirius::library::user::event::dinput::receiver::type_t::keyboard)
 	{
@@ -386,7 +386,7 @@ void sirius::app::attendant::proxy::core::on_key_up(int8_t type, int32_t key)
 	}
 }
 
-void sirius::app::attendant::proxy::core::on_key_down(int8_t type, int32_t key)
+void sirius::app::attendant::proxy::core::key_down_callback(int8_t type, int32_t key)
 {
 	if (type == sirius::library::user::event::dinput::receiver::type_t::keyboard)
 	{
@@ -402,7 +402,7 @@ void sirius::app::attendant::proxy::core::on_key_down(int8_t type, int32_t key)
 	}
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_move(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_move_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -410,7 +410,7 @@ void sirius::app::attendant::proxy::core::on_mouse_move(int32_t pos_x, int32_t p
 	_framework->on_mouse_move(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_lbd(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_lbd_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -418,7 +418,7 @@ void sirius::app::attendant::proxy::core::on_mouse_lbd(int32_t pos_x, int32_t po
 	_framework->on_L_mouse_down(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_lbu(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_lbu_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -426,7 +426,7 @@ void sirius::app::attendant::proxy::core::on_mouse_lbu(int32_t pos_x, int32_t po
 	_framework->on_L_mouse_up(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_rbd(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_rbd_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -434,7 +434,7 @@ void sirius::app::attendant::proxy::core::on_mouse_rbd(int32_t pos_x, int32_t po
 	_framework->on_R_mouse_down(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_rbu(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_rbu_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -442,7 +442,7 @@ void sirius::app::attendant::proxy::core::on_mouse_rbu(int32_t pos_x, int32_t po
 	_framework->on_R_mouse_up(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_lb_dclick(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_lb_dclick_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -450,7 +450,7 @@ void sirius::app::attendant::proxy::core::on_mouse_lb_dclick(int32_t pos_x, int3
 	_framework->on_L_mouse_dclick(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_rb_dclick(int32_t pos_x, int32_t pos_y)
+void sirius::app::attendant::proxy::core::mouse_rb_dclick_callback(int32_t pos_x, int32_t pos_y)
 {
 	if (!_framework)
 		return;
@@ -458,7 +458,7 @@ void sirius::app::attendant::proxy::core::on_mouse_rb_dclick(int32_t pos_x, int3
 	_framework->on_R_mouse_dclick(pos_x, pos_y);
 }
 
-void sirius::app::attendant::proxy::core::on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_z)
+void sirius::app::attendant::proxy::core::mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_z)
 {
 	if (!_framework)
 		return;
@@ -482,19 +482,6 @@ void sirius::app::attendant::proxy::core::on_key_board_down(int32_t key)
 	_framework->on_keydown(key);
 }
 
-void __stdcall sirius::app::attendant::proxy::core::alive_timer_callback(LPVOID args, DWORD low, DWORD high)
-{
-	if (args == nullptr)
-		return;
-	sirius::app::attendant::proxy::core * self = static_cast<sirius::app::attendant::proxy::core*>(args);
-}
-
-/*
-void	app_to_attendant(uint8_t * packet, int32_t len);
-void	on_attendant_to_app(uint8_t * packet, int32_t len);
-void	set_attendant_cb(FuncPtrCallback fncallback);
-
-*/
 void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int32_t len)
 {
 	/*Json::Value jsonpacket;
@@ -506,7 +493,7 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
 }
 
-void sirius::app::attendant::proxy::core::on_attendant_to_app(uint8_t * packet, int32_t len)
+void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)
 {
 	if (_callback)
 		_callback((char*)packet, len);

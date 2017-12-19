@@ -50,7 +50,7 @@ namespace sirius
 					if (rpacket["rcode"].isInt())
 						code = rpacket["rcode"].asInt();
 
-					_attendant->on_connect_attendant(code);
+					_attendant->connect_attendant_callback(code);
 				}
 			};
 
@@ -65,7 +65,7 @@ namespace sirius
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
-					_attendant->on_disconnect_attendant();
+					_attendant->disconnect_attendant_callback();
 				}
 			};
 
@@ -89,7 +89,7 @@ namespace sirius
 					std::string client_uuid = rpacket["client_uuid"].asString();
 					std::string client_id = rpacket["client_id"].asString();
 
-					_attendant->on_start_attendant(client_uuid.c_str(), client_id.c_str());
+					_attendant->start_attendant_callback(client_uuid.c_str(), client_id.c_str());
 				}
 			};
 
@@ -112,7 +112,7 @@ namespace sirius
 
 					std::string client_uuid = rpacket["client_uuid"].asString();
 
-					_attendant->on_stop_attendant(client_uuid.c_str());
+					_attendant->stop_attendant_callback(client_uuid.c_str());
 				}
 			};
 
@@ -134,7 +134,7 @@ namespace sirius
 					memset(&noti, 0x00, sizeof(CMD_KEY_UP_IND_T));
 					memcpy(&noti, msg, sizeof(CMD_KEY_UP_IND_T));
 					noti.key_code = ntohl(noti.key_code);
-					_attendant->on_key_up(noti.input_type, noti.key_code);
+					_attendant->key_up_callback(noti.input_type, noti.key_code);
 				}
 			};
 
@@ -156,7 +156,7 @@ namespace sirius
 					memset(&noti, 0x00, sizeof(CMD_KEY_DOWN_IND_T));
 					memcpy(&noti, msg, sizeof(CMD_KEY_DOWN_IND_T));
 					noti.key_code = ntohl(noti.key_code);
-					_attendant->on_key_down(noti.input_type, noti.key_code);
+					_attendant->key_down_callback(noti.input_type, noti.key_code);
 				}
 			};
 
@@ -179,7 +179,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_MOVE_IND_T));
 					noti.x_translation = ntohl(noti.x_translation);
 					noti.y_translation = ntohl(noti.y_translation);
-					_attendant->on_mouse_move(noti.x_translation, noti.y_translation);
+					_attendant->mouse_move_callback(noti.x_translation, noti.y_translation);
 				}
 			};
 
@@ -202,7 +202,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_LBD_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_lbd(noti.x, noti.y);
+					_attendant->mouse_lbd_callback(noti.x, noti.y);
 				}
 			};
 
@@ -225,7 +225,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_LBU_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_lbu(noti.x, noti.y);
+					_attendant->mouse_lbu_callback(noti.x, noti.y);
 				}
 			};
 
@@ -248,7 +248,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_RBD_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_rbd(noti.x, noti.y);
+					_attendant->mouse_rbd_callback(noti.x, noti.y);
 				}
 			};
 
@@ -271,7 +271,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_RBU_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_rbu(noti.x, noti.y);
+					_attendant->mouse_rbu_callback(noti.x, noti.y);
 				}
 			};
 
@@ -294,7 +294,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_LB_DCLICK_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_lb_dclick(noti.x, noti.y);
+					_attendant->mouse_lb_dclick_callback(noti.x, noti.y);
 				}
 			};
 
@@ -317,7 +317,7 @@ namespace sirius
 					memcpy(&noti, msg, sizeof(CMD_MOUSE_RB_DCLICK_IND_T));
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
-					_attendant->on_mouse_rb_dclick(noti.x, noti.y);
+					_attendant->mouse_rb_dclick_callback(noti.x, noti.y);
 				}
 			};
 
@@ -341,7 +341,7 @@ namespace sirius
 					noti.x = ntohl(noti.x);
 					noti.y = ntohl(noti.y);
 					noti.z_delta = ntohl(noti.z_delta);
-					_attendant->on_mouse_wheel(noti.x, noti.y, noti.z_delta);
+					_attendant->mouse_wheel_callback(noti.x, noti.y, noti.z_delta);
 				}
 			};
 
@@ -357,7 +357,7 @@ namespace sirius
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
-					_attendant->on_attendant_to_app((uint8_t*)msg, length);
+					_attendant->attendant_to_app_callback((uint8_t*)msg, length);
 				}
 			};
 		};
