@@ -399,7 +399,7 @@ void sirius::library::net::sicp::abstract_server::process(void)
 
 		if (_use_keep_alive)
 		{
-			clean_conn_session();
+			clean_assoc_session();
 		}
 
 		::Sleep(msleep);
