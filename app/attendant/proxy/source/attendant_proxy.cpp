@@ -15,7 +15,7 @@ typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::
 #define MTU_SIZE					1500
 
 sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid)
-	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, true, true, ethernet_type_t::tcp, false)
+	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, false, true, ethernet_type_t::tcp, false)
 	, _front(front)
 	, _framework_context(NULL)
 	, _framework(NULL)
