@@ -46,7 +46,7 @@ namespace sirius
 								_proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_gpu, enable_present, enable_auto_start, enable_quantization, enable_caching, enable_crc);
 						}
 
-						virtual void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory, char ** gpu, int32_t gpu_cnt) = 0;
+						virtual void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory) = 0;
 						virtual void on_system_monitor_info(double cpu_usage, double memory_usage) = 0;
 						virtual void on_attendant_create(double percent) = 0;
 						virtual void on_start(void) = 0;

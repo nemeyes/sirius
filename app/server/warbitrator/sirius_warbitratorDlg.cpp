@@ -67,7 +67,6 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_MEMORY_INFO, _label_memory_info);
 	DDX_Control(pDX, IDC_PROGRESS_GPU, _progress_cpu);
 	DDX_Control(pDX, IDC_PROGRESS_MEMORY, _progress_memory);
-	DDX_Control(pDX, IDC_COMBO_GPU_LIST, _gpu_list);
 	DDX_Control(pDX, IDC_EDIT_ARBITRATOR_UUID, _arbitrator_uuid);
 	DDX_Control(pDX, IDC_EDIT_URL, _url);
 	DDX_Control(pDX, IDC_EDIT_ATTENDANT_INSTANCE, _attendant_instance);
@@ -335,7 +334,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory, char ** gpu, int32_t gpu_cnt)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -409,25 +408,6 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wurl = nullptr;
 	wcpu = nullptr;
 	wmemory = nullptr;
-
-
-
-	for (int32_t index = 0; index < gpu_cnt; index++)
-	{
-		wchar_t * wgpu_name = nullptr;
-		char * gpu_name = gpu[index];
-		sirius::stringhelper::convert_multibyte2wide(gpu_name, &wgpu_name);
-
-		if (wgpu_name)
-		{
-			_gpu_list.AddString(wgpu_name);
-			::SysFreeString(wgpu_name);
-			wgpu_name = nullptr;
-		}
-	}
-	if (gpu_cnt > 0)
-		_gpu_list.SetCurSel(0);
-
 
 	if (_progress)
 	{

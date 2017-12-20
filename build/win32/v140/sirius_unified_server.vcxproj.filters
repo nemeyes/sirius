@@ -30,9 +30,6 @@
     <ClInclude Include="..\..\..\library\unified\server\include\unified_server.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\server\include\png_compressor_wrapper.h">
-      <Filter>compressor</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\library\unified\server\include\unified_compressor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -49,9 +46,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\library\unified\server\source\unified_server.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\server\source\png_compressor_wrapper.cpp">
-      <Filter>compressor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\unified\server\source\unified_compressor.cpp">
       <Filter>소스 파일</Filter>

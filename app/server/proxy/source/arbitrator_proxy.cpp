@@ -2,7 +2,6 @@
 #include "arbitrator_proxy.h"
 #include "configuration_dao.h"
 #include "attendant_dao.h"
-#include <sirius_d3d11_device_stat.h>
 #include <sirius_log4cplus_logger.h>
 #include <sirius_locks.h>
 #include <process.h>
@@ -78,24 +77,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 	}
 
 	if (_context && _context->handler)
-	{
-		int32_t hw_gpu_desc_cnt = 0;
-		sirius::library::video::device::d3d11::stat::desc_t hw_gpu_desc[MAX_GPU_COUNT];
-		sirius::library::video::device::d3d11::stat::retreieve(hw_gpu_desc, MAX_GPU_COUNT, hw_gpu_desc_cnt, sirius::library::video::device::d3d11::stat::option_t::hw);
-		char ** gpus = (char**)(malloc(hw_gpu_desc_cnt*sizeof(char*)));
-		for (int32_t index = 0; index < hw_gpu_desc_cnt; index++)
-		{
-			gpus[index] = (char*)(malloc(MAX_PATH));
-			memset(gpus[index], 0x00, MAX_PATH);
-			_snprintf_s(gpus[index], MAX_PATH, MAX_PATH, "%s", hw_gpu_desc[index].description);
-		}
-		
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_gpu, confentity.enable_present, confentity.enable_auto_start, confentity.enable_quantization, confentity.enable_caching, confentity.enable_crc, _monitor->cpu_info(), _monitor->mem_info(), gpus, hw_gpu_desc_cnt);
-		
-		for (int32_t index = 0; index < hw_gpu_desc_cnt; index++)
-			free(gpus[index]);
-		free(gpus);
-
+	{	
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_gpu, confentity.enable_present, confentity.enable_auto_start, confentity.enable_quantization, confentity.enable_caching, confentity.enable_crc, _monitor->cpu_info(), _monitor->mem_info());
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
