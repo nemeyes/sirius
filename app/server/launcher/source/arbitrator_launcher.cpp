@@ -3,7 +3,6 @@
 #include <attendant_dao.h>
 #include <attendant_entity.h>
 #include <process_controller.h>
-#include <sirius_d3d11_device_stat.h>
 
 #define ARGUMENT_SIZE	1024
 #define UNDEFINED_UUID	"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFE"
@@ -50,11 +49,6 @@ int main()
 	char db_path[MAX_PATH];
 	retrieve_db_path(db_path);
 
-	int32_t hw_gpu_desc_cnt = 0;
-	sirius::library::video::device::d3d11::stat::desc_t hw_gpu_desc[MAX_GPU_COUNT];
-	sirius::library::video::device::d3d11::stat::retreieve(hw_gpu_desc, MAX_GPU_COUNT, hw_gpu_desc_cnt, sirius::library::video::device::d3d11::stat::option_t::hw);
-
-
 	int32_t status = sirius::base::err_code_t::fail;
 	sirius::app::server::arbitrator::entity::configuration_t confentity;
 	{
@@ -64,8 +58,6 @@ int main()
 
 	if (status == sirius::base::err_code_t::success)
 	{
-
-#if !defined(WITH_COORDINATOR_ONLY_DEBUG)
 		sirius::app::server::arbitrator::db::attendant_dao contdao(db_path);
 		contdao.remove();
 		for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
@@ -110,25 +102,14 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
-			if (confentity.enable_gpu && (hw_gpu_desc_cnt > 0))
-			{
-				proc_ctrl.set_cmdline(arguments, "--gpu_index=%d", index%hw_gpu_desc_cnt);
-				proc_ctrl.set_cmdline(arguments, "--ignore-gpu-blacklist");
-				proc_ctrl.set_cmdline(arguments, "--force-compositing-mode");
-				proc_ctrl.set_cmdline(arguments, "--enable-gpu");
-				proc_ctrl.set_cmdline(arguments, "--multi-gpu");
-			}
-			else
-			{
-				proc_ctrl.set_cmdline(arguments, "--gpu_index=%d", 0);
-				proc_ctrl.set_cmdline(arguments, "--disable-gpu");
-				proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
-				proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
-				proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
-				proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
-				proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", 5);
-			}
-
+			proc_ctrl.set_cmdline(arguments, "--gpu_index=%d", 0);
+			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
+			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
+			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
+			proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
+			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
+			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", 5);
+			
 			proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
 			proc_ctrl.set_cmdline(arguments, "--disable-extensions");
 			proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
@@ -143,7 +124,6 @@ int main()
 
 			::Sleep(confentity.attendant_creation_delay);
 		}
-#endif
 	}
 	return status;
 }

@@ -9,7 +9,6 @@
 #include <sirius_stringhelper.h>
 
 #include "unified_server.h"
-#include "png_compressor_wrapper.h"
 #include "partial_png_compressor_wrapper.h"
 
 sirius::library::unified::compressor::compressor(sirius::library::unified::server::core * front)
