@@ -114,6 +114,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_arbitrator_launcher"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_warbitrator", "sirius_warbitrator.vcxproj", "{11554DBA-8863-4036-AA42-25BC66656731}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_arbitrator_proxy_wrapper", "sirius_arbitrator_proxy_wrapper.vcxproj", "{ED89C351-B43E-4530-95B5-84EEEACAE863}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -552,6 +554,18 @@ Global
 		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x64.Build.0 = Release|x64
 		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x86.ActiveCfg = Release|Win32
 		{11554DBA-8863-4036-AA42-25BC66656731}.Release|x86.Build.0 = Release|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|ARM.ActiveCfg = Debug|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|x64.ActiveCfg = Debug|x64
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|x64.Build.0 = Debug|x64
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|x86.ActiveCfg = Debug|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Debug|x86.Build.0 = Debug|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|Any CPU.ActiveCfg = Release|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|ARM.ActiveCfg = Release|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x64.ActiveCfg = Release|x64
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x64.Build.0 = Release|x64
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x86.ActiveCfg = Release|Win32
+		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -608,5 +622,6 @@ Global
 		{7117EFB8-6D3D-4597-B715-0BD09225507D} = {0468767A-10F1-49B3-9FBC-19F8DC182E40}
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
 		{11554DBA-8863-4036-AA42-25BC66656731} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
+		{ED89C351-B43E-4530-95B5-84EEEACAE863} = {B1B87D11-9812-493C-9CCC-6AB990EF38AD}
 	EndGlobalSection
 EndGlobal

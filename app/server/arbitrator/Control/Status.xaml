@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"       
       xmlns:local="clr-namespace:sirius.app.server.arbitrator.Controls"
+      xmlns:user_control="clr-namespace:sirius.app.server.arbitrator.Control"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       Loaded="ShellView_Loaded_1"
@@ -12,6 +13,13 @@
 
     <Grid x:Name="mainGrid">
         <ContentControl Content="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ContentTemplate="{StaticResource Gauge}" />
+        <Button x:Name="start_button"  FontSize="16" Content="▶" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="546,0,-296,0" Height="40" Click="start_button_Click"/>
+        <Button x:Name="stop_button" FontSize="16" Content="■" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="546,51,-296,0" Height="40" Click="stop_button_Click"/>
+        
+        <Popup x:Name="loading_bar" Placement="Center" Width="500" Height="300">
+            <user_control:Splash/>
+        </Popup>
+ 
         <Grid.LayoutTransform>
             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.0" ScaleY="1.0" />
         </Grid.LayoutTransform>
