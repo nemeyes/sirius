@@ -9,11 +9,6 @@ namespace sirius
 	{
 		namespace unified
 		{
-			namespace png
-			{
-				class compressor;
-			};
-
 			namespace partialpng
 			{
 				class compressor;
@@ -22,7 +17,6 @@ namespace sirius
 			class compressor
 			{
 			public:
-				friend class sirius::library::unified::png::compressor;
 				friend class sirius::library::unified::partialpng::compressor;
 
 			public:

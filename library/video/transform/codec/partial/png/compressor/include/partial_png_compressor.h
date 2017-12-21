@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <setjmp.h>
+#include <map>
 
 #include <sirius_template_queue.h>
 #include <sirius_video_processor.h>
@@ -48,6 +49,26 @@ namespace sirius
 									{}
 								} ibuffer_t;
 
+								typedef struct _compressed_cache_image_t
+								{
+									uint8_t	*	cache;
+									int32_t		cache_size;
+									int32_t		cache_capacity;
+									_compressed_cache_image_t(void)
+										: cache_capacity(1024 * 512)
+									{
+										cache = static_cast<uint8_t*>(malloc(cache_capacity));
+									}
+
+									~_compressed_cache_image_t(void)
+									{
+										if (cache)
+											free(cache);
+										cache = nullptr;
+									}
+								} compressed_cache_image_t;
+
+
 								typedef struct _buffer_t
 								{
 									sirius::library::video::transform::codec::partial::png::compressor::core::ibuffer_t	input;
@@ -77,7 +98,7 @@ namespace sirius
 								int32_t release_io_buffers(void);
 
 							private:
-								sirius::library::video::transform::codec::partial::png::compressor * _front;
+								sirius::library::video::transform::codec::partial::png::compressor *			_front;
 								sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;
 
 								CRITICAL_SECTION	_cs;
@@ -86,16 +107,10 @@ namespace sirius
 								HANDLE				_thread;
 								HANDLE				_event;
 
-								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t					_iobuffer[MAX_IO_BUFFERS];
-								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t>	_iobuffer_queue;
-
-								ATL::CComPtr<ID3D11Device>			_device;
-								ATL::CComPtr<ID3D11DeviceContext>	_device_ctx;
-								ATL::CComPtr<ID3D11Texture2D>		_intermediate_tex;
-
-								CRITICAL_SECTION					_device_ctx_cs;
-
-								sirius::library::video::transform::codec::libpng::compressor * _real_compressor;
+								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t										_iobuffer[MAX_IO_BUFFERS];
+								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t>						_iobuffer_queue;
+								sirius::library::video::transform::codec::libpng::compressor *															_real_compressor;								
+								std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*>	_indexed_cache_image;
 								bool _invalidate;
 							};
 						};

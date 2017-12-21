@@ -66,6 +66,9 @@
     <ClInclude Include="..\..\..\app\server\proxy\include\process_controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\base\include\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\app\server\proxy\source\arbitrator_proxy.cpp">
@@ -95,5 +98,10 @@
     <ClCompile Include="..\..\..\app\server\proxy\source\process_controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

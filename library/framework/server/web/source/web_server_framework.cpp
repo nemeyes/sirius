@@ -99,16 +99,8 @@ int32_t sirius::library::framework::server::web::core::release(void)
 
 int32_t sirius::library::framework::server::web::core::play(void)
 {
-	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
-	{
-		_d3d11_video_source = new sirius::library::framework::server::web::d3d11_video_source(this);
-		_d3d11_video_source->start(_context.video_fps);
-	}
-	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
-	{
-		_host_video_source = new sirius::library::framework::server::web::host_video_source(this);
-		_host_video_source->start(_context.video_fps, 0);
-	}
+	_host_video_source = new sirius::library::framework::server::web::host_video_source(this);
+	_host_video_source->start(_context.video_fps, 0);
 	return sirius::library::framework::server::web::err_code_t::success;
 }
 
@@ -119,25 +111,12 @@ int32_t sirius::library::framework::server::web::core::pause(void)
 
 int32_t sirius::library::framework::server::web::core::stop(void)
 {
-	if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::d3d11)
+	if (_host_video_source)
 	{
-		if (_d3d11_video_source)
-		{
-			_d3d11_video_source->stop();
-			delete _d3d11_video_source;
-			_d3d11_video_source = nullptr;
-		}
+		_host_video_source->stop();
+		delete _host_video_source;
+		_host_video_source = nullptr;
 	}
-	else if (_context.video_process_type == sirius::library::framework::server::web::video_memory_type_t::host)
-	{
-		if (_host_video_source)
-		{
-			_host_video_source->stop();
-			delete _host_video_source;
-			_host_video_source = nullptr;
-		}
-	}
-
 	return sirius::library::framework::server::web::err_code_t::success;
 }
 

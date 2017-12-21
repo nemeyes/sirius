@@ -13,7 +13,7 @@
 #define COMMAND_THREAD_POOL_COUNT 1
 
 sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINSTANCE instance, HWND hwnd)
-	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, 1500, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, true, true, sirius::app::client::proxy::ethernet_type_t::tcp, false)
+	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, 1500, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, false, true, sirius::app::client::proxy::ethernet_type_t::tcp, false)
 	, _state(sirius::app::client::proxy::state_t::disconnected)
 	, _front(front)
 	, _reconnection(false)

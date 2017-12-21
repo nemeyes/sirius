@@ -2,14 +2,13 @@
 #include "arbitrator_proxy.h"
 #include "configuration_dao.h"
 #include "attendant_dao.h"
-#include <sirius_d3d11_device_stat.h>
 #include <sirius_log4cplus_logger.h>
 #include <sirius_locks.h>
 #include <process.h>
 #include <tlhelp32.h>
 
 sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, true, true)
+	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, false, true)
 	, _front(front)
 	, _monitor(nullptr)
 	, _run(false)
@@ -78,24 +77,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 	}
 
 	if (_context && _context->handler)
-	{
-		int32_t hw_gpu_desc_cnt = 0;
-		sirius::library::video::device::d3d11::stat::desc_t hw_gpu_desc[MAX_GPU_COUNT];
-		sirius::library::video::device::d3d11::stat::retreieve(hw_gpu_desc, MAX_GPU_COUNT, hw_gpu_desc_cnt, sirius::library::video::device::d3d11::stat::option_t::hw);
-		char ** gpus = (char**)(malloc(hw_gpu_desc_cnt*sizeof(char*)));
-		for (int32_t index = 0; index < hw_gpu_desc_cnt; index++)
-		{
-			gpus[index] = (char*)(malloc(MAX_PATH));
-			memset(gpus[index], 0x00, MAX_PATH);
-			_snprintf_s(gpus[index], MAX_PATH, MAX_PATH, "%s", hw_gpu_desc[index].description);
-		}
-		
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_gpu, confentity.enable_present, confentity.enable_auto_start, confentity.enable_quantization, confentity.enable_caching, confentity.enable_crc, _monitor->cpu_info(), _monitor->mem_info(), gpus, hw_gpu_desc_cnt);
-		
-		for (int32_t index = 0; index < hw_gpu_desc_cnt; index++)
-			free(gpus[index]);
-		free(gpus);
-
+	{	
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_gpu, confentity.enable_present, confentity.enable_auto_start, confentity.enable_quantization, confentity.enable_caching, confentity.enable_crc, _monitor->cpu_info(), _monitor->mem_info());
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -244,7 +227,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 			data_request(attendant.uuid, CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 			{
 				sirius::autolock lock(&_attendant_cs);
-				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, uuid);
+				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
 			}
 		}
 	}
@@ -255,14 +238,14 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::success;
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	return status;
 }
 
 void sirius::app::server::arbitrator::proxy::core::disconnect_attendant_callback(const char * uuid)
 {
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle, uuid);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 }
 
 void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(const char * uuid, const char * id, int32_t code)
@@ -271,7 +254,7 @@ void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(cons
 	{
 		sirius::autolock lock(&_attendant_cs);
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running, uuid);
+		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	}
 }
 
@@ -281,7 +264,7 @@ void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const
 	{
 		sirius::autolock lock(&_attendant_cs);
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+		dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::attendant, uuid);
 	}
 }
 
@@ -316,6 +299,15 @@ void sirius::app::server::arbitrator::proxy::core::create_session_callback(const
 void sirius::app::server::arbitrator::proxy::core::destroy_session_callback(const char * uuid)
 {
 	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "destroy_session_callback");
+
+	sirius::autolock lock(&_attendant_cs);
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
+	//{
+	//	sirius::autolock lock(&_attendant_cs);
+	//	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	//	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
+	//}
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)

@@ -25,6 +25,7 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\vcruntime140d.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\ucrtbased.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\msvcp140d.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\mfc140ud.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
