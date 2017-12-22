@@ -40,18 +40,34 @@
                 </StackPanel.Resources>
 
                 <StackPanel>
-                    <Label Content="Maximum Instance" Target="{Binding ElementName=TextMaximumInstanceCount}" Width="150"/>
-                    <TextBox x:Name="TextMaximumInstanceCount" Width="50" Text="{Binding MaximumInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                    <Label Content="URL" Target="{Binding ElementName=TextAttendantUrl}" Width="150"/>                    
+                </StackPanel>
+                <TextBox x:Name="TextAttendantUrl" Width="215" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left" Margin="0,0,230,10" />
+
+                <StackPanel>
+                    <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="150"/>
+                    <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
                 </StackPanel>
 
                 <StackPanel>
+                    <Label Content="Attendant Creation Delay" Target="{Binding ElementName=TextAttendantCreationDelay}" Width="150"/>
+                    <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" /> 
+                    <Label Content="ms"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Image Compression Level" Target="{Binding ElementName=SliderImageCompressionLevel}" Width="150"/>
+                </StackPanel>
+                <Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" />
+
+                <StackPanel>
                     <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150"/>
-                    <RadioButton x:Name="DisaplyAttendant" IsChecked="True">
+                    <RadioButton x:Name="DisaplyAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
-                    <RadioButton Content="No" Margin="8,0,0,0" />
+                    <RadioButton x:Name="DisaplyAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
-                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" />
+                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" Click="attendants_set_apply_click" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

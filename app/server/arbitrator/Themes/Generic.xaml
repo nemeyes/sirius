@@ -1261,7 +1261,8 @@
         <StackPanel Orientation="Horizontal">
             <chart:RadialGaugeChart  
                 Style="{StaticResource ChartStyleVariableSize}"
-                ChartTitle="Memory Usage"
+                ChartTitle="Server Infomation"
+                ChartSubTitle="Usage"     
                 Palette="{Binding Path=SelectedPalette.Value}"
                 FontSize="{Binding Path=SelectedFontSize}"
                 IsRowColumnSwitched="{Binding Path=IsRowColumnSwitched}"

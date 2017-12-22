@@ -16,8 +16,13 @@ using Windows.UI.Xaml;
 
 namespace sirius.app.server.arbitrator
 {
+    public static class chart_view_model
+    {
+        public static ChartViewModel handle = null;
+    }
     public class ChartViewModel : INotifyPropertyChanged
     {
+       
         public DelegateCommand AddSeriesCommand { get; set; }
         public ObservableCollection<string> ChartTypes { get; set; }
         public List<double> FontSizes { get; set; }
@@ -53,7 +58,7 @@ namespace sirius.app.server.arbitrator
             }
         }
 
-        private bool darkLayout = false;
+        private bool darkLayout = true;
         public bool DarkLayout
         {
             get
@@ -156,6 +161,7 @@ namespace sirius.app.server.arbitrator
 
         public ChartViewModel()
         {
+            chart_view_model.handle = this;
             LoadPalettes();
 
             AddSeriesCommand = new DelegateCommand(x => AddSeries());
@@ -176,7 +182,7 @@ namespace sirius.app.server.arbitrator
             FontSizes.Add(11.0);
             FontSizes.Add(13.0);
             FontSizes.Add(18.0);
-            SelectedFontSize = 11.0;
+            SelectedFontSize = 18.0;
 
             DoughnutInnerRadiusRatios = new List<double>();
             DoughnutInnerRadiusRatios.Add(0.90);
@@ -197,33 +203,36 @@ namespace sirius.app.server.arbitrator
             Series = new ObservableCollection<SeriesData>();
 
             Errors = new ObservableCollection<ChartClass>();
-            Warnings = new ObservableCollection<ChartClass>();
+            //Warnings = new ObservableCollection<ChartClass>();
 
-            ObservableCollection<ChartClass> Infos = new ObservableCollection<ChartClass>();
+            Infos = new ObservableCollection<ChartClass>();
 
-            Errors.Add(new ChartClass() { Category = "Globalization", Number = 75 });
-            Errors.Add(new ChartClass() { Category = "Features", Number = 2 });
-            Errors.Add(new ChartClass() { Category = "ContentTypes", Number = 12 });
-            Errors.Add(new ChartClass() { Category = "Correctness", Number = 83 });
-            //Errors.Add(new ChartClass() { Category = "Naming", Number = 80 });
-            Errors.Add(new ChartClass() { Category = "Best Practices", Number = 29 });
+            //Errors.Add(new ChartClass() { Category = "Globalization", Number = 75 });
+            //Errors.Add(new ChartClass() { Category = "Features", Number = 2 });
+            //Errors.Add(new ChartClass() { Category = "ContentTypes", Number = 12 });
+            //Errors.Add(new ChartClass() { Category = "Correctness", Number = 83 });
+            ////Errors.Add(new ChartClass() { Category = "Naming", Number = 80 });
+            //Errors.Add(new ChartClass() { Category = "Best Practices", Number = 29 });
 
-            Warnings.Add(new ChartClass() { Category = "Globalization", Number = 34 });
-            Warnings.Add(new ChartClass() { Category = "Features", Number = 23 });
-            Warnings.Add(new ChartClass() { Category = "ContentTypes", Number = 15 });
-            Warnings.Add(new ChartClass() { Category = "Correctness", Number = 66 });
-            Warnings.Add(new ChartClass() { Category = "Naming", Number = 56 });
-            Warnings.Add(new ChartClass() { Category = "Best Practices", Number = 34 });
+            //Warnings.Add(new ChartClass() { Category = "Globalization", Number = 34 });
+            //Warnings.Add(new ChartClass() { Category = "Features", Number = 23 });
+            //Warnings.Add(new ChartClass() { Category = "ContentTypes", Number = 15 });
+            //Warnings.Add(new ChartClass() { Category = "Correctness", Number = 66 });
+            //Warnings.Add(new ChartClass() { Category = "Naming", Number = 56 });
+            //Warnings.Add(new ChartClass() { Category = "Best Practices", Number = 34 });
 
-            Infos.Add(new ChartClass() { Category = "Globalization", Number = 14 });
-            Infos.Add(new ChartClass() { Category = "Features", Number = 3 });
-            Infos.Add(new ChartClass() { Category = "ContentTypes", Number = 55 });
-            Infos.Add(new ChartClass() { Category = "Correctness", Number = 26 });
-            Infos.Add(new ChartClass() { Category = "Naming", Number = 3 });
-            Infos.Add(new ChartClass() { Category = "Best Practices", Number = 8 });
+            cpu_chart = new ChartClass() { Category = "CPU Usage", Number = 1 };
+            memory_chart = new ChartClass() { Category = "Memory Usage", Number = 1 };
+            Infos.Add(cpu_chart);
+            Infos.Add(memory_chart);
+            
+            //Infos.Add(new ChartClass() { Category = "HDD Usage", Number = 55 });
+            //Infos.Add(new ChartClass() { Category = "Netrok Usage", Number = 26 });
+            //Infos.Add(new ChartClass() { Category = "Naming", Number = 3 });
+            //Infos.Add(new ChartClass() { Category = "Best Practices", Number = 8 });
 
-            Series.Add(new SeriesData() { SeriesDisplayName = "Errors", Items = Errors });
-            Series.Add(new SeriesData() { SeriesDisplayName = "Warnings", Items = Warnings });
+            //Series.Add(new SeriesData() { SeriesDisplayName = "Errors", Items = Errors });
+            //Series.Add(new SeriesData() { SeriesDisplayName = "Warnings", Items = Warnings });
             Series.Add(new SeriesData() { SeriesDisplayName = "Info", Items = Infos });
         }
 
@@ -360,6 +369,15 @@ namespace sirius.app.server.arbitrator
             get;
             set;
         }
+
+        public ObservableCollection<ChartClass> Infos
+        {
+            get;
+            set;
+        }
+
+        public ChartClass cpu_chart = null;
+        public ChartClass memory_chart = null;
 
         private void NotifyPropertyChanged(string property)
         {

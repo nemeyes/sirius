@@ -117,7 +117,7 @@
                     <Button Content="Add" Margin="100,16,0,0" HorizontalAlignment="Left" />
                     <Button Content="Remove" Margin="100,16,0,0" HorizontalAlignment="Left" />
                 </StackPanel//-->
-                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" />
+                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" Click="media_set_apply_click"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
