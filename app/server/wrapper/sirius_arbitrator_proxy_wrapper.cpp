@@ -39,9 +39,14 @@ int sirius_arbitrator_proxy_wrapper::proxy::stop()
 	return _proxy->stop();
 }
 
-void sirius_arbitrator_proxy_wrapper::proxy::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory, char ** gpu, int32_t gpu_cnt)
+int sirius_arbitrator_proxy_wrapper::proxy::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc)
 {
-	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_gpu, enable_present, enable_auto_start, enable_quantization, enable_caching, enable_crc, cpu, memory, gpu, gpu_cnt);
+	return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_gpu, enable_present, enable_auto_start, enable_quantization, enable_caching, enable_crc);
+}
+
+void sirius_arbitrator_proxy_wrapper::proxy::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, char * cpu, char * memory)
+{
+	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_gpu, enable_present, enable_auto_start, enable_quantization, enable_caching, enable_crc, cpu, memory);
 }
 
 void sirius_arbitrator_proxy_wrapper::proxy::on_system_monitor_info(double cpu_usage, double memory_usage)
@@ -96,6 +101,11 @@ int sirius_arbitrator_proxy_wrapper::handler::start()
 int sirius_arbitrator_proxy_wrapper::handler::stop()
 {
 	return _wrap_proxy->stop();
+}
+
+int sirius_arbitrator_proxy_wrapper::handler::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc)
+{
+	return _wrap_proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_gpu, enable_present, enable_auto_start, enable_quantization, enable_caching, enable_crc);
 }
 
 void sirius_arbitrator_proxy_wrapper::handler::set_initialize_callback(delegate_initialize_callback^ cbf)
