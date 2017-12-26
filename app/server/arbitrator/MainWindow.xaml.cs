@@ -20,14 +20,20 @@ namespace sirius.app.server.arbitrator
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : ModernWindow
-    {       
+    {    
         public MainWindow()
         {            
             InitializeComponent();   
             //AppearanceManager.Current.ThemeSource = AppearanceManager.DarkThemeSource;
             AppearanceManager.Current.AccentColor = Color.FromRgb(0xf0, 0x96, 0x09);
-            
+
             sirius_arbitrator core = new sirius_arbitrator(this);
-        }   
+        }
+
+        private void ModernWindow_Closed(object sender, EventArgs e)
+        {
+            if (sirius_arbitrator.controller != null)
+                sirius_arbitrator.controller.release();
+        }
     }
 }

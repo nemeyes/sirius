@@ -29,6 +29,11 @@ void sirius::app::server::arbitrator::wrapper::core::initailize()
 	_proxy->initialize(_proxy_ctx);
 }
 
+void sirius::app::server::arbitrator::wrapper::core::release()
+{
+	_proxy->release();
+}
+
 int sirius::app::server::arbitrator::wrapper::core::start()
 {
 	return _proxy->start();
@@ -91,6 +96,11 @@ sirius::app::server::arbitrator::wrapper::handler::~handler()
 void sirius::app::server::arbitrator::wrapper::handler::initailize()
 {
 	_core->initailize();
+}
+
+void sirius::app::server::arbitrator::wrapper::handler::release()
+{
+	_core->release();
 }
 
 int sirius::app::server::arbitrator::wrapper::handler::start()
