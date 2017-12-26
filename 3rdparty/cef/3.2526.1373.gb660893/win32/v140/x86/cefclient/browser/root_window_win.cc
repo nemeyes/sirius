@@ -19,6 +19,10 @@
 #include "cefclient/browser/window_test.h"
 #include "cefclient/common/client_switches.h"
 
+#if defined(WITH_JAVASCRIPT)
+#include "cefclient/binding/global.h"
+#include "cefclient/binding/browser.h"
+#endif
 #define MAX_URL_LENGTH  255
 #define BUTTON_WIDTH    72
 #define URLBAR_HEIGHT   24
@@ -161,6 +165,11 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
   // Create the native root window on the main thread.
   if (CURRENTLY_ON_MAIN_THREAD()) {
     CreateRootWindow(settings);
+
+#if defined(WITH_JAVASCRIPT)
+	binding::global::getInstance().setWindowHandle(GetWindowHandle());
+	binding::browser::getInstance();
+#endif
   } else {
     MAIN_POST_CLOSURE(
         base::Bind(&RootWindowWin::CreateRootWindow, this, settings));

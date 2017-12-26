@@ -5,13 +5,21 @@
 #include "cefclient/renderer/client_app_renderer.h"
 #include "cefclient/renderer/client_renderer.h"
 #include "cefclient/renderer/performance_test.h"
-
+#if defined(WITH_JAVASCRIPT)
+#include "cefclient/binding/js_binding.h"
+#else
+#include "cefclient/renderer/performance_test.h"
+#endif
 namespace client {
 
 // static
 void ClientAppRenderer::CreateDelegates(DelegateSet& delegates) {
   renderer::CreateDelegates(delegates);
+#if defined(WITH_JAVASCRIPT)
+  binding::CreateDelegates(delegates);
+#else
   performance_test::CreateDelegates(delegates);
+#endif
 }
 
 }  // namespace client

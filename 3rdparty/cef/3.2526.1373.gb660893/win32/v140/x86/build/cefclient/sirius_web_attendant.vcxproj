@@ -58,7 +58,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\..\..\..\..\..\..\base\include;..\..\..\..\..\..\..\..\library\video\base\include;..\..\..\..\..\..\..\..\library\video\source\base\include;..\..\..\..\..\..\..\..\library\video\source\cpu\capturer\include;..\..\..\..\..\..\..\..\app\attendant\proxy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\..\..\..\..\..\..\base\include;..\..\..\..\..\..\..\..\library\video\base\include;..\..\..\..\..\..\..\..\library\video\source\base\include;..\..\..\..\..\..\..\..\library\video\source\cpu\capturer\include;..\..\..\..\..\..\..\..\app\attendant\proxy\include;..\..\..\..\..\..\..\..\3rdparty\libxml2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -74,7 +74,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWarningAsError>true</TreatWarningAsError>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;WIN32;_WIN32;_WINDOWS;UNICODE;_UNICODE;WINVER=0x0602;_WIN32_WINNT=0x602;NOMINMAX;WIN32_LEAN_AND_MEAN;_HAS_EXCEPTIONS=0;CEF_USE_ATL;CMAKE_INTDIR="Debug";WITH_ATTENDANT_PROXY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;WIN32;_WIN32;_WINDOWS;UNICODE;_UNICODE;WINVER=0x0602;_WIN32_WINNT=0x602;NOMINMAX;WIN32_LEAN_AND_MEAN;_HAS_EXCEPTIONS=0;CEF_USE_ATL;CMAKE_INTDIR="Debug";WITH_ATTENDANT_PROXY;WITH_JAVASCRIPT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
@@ -96,8 +96,8 @@ del $(outputpath)$(assemblyname).ilk
 ..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ debug</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Debug\libcef.lib;..\libcef_dll\Debug\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Debug\libcef.lib;..\libcef_dll\Debug\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib;libxml2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;..\..\..\..\..\..\..\..\3rdparty\libxml2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>$OutDir)cefclient.lib</ImportLibrary>
@@ -119,7 +119,7 @@ del $(outputpath)$(assemblyname).ilk
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\..\..\..\..\..\..\base\include;..\..\..\..\..\..\..\..\library\video\base\include;..\..\..\..\..\..\..\..\library\video\source\base\include;..\..\..\..\..\..\..\..\library\video\source\cpu\capturer\include;..\..\..\..\..\..\..\..\app\attendant\proxy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\..\..\..\..\..\..\base\include;..\..\..\..\..\..\..\..\library\video\base\include;..\..\..\..\..\..\..\..\library\video\source\base\include;..\..\..\..\..\..\..\..\library\video\source\cpu\capturer\include;..\..\..\..\..\..\..\..\app\attendant\proxy\include;..\..\..\..\..\..\..\..\3rdparty\libxml2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -159,9 +159,9 @@ del $(outputpath)$(assemblyname).ilk
 ..\..\..\..\..\..\..\..\script\copy_cef2526_dlls.bat ..\..\..\..\..\..\..\..\ release</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Release\libcef.lib;..\libcef_dll\Release\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\Release\libcef.lib;..\libcef_dll\Release\libcef_dll_wrapper.lib;comctl32.lib;rpcrt4.lib;shlwapi.lib;glu32.lib;opengl32.lib;libxml2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\..\..\..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;..\..\..\..\..\..\..\..\3rdparty\libxml2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>$(OutDir)cefclient.lib</ImportLibrary>
       <ProgramDataBaseFile>$(OutDir)cefclient.pdb</ProgramDataBaseFile>
@@ -182,6 +182,20 @@ del $(outputpath)$(assemblyname).ilk
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\cefclient\binding\appmsg.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendent_interface.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendent_proxy_wrapper.h" />
+    <ClInclude Include="..\..\cefclient\binding\browser.h" />
+    <ClInclude Include="..\..\cefclient\binding\global.h" />
+    <ClInclude Include="..\..\cefclient\binding\macro.h" />
+    <ClInclude Include="..\..\cefclient\binding\handler_base.h" />
+    <ClInclude Include="..\..\cefclient\binding\js_binding.h" />
+    <ClInclude Include="..\..\cefclient\binding\msg_handler.h" />
+    <ClInclude Include="..\..\cefclient\binding\net_define.h" />
+    <ClInclude Include="..\..\cefclient\binding\socket_base_sirius.h" />
+    <ClInclude Include="..\..\cefclient\binding\socket_win.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendent_switches.h" />
+    <ClInclude Include="..\..\cefclient\binding\xml_wrapper.h" />
     <ClInclude Include="..\..\cefclient\browser\binding_test.h" />
     <ClInclude Include="..\..\cefclient\browser\browser_window.h" />
     <ClInclude Include="..\..\cefclient\browser\bytes_write_handler.h" />
@@ -225,6 +239,16 @@ del $(outputpath)$(assemblyname).ilk
     <ClInclude Include="..\..\cefclient\browser\root_window_win.h" />
     <ClInclude Include="..\..\cefclient\browser\temp_window_win.h" />
     <ClInclude Include="..\..\cefclient\browser\util_win.h" />
+    <ClCompile Include="..\..\cefclient\binding\appmsg.cc" />
+    <ClCompile Include="..\..\cefclient\binding\attendent_proxy_wrapper.cpp" />
+    <ClCompile Include="..\..\cefclient\binding\browser.cc" />
+    <ClCompile Include="..\..\cefclient\binding\global.cc" />
+    <ClCompile Include="..\..\cefclient\binding\js_binding.cc" />
+    <ClCompile Include="..\..\cefclient\binding\msg_handler.cc" />
+    <ClCompile Include="..\..\cefclient\binding\socket_base_sirius.cpp" />
+    <ClCompile Include="..\..\cefclient\binding\socket_win.cc" />
+    <ClCompile Include="..\..\cefclient\binding\attendent_switches.cc" />
+    <ClCompile Include="..\..\cefclient\binding\xml_wrapper.cpp" />
     <ClCompile Include="..\..\cefclient\browser\binding_test.cc" />
     <ClCompile Include="..\..\cefclient\browser\browser_window.cc" />
     <ClCompile Include="..\..\cefclient\browser\bytes_write_handler.cc" />

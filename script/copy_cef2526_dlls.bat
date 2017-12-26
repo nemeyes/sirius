@@ -74,6 +74,8 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_f
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\3rdparty\libxml2\lib\libxml2.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\3rdparty\libxml2\lib\iconv.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_attendant.bat					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
