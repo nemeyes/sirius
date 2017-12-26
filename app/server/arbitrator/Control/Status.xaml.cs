@@ -47,12 +47,12 @@ namespace sirius.app.server.arbitrator.Control
         private void start_button_click(object sender, RoutedEventArgs e)
         {
            progress_bar.IsOpen = true;
-           MainWindow.proxy.core.start();
+           MainWindow.arbitrator_proxy.controller.start();
         }
 
         private void stop_button_click(object sender, RoutedEventArgs e)
         {
-            MainWindow.proxy.core.stop();
+            MainWindow.arbitrator_proxy.controller.stop();
         }
         public void completed_attendant_load()
         {
