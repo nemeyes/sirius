@@ -78,6 +78,7 @@ namespace sirius
 				sirius::library::framework::server::base * _framework;
 				sirius::library::framework::server::base::context_t * _framework_context;
 				uint32_t	_pid;
+				char _client_uuid[64];
 				HANDLE		_wait_timer;
 				HMODULE		_hmodule;
 			};

@@ -10,7 +10,7 @@
 #endif
 
 
-typedef void(*FuncPtrCallback)(const char *, int);
+typedef void(*FuncPtrCallback)(uint8_t *, size_t);
 
 namespace sirius
 {

@@ -15,7 +15,9 @@
 #include "cefclient/browser/test_runner.h"
 #include "cefclient/common/client_app_other.h"
 #include "cefclient/renderer/client_app_renderer.h"
-
+#if defined(WITH_JAVASCRIPT)
+#include "cefclient/binding/attendent_proxy_wrapper.h"
+#endif
 #if defined(WITH_ATTENDANT_PROXY)
 #include <windows.h>
 #include <shellapi.h>
@@ -41,7 +43,9 @@ namespace {
 int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Enable High-DPI support on Windows 7 or newer.
   CefEnableHighDPISupport();
-
+#if defined(WITH_JAVASCRIPT)
+  HWND proxy_handle = NULL;
+#endif
   CefMainArgs main_args(hInstance);
 
   void* sandbox_info = NULL;
@@ -61,22 +65,36 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   CefRefPtr<CefApp> app;
   ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
   if (process_type == ClientApp::BrowserProcess)
+  {
     app = new ClientAppBrowser();
+#if defined(WITH_JAVASCRIPT)
+	  client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
+	  apc.Initialize();
+	  proxy_handle = apc._proxy_handle;
+#endif
+  }
   else if (process_type == ClientApp::RendererProcess)
     app = new ClientAppRenderer();
   else if (process_type == ClientApp::OtherProcess)
     app = new ClientAppOther();
 
 #ifdef WITH_ATTENDANT_PROXY
+#if defined(WITH_JAVASCRIPT)
+#else
   sirius::app::attendant::proxy * proxy = nullptr;
+#endif
   if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {
+#if defined(WITH_JAVASCRIPT)
+
+#else
 	  wchar_t * command = GetCommandLine();
 	  int32_t argc = 0;
 
 	  proxy = new sirius::app::attendant::proxy();
 	  LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
 	  sirius::app::attendant::proxy::parse_argument(argc, argv, proxy->context());
+#endif
   }
 #endif
 
@@ -119,6 +137,15 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 
 #endif
 
+#if defined(WITH_JAVASCRIPT)
+  context->GetRootWindowManager()->CreateRootWindow(
+	  false,  // Show controls.
+	  settings.windowless_rendering_enabled ? true : false,
+	  present,
+	  proxy_handle,
+	  CefRect(0, 0, 1282, 722),       // Use default system size.
+	  std::string());   // Use default URL.
+#else
   if (proxy)
   {
 	  context->GetRootWindowManager()->CreateRootWindow(
@@ -153,14 +180,20 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 		  CefRect(0, 0, 1282, 722),       // Use default system size.
 		  std::string());   // Use default URL.
   }
+#endif
 
 
 
   // Run the message loop. This will block until Quit() is called by the
   // RootWindowManager after all windows have been destroyed.
   int result = message_loop->Run();
-
+#if defined(WITH_JAVASCRIPT)
+  client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
+  apc.finalize();
+#endif
 #ifdef WITH_ATTENDANT_PROXY
+#if defined(WITH_JAVASCRIPT)
+#else
   if (proxy)
   {
 	  if (proxy->is_initialized())
@@ -179,6 +212,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 	  delete proxy;
 	  proxy = nullptr;
   }
+#endif
 #endif
   // Shut down CEF.
   context->Shutdown();
