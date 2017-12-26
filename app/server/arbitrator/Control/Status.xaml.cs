@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using sirius.app.server.arbitrator.Settings;
 
 namespace sirius.app.server.arbitrator.Control
 {
@@ -21,16 +22,24 @@ namespace sirius.app.server.arbitrator.Control
     /// </summary>
     public partial class Status : Page 
     {
-        public static class status_page
-        {
-            public static Status handle;
-        }
+        public static Status handle;
         public Status()
         {
-            status_page.handle = this;
+            handle = this;
             InitializeComponent();
             
-            this.DataContext = new ChartViewModel();            
+            this.DataContext = new ChartViewModel();
+            
+            if(SettingValue.Instance().enable_auto_start)
+            {
+               start_button.IsEnabled = false;
+               stop_button.IsEnabled = false;
+            }
+            else
+            {
+                start_button.IsEnabled = true;
+                stop_button.IsEnabled = false;
+            }  
         }
     
         private void ShellView_Loaded(object sender, RoutedEventArgs e)
@@ -46,25 +55,30 @@ namespace sirius.app.server.arbitrator.Control
       
         private void start_button_click(object sender, RoutedEventArgs e)
         {
-           progress_bar.IsOpen = true;
-           MainWindow.proxy.core.start();
-        }
-
-        private void stop_button_click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.proxy.core.stop();
-        }
-        public void completed_attendant_load()
-        {
-            System.Threading.Thread.Sleep(1000 * 1);
             Dispatcher.Invoke(DispatcherPriority.Normal,
             new Action
             (
                 delegate ()
                 {
-                    progress_bar.IsOpen = false;
+                    start_button.IsEnabled = false;
+                    stop_button.IsEnabled = false;
                 }
-            ));           
+            ));
+            sirius_arbitrator.controller.start();
+        }
+
+        private void stop_button_click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal,
+            new Action
+            (
+                delegate ()
+                {
+                    start_button.IsEnabled = true;
+                    stop_button.IsEnabled = false;
+                }
+            ));
+            sirius_arbitrator.controller.stop();
         }
         public void update_usage(double cpu_usage, double memory_usage)
         {

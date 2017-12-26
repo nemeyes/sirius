@@ -67,6 +67,15 @@
                     </RadioButton>
                     <RadioButton x:Name="DisaplyAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Auto Start" Target="{Binding ElementName=Autostart}" Width="150"/>
+                    <RadioButton x:Name="AutostartOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="AutostartOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+                
                 <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" Click="attendants_set_apply_click" />
             </StackPanel>
         </StackPanel>

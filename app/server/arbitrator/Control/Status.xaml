@@ -16,10 +16,6 @@
         <Button x:Name="start_button"  FontSize="16" Content="▶" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="546,0,-296,0" Height="40" Click="start_button_click"/>
         <Button x:Name="stop_button" FontSize="16" Content="■" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="546,51,-296,0" Height="40" Click="stop_button_click"/>
         
-        <Popup x:Name="progress_bar" Placement="Center" Width="500" Height="300">
-            <user_control:Splash/>
-        </Popup>
- 
         <Grid.LayoutTransform>
             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.0" ScaleY="1.0" />
         </Grid.LayoutTransform>

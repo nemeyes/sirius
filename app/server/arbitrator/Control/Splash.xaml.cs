@@ -23,13 +23,10 @@ namespace sirius.app.server.arbitrator.Control
     /// </summary>
     public partial class Splash : UserControl
     {
-        public static class progress_bar
-        {
-            public static Splash handle;
-        }
+        public static Splash handle;
         public Splash()
         {
-            progress_bar.handle = this;
+            handle = this;
             InitializeComponent();
         }
         public void update_progress_bar(double percent)
