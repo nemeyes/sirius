@@ -15,7 +15,7 @@
 #include "cefclient/browser/test_runner.h"
 #include "cefclient/common/client_app_other.h"
 #include "cefclient/renderer/client_app_renderer.h"
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/attendent_proxy_wrapper.h"
 #endif
 #if defined(WITH_ATTENDANT_PROXY)
@@ -43,7 +43,7 @@ namespace {
 int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Enable High-DPI support on Windows 7 or newer.
   CefEnableHighDPISupport();
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   HWND proxy_handle = NULL;
 #endif
   CefMainArgs main_args(hInstance);
@@ -67,7 +67,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   if (process_type == ClientApp::BrowserProcess)
   {
     app = new ClientAppBrowser();
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 	  client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
 	  apc.Initialize();
 	  proxy_handle = apc._proxy_handle;
@@ -79,13 +79,13 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
     app = new ClientAppOther();
 
 #ifdef WITH_ATTENDANT_PROXY
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #else
   sirius::app::attendant::proxy * proxy = nullptr;
 #endif
   if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 
 #else
 	  wchar_t * command = GetCommandLine();
@@ -137,7 +137,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 
 #endif
 
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   context->GetRootWindowManager()->CreateRootWindow(
 	  false,  // Show controls.
 	  settings.windowless_rendering_enabled ? true : false,
@@ -187,12 +187,12 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Run the message loop. This will block until Quit() is called by the
   // RootWindowManager after all windows have been destroyed.
   int result = message_loop->Run();
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
   apc.finalize();
 #endif
 #ifdef WITH_ATTENDANT_PROXY
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #else
   if (proxy)
   {

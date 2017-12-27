@@ -1,4 +1,4 @@
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include <sstream>
 #include "cefclient/browser/root_window_win.h"
 #include "cefclient/browser/util_win.h"

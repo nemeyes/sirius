@@ -20,7 +20,7 @@
 #include "cefclient/browser/root_window_manager.h"
 #include "cefclient/browser/test_runner.h"
 #include "cefclient/common/client_switches.h"
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/msg_handler.h"
 #include "cefclient/binding/socket_base_sirius.h"
 #include "cefclient/binding/global.h"
@@ -50,7 +50,7 @@ enum client_menu_ids {
 
 // Musr match the value in client_renderer.cc.
 const char kFocusedNodeChangedMessage[] = "ClientRenderer.FocusedNodeChanged";
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 const char kAppToContainer[] = "AppToContainer";
 const char kRequestedPID[] = "RequestedPID";
 #endif
@@ -198,7 +198,7 @@ bool ClientHandler::OnProcessMessageReceived(
     focus_on_editable_field_ = message->GetArgumentList()->GetBool(0);
     return true;
   }
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   else if (message_name == kAppToContainer) {
 	  return client::binding::message_handler::
 		  getInstance().OnProcessMessageReceived(browser, source_process, message);
@@ -851,7 +851,7 @@ void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
 	if (delegate_)
 			delegate_->OnLoadStart(browser, frame);
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 	if (!binding::global::getInstance().getJavaScriptInjection().empty()) {
 		frame->ExecuteJavaScript(binding::global::getInstance().getJavaScriptInjection(), frame->GetURL(), 0);
 	}
@@ -864,7 +864,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	CEF_REQUIRE_UI_THREAD();
 
 	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 	char xml[1024];
 	sprintf(xml,
 		"<?xml version='1.0' ?>\

@@ -19,7 +19,7 @@
 #include "cefclient/browser/window_test.h"
 #include "cefclient/common/client_switches.h"
 
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/global.h"
 #include "cefclient/binding/browser.h"
 #endif
@@ -166,7 +166,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
   if (CURRENTLY_ON_MAIN_THREAD()) {
     CreateRootWindow(settings);
 
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 	binding::global::getInstance().setWindowHandle(GetWindowHandle());
 	binding::browser::getInstance();
 #endif

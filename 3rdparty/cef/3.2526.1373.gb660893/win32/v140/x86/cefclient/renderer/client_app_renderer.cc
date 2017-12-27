@@ -5,7 +5,7 @@
 #include "cefclient/renderer/client_app_renderer.h"
 
 #include "include/base/cef_logging.h"
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/msg_handler.h"
 #endif
 namespace client {
@@ -114,7 +114,7 @@ bool ClientAppRenderer::OnProcessMessageReceived(
     handled = (*it)->OnProcessMessageReceived(this, browser, source_process,
                                               message);
   }
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   if (message->GetName() == binding::kContainerToApp) {
 	  binding::message_handler::
 		  getInstance().OnProcessMessageReceived(browser, source_process, message);

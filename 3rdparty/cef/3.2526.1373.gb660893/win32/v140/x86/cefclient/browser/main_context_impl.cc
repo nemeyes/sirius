@@ -7,7 +7,7 @@
 #include "include/cef_parser.h"
 #include "cefclient/common/client_switches.h"
 
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/browser.h"
 #endif
 
@@ -47,7 +47,7 @@ MainContextImpl::~MainContextImpl() {
   // been shut down.
   DCHECK(!initialized_ || shutdown_);
 
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
   binding::browser::release();
 #endif
 }

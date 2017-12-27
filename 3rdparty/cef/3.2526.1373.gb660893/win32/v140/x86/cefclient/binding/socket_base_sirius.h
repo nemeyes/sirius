@@ -46,7 +46,7 @@ namespace client {
 			DISALLOW_COPY_AND_ASSIGN(socketbase);
 		};
 
-	}  // namespace csb
+	}  // namespace binding
 }  // namespace client
 
 #endif // !defined(AFX_SOCKETBASE_H__617EC439_8FD1_4CB1_8129_BDB86169E8C3__INCLUDED_)
