@@ -1,8 +1,8 @@
-#ifndef ATTENDENT_COMMON_ATTENDENT_SWITCHES_H_
-#define ATTENDENT_COMMON_ATTENDENT_SWITCHES_H_
+#ifndef ATTENDANT_COMMON_ATTENDANT_SWITCHES_H_
+#define ATTENDANT_COMMON_ATTENDANT_SWITCHES_H_
 #pragma once
 
-namespace attendent {
+namespace attendant {
 	namespace switches {
 
 		extern const char kSPDontHook[];
@@ -11,6 +11,6 @@ namespace attendent {
 		extern const char kVideoHeight[];
 
 	}  // namespace switches
-}  // namespace attendent
+}  // namespace attendant
 
-#endif  // ATTENDENT_COMMON_ATTENDENT_SWITCHES_H_
+#endif  // ATTENDANT_COMMON_ATTENDANT_SWITCHES_H_

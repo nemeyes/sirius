@@ -8,8 +8,8 @@
 #include "handler_base.h"
 namespace client {
 	namespace binding {
-		const char kAppToContainer[] = "AppToContainer";
-		const char kContainerToApp[] = "ContainerToApp";
+		const char kAppToAttendant[] = "AppToAttendant";
+		const char kAttendantToApp[] = "AttendantToApp";
 		const char kRequestPID[] = "RequestPID";
 		const char kRequestedPID[] = "RequestedPID";
 
@@ -27,10 +27,10 @@ namespace client {
 				int browser_id,
 				CefRefPtr<CefV8Context> context,
 				CefRefPtr<CefV8Value> function);
-			bool msgAppToContainer(CefRefPtr<CefProcessMessage> message);
-			void msgContainerToApp(CefRefPtr<CefBrowser> browser,
+			bool msgAppToAttendant(CefRefPtr<CefProcessMessage> message);
+			void msgAttendantToApp(CefRefPtr<CefBrowser> browser,
 				CefRefPtr<CefProcessMessage> message);
-			bool msgAppToContainerGeneralMode(CefRefPtr<CefListValue> args);
+			bool msgAppToAttendantGeneralMode(CefRefPtr<CefListValue> args);
 
 		private:
 			static message_handler* sInstance;

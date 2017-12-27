@@ -1,5 +1,5 @@
-#ifndef ATTENDENT_PROXY_WRAPPER_H_
-#define ATTENDENT_PROXY_WRAPPER_H_
+#ifndef ATTENDANT_PROXY_WRAPPER_H_
+#define ATTENDANT_PROXY_WRAPPER_H_
 #pragma once
 
 #include "include/cef_base.h"
@@ -9,18 +9,18 @@
 namespace client {
 namespace binding {
 
-class attendent_proxy_wrapper
+class attendant_proxy_wrapper
 {
 public:
 
-	static attendent_proxy_wrapper& getInstance();
+	static attendant_proxy_wrapper& getInstance();
 
 private:
-	static attendent_proxy_wrapper* sInstance;
+	static attendant_proxy_wrapper* sInstance;
 
-	attendent_proxy_wrapper();
-	~attendent_proxy_wrapper();
-	DISALLOW_COPY_AND_ASSIGN(attendent_proxy_wrapper);
+	attendant_proxy_wrapper();
+	~attendant_proxy_wrapper();
+	DISALLOW_COPY_AND_ASSIGN(attendant_proxy_wrapper);
 
 public:
 	void Initialize();
@@ -35,4 +35,4 @@ private:
 }  // namespace binding
 }  // namespace client
 
-#endif  // ATTENDENT_PROXY_WRAPPER_H_
+#endif  // ATTENDANT_PROXY_WRAPPER_H_
