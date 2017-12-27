@@ -29,6 +29,8 @@ namespace sirius.app.server.arbitrator.Settings
         public bool enable_quantization { get; set; }
         public bool enable_caching { get; set; }
         public bool enable_crc { get; set; }
+        public string cpu { get; set; }
+        public string memory { get; set; }
 
         private static SettingValue _instance;
         protected SettingValue()

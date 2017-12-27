@@ -33,7 +33,8 @@ namespace sirius.app.server.arbitrator
 
         public static MainWindow front = null;
         public static sirius.app.server.arbitrator.wrapper.handler controller = null;
-        
+        public static string cpu_name = null;
+                
         public sirius_arbitrator(MainWindow wnd)
         {
             InitializeComponent();
@@ -61,12 +62,6 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
-        
-        ~sirius_arbitrator()
-        {
-            controller.release();
-        }
-   
         public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, sbyte* cpu, sbyte* memory)
         {
             SettingValue.Instance().uuid = new string(uuid);
@@ -89,6 +84,8 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().enable_quantization = enable_quantization;
             SettingValue.Instance().enable_caching = enable_caching;
             SettingValue.Instance().enable_crc = enable_crc;
+            SettingValue.Instance().cpu = new string(cpu);
+            SettingValue.Instance().memory = new string(memory);
 
             if (enable_auto_start)
                 controller.start();
@@ -110,7 +107,7 @@ namespace sirius.app.server.arbitrator
                 new Action
                 (
                     delegate ()
-                    {
+                    {                        
                         popup_progressbar.IsOpen = false;
                         Status.handle.stop_button.IsEnabled = true;
                     }
@@ -123,7 +120,8 @@ namespace sirius.app.server.arbitrator
             new Action
             (
                 delegate ()
-                {                    
+                {
+                    Splash.handle.update_progress_bar(0);
                     popup_progressbar.PlacementTarget = front;
                     popup_progressbar.IsOpen = true;
                 }
