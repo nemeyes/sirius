@@ -1,7 +1,7 @@
 // SocketBase.cpp: implementation of the socketbase class.
 //
 //////////////////////////////////////////////////////////////////////
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include <process.h>
 #include <assert.h>
 #include "socket_win.h"
@@ -49,7 +49,7 @@ namespace client {
 
 		void socketbase::ContainerToAppCalback(uint8_t* packet, size_t len)
 		{
-			socket_win::getInstance()->AmadeusToJSEngine((uint8_t*)packet, len);
+			socket_win::getInstance()->SiriusToJSEngine((uint8_t*)packet, len);
 		}
 
 	}  // namespace binding

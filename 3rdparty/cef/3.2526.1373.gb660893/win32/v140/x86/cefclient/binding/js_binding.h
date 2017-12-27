@@ -1,4 +1,4 @@
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #ifndef JSBINDING_H_
 #define JSBINDING_H_
 

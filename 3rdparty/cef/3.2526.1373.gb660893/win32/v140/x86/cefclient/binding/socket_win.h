@@ -1,4 +1,4 @@
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #ifndef SOCKET_WIN_H_
 #define SOCKET_WIN_H_
 #pragma once
@@ -22,7 +22,7 @@ namespace client {
 			virtual void OnReceive(int nErrorCode);
 			bool create();
 			bool sendXmlPacket(int contentsType, const std::string& utf8_xml);
-			bool AmadeusToJSEngine(uint8_t * data, size_t size);
+			bool SiriusToJSEngine(uint8_t * data, size_t size);
 
 		protected:
 			bool makeXmlPacket(char* data, int& size, int& contentsType, const std::string& utf8_xml);

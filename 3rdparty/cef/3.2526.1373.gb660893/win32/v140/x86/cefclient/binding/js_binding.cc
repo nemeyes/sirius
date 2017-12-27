@@ -1,4 +1,4 @@
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include "js_Binding.h"
 #include "handler_base.h"
 #include "msg_handler.h"

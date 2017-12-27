@@ -1,4 +1,4 @@
-#if defined(WITH_JAVASCRIPT)
+#if defined(WITH_EXTERNAL_INTERFACE)
 #include <vector>
 #include "include/cef_browser.h"
 #include "include/cef_v8.h"
@@ -242,7 +242,7 @@ namespace client {
 			return true;
 		}
 
-		bool socket_win::AmadeusToJSEngine(uint8_t * data, size_t size) {
+		bool socket_win::SiriusToJSEngine(uint8_t * data, size_t size) {
 			sendToJSEngine((char *)data);
 
 			return true;
