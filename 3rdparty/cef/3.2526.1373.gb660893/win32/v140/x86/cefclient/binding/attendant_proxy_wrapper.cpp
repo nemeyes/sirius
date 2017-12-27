@@ -1,4 +1,4 @@
-#include "attendent_proxy_wrapper.h"
+#include "attendant_proxy_wrapper.h"
 #include "global.h"
 #include <shellapi.h>
 
@@ -6,10 +6,10 @@ namespace client {
 	namespace binding {
 
 
-		attendent_proxy_wrapper* attendent_proxy_wrapper::sInstance = nullptr;
+		attendant_proxy_wrapper* attendant_proxy_wrapper::sInstance = nullptr;
 
 
-		attendent_proxy_wrapper::attendent_proxy_wrapper()
+		attendant_proxy_wrapper::attendant_proxy_wrapper()
 			: is_activated_(false) {
 			wchar_t * command = GetCommandLine();
 			int32_t argc = 0;
@@ -20,20 +20,20 @@ namespace client {
 
 		}
 
-		attendent_proxy_wrapper::~attendent_proxy_wrapper()
+		attendant_proxy_wrapper::~attendant_proxy_wrapper()
 		{
 		}
 
-		attendent_proxy_wrapper& attendent_proxy_wrapper::getInstance() {
+		attendant_proxy_wrapper& attendant_proxy_wrapper::getInstance() {
 			if (sInstance == nullptr)
-				sInstance = new attendent_proxy_wrapper;
+				sInstance = new attendant_proxy_wrapper;
 
 			return *sInstance;
 		}
 
-		void attendent_proxy_wrapper::Initialize()
+		void attendant_proxy_wrapper::Initialize()
 		{
-			OutputDebugString(TEXT("sirius attendent proxy loaded!!\n"));
+			OutputDebugString(TEXT("sirius attendant proxy loaded!!\n"));
 			_proxy->initialize();
 			if (_proxy->is_initialized())
 			{
@@ -50,9 +50,9 @@ namespace client {
 			}
 		}
 
-		void attendent_proxy_wrapper::finalize()
+		void attendant_proxy_wrapper::finalize()
 		{
-			OutputDebugString(TEXT("sirius attendent proxy finalized!!\n"));
+			OutputDebugString(TEXT("sirius attendant proxy finalized!!\n"));
 
 			//sirius::app::attendant::proxy &attendant = sirius::app::attendant::proxy::instance();
 			//sirius::app::attendant::proxy::context_t &context = sirius::app::attendant::proxy::context_t::instance();

@@ -51,7 +51,7 @@ enum client_menu_ids {
 // Musr match the value in client_renderer.cc.
 const char kFocusedNodeChangedMessage[] = "ClientRenderer.FocusedNodeChanged";
 #if defined(WITH_EXTERNAL_INTERFACE)
-const char kAppToContainer[] = "AppToContainer";
+const char kAppToAttendant[] = "AppToAttendant";
 const char kRequestedPID[] = "RequestedPID";
 #endif
 std::string GetTimeString(const CefTime& value) {
@@ -199,7 +199,7 @@ bool ClientHandler::OnProcessMessageReceived(
     return true;
   }
 #if defined(WITH_EXTERNAL_INTERFACE)
-  else if (message_name == kAppToContainer) {
+  else if (message_name == kAppToAttendant) {
 	  return client::binding::message_handler::
 		  getInstance().OnProcessMessageReceived(browser, source_process, message);
   }
@@ -877,7 +877,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 <backInfoZ</backInfo>\
 </DATA>\
 </INTERFACE>");
-binding::socketbase::ContainerToAppCalback((uint8_t *)xml, strlen(xml));
+binding::socketbase::AttendantToAppCalback((uint8_t *)xml, strlen(xml));
 #endif
 //	if (delegate_)
 //		delegate_->OnLoadEnd(browser, frame, httpStatusCode);

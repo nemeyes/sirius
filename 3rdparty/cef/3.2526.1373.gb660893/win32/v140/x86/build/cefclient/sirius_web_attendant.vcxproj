@@ -183,8 +183,8 @@ del $(outputpath)$(assemblyname).ilk
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\cefclient\binding\appmsg.h" />
-    <ClInclude Include="..\..\cefclient\binding\attendent_interface.h" />
-    <ClInclude Include="..\..\cefclient\binding\attendent_proxy_wrapper.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendant_interface.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendant_proxy_wrapper.h" />
     <ClInclude Include="..\..\cefclient\binding\browser.h" />
     <ClInclude Include="..\..\cefclient\binding\global.h" />
     <ClInclude Include="..\..\cefclient\binding\macro.h" />
@@ -194,7 +194,7 @@ del $(outputpath)$(assemblyname).ilk
     <ClInclude Include="..\..\cefclient\binding\net_define.h" />
     <ClInclude Include="..\..\cefclient\binding\socket_base_sirius.h" />
     <ClInclude Include="..\..\cefclient\binding\socket_win.h" />
-    <ClInclude Include="..\..\cefclient\binding\attendent_switches.h" />
+    <ClInclude Include="..\..\cefclient\binding\attendant_switches.h" />
     <ClInclude Include="..\..\cefclient\binding\xml_wrapper.h" />
     <ClInclude Include="..\..\cefclient\browser\binding_test.h" />
     <ClInclude Include="..\..\cefclient\browser\browser_window.h" />
@@ -240,14 +240,14 @@ del $(outputpath)$(assemblyname).ilk
     <ClInclude Include="..\..\cefclient\browser\temp_window_win.h" />
     <ClInclude Include="..\..\cefclient\browser\util_win.h" />
     <ClCompile Include="..\..\cefclient\binding\appmsg.cc" />
-    <ClCompile Include="..\..\cefclient\binding\attendent_proxy_wrapper.cpp" />
+    <ClCompile Include="..\..\cefclient\binding\attendant_proxy_wrapper.cpp" />
     <ClCompile Include="..\..\cefclient\binding\browser.cc" />
     <ClCompile Include="..\..\cefclient\binding\global.cc" />
     <ClCompile Include="..\..\cefclient\binding\js_binding.cc" />
     <ClCompile Include="..\..\cefclient\binding\msg_handler.cc" />
     <ClCompile Include="..\..\cefclient\binding\socket_base_sirius.cpp" />
     <ClCompile Include="..\..\cefclient\binding\socket_win.cc" />
-    <ClCompile Include="..\..\cefclient\binding\attendent_switches.cc" />
+    <ClCompile Include="..\..\cefclient\binding\attendant_switches.cc" />
     <ClCompile Include="..\..\cefclient\binding\xml_wrapper.cpp" />
     <ClCompile Include="..\..\cefclient\browser\binding_test.cc" />
     <ClCompile Include="..\..\cefclient\browser\browser_window.cc" />

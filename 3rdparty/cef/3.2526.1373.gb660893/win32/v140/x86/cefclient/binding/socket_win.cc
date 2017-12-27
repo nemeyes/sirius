@@ -7,7 +7,7 @@
 #include "cefclient/common/client_switches.h"
 #include "global.h"
 #include "socket_win.h"
-#include "cefclient/binding/attendent_interface.h"
+#include "cefclient/binding/attendant_interface.h"
 
 namespace client {
 	namespace binding {
@@ -117,7 +117,7 @@ namespace client {
 			index += recvBody_getDataLen(buffer, sizeof(header), dataLen);
 
 			getBody(dataLen, index, buffer, body);
-			OutputDebugStringA("[sirius->attendent]\n");
+			OutputDebugStringA("[sirius->attendant]\n");
 			switch (header.commandType) {
 			case COMMAND_TYPE::RESPONSE:
 				recvBody_cmdType_response(header);
@@ -154,7 +154,7 @@ namespace client {
 				sendToJSEngine(body);
 				break;
 			case CONTENTS_TYPE::TOAPP:
-				OutputDebugStringA("[sirius->attendent]Receive Data From sirius & Bypass to V8 Engine\n");
+				OutputDebugStringA("[sirius->attendant]Receive Data From sirius & Bypass to V8 Engine\n");
 				sendToJSEngine(body);
 				break;
 			case CONTENTS_TYPE::MENUID_URL:
@@ -171,14 +171,14 @@ namespace client {
 				CefPostTask(TID_UI, base::Bind(&socket_win::sendToJSEngine, this, xml));
 				return;
 			}
-			OutputDebugStringA("[sirius->attendent]xml \n");
+			OutputDebugStringA("[sirius->attendant]xml \n");
 
 			RootWindowWin* rootWin =
 				GetUserDataPtr<RootWindowWin*>(global::getInstance().getWindowHandle());
 			DCHECK(rootWin);
 			CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
-			CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("ContainerToApp");
+			CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("AttendantToApp");
 			msg->GetArgumentList()->SetString(0, xml);
 
 			browser->SendProcessMessage(PID_RENDERER, msg);
@@ -211,7 +211,7 @@ namespace client {
 			int size = 0;
 
 			if (!makeXmlPacket(packet, size, contentsType, utf8_xml)) {
-				OutputDebugStringA("[attendent->sirius] Message Send Failed\n");
+				OutputDebugStringA("[attendant->sirius] Message Send Failed\n");
 
 				if (packet)
 					delete[] packet;

@@ -115,7 +115,7 @@ bool ClientAppRenderer::OnProcessMessageReceived(
                                               message);
   }
 #if defined(WITH_EXTERNAL_INTERFACE)
-  if (message->GetName() == binding::kContainerToApp) {
+  if (message->GetName() == binding::kAttendantToApp) {
 	  binding::message_handler::
 		  getInstance().OnProcessMessageReceived(browser, source_process, message);
   }

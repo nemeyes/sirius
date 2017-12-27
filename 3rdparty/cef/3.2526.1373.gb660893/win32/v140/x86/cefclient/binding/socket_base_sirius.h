@@ -26,7 +26,7 @@ namespace client {
 			bool Create(UINT nSocketPort = 0, int nSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
 			int Send(const void *lpBuf, int nBuflen, int nFlags = 0);
 			virtual void ProcessingThread();
-			static void ContainerToAppCalback(uint8_t* packet, size_t len);
+			static void AttendantToAppCalback(uint8_t* packet, size_t len);
 			socketbase();
 			virtual ~socketbase();
 		public:

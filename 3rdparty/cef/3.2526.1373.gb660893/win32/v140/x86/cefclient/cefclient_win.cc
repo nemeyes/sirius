@@ -16,7 +16,7 @@
 #include "cefclient/common/client_app_other.h"
 #include "cefclient/renderer/client_app_renderer.h"
 #if defined(WITH_EXTERNAL_INTERFACE)
-#include "cefclient/binding/attendent_proxy_wrapper.h"
+#include "cefclient/binding/attendant_proxy_wrapper.h"
 #endif
 #if defined(WITH_ATTENDANT_PROXY)
 #include <windows.h>
@@ -68,7 +68,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   {
     app = new ClientAppBrowser();
 #if defined(WITH_EXTERNAL_INTERFACE)
-	  client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
+	  client::binding::attendant_proxy_wrapper& apc = client::binding::attendant_proxy_wrapper::getInstance();
 	  apc.Initialize();
 	  proxy_handle = apc._proxy_handle;
 #endif
@@ -188,7 +188,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // RootWindowManager after all windows have been destroyed.
   int result = message_loop->Run();
 #if defined(WITH_EXTERNAL_INTERFACE)
-  client::binding::attendent_proxy_wrapper& apc = client::binding::attendent_proxy_wrapper::getInstance();
+  client::binding::attendant_proxy_wrapper& apc = client::binding::attendant_proxy_wrapper::getInstance();
   apc.finalize();
 #endif
 #ifdef WITH_ATTENDANT_PROXY
