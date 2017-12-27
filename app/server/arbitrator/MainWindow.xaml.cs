@@ -29,11 +29,5 @@ namespace sirius.app.server.arbitrator
 
             sirius_arbitrator core = new sirius_arbitrator(this);
         }
-
-        private void ModernWindow_Closed(object sender, EventArgs e)
-        {
-            if (sirius_arbitrator.controller != null)
-                sirius_arbitrator.controller.release();
-        }
     }
 }

@@ -61,6 +61,11 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
+        
+        ~sirius_arbitrator()
+        {
+            controller.release();
+        }
    
         public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, sbyte* cpu, sbyte* memory)
         {
