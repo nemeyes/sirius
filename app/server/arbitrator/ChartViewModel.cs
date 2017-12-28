@@ -182,7 +182,7 @@ namespace sirius.app.server.arbitrator
             FontSizes.Add(11.0);
             FontSizes.Add(13.0);
             FontSizes.Add(18.0);
-            SelectedFontSize = 18.0;
+            SelectedFontSize = 13.0;
 
             DoughnutInnerRadiusRatios = new List<double>();
             DoughnutInnerRadiusRatios.Add(0.90);
