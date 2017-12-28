@@ -24,7 +24,6 @@
 #include "cefclient/binding/msg_handler.h"
 #include "cefclient/binding/socket_base_sirius.h"
 #include "cefclient/binding/global.h"
-#include "cefclient/binding/socket_base_sirius.h"
 #endif
 namespace client {
 
