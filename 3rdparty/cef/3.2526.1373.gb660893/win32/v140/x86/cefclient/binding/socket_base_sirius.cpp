@@ -6,7 +6,7 @@
 #include <assert.h>
 #include "socket_win.h"
 #include "socket_base_sirius.h"
-#include "attendent_proxy_wrapper.h"
+#include "attendant_proxy_wrapper.h"
 #pragma comment(lib, "Ws2_32.lib")
 
 namespace client {
@@ -22,9 +22,9 @@ namespace client {
 			m_bThreadWhile = TRUE;
 			m_hSocket = NULL;
 			m_hEvent = NULL;
-			client::binding::attendent_proxy_wrapper& apc = attendent_proxy_wrapper::getInstance();
+			client::binding::attendant_proxy_wrapper& apc = attendant_proxy_wrapper::getInstance();
 			_attendant = apc._proxy;
-			_attendant->set_attendant_cb(&ContainerToAppCalback);
+			_attendant->set_attendant_cb(&AttendantToAppCalback);
 		}
 
 		socketbase::~socketbase() {
@@ -47,7 +47,7 @@ namespace client {
 			return true;
 		}
 
-		void socketbase::ContainerToAppCalback(uint8_t* packet, size_t len)
+		void socketbase::AttendantToAppCalback(uint8_t* packet, size_t len)
 		{
 			socket_win::getInstance()->SiriusToJSEngine((uint8_t*)packet, len);
 		}

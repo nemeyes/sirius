@@ -5,7 +5,7 @@
 #include "msg_handler.h"
 #include "net_define.h"
 #include "socket_win.h"
-#include "attendent_interface.h"
+#include "attendant_interface.h"
 
 namespace client {
 	namespace binding {
@@ -41,22 +41,22 @@ namespace client {
 			CefString msgName = message->GetName();
 			bool ret = false;
 
-			if (msgName == kAppToContainer) {
-				msgAppToContainer(message);
+			if (msgName == kAppToAttendant) {
+				msgAppToAttendant(message);
 			}
-			else if (msgName == kContainerToApp) {
-				msgContainerToApp(browser, message);
+			else if (msgName == kAttendantToApp) {
+				msgAttendantToApp(browser, message);
 			}
 			return ret;
 		}
 
-		bool message_handler::msgAppToContainer(CefRefPtr<CefProcessMessage> message) {
+		bool message_handler::msgAppToAttendant(CefRefPtr<CefProcessMessage> message) {
 			CefRefPtr<CefListValue> args = message->GetArgumentList();
 			bool ret = false;
 
 			switch (args->GetType(0)) {
 			case VTYPE_STRING:
-				ret = msgAppToContainerGeneralMode(args);
+				ret = msgAppToAttendantGeneralMode(args);
 				break;
 			default:
 				break;
@@ -86,7 +86,7 @@ namespace client {
 			return false;
 		}
 
-		void message_handler::msgContainerToApp(CefRefPtr<CefBrowser> browser,
+		void message_handler::msgAttendantToApp(CefRefPtr<CefBrowser> browser,
 			CefRefPtr<CefProcessMessage> message) {
 			if (!callback_map_.empty()) {
 				CefString message_name = message->GetName();
@@ -121,7 +121,7 @@ namespace client {
 			}
 		}
 
-		bool message_handler::msgAppToContainerGeneralMode(CefRefPtr<CefListValue> args) {
+		bool message_handler::msgAppToAttendantGeneralMode(CefRefPtr<CefListValue> args) {
 			bool ret = false;
 			CefString result = args->GetString(0);
 

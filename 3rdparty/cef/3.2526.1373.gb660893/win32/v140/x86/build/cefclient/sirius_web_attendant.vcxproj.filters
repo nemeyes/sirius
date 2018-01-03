@@ -154,16 +154,16 @@
     <ClCompile Include="..\..\cefclient\binding\global.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\binding\attendent_switches.cc">
-      <Filter>cefclient\binding</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\binding\socket_base_sirius.cpp">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\binding\attendent_proxy_wrapper.cpp">
+    <ClCompile Include="..\..\cefclient\binding\browser.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\binding\browser.cc">
+    <ClCompile Include="..\..\cefclient\binding\attendant_proxy_wrapper.cpp">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\attendant_switches.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
   </ItemGroup>
@@ -321,22 +321,22 @@
     <ClInclude Include="..\..\cefclient\binding\global.h">
       <Filter>cefclient\binding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cefclient\binding\attendent_switches.h">
-      <Filter>cefclient\binding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\binding\socket_base_sirius.h">
       <Filter>cefclient\binding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\binding\net_define.h">
       <Filter>cefclient\binding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cefclient\binding\attendent_interface.h">
-      <Filter>cefclient\binding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\binding\attendent_proxy_wrapper.h">
-      <Filter>cefclient\binding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\binding\browser.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_interface.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_proxy_wrapper.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_switches.h">
       <Filter>cefclient\binding</Filter>
     </ClInclude>
   </ItemGroup>
