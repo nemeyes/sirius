@@ -58,5 +58,31 @@ namespace sirius.app.server.arbitrator.Settings
             
             setting_value.update();
         }
+
+        private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextKeepAliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
     }
 }

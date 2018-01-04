@@ -49,12 +49,12 @@
                 
                 <StackPanel>
                     <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="150"/>
-                    <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
+                    <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" TextChanged="TextAttendantInstanceCount_TextChanged" PreviewTextInput="TextAttendantInstanceCount_PreviewTextInput" />
                 </StackPanel>
 
                 <StackPanel>
                     <Label Content="Attendant Creation Delay" Target="{Binding ElementName=TextAttendantCreationDelay}" Width="150"/>
-                    <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" /> 
+                    <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantCreationDelay_PreviewTextInput" /> 
                     <Label Content="ms"/>
                 </StackPanel>
 

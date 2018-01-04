@@ -130,7 +130,7 @@ BOOL CSiriusClientDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	sirius::library::log::log4cplus::logger::create("configuration\\log.properties", SAC, "");
+	sirius::library::log::log4cplus::logger::create("configuration\\log.properties", SAC, "-");
 
 	HINSTANCE hInstance = GetModuleHandleA(NULL);
 
