@@ -42,6 +42,9 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy_wrapper.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy_wrapper.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+
 
 
 

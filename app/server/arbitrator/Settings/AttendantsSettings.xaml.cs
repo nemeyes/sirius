@@ -88,5 +88,39 @@ namespace sirius.app.server.arbitrator.Settings
 
             setting_value.update();
         }
+        private void TextAttendantInstanceCount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TextAttendantInstanceCount.Text.Length > 0)
+            {
+                if (Convert.ToInt32(TextAttendantInstanceCount.Text) > 500)
+                {
+                    TextAttendantInstanceCount.Text = "500";
+                }
+            }
+        }
+        private void TextAttendantInstanceCount_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {      
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+        private void TextAttendantCreationDelay_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
     }
 }
