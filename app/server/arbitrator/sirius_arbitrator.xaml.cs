@@ -109,6 +109,7 @@ namespace sirius.app.server.arbitrator
                     {                        
                         popup_progressbar.IsOpen = false;
                         Status.handle.stop_button.IsEnabled = true;
+                        front.IsEnabled = true;
                     }
                 ));
             }
@@ -123,6 +124,7 @@ namespace sirius.app.server.arbitrator
                     Splash.handle.update_progress_bar(0);
                     popup_progressbar.PlacementTarget = front;
                     popup_progressbar.IsOpen = true;
+                    front.IsEnabled = false;                    
                 }
             ));
         }

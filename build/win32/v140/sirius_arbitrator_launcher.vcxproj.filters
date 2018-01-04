@@ -80,10 +80,21 @@
     <ClInclude Include="..\..\..\app\server\proxy\entity\configuration_entity.h">
       <Filter>entity</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\base\source\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\base\source\sirius_version.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\base\source\sirius_application.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\base\source\sirius.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -42,8 +42,11 @@
                 <StackPanel>
                     <Label Content="URL" Target="{Binding ElementName=TextAttendantUrl}" Width="150"/>                    
                 </StackPanel>
-                <TextBox x:Name="TextAttendantUrl" Width="215" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left" Margin="0,0,230,10" />
 
+                <StackPanel>
+                    <TextBox x:Name="TextAttendantUrl" Width="221" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
+                </StackPanel>
+                
                 <StackPanel>
                     <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="150"/>
                     <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
