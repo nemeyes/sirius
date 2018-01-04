@@ -31,9 +31,8 @@ namespace sirius.app.server.arbitrator
         delegate_stop_callback on_stop_callback;
         delegate_release_callback on_release_callback;
 
-        public static MainWindow front = null;
-        public static sirius.app.server.arbitrator.wrapper.handler controller = null;
-        public static string cpu_name = null;
+        public static MainWindow front;
+        public static sirius.app.server.arbitrator.wrapper.handler controller;
                 
         public sirius_arbitrator(MainWindow wnd)
         {
@@ -110,6 +109,7 @@ namespace sirius.app.server.arbitrator
                     {                        
                         popup_progressbar.IsOpen = false;
                         Status.handle.stop_button.IsEnabled = true;
+                        front.IsEnabled = true;
                     }
                 ));
             }
@@ -124,6 +124,7 @@ namespace sirius.app.server.arbitrator
                     Splash.handle.update_progress_bar(0);
                     popup_progressbar.PlacementTarget = front;
                     popup_progressbar.IsOpen = true;
+                    front.IsEnabled = false;                    
                 }
             ));
         }

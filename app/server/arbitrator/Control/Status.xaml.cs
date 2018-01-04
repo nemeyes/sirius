@@ -47,13 +47,13 @@ namespace sirius.app.server.arbitrator.Control
     
         private void ShellView_Loaded(object sender, RoutedEventArgs e)
         {
-            Matrix m = PresentationSource.FromVisual(Application.Current.MainWindow).CompositionTarget.TransformToDevice;
-            double dx = m.M11;
-            double dy = m.M22;
+            //Matrix m = PresentationSource.FromVisual(Application.Current.MainWindow).CompositionTarget.TransformToDevice;
+            //double dx = m.M11;
+            //double dy = m.M22;
 
-            ScaleTransform s = (ScaleTransform)mainGrid.LayoutTransform;
-            s.ScaleX = 1 / dx;
-            s.ScaleY = 1 / dy;
+            //ScaleTransform s = (ScaleTransform)mainGrid.LayoutTransform;
+            //s.ScaleX = 1 / dx;
+            //s.ScaleY = 1 / dy;
         }
       
         private void start_button_click(object sender, RoutedEventArgs e)

@@ -17,7 +17,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _system_monitor_thread(INVALID_HANDLE_VALUE)
 {
 	::InitializeCriticalSection(&_attendant_cs);
-	sirius::library::log::log4cplus::logger::create("configuration/log.properties", SAA, nullptr);
+	sirius::library::log::log4cplus::logger::create("configuration/log.properties", SAA, "-");
 
 	_monitor = new sirius::library::misc::performance::monitor();
 
