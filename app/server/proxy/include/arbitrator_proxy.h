@@ -6,7 +6,7 @@
 #include <sirius_sicp_server.h>
 #include "process_controller.h"
 #include <sirius_performance_monitor.h>
-
+#include "backend_cluster.h"
 namespace sirius
 {
 	namespace app
@@ -74,9 +74,11 @@ namespace sirius
 				private:
 					sirius::app::server::arbitrator::proxy * _front;
 					sirius::app::server::arbitrator::proxy::context_t * _context;
+					sirius::library::net::backend::cluster * _cluster;
 
 					HANDLE _thread;
 					bool _run;
+					int32_t _use_count;
 
 					sirius::library::misc::performance::monitor * _monitor;
 					HANDLE _system_monitor_thread;
