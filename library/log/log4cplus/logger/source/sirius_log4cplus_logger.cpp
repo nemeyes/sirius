@@ -387,7 +387,7 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 		}
 	else if (strcmp(secion, SLNSC) == 0)
 	{
-		sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\streamer.log", _log_name);
+		sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\attendant.log", _log_name);
 		MultiByteToWideChar(CP_ACP, 0, SLNSC, -1, wc_buffer, MAX_PATH);
 		_log_type = streamer_create;
 	}

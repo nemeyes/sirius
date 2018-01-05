@@ -103,6 +103,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_arbitrator_proxy", "sirius_arbitrator_proxy.vcxproj", "{C34CDB07-8FD2-4746-A583-4EDDB91FFC77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DDDBF124-0E01-49AE-9A84-F3C0910F96FF} = {DDDBF124-0E01-49AE-9A84-F3C0910F96FF}
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21} = {3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_performance_monitor", "sirius_performance_monitor.vcxproj", "{7117EFB8-6D3D-4597-B715-0BD09225507D}"
@@ -116,6 +117,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_warbitrator", "siriu
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_arbitrator_proxy_wrapper", "sirius_arbitrator_proxy_wrapper.vcxproj", "{ED89C351-B43E-4530-95B5-84EEEACAE863}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_backend_cluster", "sirius_backend_cluster.vcxproj", "{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -531,6 +534,18 @@ Global
 		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x64.Build.0 = Release|x64
 		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x86.ActiveCfg = Release|Win32
 		{ED89C351-B43E-4530-95B5-84EEEACAE863}.Release|x86.Build.0 = Release|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|ARM.ActiveCfg = Debug|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|x64.ActiveCfg = Debug|x64
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|x64.Build.0 = Debug|x64
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|x86.ActiveCfg = Debug|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Debug|x86.Build.0 = Debug|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|Any CPU.ActiveCfg = Release|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|ARM.ActiveCfg = Release|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|x64.ActiveCfg = Release|x64
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|x64.Build.0 = Release|x64
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|x86.ActiveCfg = Release|Win32
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -585,5 +600,6 @@ Global
 		{64C0A0B9-10A1-4795-8116-3CF26D9ECDA9} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
 		{11554DBA-8863-4036-AA42-25BC66656731} = {AB0CD491-8015-4171-8D5F-6465061A2A73}
 		{ED89C351-B43E-4530-95B5-84EEEACAE863} = {B1B87D11-9812-493C-9CCC-6AB990EF38AD}
+		{3C38B7FE-34FE-46F0-9A02-6E71A5FE5F21} = {8892CFFD-D789-4B36-B6F7-705322954A3A}
 	EndGlobalSection
 EndGlobal
