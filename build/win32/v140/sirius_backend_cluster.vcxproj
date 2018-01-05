@@ -107,9 +107,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORTS_BACKEND_CLUSTER_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORTS_BACKEND_CLUSTER_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\library\net\backend\cluster\include;..\..\..\library\net\curl\client\include;..\..\..\library\net\backend\cluster\base;..\..\..\library\log\log4cplus\logger\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\library\net\backend\cluster\include;..\..\..\library\net\curl\client\include;..\..\..\library\net\backend\cluster\base;..\..\..\library\log\log4cplus\logger\include;..\..\..\base\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
