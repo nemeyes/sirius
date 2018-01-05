@@ -329,6 +329,7 @@ void sirius::app::attendant::proxy::core::disconnect_attendant_callback(void)
 
 void sirius::app::attendant::proxy::core::start_attendant_callback(const char * client_uuid, const char * client_id)
 {
+	sirius::library::log::log4cplus::logger::streamer_log_init(client_id, SLNS);
 	Json::Value wpacket;
 	Json::StyledWriter writer;
 	wpacket["id"] = _context->id;
@@ -337,6 +338,7 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 	if (response.size() > 0)
 	{
 		data_request((char*)SERVER_UUID, CMD_START_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
+		LOGGER::make_info_log(SLNS, "[CMD_START_ATTENDANT_RES] - %s(), %d,	Command:%d, id:%d, rcode:%d", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_RES, _context->id, sirius::app::attendant::proxy::err_code_t::success);
 	}
 
 	Json::Value npacket;
@@ -356,6 +358,8 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 		if (noti.size() > 0)
 		{
 			data_request((char*)client_uuid, CMD_ATTENDANT_INFO_IND, (char*)noti.c_str(), noti.size() + 1);
+			LOGGER::make_info_log(SLNS, "[attendant info notification] - %s(), %d,	Command:%d, attendant_uuid:%s, streamer_portnumber:%d, video_width:%d, video_height;%d, rcode:%d", __FUNCTION__, __LINE__, CMD_ATTENDANT_INFO_IND, uuid, STREAMER_PORTNUMBER + _context->id, _context->video_width, _context->video_height,  sirius::app::attendant::proxy::err_code_t::success);
+
 		}
 		free(uuid);
 		uuid = nullptr;
