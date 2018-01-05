@@ -72,6 +72,11 @@ int32_t sirius::app::server::arbitrator::proxy::disconnect_client(const char * u
 	return _core->disconnect_client(uuid);
 }
 
+int32_t sirius::app::server::arbitrator::proxy::get_available_attendant_count(void)
+{
+	return _core->get_available_attendant_count();
+}
+
 int32_t	sirius::app::server::arbitrator::proxy::connect_attendant_callback(const char * uuid, const char * id)
 {
 	return _core->connect_attendant_callback(uuid, id);

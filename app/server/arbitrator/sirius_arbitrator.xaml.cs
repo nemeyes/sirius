@@ -24,6 +24,15 @@ namespace sirius.app.server.arbitrator
     /// </summary>
     public partial class sirius_arbitrator : UserControl
     {
+        public struct status_t
+        {
+            public const int initialized = 0;
+            public const int starting = 1;
+            public const int started = 2;
+            public const int stopped = 3;
+            public const int released = 4;
+        };
+
         delegate_initialize_callback on_initalize_callback;
         delegate_system_monitor_info_callback on_system_monitor_info_callback;
         delegate_attendant_create_callback on_attendant_create_callback;
@@ -33,6 +42,7 @@ namespace sirius.app.server.arbitrator
 
         public static MainWindow front;
         public static sirius.app.server.arbitrator.wrapper.handler controller;
+        public static int status = status_t.released;
                 
         public sirius_arbitrator(MainWindow wnd)
         {
@@ -60,6 +70,7 @@ namespace sirius.app.server.arbitrator
                 controller.set_release_callback(on_release_callback);
             }
             controller.initailize();
+            status = status_t.initialized;
         }
         public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, sbyte* cpu, sbyte* memory)
         {
@@ -92,26 +103,43 @@ namespace sirius.app.server.arbitrator
         public unsafe void on_system_monitor_info(double cpu_usage, double memory_usage)
         {
             if (Status.handle != null)
+            {
                 Status.handle.update_usage(cpu_usage, memory_usage);
+
+                if (status == status_t.started)
+                {
+                    int max_attendant_instance = SettingValue.Instance().max_attendant_instance;
+                    int connect_count = max_attendant_instance - controller.get_available_attendant_count();
+                    Status.handle.update_connect_count(max_attendant_instance, connect_count);
+                }
+                else
+                {
+                    Status.handle.update_connect_count(0, 0);
+                }
+            }
         }
         public unsafe void on_attendant_create(double percent)
         {
             if (Splash.handle != null)
+            {
                 Splash.handle.update_progress_bar(percent);
 
-            if (percent >= 100)
-            {
-                System.Threading.Thread.Sleep(1000 * 1);
-                Dispatcher.Invoke(DispatcherPriority.Normal,
-                new Action
-                (
-                    delegate ()
-                    {                        
-                        popup_progressbar.IsOpen = false;
-                        Status.handle.stop_button.IsEnabled = true;
-                        front.IsEnabled = true;
-                    }
-                ));
+                if (percent >= 100)
+                {
+                    System.Threading.Thread.Sleep(1000 * 1);
+                    Dispatcher.Invoke(DispatcherPriority.Normal,
+                    new Action
+                    (
+                        delegate ()
+                        {
+                            popup_progressbar.IsOpen = false;
+                            Status.handle.stop_button.IsEnabled = true;
+                            front.IsEnabled = true;                           
+                        }
+                    ));
+
+                    status = status_t.started;
+                }
             }
         }
         public unsafe void on_start()
@@ -127,14 +155,15 @@ namespace sirius.app.server.arbitrator
                     front.IsEnabled = false;                    
                 }
             ));
+            status = status_t.starting;
         }
         public unsafe void on_stop()
         {
-
+            status = status_t.stopped;
         }
         public unsafe void on_release()
         {
-
+            status = status_t.released;
         }
     }
 }

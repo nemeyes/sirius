@@ -48,6 +48,8 @@ namespace sirius
 					int32_t	connect_client(const char * uuid, const char * id);
 					int32_t disconnect_client(const char * uuid);
 
+					int32_t get_available_attendant_count(void);
+
 					int32_t	connect_attendant_callback(const char * uuid, const char * id);
 					void	disconnect_attendant_callback(const char * uuid);
 

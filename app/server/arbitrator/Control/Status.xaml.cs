@@ -91,7 +91,19 @@ namespace sirius.app.server.arbitrator.Control
                 delegate ()
                 {                  
                     chart_view_model.handle.cpu_chart.Number = (float)cpu_usage;
-                    chart_view_model.handle.memory_chart.Number = (float)memory_usage;                  
+                    chart_view_model.handle.memory_chart.Number = (float)memory_usage;                          
+                }
+            ));
+        }
+
+        public void update_connect_count(int max_cnt,int conn_cnt)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal,
+            new Action
+            (
+                delegate ()
+                {                    
+                    connect_count.Content = conn_cnt + " / " + max_cnt;
                 }
             ));
         }

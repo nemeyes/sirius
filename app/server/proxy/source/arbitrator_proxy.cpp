@@ -234,6 +234,18 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 	return status;
 }
 
+int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_count()
+{
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
+	int32_t count = 0;
+	{
+		sirius::autolock lock(&_attendant_cs);
+		dao.retrieve(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, &attendant, count);
+	}
+	return count;
+}
+
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, const char * id)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::success;

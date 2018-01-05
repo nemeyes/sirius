@@ -15,6 +15,7 @@
         <ContentControl Content="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ContentTemplate="{StaticResource Gauge}" />
         <Button x:Name="start_button"  FontSize="16" Content="▶" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="438,0,-188,0" Height="40" Click="start_button_click"/>
         <Button x:Name="stop_button" FontSize="16" Content="■" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="438,51,-188,0" Height="40" Click="stop_button_click"/>
+        <Label x:Name="connect_count" Content="0 / 0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,79,0" Width="62" HorizontalContentAlignment="Right"/>
 
         <Grid.LayoutTransform>
             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.0" ScaleY="1.0" />
