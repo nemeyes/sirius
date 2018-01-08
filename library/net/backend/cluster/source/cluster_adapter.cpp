@@ -25,7 +25,7 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 	_ssp_url_st[0] = NULL;
 	_stat_timer = false;
 	memset(_localip, 0, MAX_PATH);
-	configure_load();
+	//configure_load();
 	if (is_cluster_use())
 	{
 		const char *file_name = "webapp";
@@ -176,27 +176,29 @@ int32_t sirius::library::net::backend::cluster_adapter::client_connect(char* cli
 
 int32_t sirius::library::net::backend::cluster_adapter::client_disconnect(char* client_id, int32_t use_count, int32_t attendant_num)
 {
-	//mtx_lock.lock();
-	char connect_date[MAX_PATH];
-	char connect_time[MAX_PATH];
-	_client->get_local_time(connect_date, connect_time);
-	_client_count--;
-	if (_client_count < 0)
-		_client_count = 0;
-
-	if (_ssp_queue.size() > QUEUE_MAX_SIZE)
+	if (is_cluster_use())
 	{
-		LOGGER::make_error_log(SAA, "%s, %d, ssp_queue buffer full ssp_queue:%d", __FUNCTION__, __LINE__, _ssp_queue.size());
-		_ssp_queue.clear();
-		_ssp_bufpos = 0;
-	}
-	_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=CLOSE&client_id=%s&idc=%s",
-		get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, use_count, client_id, get_idc_code().c_str());
-	_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
-	if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
-		_ssp_bufpos = 0;
+		char connect_date[MAX_PATH];
+		char connect_time[MAX_PATH];
+		_client->get_local_time(connect_date, connect_time);
+		_client_count--;
+		if (_client_count < 0)
+			_client_count = 0;
 
-	return int32_t();
+		if (_ssp_queue.size() > QUEUE_MAX_SIZE)
+		{
+			LOGGER::make_error_log(SAA, "%s, %d, ssp_queue buffer full ssp_queue:%d", __FUNCTION__, __LINE__, _ssp_queue.size());
+			_ssp_queue.clear();
+			_ssp_bufpos = 0;
+		}
+		_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=CLOSE&client_id=%s&idc=%s",
+			get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, use_count, client_id, get_idc_code().c_str());
+		_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
+		if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
+			_ssp_bufpos = 0;
+	}
+
+	return true;
 }
 
 bool sirius::library::net::backend::cluster_adapter::configure_load()

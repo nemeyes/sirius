@@ -50,7 +50,7 @@ enum client_menu_ids {
 // Musr match the value in client_renderer.cc.
 const char kFocusedNodeChangedMessage[] = "ClientRenderer.FocusedNodeChanged";
 #if defined(WITH_EXTERNAL_INTERFACE)
-const char kAppToAttendant[] = "AppToAttendant";
+const char msg_app_to_attendant[] = "AppToAttendant";
 const char kRequestedPID[] = "RequestedPID";
 #endif
 std::string GetTimeString(const CefTime& value) {
@@ -198,13 +198,13 @@ bool ClientHandler::OnProcessMessageReceived(
     return true;
   }
 #if defined(WITH_EXTERNAL_INTERFACE)
-  else if (message_name == kAppToAttendant) {
+  else if (message_name == msg_app_to_attendant) {
 	  return client::binding::message_handler::
-		  getInstance().OnProcessMessageReceived(browser, source_process, message);
+		  getInstance().external_interface_message_received(browser, source_process, message);
   }
   else if (message_name == kRequestedPID) {
 	  return client::binding::message_handler::
-		  getInstance().OnProcessMessageReceived(browser, source_process, message);
+		  getInstance().external_interface_message_received(browser, source_process, message);
   }
 #endif
   return false;
@@ -851,8 +851,8 @@ void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	if (delegate_)
 			delegate_->OnLoadStart(browser, frame);
 #if defined(WITH_EXTERNAL_INTERFACE)
-	if (!binding::global::getInstance().getJavaScriptInjection().empty()) {
-		frame->ExecuteJavaScript(binding::global::getInstance().getJavaScriptInjection(), frame->GetURL(), 0);
+	if (!binding::global::get_instance().get_java_script_injection().empty()) {
+		frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
 	}
 #endif
 }
@@ -864,8 +864,8 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 
 	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
 #if defined(WITH_EXTERNAL_INTERFACE)
-	char xml[1024];
-	sprintf(xml,
+	/*char data[1024];
+	sprintf(data,
 		"<?xml version='1.0' ?>\
 <INTERFACE>\
 <COMMAND>request</COMMAND>\
@@ -876,7 +876,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 <backInfoZ</backInfo>\
 </DATA>\
 </INTERFACE>");
-binding::socketbase::AttendantToAppCalback((uint8_t *)xml, strlen(xml));
+binding::socketbase::calback_attendant_to_app((uint8_t *)data, strlen(data));*/
 #endif
 //	if (delegate_)
 //		delegate_->OnLoadEnd(browser, frame, httpStatusCode);

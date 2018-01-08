@@ -14,15 +14,12 @@ namespace client {
 		public:
 			static CefRefPtr<browser> getInstance();
 			static void release();
-			//bool createSocket();
 
 		protected:
 			browser();
 			virtual ~browser();
 
-			static CefRefPtr<browser> pThis;
-			CefString confErrString_;
-			int confErrNum_;
+			static CefRefPtr<browser> _ptr_this;
 
 		private:
 			IMPLEMENT_REFCOUNTING(browser);

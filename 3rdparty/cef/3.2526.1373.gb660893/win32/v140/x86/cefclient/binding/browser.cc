@@ -12,31 +12,31 @@
 namespace client {
 	namespace binding {
 
-		CefRefPtr<browser> browser::pThis = NULL;
+		CefRefPtr<browser> browser::_ptr_this = NULL;
 
 		browser::browser() {
 		}
 
 		browser::~browser() {
-			pThis = nullptr;
+			_ptr_this = nullptr;
 		}
 
 		CefRefPtr<browser> browser::getInstance() {
-			if (!pThis) {
-				pThis = new browser;
+			if (!_ptr_this) {
+				_ptr_this = new browser;
 			}
 
-			return pThis;
+			return _ptr_this;
 		}
 
 		void browser::release() {
 			message_handler::release();
 			socket_win::release();
 
-			if (pThis) {
-				pThis->Release();
+			if (_ptr_this) {
+				_ptr_this->Release();
 			}
 		}
-	}  // namespace csb
+	}  // namespace binding
 }  // namespace client
 #endif

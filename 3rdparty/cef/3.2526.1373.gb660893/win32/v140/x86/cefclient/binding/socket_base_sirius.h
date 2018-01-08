@@ -23,21 +23,19 @@ namespace client {
 
 		class socketbase : public ISocketThread, CefBase {
 		public:
-			bool Create(UINT nSocketPort = 0, int nSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
-			int Send(const void *lpBuf, int nBuflen, int nFlags = 0);
+			bool create(UINT nSocketPort = 0, int nSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
+			int send_data(const void *lpBuf, int nBuflen, int nFlags = 0);
 			virtual void ProcessingThread();
-			static void AttendantToAppCalback(uint8_t* packet, size_t len);
+			static void calback_attendant_to_app(uint8_t* packet, size_t len);
 			socketbase();
 			virtual ~socketbase();
 		public:
 
 		protected:
-			WSAEVENT m_hEvent;
-			bool m_bThreadWhile;
-			SOCKET m_hSocket;
-			DWORD dwLastError;
-
-			// AMADEUS
+			WSAEVENT _event;
+			bool _thread_while;
+			SOCKET _socket;
+			DWORD _dw_last_error;
 		private:
 
 		private:

@@ -6,7 +6,7 @@ namespace client {
 	namespace binding {
 
 
-		attendant_proxy_wrapper* attendant_proxy_wrapper::sInstance = nullptr;
+		attendant_proxy_wrapper* attendant_proxy_wrapper::_instance = nullptr;
 
 
 		attendant_proxy_wrapper::attendant_proxy_wrapper()
@@ -25,10 +25,10 @@ namespace client {
 		}
 
 		attendant_proxy_wrapper& attendant_proxy_wrapper::getInstance() {
-			if (sInstance == nullptr)
-				sInstance = new attendant_proxy_wrapper;
+			if (_instance == nullptr)
+				_instance = new attendant_proxy_wrapper;
 
-			return *sInstance;
+			return *_instance;
 		}
 
 		void attendant_proxy_wrapper::Initialize()
@@ -53,9 +53,6 @@ namespace client {
 		void attendant_proxy_wrapper::finalize()
 		{
 			OutputDebugString(TEXT("sirius attendant proxy finalized!!\n"));
-
-			//sirius::app::attendant::proxy &attendant = sirius::app::attendant::proxy::instance();
-			//sirius::app::attendant::proxy::context_t &context = sirius::app::attendant::proxy::context_t::instance();
 			if (_proxy->initialize())
 			{
 				_proxy->stop();
@@ -64,8 +61,8 @@ namespace client {
 			}
 			_proxy->release();
 
-			delete sInstance;
-			sInstance = nullptr;
+			delete _instance;
+			_instance = nullptr;
 
 			is_activated_ = false;
 
