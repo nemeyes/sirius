@@ -12,32 +12,32 @@
 namespace client {
 	namespace binding {
 
-		CefRefPtr<socket_win> socket_win::pThis = NULL;
+		CefRefPtr<socket_win> socket_win::_ptr_this = NULL;
 
 		socket_win::socket_win() {
 			create();
 		}
 
 		socket_win::~socket_win() {
-			pThis = nullptr;
+			_ptr_this = nullptr;
 		}
 
-		CefRefPtr<socket_win> socket_win::getInstance() {
-			if (!pThis) {
-				pThis = new socket_win;
+		CefRefPtr<socket_win> socket_win::get_instance() {
+			if (!_ptr_this) {
+				_ptr_this = new socket_win;
 			}
 
-			return pThis;
+			return _ptr_this;
 		}
 
 		void socket_win::release() {
-			if (pThis) {
-				pThis->Release();
+			if (_ptr_this) {
+				_ptr_this->Release();
 			}
 		}
 
 		bool socket_win::create() {
-			return socketbase::Create();
+			return socketbase::create();
 		}
 
 		void socket_win::OnReceive(int nErrorCode) {
@@ -64,7 +64,7 @@ namespace client {
 			int oneRead = 0;
 
 			//First, get one packet size
-			int packetSize = recv(m_hSocket, buf, sizeof(int), 0);
+			int packetSize = recv(_socket, buf, sizeof(int), 0);
 			memcpy(&packetSize, buf, sizeof(int));
 			packetSize = ntohl(packetSize);
 			if (packetSize > SOCKET_BUF_LIMIT)
@@ -74,7 +74,7 @@ namespace client {
 			do {
 				int t = (packetSize - totalRecv);
 				oneRead = (t >= MAX_BUFFER_SIZE) ? MAX_BUFFER_SIZE : t;
-				byteRecv = recv(m_hSocket, buf, oneRead, 0);
+				byteRecv = recv(_socket, buf, oneRead, 0);
 				if (byteRecv > 0) {
 					buffer.insert(buffer.end(), buf, buf + byteRecv);
 					totalRecv += byteRecv;
@@ -151,11 +151,11 @@ namespace client {
 			switch (header.contentsType) {
 			case CONTENTS_TYPE::CONTENTS_URL:
 				connectSTB();
-				sendToJSEngine(body);
+				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::TOAPP:
 				OutputDebugStringA("[sirius->attendant]Receive Data From sirius & Bypass to V8 Engine\n");
-				sendToJSEngine(body);
+				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::MENUID_URL:
 				disconnectSTB();
@@ -166,20 +166,18 @@ namespace client {
 			return true;
 		}
 
-		void socket_win::sendToJSEngine(const CefString& xml) {
+		void socket_win::send_to_javascript(const CefString& data) {
 			if (!CefCurrentlyOn(TID_UI)) {
-				CefPostTask(TID_UI, base::Bind(&socket_win::sendToJSEngine, this, xml));
+				CefPostTask(TID_UI, base::Bind(&socket_win::send_to_javascript, this, data));
 				return;
 			}
-			OutputDebugStringA("[sirius->attendant]xml \n");
-
 			RootWindowWin* rootWin =
-				GetUserDataPtr<RootWindowWin*>(global::getInstance().getWindowHandle());
+				GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 			DCHECK(rootWin);
 			CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
 			CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("AttendantToApp");
-			msg->GetArgumentList()->SetString(0, xml);
+			msg->GetArgumentList()->SetString(0, data);
 
 			browser->SendProcessMessage(PID_RENDERER, msg);
 		}
@@ -192,62 +190,63 @@ namespace client {
 		}
 
 		bool socket_win::connectSTB() {
-			HWND hWnd = global::getInstance().getWindowHandle();
+			HWND hWnd = global::get_instance().get_window_handle();
 			SendMessage(hWnd, CI_SEND_URL, (WPARAM)0, (LPARAM)0);
 			return true;
 		}
 
 		bool socket_win::disconnectSTB() {
-			HWND hWnd = global::getInstance().getWindowHandle();
+			HWND hWnd = global::get_instance().get_window_handle();
 			SendMessage(hWnd, CI_PLAY_STOP, (WPARAM)0, (LPARAM)0);
 			return true;
 		}
 
-		bool socket_win::sendXmlPacket(int contentsType, const std::string& utf8_xml) {
-			int bufSize = utf8_xml.length() + 12;
-			char* packet = new char[bufSize];
-			memset(packet, 0x00, bufSize);
-			OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!sendXmlPacket");
+		bool socket_win::send_bypass_packet(int contentsType, const std::string& utf8_data) {
+			int bufSize = utf8_data.length() + 12;
+			char* send_packet = new char[bufSize];
+			memset(send_packet, 0x00, bufSize);
+			OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!send_bypass_packet");
 			int size = 0;
 
-			if (!makeXmlPacket(packet, size, contentsType, utf8_xml)) {
-				OutputDebugStringA("[attendant->sirius] Message Send Failed\n");
+			if (!make_json_packet(send_packet, size, contentsType, utf8_data)) {
+				OutputDebugStringA("[attendant->sirius] message send failed\n");
 
-				if (packet)
-					delete[] packet;
+				if (send_packet)
+					delete[] send_packet;
 
 				return false;
 			}
 
-			int rtn = Send(packet, size);
+			int rtn = send_data(send_packet, size);
+			//binding::socketbase::calback_attendant_to_app((uint8_t *)send_packet, strlen(send_packet));
 			if (rtn <= 0) {
-				if (packet)
-					delete[] packet;
+				if (send_packet)
+					delete[] send_packet;
 
 				return false;
 			}
 
-			if (packet)
-				delete[] packet;
+			if (send_packet)
+				delete[] send_packet;
 
 			return true;
 		}
 
-		bool socket_win::makeXmlPacket(char* data, int& size, int& contentsType, const std::string& utf8_xml) {
+		bool socket_win::make_json_packet(char* data, int& size, int& contentsType, const std::string& utf8_json) {
 			int index = 0, len = 0;
-			len = utf8_xml.length();
-			memcpy(&data[index], utf8_xml.c_str(), len);
+			len = utf8_json.length();
+			memcpy(&data[index], utf8_json.c_str(), len);
 			size = index + len;
 
 			return true;
 		}
 
-		bool socket_win::SiriusToJSEngine(uint8_t * data, size_t size) {
-			sendToJSEngine((char *)data);
+		bool socket_win::sirius_to_javascript(uint8_t * data, size_t size) {
+			send_to_javascript((char *)data);
 
 			return true;
 		}
 
-	}  // namespace csb
+	}  // namespace binding
 }  // namespace client
 #endif

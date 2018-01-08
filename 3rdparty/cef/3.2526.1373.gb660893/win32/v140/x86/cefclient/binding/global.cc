@@ -6,15 +6,15 @@
 namespace client {
 	namespace binding {
 
-		global* global::sInstance = nullptr;
+		global* global::_instance = nullptr;
 
 		global::global() {}
 
-		global& global::getInstance() {
-			if (sInstance == nullptr)
-				sInstance = new global;
+		global& global::get_instance() {
+			if (_instance == nullptr)
+				_instance = new global;
 
-			return *sInstance;
+			return *_instance;
 		}
 	}  // namespace binding
 }  // namespace client

@@ -115,13 +115,13 @@ bool ClientAppRenderer::OnProcessMessageReceived(
                                               message);
   }
 #if defined(WITH_EXTERNAL_INTERFACE)
-  if (message->GetName() == binding::kAttendantToApp) {
+  if (message->GetName() == binding::msg_attendant_to_app) {
 	  binding::message_handler::
-		  getInstance().OnProcessMessageReceived(browser, source_process, message);
+		  getInstance().external_interface_message_received(browser, source_process, message);
   }
   else if (message->GetName() == binding::kRequestPID) {
 	  return client::binding::message_handler::
-		  getInstance().OnProcessMessageReceived(browser, source_process, message);
+		  getInstance().external_interface_message_received(browser, source_process, message);
   }
 #endif
   return handled;

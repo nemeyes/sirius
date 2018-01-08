@@ -10,11 +10,11 @@ namespace client {
 			message_handler_base() {};
 			virtual ~message_handler_base() {};
 
-			void SetListValue(CefRefPtr<CefListValue> list, int index,
+			void set_list_Value(CefRefPtr<CefListValue> list, int index,
 				CefRefPtr<CefV8Value> value) {
 				if (value->IsArray()) {
 					CefRefPtr<CefListValue> new_list = CefListValue::Create();
-					SetList(value, new_list);
+					set_list(value, new_list);
 					list->SetList(index, new_list);
 				}
 				else if (value->IsString()) {
@@ -31,7 +31,7 @@ namespace client {
 				}
 			}
 
-			void SetListValue(CefRefPtr<CefV8Value> list, int index,
+			void set_list_Value(CefRefPtr<CefV8Value> list, int index,
 				CefRefPtr<CefListValue> value) {
 				CefRefPtr<CefV8Value> new_value;
 				CefValueType type = value->GetType(index);
@@ -39,7 +39,7 @@ namespace client {
 				case VTYPE_LIST: {
 					CefRefPtr<CefListValue> listTemp = value->GetList(index);
 					new_value = CefV8Value::CreateArray(static_cast<int>(listTemp->GetSize()));
-					SetList(listTemp, new_value);
+					set_list(listTemp, new_value);
 				} break;
 				case VTYPE_BOOL:
 					new_value = CefV8Value::CreateBool(value->GetBool(index));
@@ -64,7 +64,7 @@ namespace client {
 					list->SetValue(index, CefV8Value::CreateNull());
 				}
 			}
-			void SetList(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target) {
+			void set_list(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target) {
 				int arg_length = source->GetArrayLength();
 				if (arg_length == 0)
 					return;
@@ -73,11 +73,11 @@ namespace client {
 				target->SetSize(arg_length);
 
 				for (int i = 0; i < arg_length; ++i)
-					SetListValue(target, i, source->GetValue(i));
+					set_list_Value(target, i, source->GetValue(i));
 			}
-			void SetList(CefRefPtr<CefListValue> source, CefRefPtr<CefV8Value> target) {
+			void set_list(CefRefPtr<CefListValue> source, CefRefPtr<CefV8Value> target) {
 				for (int i = 0; i < static_cast<int>(source->GetSize()); ++i)
-					SetListValue(target, i, source);
+					set_list_Value(target, i, source);
 			}
 		private:
 			IMPLEMENT_REFCOUNTING(message_handler_base);

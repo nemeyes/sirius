@@ -40,19 +40,23 @@ sirius::library::net::backend::cluster::core::~core()
 
 void sirius::library::net::backend::cluster::core::backend_init(std::string version)
 {
-	set_hostname();
-	CString gpu_name;
-	DISPLAY_DEVICE display;
-	memset(&display, 0, sizeof(DISPLAY_DEVICE));
-	display.cb = sizeof(display);
-	if (EnumDisplayDevices(NULL, 0, &display, 0))
-		gpu_name = display.DeviceString;
+	bool ret = SSP_ADT.configure_load();
+	if (ret == true)
+	{
+		set_hostname();
+		CString gpu_name;
+		DISPLAY_DEVICE display;
+		memset(&display, 0, sizeof(DISPLAY_DEVICE));
+		display.cb = sizeof(display);
+		if (EnumDisplayDevices(NULL, 0, &display, 0))
+			gpu_name = display.DeviceString;
 
-	memset(_gpu_name, 0, MAX_PATH);
-	int gpu_name_size = (int)wcslen(gpu_name);
-	size_t converted_chars = 0;
-	wcstombs_s(&converted_chars, _gpu_name, gpu_name_size + 1, gpu_name, _TRUNCATE);
-	SSP_ADT.start(version);
+		memset(_gpu_name, 0, MAX_PATH);
+		int gpu_name_size = (int)wcslen(gpu_name);
+		size_t converted_chars = 0;
+		wcstombs_s(&converted_chars, _gpu_name, gpu_name_size + 1, gpu_name, _TRUNCATE);
+		SSP_ADT.start(version);
+	}
 }
 
 void sirius::library::net::backend::cluster::core::backend_stop()
@@ -73,30 +77,33 @@ void sirius::library::net::backend::cluster::core::backend_client_disconnect(cha
 
 void sirius::library::net::backend::cluster::core::ssm_service_info(char* status, int32_t attendant_instance)
 {
-	char ssm_data[BUF_SIZE] = { 0, };
-	if (strcmp(status, "START") == 0)
+	if (SSP_ADT.is_cluster_use())
 	{
-		SSP_ADT._max_attendant = attendant_instance;
-		_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?attendant_instance=%d&cpu_name=%s&gpu_name=%s&memory=%d&host_name=%s&os_version=%s&sirius_version=%s&sirius_ip=%s&sirius_status=%s",
-			SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), attendant_instance, _cpu, _gpu_name, _memory, _host_name, _os, GEN_VER_VERSION_STRING, SSP_ADT._localip, status);
+		char ssm_data[BUF_SIZE] = { 0, };
+		if (strcmp(status, "START") == 0)
+		{
+			SSP_ADT._max_attendant = attendant_instance;
+			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?attendant_instance=%d&cpu_name=%s&gpu_name=%s&memory=%d&host_name=%s&os_version=%s&sirius_version=%s&sirius_ip=%s&sirius_status=%s",
+				SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), attendant_instance, _cpu, _gpu_name, _memory, _host_name, _os, GEN_VER_VERSION_STRING, SSP_ADT._localip, status);
+		}
+		else
+		{
+			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=%s",
+				SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip, status);
+		}
+		sirius::library::net::curl::client curl_ssm(SENDING_TIME);
+		char url[100] = { 0, };
+		curl_ssm.set_get_data(ssm_data, 0);
+		bool res = curl_ssm.send();
+		if (res == false)
+		{
+			int err = curl_ssm.get_send_err();
+			if (err != CURLE_OPERATION_TIMEDOUT)
+				LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, etc_error!!!!! ssm_serv_info (error_code:%d) url=%s", __FUNCTION__, __LINE__, err, ssm_data);
+		}
+		else
+			LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, ssm_serv_info url=%s", __FUNCTION__, __LINE__, ssm_data);
 	}
-	else
-	{
-		_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=%s",
-			SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip, status);
-	}
-	sirius::library::net::curl::client curl_ssm(SENDING_TIME);
-	char url[100] = { 0, };
-	curl_ssm.set_get_data(ssm_data, 0);
-	bool res = curl_ssm.send();
-	if (res == false)
-	{
-		int err = curl_ssm.get_send_err();
-		if (err != CURLE_OPERATION_TIMEDOUT)
-			LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, etc_error!!!!! ssm_serv_info (error_code:%d) url=%s", __FUNCTION__, __LINE__, err, ssm_data);
-	}
-	else
-		LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, ssm_serv_info url=%s", __FUNCTION__, __LINE__, ssm_data);
 }
 
 void sirius::library::net::backend::cluster::core::stop(void)
