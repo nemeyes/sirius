@@ -8,12 +8,12 @@
 #include <sirius_stringhelper.h>
 #include <sirius_client_framework.h>
 
-#define MTU_SIZE 0
-#define IO_THREAD_POOL_COUNT 1
-#define COMMAND_THREAD_POOL_COUNT 1
+#define MTU_SIZE					1500
+#define IO_THREAD_POOL_COUNT		1
+#define COMMAND_THREAD_POOL_COUNT	1
 
 sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, HINSTANCE instance, HWND hwnd)
-	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, 1500, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, false, true, sirius::app::client::proxy::ethernet_type_t::tcp, false)
+	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _state(sirius::app::client::proxy::state_t::disconnected)
 	, _front(front)
 	, _reconnection(false)
@@ -281,7 +281,7 @@ int32_t sirius::app::client::proxy::core::mouse_rb_up(int32_t pos_x, int32_t pos
 }
 
 //IPCClient CALLBACK
-void sirius::app::client::proxy::core::create_session_callback(void)
+void sirius::app::client::proxy::core::on_create_session(void)
 {
 	if (_front)
 		_front->on_pre_create_session();
@@ -295,7 +295,7 @@ void sirius::app::client::proxy::core::create_session_callback(void)
 		_front->on_post_create_session();
 }
 
-void sirius::app::client::proxy::core::destroy_session_callback(void)
+void sirius::app::client::proxy::core::on_destroy_session(void)
 {
 	if (_front)
 		_front->on_pre_destroy_session();

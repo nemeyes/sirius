@@ -1,6 +1,6 @@
 #include <tchar.h>
-#include <commands_attendant.h>
 #include "attendant_proxy.h"
+#include <commands_attendant.h>
 #include <sirius_stringhelper.h>
 #include <json/json.h>
 #include <sirius_dinput_receiver.h>
@@ -15,7 +15,7 @@ typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::
 #define MTU_SIZE					1500
 
 sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid)
-	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, false, true, ethernet_type_t::tcp, false)
+	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _front(front)
 	, _framework_context(NULL)
 	, _framework(NULL)
@@ -266,7 +266,7 @@ int32_t sirius::app::attendant::proxy::core::stop(void)
 	return status;
 }
 
-void sirius::app::attendant::proxy::core::create_session_callback(void)
+void sirius::app::attendant::proxy::core::on_create_session(void)
 {
 	Json::Value wpacket;
 	Json::StyledWriter writer;
@@ -292,7 +292,7 @@ void sirius::app::attendant::proxy::core::create_session_callback(void)
 }
 
 // ipc client 모듈 자체가 접속해지시(disconnect), 서버의 접속해제 확인 요청을 받지 않기 때문에 해당 함수는 타지 않음
-void sirius::app::attendant::proxy::core::destroy_session_callback(void)
+void sirius::app::attendant::proxy::core::on_destroy_session(void)
 {
 	if (_context->hwnd)
 		::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);

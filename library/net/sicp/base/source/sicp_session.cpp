@@ -11,253 +11,92 @@
 #include <sirius_locks.h>
 #include <sirius_log4cplus_logger.h>
 
-sirius::library::net::sicp::session::session(sirius::library::net::sicp::processor * prcsr, SOCKET fd, int32_t mtu, int32_t recv_buffer_size, bool dynamic_alloc)
-	: sirius::library::net::session(fd, mtu,recv_buffer_size, dynamic_alloc)
-	, _processor(prcsr)
-	, _heart_beat(0)
-	, _hb_retry_count(0)
-
+sirius::library::net::sicp::session::session(sirius::library::net::sicp::sicp_processor * prcsr, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls, SSL_CTX * ssl_ctx, BOOL reconnection)
+	: sirius::library::net::iocp::session(static_cast<sirius::library::net::iocp::processor*>(prcsr), so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls, ssl_ctx, reconnection)
+	, _sicp_processor(prcsr)
+	, _disconnect(FALSE)
+	, _registerd(FALSE)
+	, _recv_buffer_index(0)
 {
+	::InitializeCriticalSection(&_send_lock);
+	::InitializeCriticalSection(&_recv_lock);
+
 	memset(_ip, 0x00, sizeof(_ip));
 	memset(_uuid, 0x00, sizeof(_uuid));
 	memset(_name, 0x00, sizeof(_name));
 
-	update_hb_start_time();
-	update_hb_end_time();
+	//_recv_buffer_size = MTU;
+	_recv_buffer = static_cast<char*>(malloc(_recv_buffer_size));
+	memset(_recv_buffer, 0x0, _recv_buffer_size);
+
+	_send_buffer = static_cast<char*>(malloc(_send_buffer_size));
+	memset(_send_buffer, 0x0, _send_buffer_size);
 }
 
 sirius::library::net::sicp::session::~session(void)
 {
-
-}
-
-void sirius::library::net::sicp::session::push_send_packet(const char * dst, const char * src, int32_t cmd, char * msg, int32_t length)
-{
-	if (fd() == INVALID_SOCKET)
+	if (_recv_buffer)
 	{
-		//LOGGER::make_trace_log(CAPS, "%s()_%d %d : already close %s ", __FUNCTION__, __LINE__, GetCurrentThreadId(), _uuid);
-		return;
+		free(_recv_buffer);
+		_recv_buffer = NULL;
 	}
 
-	if (_mtu == 0)
+	if (_send_buffer)
 	{
-		char * pkt_payload = msg;
-		int32_t pkt_header_size = sizeof(sirius::library::net::sicp::packet_header_t);
-		int32_t pkt_payload_size = length;
+		free(_send_buffer);
+		_send_buffer = NULL;
+	}
 
-		sirius::uuid src_uuid = std::string(src);
-		sirius::uuid dst_uuid = std::string(dst);
+	::DeleteCriticalSection(&_send_lock);
+	::DeleteCriticalSection(&_recv_lock);
+}
 
-		std::vector<std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t>> send_queue;
-		std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t> send_buffer;
-		if (_dynamic_alloc)
-			send_buffer = std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t>(new sirius::library::net::sicp::session::send_buffer_t(pkt_header_size + pkt_payload_size));
-		else
-		{
-			bool empty = true;
-			for (int32_t index = 0; index < 100; index++)
-			{
-				{
-					sirius::autolock mutex(&_ready_send_cs_lock);
-					empty = _send_ready_queue.empty();
-				}
+void sirius::library::net::sicp::session::send(const char * dst, const char * src, int32_t cmd, const char * payload, int32_t payload_size)
+{
+	sirius::autolock lock(&_send_lock);
 
-				if (!empty)
-				{
-					{
-						sirius::autolock mutex(&_ready_send_cs_lock);
-						send_buffer = _send_ready_queue.front();
-						if (send_buffer)
-						{
-							_send_ready_queue.pop_front();
-							if ((pkt_header_size + pkt_payload_size) > send_buffer->packet_size)
-								send_buffer->resize(pkt_header_size + pkt_payload_size);
-							break;
-						}
-					}
-					::Sleep(10);
-				}
-				else
-				{
-					::Sleep(10);
-				}
-			}
-		}
+	const char *	pkt_payload = payload;
+	uint32_t		pkt_header_size = sizeof(sirius::library::net::sicp::packet_header_t);
+	uint32_t		pkt_payload_size = payload_size;
+	uint32_t		pkt_size = pkt_header_size + pkt_payload_size;
 
-		if (send_buffer)
-		{
-			sirius::library::net::sicp::packet_header_t header;
-			header.pid = 'S';
-			memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-			memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-			header.version = sirius::library::net::sicp::session::protocol_version;
-			header.command = htons(cmd);
-			header.length = htonl(pkt_payload_size);
+	sirius::uuid src_uuid = std::string(src);
+	sirius::uuid dst_uuid = std::string(dst);
+
+	if (pkt_size > _send_buffer_size)
+	{
+		_send_buffer = static_cast<char*>(realloc(_send_buffer, pkt_size));
+		_send_buffer_size = pkt_size;
+	}
+
+	sirius::library::net::sicp::packet_header_t header;
+	header.pid = 'S';
+	memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
+	memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
+	header.version = sirius::library::net::sicp::session::protocol_version;
+	header.command = htons(cmd);
+	header.length = htonl(pkt_payload_size);
 		
-			memmove(send_buffer->packet, &header, pkt_header_size);
-			if (pkt_payload_size > 0)
-				memmove(send_buffer->packet + pkt_header_size, pkt_payload, pkt_payload_size);
-			send_buffer->send_size = pkt_header_size + pkt_payload_size;
+	memmove(_send_buffer, &header, pkt_header_size);
+	if (pkt_payload_size > 0)
+		memmove(_send_buffer + pkt_header_size, pkt_payload, pkt_payload_size);
 
-			if (fd() != INVALID_SOCKET)
-				send_queue.push_back(send_buffer);
-
-			if (send_queue.size()>0)
-				static_cast<sirius::library::net::base_processor*>(_processor)->data_request(shared_from_this(), send_queue);
-		}
-	}
-	else
-	{
-		char * pkt_payload = msg;
-		int32_t pkt_header_size = sizeof(sirius::library::net::sicp::packet_header_t);
-
-		int32_t pkt_payload_size = _mtu - pkt_header_size;
-		int32_t pkt_totalsize = pkt_header_size + length;
-		int32_t pkt_count = pkt_totalsize / _mtu;
-		int32_t last_pkt_size = pkt_totalsize % _mtu;
-
-		sirius::uuid src_uuid = std::string(src);
-		sirius::uuid dst_uuid = std::string(dst);
-
-		if (last_pkt_size > 0)
-			pkt_count++;
-		if (pkt_count < 1)
-			return;
-
-		std::vector<std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t>> send_queue;
-		for (int i = 0; i < pkt_count; i++)
-		{
-			std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t> send_buffer;
-			if (_dynamic_alloc)
-				send_buffer = std::shared_ptr<sirius::library::net::sicp::session::send_buffer_t>(new sirius::library::net::sicp::session::send_buffer_t(_mtu));
-			else
-			{
-				bool empty = true;
-				for (int32_t index = 0; index < 100; index++)
-				{
-					{
-						sirius::autolock mutex(&_ready_send_cs_lock);
-						empty = _send_ready_queue.empty();
-					}
-
-					if (!empty)
-					{
-						{
-							sirius::autolock mutex(&_ready_send_cs_lock);
-							send_buffer = _send_ready_queue.front();
-							if (send_buffer)
-							{
-								_send_ready_queue.pop_front();
-								break;
-							}
-						}
-						::Sleep(10);
-					}
-					else
-					{
-						::Sleep(10);
-					}
-				}
-			}
-
-			if (send_buffer)
-			{
-				if (i == (pkt_count - 1))//last packet	or pkt_totalsize is less than mtu size. 		
-				{
-					if (pkt_count == 1)
-					{
-						pkt_payload_size = pkt_totalsize;
-
-						sirius::library::net::sicp::packet_header_t header;
-						header.pid = 'S';
-						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-						memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-						header.version = sirius::library::net::sicp::session::protocol_version;
-						header.command = htons(cmd);
-						header.length = htonl(length);
-						memmove(send_buffer->packet, &header, pkt_header_size);
-						if (length > 0)
-							memmove(send_buffer->packet + pkt_header_size, pkt_payload, length);
-						send_buffer->send_size = pkt_payload_size;
-					}
-					else
-					{
-						if (last_pkt_size > 0)
-							pkt_payload_size = last_pkt_size;
-						else
-							pkt_payload_size = _mtu;
-
-						memmove(send_buffer->packet, pkt_payload, pkt_payload_size);
-						send_buffer->send_size = pkt_payload_size;
-					}
-				}
-				else
-				{
-					if (i == 0)
-					{
-						pkt_payload_size = _mtu - pkt_header_size;
-
-						sirius::library::net::sicp::packet_header_t header;
-						header.pid = 'S';
-						memcpy(header.dst, (void *)&dst_uuid.hton(), sizeof(header.dst));
-						memcpy(header.src, (void *)&src_uuid.hton(), sizeof(header.src));
-						header.version = sirius::library::net::sicp::session::protocol_version;
-						header.command = htons(cmd);
-						header.length = htonl(pkt_totalsize);
-						memmove(send_buffer->packet, &header, pkt_header_size);
-						memmove(send_buffer->packet + pkt_header_size, pkt_payload, pkt_payload_size);
-						pkt_payload += pkt_payload_size;
-						send_buffer->send_size = pkt_header_size + pkt_payload_size;
-					}
-					else
-					{
-						pkt_payload_size = _mtu;
-
-						memmove(send_buffer->packet, pkt_payload, pkt_payload_size);
-						pkt_payload += pkt_payload_size;
-						send_buffer->send_size = pkt_payload_size;
-					}
-				}
-
-				if (fd() != INVALID_SOCKET)
-				{
-					send_queue.push_back(send_buffer);
-				}
-			}
-		}
-		if (send_queue.size() > 0)
-			static_cast<sirius::library::net::base_processor*>(_processor)->data_request(shared_from_this(), send_queue);
-	}
+	sirius::library::net::iocp::session::send(_send_buffer, pkt_size);
 }
 
-void sirius::library::net::sicp::session::push_send_packet(const char * msg, int32_t length)
+int32_t	sirius::library::net::sicp::session::on_recv(const char * packet, int32_t packet_size)
 {
-
-}
-int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, int32_t length)
-{
-	sirius::autolock lock(&_recv_cs_lock);
+	sirius::autolock lock(&_recv_lock);
 	uint32_t pkt_header_size = sizeof(sirius::library::net::sicp::packet_header_t);
 
-	if (_precv_buffer == nullptr)
+	if ((_recv_buffer_index + packet_size) > _recv_buffer_size)
 	{
-		LOGGER::make_error_log(SAA, "%s, %d, _precv_buffer_nullptr_error recv_packet=%d", __FUNCTION__, __LINE__, this->fd());
-		LOGGER::make_error_log(SLNS, "%s, %d, _precv_buffer_nullptr_error recv_packet=%d", __FUNCTION__, __LINE__, this->fd());
-		//printf("recv_packet %d", this->fd());
-		return -1;
+		_recv_buffer = static_cast<char*>(realloc(_recv_buffer, _recv_buffer_index + packet_size));
+		_recv_buffer_size = _recv_buffer_index + packet_size;
 	}
 
-	char debug_msg[1000] = { 0 };
-	//snprintf(debug_msg, sizeof(debug_msg), "%s()_%d : recv_buffer_size[%d], recv_buffer_index[%d], length[%d]  \n", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length);
-	//::OutputDebugStringA(debug_msg);
-
-	if ((_recv_buffer_index + length) > _recv_buffer_size)
-	{
-		_precv_buffer = static_cast<char*>(realloc(_precv_buffer, _recv_buffer_index + length));
-		_recv_buffer_size = _recv_buffer_index + length;
-	}
-	memcpy(_precv_buffer + _recv_buffer_index, msg, length);
-	_recv_buffer_index += length;
+	memcpy(_recv_buffer + _recv_buffer_index, packet, packet_size);
+	_recv_buffer_index += packet_size;
 
 	do
 	{
@@ -265,51 +104,17 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 			return (pkt_header_size - _recv_buffer_index);
 
 		//read hedaer
-#if defined(WITH_NEW_PROTOCOL)
 		sirius::library::net::sicp::packet_header_t header;
-		memcpy(&header, (sirius::library::net::sicp::packet_header_t *)_precv_buffer, pkt_header_size);
-
+		memcpy(&header, (sirius::library::net::sicp::packet_header_t *)_recv_buffer, pkt_header_size);
 		if (header.pid != 'S')
 			return -1;
 
 		uint16_t command = header.command;
 		header.command = ntohs(header.command);
 		header.length = ntohl(header.length);
-#else
-		sirius::library::net::sicp::packet_header_t header;
-		memcpy(&header, (sirius::library::net::sicp::packet_header_t *)_precv_buffer, pkt_header_size);
-		uint16_t command = header.command;
-		header.command = ntohs(header.command);
-		header.length = ntohl(header.length);
-#endif
-		//snprintf(debug_msg, sizeof(debug_msg), "%s()_%d : recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d]  \n", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length);
-		//::OutputDebugStringA(debug_msg);
-
-		if (_processor && !_processor->check_valid_command_id(header.command))
-		{
-			snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version);
-			LOGGER::make_error_log(SAA, "%s, %d, invalid_packet_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			LOGGER::make_error_log(SLNS, "%s, %d, invalid_packet_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			return -1;  // invalid packet
-		}
 
 		if (header.version > sirius::library::net::sicp::session::protocol_version)    // 프로토콜 버전 체크
-		{
-			snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version);
-			LOGGER::make_error_log(SAA, "%s, %d, protocol_version_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			LOGGER::make_error_log(SLNS, "%s, %d, protocol_version_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			return -2;
-		}
-
-		/*
-		if (header.type >= msg_type_t::max_type)  // 메시지 타입 체크
-		{
-			//snprintf(debug_msg, sizeof(debug_msg), "%s, %d, recv_buffer_size[%d], recv_buffer_index[%d], length[%d], command_id[%d], header.length[%d], header.Version[%u], header.PayloadType[%u]", __FUNCTION__, __LINE__, _recv_buffer_size, _recv_buffer_index, length, header.command, header.length, header.version, header.type);
-			LOGGER::make_error_log(SAC, "%s, %d, msg_type_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			LOGGER::make_error_log(SLNS, "%s, %d, msg_type_error recv_packet=%s", __FUNCTION__, __LINE__, debug_msg);
-			return -3;
-		}
-		*/
+			return -1;
 
 		if (_recv_buffer_index < (pkt_header_size + header.length))
 			return ((pkt_header_size + header.length) - _recv_buffer_index);
@@ -318,20 +123,12 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 		sirius::uuid src_uuid((uint8_t*)header.src, 16);
 		sirius::uuid dst_uuid((uint8_t*)header.dst, 16);
 
-
-#if defined(WITH_NEW_PROTOCOL)
-		data_indication_callback((const char *)dst_uuid.to_string_ntoh().c_str(), (const char *)src_uuid.to_string_ntoh().c_str(),
-								 header.command, header.version, _precv_buffer + pkt_header_size, header.length, std::static_pointer_cast<sirius::library::net::sicp::session>(shared_from_this()));
-#else
-		data_indication_callback((const char *)dst_uuid.to_string_ntoh().c_str(), (const char *)src_uuid.to_string_ntoh().c_str(),
-			header.command, header.version, _precv_buffer + pkt_header_size, header.length - pkt_header_size,
-			sirius::library::net::session::downcasted_shared_from_this<sirius::library::net::sicp::session>());
-#endif
-
+		on_data_indication((const char *)dst_uuid.to_string_ntoh().c_str(), (const char *)src_uuid.to_string_ntoh().c_str(),
+			header.command, header.version, _recv_buffer + pkt_header_size, header.length, std::static_pointer_cast<sirius::library::net::sicp::session>(shared_from_this()));
 
 		if (_recv_buffer_index >= (pkt_header_size + header.length))
 		{
-			memmove(_precv_buffer, _precv_buffer + (pkt_header_size + header.length), _recv_buffer_index - (pkt_header_size + header.length));
+			memmove(_recv_buffer, _recv_buffer + (pkt_header_size + header.length), _recv_buffer_index - (pkt_header_size + header.length));
 			_recv_buffer_index -= (pkt_header_size + header.length);
 		}
 
@@ -340,14 +137,9 @@ int32_t sirius::library::net::sicp::session::push_recv_packet(const char * msg, 
 	return pkt_header_size;
 }
 
-int32_t sirius::library::net::sicp::session::get_first_recv_packet_size(void)
+int32_t sirius::library::net::sicp::session::packet_header_size(void)
 {
 	return sizeof(sirius::library::net::sicp::packet_header_t);
-}
-
-void sirius::library::net::sicp::session::update_heart_beat(void)
-{
-	_heart_beat = ::GetTickCount64();
 }
 
 const char * sirius::library::net::sicp::session::ip(void)
@@ -380,92 +172,27 @@ void sirius::library::net::sicp::session::name(const char * name)
 	strncpy_s(_name, name, sizeof(_name));
 }
 
-bool sirius::library::net::sicp::session::disconnect_flag(void) const
+BOOL sirius::library::net::sicp::session::disconnect_flag(void) const
 {
 	return _disconnect;
 }
 
-void sirius::library::net::sicp::session::disconnect_flag(bool flag)
+void sirius::library::net::sicp::session::disconnect_flag(BOOL flag)
 {
 	_disconnect = flag;
 }
 
-bool sirius::library::net::sicp::session::connected_flag(void) const
+BOOL sirius::library::net::sicp::session::register_flag(void) const
 {
-	return _connected;
+	return _registerd;
 }
 
-void sirius::library::net::sicp::session::connected_flag(bool flag)
+void sirius::library::net::sicp::session::register_flag(BOOL flag)
 {
-	_connected = flag;
+	_registerd = flag;
 }
 
-bool sirius::library::net::sicp::session::assoc_flag(void) const
+void sirius::library::net::sicp::session::on_data_indication(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * payload, int32_t payload_size, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	return _associated;
-}
-
-void sirius::library::net::sicp::session::assoc_flag(bool flag)
-{
-	_associated = flag;
-}
-
-int32_t sirius::library::net::sicp::session::get_hb_period_sec(void) const
-{
-#if defined(WIN32)
-	return _hb_period / 1000;
-#else
-	return _hb_period;
-#endif
-}
-
-void sirius::library::net::sicp::session::set_hb_period_sec(int32_t sec)
-{
-#if defined(WIN32)
-	_hb_period = sec * 1000;
-#else
-	_hb_period = sec;
-#endif
-}
-
-void sirius::library::net::sicp::session::update_hb_start_time(void)
-{
-	_hb_start = ::GetTickCount64();
-}
-
-void sirius::library::net::sicp::session::update_hb_end_time(void)
-{
-	_hb_end = ::GetTickCount64();
-}
-
-bool sirius::library::net::sicp::session::check_hb(void)
-{
-#if defined(WIN32)
-	uint64_t hb_diff = _hb_end - _hb_start;
-	if (hb_diff >= _hb_period)
-		return true;
-	else
-		return false;
-
-#else
-	struct timeval hb_diff;
-	struct timeval block_diff;
-	timersub(&_hb_end, &_hb_start, &hb_diff);
-	timersub(&_hb_end, &_hb_block, &block_diff);
-
-	if (block_diff.tv_sec > 5) //prevent more than 1packet
-	{
-		gettimeofday(&_hb_block, 0);
-		if (hb_diff.tv_sec >= _hb_period)
-			return true;
-		else
-			return false;
-	}
-	else
-		return false;
-#endif
-}
-void sirius::library::net::sicp::session::data_indication_callback(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, size_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
-{
-	_processor->data_indication_callback(dst, src, command_id, version, msg, length, session);
+	_sicp_processor->on_data_indication(dst, src, command_id, version, payload, payload_size, session);
 }

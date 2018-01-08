@@ -1,11 +1,10 @@
 #ifndef _SIRIUS_WEB_SERVER_FRAMEWORK_H_
 #define _SIRIUS_WEB_SERVER_FRAMEWORK_H_
 
+#include <sirius_server_framework.h>
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
-#include <sirius_server_framework.h>
 
 namespace sirius
 {

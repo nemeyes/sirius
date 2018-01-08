@@ -1,8 +1,8 @@
 #ifndef _ATTENDANT_PROXY_H_
 #define _ATTENDANT_PROXY_H_
 
-#include "sirius_attendant_proxy.h"
 #include <sirius_sicp_client.h>
+#include "sirius_attendant_proxy.h"
 #include <sirius_unified_server.h>
 #include <sirius_internal_notifier.h>
 #include <sirius_server_framework.h>
@@ -57,8 +57,8 @@ namespace sirius
 			private:
 				template <class T> inline T msecs2ticks(const T & t) { return t * 10000; }
 
-				void create_session_callback(void);
-				void destroy_session_callback(void);
+				void on_create_session(void);
+				void on_destroy_session(void);
 
 				void on_recv_notification(int32_t type, char* msg, int32_t size);
 

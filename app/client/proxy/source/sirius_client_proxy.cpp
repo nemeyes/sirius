@@ -1,5 +1,5 @@
-#include "sirius_client_proxy.h"
 #include "client_proxy.h"
+#include "sirius_client_proxy.h"
 
 sirius::app::client::proxy::handler::handler(void)
 {

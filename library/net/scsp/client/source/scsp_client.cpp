@@ -12,7 +12,7 @@
 #define USE_MINIMIZED_VIDEO_PACKET
 
 sirius::library::net::scsp::client::core::core(sirius::library::net::scsp::client * front)
-	: sirius::library::net::sicp::client(MTU_SIZE, 1024 * 1024 * 2, 1024 * 1024 * 2, 1024 * 1024 * 4,COMMAND_THREAD_POOL_COUNT, IO_THREAD_POOL_COUNT, false, false, sirius::library::net::scsp::client::ethernet_type_t::tcp, false)
+	: sirius::library::net::sicp::client(RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _front(front)
 	, _video_codec(sirius::library::net::scsp::client::video_submedia_type_t::unknown)
 	, _video_width(1280)
@@ -81,13 +81,13 @@ int32_t sirius::library::net::scsp::client::core::stop(void)
 	return status;
 }
 
-void sirius::library::net::scsp::client::core::create_session_callback(void)
+void sirius::library::net::scsp::client::core::on_create_session(void)
 {
 	request_play(_receive_option);
 	_state = sirius::library::net::scsp::client::state_t::connected;
 }
 
-void sirius::library::net::scsp::client::core::destroy_session_callback(void)
+void sirius::library::net::scsp::client::core::on_destroy_session(void)
 {
 	_state = sirius::library::net::scsp::client::state_t::disconnected;
 	if (_receive_option & sirius::library::net::scsp::client::media_type_t::video)

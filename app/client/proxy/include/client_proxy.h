@@ -1,8 +1,8 @@
 #ifndef _CLIENT_PROXY_H_
 #define _CLIENT_PROXY_H_
 
-#include <sirius_client_proxy.h>
 #include <sirius_sicp_client.h>
+#include <sirius_client_proxy.h>
 
 namespace sirius
 {
@@ -44,8 +44,8 @@ namespace sirius
 				int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
 
 			private:
-				void			create_session_callback(void);
-				void			destroy_session_callback(void);
+				void			on_create_session(void);
+				void			on_destroy_session(void);
 
 			public:
 				void			connect_client_callback(int32_t code, const char * msg);

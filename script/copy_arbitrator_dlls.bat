@@ -33,9 +33,6 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_performance_monitor.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_performance_monitor.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_d3d11_device_stat.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
-IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_d3d11_device_stat.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
-
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_launcher.exe					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_launcher.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 

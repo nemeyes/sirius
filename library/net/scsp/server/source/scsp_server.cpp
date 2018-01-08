@@ -22,7 +22,7 @@
 #include <commands_payload.h>
 
 sirius::library::net::scsp::server::core::core(const char * uuid, sirius::library::net::scsp::server * front)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, 1024 * 1024 * 2, 1024 * 1024 * 2, 1024 * 1024 * 4, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, false, false)
+	: sirius::library::net::sicp::server(uuid, RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _context(nullptr)
 	, _front(front)
 {
@@ -40,28 +40,12 @@ int32_t sirius::library::net::scsp::server::core::start(sirius::library::net::sc
 		return sirius::library::net::scsp::server::err_code_t::fail;
 
 	_context = context;
-	bool status = sirius::library::net::sicp::server::start(nullptr, _context->portnumber);
-	if (status)
-		return sirius::library::net::scsp::server::err_code_t::success;
-	else
-		return sirius::library::net::scsp::server::err_code_t::fail;
+	return sirius::library::net::sicp::server::start(nullptr, _context->portnumber);
 }
 
 int32_t sirius::library::net::scsp::server::core::stop(void)
 {
-	bool status = sirius::library::net::sicp::server::stop();
-	if (status)
-	{
-		LOGGER::make_info_log(SLNSC, "%s, %d, port_number=%d, attendant_number=%d", __FUNCTION__, __LINE__, _context->portnumber, _context->portnumber - port_number_base);
-		status = sirius::base::err_code_t::success;
-	}
-	else
-	{
-		status = sirius::base::err_code_t::fail;
-		LOGGER::make_error_log(SLNS, "%s, %d publish_end fail", __FUNCTION__, __LINE__);
-	}
-
-	return status;
+	return sirius::library::net::sicp::server::stop();
 }
 
 int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, size_t nbytes, long long timestamp)
@@ -125,12 +109,12 @@ int32_t sirius::library::net::scsp::server::core::invalidate(void)
 	return sirius::library::net::scsp::server::err_code_t::fail;
 }
 
-void sirius::library::net::scsp::server::core::create_session_callback(const char * uuid)
+void sirius::library::net::scsp::server::core::on_create_session(const char * uuid)
 {
 	LOGGER::make_trace_log(SLNS, "sirius::library::net::scsp::server", "%s(), connect [src=%s]", __FUNCTION__, uuid);
 }
 
-void sirius::library::net::scsp::server::core::destroy_session_callback(const char * uuid)
+void sirius::library::net::scsp::server::core::on_destroy_session(const char * uuid)
 {
 	LOGGER::make_trace_log(SLNS, "sirius::library::net::scsp::server", "%s(), disconnect [src=%s]", __FUNCTION__, uuid);
 
