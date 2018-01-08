@@ -2,14 +2,14 @@
 #include <sicp_command.h>
 #include "sicp_client.h"
 
-sirius::library::net::sicp::client::client(int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size, int32_t command_thread_pool_count, int32_t io_thread_pool_count , bool use_keep_alive , bool dynamic_alloc, int32_t type, bool multicast)
+sirius::library::net::sicp::client::client(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepliave, BOOL tls)
 {
-	_client = new sirius::library::net::sicp::client::core(this, mtu, so_rcvbuf_size, so_sndbuf_size,recv_buffer_size, command_thread_pool_count, io_thread_pool_count, use_keep_alive, dynamic_alloc, type, multicast);
+	_client = new sirius::library::net::sicp::client::core(this, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepliave, tls);
 }
 
-sirius::library::net::sicp::client::client(const char * uuid, int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size,int32_t recv_buffer_size, int32_t command_thread_pool_count, int32_t io_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast)
+sirius::library::net::sicp::client::client(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepalive, BOOL tls)
 {
-	_client = new sirius::library::net::sicp::client::core(this, uuid, mtu, so_rcvbuf_size, so_sndbuf_size,recv_buffer_size, command_thread_pool_count, io_thread_pool_count, use_keep_alive, dynamic_alloc, type, multicast);
+	_client = new sirius::library::net::sicp::client::core(this, uuid, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepalive, tls);
 }
 
 sirius::library::net::sicp::client::~client(void)
@@ -21,19 +21,19 @@ sirius::library::net::sicp::client::~client(void)
 	_client = nullptr;
 }
 
-bool sirius::library::net::sicp::client::connect(const char * address, int32_t port_number, bool reconnection)
+int32_t sirius::library::net::sicp::client::connect(const char * address, int32_t portnumber, BOOL reconnection)
 {
-	return _client->connect(address, port_number, reconnection);
+	return _client->connect(address, portnumber, reconnection);
 }
 
-bool sirius::library::net::sicp::client::disconnect(void)
+int32_t sirius::library::net::sicp::client::disconnect(void)
 {
 	return _client->disconnect();
 }
 
-void sirius::library::net::sicp::client::data_request(char * dst, int32_t command_id, char * msg, int32_t length)
+void sirius::library::net::sicp::client::data_request(const char * dst, int32_t command_id, const char * packet, int32_t packet_size)
 {
-	_client->data_request(dst, command_id, msg, length);
+	_client->data_request(dst, command_id, packet, packet_size);
 }
 
 void sirius::library::net::sicp::client::add_command(abstract_command * command)

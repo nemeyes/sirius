@@ -397,14 +397,14 @@ afx_msg LRESULT CSiriusClientDlg::OnDisconnectionEnd(WPARAM wParam, LPARAM lPara
 
 afx_msg LRESULT CSiriusClientDlg::OnCreatingAttendantBegin(WPARAM wParam, LPARAM lParam)
 {
-	SetServerStatus(L"creating attendant.");
+	SetServerStatus(L"associating to attendant.");
 
 	return 0;
 }
 
 afx_msg LRESULT CSiriusClientDlg::OnCreatingAttendantEnd(WPARAM wParam, LPARAM lParam)
 {
-	SetServerStatus(L"created attendant.");
+	SetServerStatus(L"attendant is associated.");
 
 	return 0;
 }
@@ -452,6 +452,7 @@ void CSiriusClientDlg::OnBnClickedButtonPlay()
 	HWND hwnd = ::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW);
 	if (_framework)
 		_framework->play(hwnd);
+
 }
 
 void CSiriusClientDlg::OnBnClickedButtonStop()
@@ -482,6 +483,8 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection);
 
 	EnableConnectButton(FALSE);
+
+	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));
 }
 
 void CSiriusClientDlg::OnBnClickedButtonDisconnect()
@@ -493,6 +496,8 @@ void CSiriusClientDlg::OnBnClickedButtonDisconnect()
 	}
 
 	EnableDisconnectButton(FALSE);
+
+	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));
 }
 
 bool CSiriusClientDlg::ParseArgument(int argc, wchar_t * argv[])

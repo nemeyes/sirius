@@ -89,6 +89,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_width=%d", confentity.video_width);
 			proc_ctrl.set_cmdline(arguments, "--video_height=%d", confentity.video_height);
 			proc_ctrl.set_cmdline(arguments, "--video_fps=%d", confentity.video_fps);
+			proc_ctrl.set_cmdline(arguments, "--video_buffer_count=6");
 			proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
@@ -108,7 +109,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
 			proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
-			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", 5);
+			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=6");
 			
 			proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
 			proc_ctrl.set_cmdline(arguments, "--disable-extensions");

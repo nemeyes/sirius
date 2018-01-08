@@ -1,10 +1,8 @@
-#include <Windows.h>
+#include <sirius_internal_notifier.h>
+#include "web_server_framework.h"
 #include <process.h>
 #include <TlHelp32.h>
 #include <sstream>
-
-#include <sirius_internal_notifier.h>
-#include "web_server_framework.h"
 
 sirius::library::framework::server::web::core::core(void)
 	: _d3d11_video_source(nullptr)

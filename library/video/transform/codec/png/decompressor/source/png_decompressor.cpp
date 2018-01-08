@@ -97,9 +97,9 @@ void sirius::library::video::transform::codec::png::decompressor::core::png_read
 		memcpy(data, self->_recvd + self->_recvd_index, length);
 		self->_recvd_index += length;
 
-		wchar_t debug[MAX_PATH] = { 0 };
-		_snwprintf_s(debug, sizeof(debug) - 1, L"_recvd_size=%d, recvd_index=%d \n", self->_recvd_size, self->_recvd_index);
-		::OutputDebugString(debug);
+		//wchar_t debug[MAX_PATH] = { 0 };
+		//_snwprintf_s(debug, sizeof(debug) - 1, L"_recvd_size=%d, recvd_index=%d \n", self->_recvd_size, self->_recvd_index);
+		//::OutputDebugString(debug);
 		if (self->_recvd_index >= self->_recvd_size)
 		{
 			self->_decoding = false;

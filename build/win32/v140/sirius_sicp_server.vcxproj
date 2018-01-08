@@ -20,13 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
-    <ClInclude Include="..\..\..\library\net\base\include\abstract_server.h" />
-    <ClInclude Include="..\..\..\library\net\base\include\abstract_session.h" />
     <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_handler.h" />
     <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h" />
     <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_server.h" />
-    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_tcp_server.h" />
-    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_udp_server.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_session.h" />
     <ClInclude Include="..\..\..\library\net\base\include\platform.h" />
     <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_base.h" />
     <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_command.h" />
@@ -38,12 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp" />
-    <ClCompile Include="..\..\..\library\net\base\source\abstract_server.cpp" />
-    <ClCompile Include="..\..\..\library\net\base\source\abstract_session.cpp" />
     <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp" />
     <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_server.cpp" />
-    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_tcp_server.cpp" />
-    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_udp_server.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_session.cpp" />
     <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_base.cpp" />
     <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_command.cpp" />
     <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_abstract_server.cpp" />
@@ -121,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;WITH_STATEFUL;WITH_LEAVE_CMD;WITH_NEW_PROTOCOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include\;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;WITH_STATEFUL;WITH_LEAVE_CMD;WITH_NEW_PROTOCOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include\;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>

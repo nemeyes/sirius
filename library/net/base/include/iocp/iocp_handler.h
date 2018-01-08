@@ -23,11 +23,12 @@ namespace sirius
 					handler(sirius::library::net::iocp::endpoint * endpoint);
 					virtual ~handler(void);
 
-					bool create(int32_t number_of_pooled_threads = 0, int32_t * error_code = NULL);
-					bool associate(SOCKET socket, ULONG_PTR key, int32_t * error_code = NULL);
-					bool associate(HANDLE handle, ULONG_PTR key, int32_t * error_code = NULL);
-					bool post_completion_status(ULONG_PTR key, DWORD bytes_of_transfered = 0, OVERLAPPED * overlapped = NULL, int32_t * error_code = NULL);
-					bool get_completion_status(ULONG_PTR * key, LPDWORD bytes_of_transfered, LPOVERLAPPED * overlapped, int32_t * error_code = NULL, DWORD waiting_time = INFINITE);
+					BOOL create(int32_t number_of_pooled_threads = 0, int32_t * error_code = NULL);
+					BOOL destroy(void);
+					BOOL associate(SOCKET socket, ULONG_PTR key, int32_t * error_code = NULL);
+					BOOL associate(HANDLE handle, ULONG_PTR key, int32_t * error_code = NULL);
+					BOOL post_completion_status(ULONG_PTR key, DWORD bytes_of_transfered = 0, OVERLAPPED * overlapped = NULL, int32_t * error_code = NULL);
+					BOOL get_completion_status(ULONG_PTR * key, LPDWORD bytes_of_transfered, LPOVERLAPPED * overlapped, int32_t * error_code = NULL, DWORD waiting_time = INFINITE);
 					void create_thread_pool(void);
 					void close_thread_pool(void);
 
@@ -35,12 +36,11 @@ namespace sirius
 					static unsigned __stdcall process(void * param);
 
 				private:
-					CRITICAL_SECTION	_cs;
 					endpoint *			_endpoint;
 
-					int32_t				_number_of_threads;
-					std::vector<HANDLE>	_threads;
-					HANDLE				_handle;
+					int32_t				_nthreads;
+					HANDLE	*			_threads;
+					HANDLE				_iocp;
 				};
 			};
 		};

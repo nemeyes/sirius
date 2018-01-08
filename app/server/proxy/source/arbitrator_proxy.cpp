@@ -9,7 +9,7 @@
 #include "sirius_version.h"
 
 sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, false, true)
+	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _front(front)
 	, _monitor(nullptr)
 	, _run(false)
@@ -312,12 +312,12 @@ void sirius::app::server::arbitrator::proxy::core::retrieve_db_path(char * path)
 	_snprintf_s(path, MAX_PATH, MAX_PATH, "%sdb\\sirius.db", module_path);
 }
 
-void sirius::app::server::arbitrator::proxy::core::create_session_callback(const char * uuid)
+void sirius::app::server::arbitrator::proxy::core::on_create_session(const char * uuid)
 {
 	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "create_session_callback");
 }
 
-void sirius::app::server::arbitrator::proxy::core::destroy_session_callback(const char * uuid)
+void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char * uuid)
 {
 	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "destroy_session_callback");
 

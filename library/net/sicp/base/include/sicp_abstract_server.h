@@ -1,7 +1,8 @@
 #ifndef _SIRIUS_ABSTRACT_SICP_SERVER_H_
 #define _SIRIUS_ABSTRACT_SICP_SERVER_H_
 
-#include <abstract_server.h>
+#include <iocp_session.h>
+#include <iocp_server.h>
 #include <sicp_base.h>
 #include <sicp_session.h>
 #include <sicp_command.h>
@@ -15,60 +16,70 @@ namespace sirius
 			namespace sicp
 			{
 				class abstract_server
-					: public sirius::library::net::server
+					: public sirius::library::net::iocp::server
 					, public sirius::library::net::sicp::base
 				{
 				public:
-					static const int32_t KEEPALIVE_INTERVAL = 5000;
-					static const int32_t DESTROY_INTERVAL = 10000;
+					static const int32_t MAXIUM_CLOSING_SESSION_WAITING_INTERVAL	= 10000;
+					static const int32_t MAXIUM_REGISTING_SESSION_WAITING_INTERVAL	= 3000;
+					static const int32_t KEEPALIVE_INTERVAL							= 5000;
 
 				public:
-					abstract_server(int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size,const char * uuid, int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast);
+					abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
 					virtual ~abstract_server(void);
 
-					const char * uuid(void);
-					void uuid(const char * uuid);
+					int32_t			initialize(void);
+					int32_t			release(void);
 
-					bool check_alive_session(const char * uuid);
-					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> get_assoc_clients(void);
+					const char *	uuid(void);
+					void			uuid(const char * uuid);
 
-					void data_indication_callback(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, size_t length, std::shared_ptr<sirius::library::net::sicp::session> session);
-					void data_request(char * dst, int32_t command_id, char * msg, size_t length);
-					void data_request(char * dst, char * src, int32_t command_id, char * msg, size_t length);
+					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> activated_sessions(void);
 
-					std::shared_ptr<sirius::library::net::session> create_session_callback(SOCKET client_socket, int32_t mtu,int32_t recv_buffer_size, bool dynamic_alloc = false);
+					void			on_data_indication(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * packet, int32_t packet_size, std::shared_ptr<sirius::library::net::sicp::session> session);
+					void			data_request(const char * dst, int32_t command_id, const char * packet, int32_t packet_size);
+					void			data_request(const char * dst, const char * src, int32_t command_id, const char * packet, int32_t packet_size);
 
-					void	destroy_session_callback(std::shared_ptr<sirius::library::net::session> session);
 
-					int32_t clean_conn_session(bool force_clean = false);
-					int32_t clean_assoc_session(bool force_clean = false);
+					int32_t			clean_connected_session(BOOL force_clean);
+					int32_t			clean_activated_session(BOOL force_clean);
+					int32_t			clean_closing_session(BOOL force_clean);
 
-					bool register_assoc_client(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
-					bool unregister_assoc_client(std::shared_ptr<sirius::library::net::sicp::session> session);
+					bool			activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
+					bool			deactivate_session(std::shared_ptr<sirius::library::net::sicp::session> session);
 
-					void add_command(sirius::library::net::sicp::abstract_command * command);
-					void remove_command(int32_t command_id);
+					void			add_command(sirius::library::net::sicp::abstract_command * command);
+					void			remove_command(int32_t command_id);
 
-					void create_session_completion_callback(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
-					void destroy_session_completion_callback(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
+					void			on_create_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
+					void			on_destroy_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
 
-					virtual void create_session_callback(const char * uuid) = 0;
-					virtual void destroy_session_callback(const char * uuid) = 0;
+					virtual void	on_create_session(const char * uuid) = 0;
+					virtual void	on_destroy_session(const char * uuid) = 0;
+
+					virtual std::shared_ptr<sirius::library::net::iocp::session>	create_session(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls = FALSE, SSL_CTX * ssl_ctx = NULL, BOOL reconnection = FALSE);
+					virtual void													destroy_session(std::shared_ptr<sirius::library::net::iocp::session> session);
+					virtual void	on_start(void);
+					virtual void	on_stop(void);
+					virtual void	on_running(void);
+
 
 				protected:
-					void clear_command_list(void);
-					void process(void);
+					void			clean_command_list(void);
+					virtual void	on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session);
+					virtual void	on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session);
 
 
 				protected:
-					bool	_use_keep_alive;
-					char	_uuid[64];
-					int32_t	_sequence;
-
-					CRITICAL_SECTION _assoc_sessions_cs;
-					CRITICAL_SECTION _closed_sessions_cs;
-					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>	_assoc_sessions;
-					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>	_closed_sessions;
+					BOOL																		_keepalive;
+					char																		_uuid[64];
+					int32_t																		_sequence;
+					CRITICAL_SECTION															_connected_slock;
+					CRITICAL_SECTION															_closing_slock;
+					CRITICAL_SECTION															_active_slock;
+					std::vector<std::shared_ptr<sirius::library::net::sicp::session>>			_connected_sessions;
+					std::vector<std::shared_ptr<sirius::library::net::sicp::session>>			_closing_sessions;
+					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>	_activated_sessions;
 					std::map<int32_t, sirius::library::net::sicp::abstract_command*>			_commands;
 
 				private:
