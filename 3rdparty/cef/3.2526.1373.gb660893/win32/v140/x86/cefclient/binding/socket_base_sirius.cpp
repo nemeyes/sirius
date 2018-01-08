@@ -1,6 +1,4 @@
-// SocketBase.cpp: implementation of the socketbase class.
-//
-//////////////////////////////////////////////////////////////////////
+
 #if defined(WITH_EXTERNAL_INTERFACE)
 #include <process.h>
 #include <assert.h>
@@ -19,12 +17,12 @@ namespace client {
 #endif
 
 		socketbase::socketbase() {
-			m_bThreadWhile = TRUE;
-			m_hSocket = NULL;
-			m_hEvent = NULL;
+			_thread_while = TRUE;
+			_socket = NULL;
+			_event = NULL;
 			client::binding::attendant_proxy_wrapper& apc = attendant_proxy_wrapper::getInstance();
 			_attendant = apc._proxy;
-			_attendant->set_attendant_cb(&AttendantToAppCalback);
+			_attendant->set_attendant_cb(&calback_attendant_to_app);
 		}
 
 		socketbase::~socketbase() {
@@ -36,20 +34,20 @@ namespace client {
 
 		}
 
-		int socketbase::Send(const void *lpBuf, int nBuflen, int nFlags)
+		int socketbase::send_data(const void *lpBuf, int nBuflen, int nFlags)
 		{
 			_attendant->app_to_attendant((uint8_t *)lpBuf, nBuflen);
 			return true;
 		}
 
-		bool socketbase::Create(UINT nSocketPort, int nSocketType, LPCTSTR lpszSocketAddress)
+		bool socketbase::create(UINT nSocketPort, int nSocketType, LPCTSTR lpszSocketAddress)
 		{
 			return true;
 		}
 
-		void socketbase::AttendantToAppCalback(uint8_t* packet, size_t len)
+		void socketbase::calback_attendant_to_app(uint8_t* packet, size_t len)
 		{
-			socket_win::getInstance()->SiriusToJSEngine((uint8_t*)packet, len);
+			socket_win::get_instance()->sirius_to_javascript((uint8_t*)packet, len);
 		}
 
 	}  // namespace binding

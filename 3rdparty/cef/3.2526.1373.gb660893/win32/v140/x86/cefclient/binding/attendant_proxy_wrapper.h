@@ -16,7 +16,7 @@ public:
 	static attendant_proxy_wrapper& getInstance();
 
 private:
-	static attendant_proxy_wrapper* sInstance;
+	static attendant_proxy_wrapper* _instance;
 
 	attendant_proxy_wrapper();
 	~attendant_proxy_wrapper();

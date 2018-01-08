@@ -142,12 +142,6 @@
     <ClCompile Include="..\..\cefclient\binding\msg_handler.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\binding\appmsg.cc">
-      <Filter>cefclient\binding</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\binding\xml_wrapper.cpp">
-      <Filter>cefclient\binding</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\binding\socket_win.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
@@ -304,12 +298,6 @@
       <Filter>cefclient\binding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\binding\msg_handler.h">
-      <Filter>cefclient\binding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\binding\appmsg.h">
-      <Filter>cefclient\binding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\binding\xml_wrapper.h">
       <Filter>cefclient\binding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\binding\socket_win.h">

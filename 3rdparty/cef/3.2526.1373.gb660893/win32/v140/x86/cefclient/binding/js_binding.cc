@@ -52,19 +52,19 @@ namespace client {
 			bool ExecuteSendMessage(const CefV8ValueList& arguments) {
 				if ((arguments.size() == 1 || arguments.size() == 2) &&
 					arguments[0]->IsString()) {
-					CefRefPtr<CefBrowser> browser =
+					CefRefPtr<CefBrowser> cef_browser =
 						CefV8Context::GetCurrentContext()->GetBrowser();
 
 					CefString name = arguments[0]->GetStringValue();
 					if (!name.empty()) {
-						CefRefPtr<CefProcessMessage> message =
+						CefRefPtr<CefProcessMessage> msg =
 							CefProcessMessage::Create(name);
 
 						// Translate the arguments, if any.
 						if (arguments.size() == 2 && arguments[1]->IsArray())
-							SetList(arguments[1], message->GetArgumentList());
+							set_list(arguments[1], msg->GetArgumentList());
 
-						browser->SendProcessMessage(PID_BROWSER, message);
+						cef_browser->SendProcessMessage(PID_BROWSER, msg);
 					}
 				}
 				return true;

@@ -10,30 +10,25 @@ namespace client {
 
 		class global {
 		public:
-			static global& getInstance();
+			static global& get_instance();
 
 		private:
-			static global* sInstance;
+			static global* _instance;
 
 			global();
 			DISALLOW_COPY_AND_ASSIGN(global);
 
 		public:
-			void setWindowHandle(HWND hWnd) { hWnd_ = hWnd; }
-			HWND getWindowHandle() const { return hWnd_; }
-
-			// Javascript Inejction
-			const CefString& getJavaScriptInjection() const { return javaScriptInjection_; }
+			void set_window_handle(HWND handle) { _handle = handle; }
+			HWND get_window_handle() const { return _handle; }
+			const CefString& get_java_script_injection() const { return _java_script_injection; }
 
 		private:
-			//windows handle
-			HWND hWnd_;
-
-			// Javascript Inejction
-			CefString javaScriptInjection_;
+			HWND _handle;
+			CefString _java_script_injection;
 		};
 
-	}  // namespace csb
+	}  // namespace binding
 }  // namespace client
 
 #endif  // GLOBAL_H_

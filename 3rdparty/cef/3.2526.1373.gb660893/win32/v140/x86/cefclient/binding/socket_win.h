@@ -17,15 +17,15 @@ namespace client {
 
 		class socket_win : public socketbase {
 		public:
-			static CefRefPtr<socket_win> getInstance();
+			static CefRefPtr<socket_win> get_instance();
 			static void release();
 			virtual void OnReceive(int nErrorCode);
 			bool create();
-			bool sendXmlPacket(int contentsType, const std::string& utf8_xml);
-			bool SiriusToJSEngine(uint8_t * data, size_t size);
+			bool send_bypass_packet(int contentsType, const std::string& utf8_data);
+			bool sirius_to_javascript(uint8_t * data, size_t size);
 
 		protected:
-			bool makeXmlPacket(char* data, int& size, int& contentsType, const std::string& utf8_xml);
+			bool make_json_packet(char* data, int& size, int& contentsType, const std::string& utf8_json);
 			bool recvData(BUFFER& buffer);
 			bool recvHeader(const BUFFER& buffer, HEADER& header);
 			bool recvBody(const BUFFER& buffer, const HEADER& header);
@@ -33,7 +33,7 @@ namespace client {
 			int recvBody_getDataLen(const BUFFER& buffer, int sizeOfHeader, int& dataLen);
 			bool recvBody_cmdType_response(const HEADER& header);
 			bool recvBody_cmdType_request(const HEADER& header, const CefString& body);
-			void sendToJSEngine(const CefString& xml);
+			void send_to_javascript(const CefString& data);
 			bool connectSTB();
 			bool disconnectSTB();
 
@@ -41,7 +41,7 @@ namespace client {
 			socket_win();
 			virtual ~socket_win();
 
-			static CefRefPtr<socket_win> pThis;
+			static CefRefPtr<socket_win> _ptr_this;
 
 			IMPLEMENT_REFCOUNTING(socket_win);
 			DISALLOW_COPY_AND_ASSIGN(socket_win);

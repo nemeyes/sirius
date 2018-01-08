@@ -167,7 +167,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
     CreateRootWindow(settings);
 
 #if defined(WITH_EXTERNAL_INTERFACE)
-	binding::global::getInstance().setWindowHandle(GetWindowHandle());
+	binding::global::get_instance().set_window_handle(GetWindowHandle());
 	binding::browser::getInstance();
 #endif
   } else {
