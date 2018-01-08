@@ -136,6 +136,30 @@
     <ClCompile Include="..\..\cefclient\browser\window_test_win.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\js_binding.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\msg_handler.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\socket_win.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\global.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\socket_base_sirius.cpp">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\browser.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\attendant_proxy_wrapper.cpp">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cefclient\binding\attendant_switches.cc">
+      <Filter>cefclient\binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\cefclient\browser\binding_test.h">
@@ -267,6 +291,42 @@
     <ClInclude Include="..\..\cefclient\browser\util_win.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\js_binding.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\handler_base.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\msg_handler.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\socket_win.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\macro.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\global.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\socket_base_sirius.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\net_define.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\browser.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_interface.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_proxy_wrapper.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cefclient\binding\attendant_switches.h">
+      <Filter>cefclient\binding</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\cefclient\resources\logo.png">
@@ -349,6 +409,9 @@
     </Filter>
     <Filter Include="cefclient">
       <UniqueIdentifier>{98C3AA64-76A8-382F-B9C2-8815831EEFFD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cefclient\binding">
+      <UniqueIdentifier>{89115c54-ab98-4e38-9c08-bdfe5515156a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

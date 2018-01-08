@@ -20,8 +20,22 @@ namespace sirius.app.server.arbitrator
 
     public class ChartClass : INotifyPropertyChanged
     {
-        public string Category { get; set; }
-
+        private string _name = null;
+        public string Category
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                if (PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Category"));
+                }
+            }
+        }
         private float _number = 0;
         public float Number
         {
@@ -38,8 +52,7 @@ namespace sirius.app.server.arbitrator
                 }
             }
 
-        }
-
+        }        
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

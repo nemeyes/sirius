@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using sirius.app.server.arbitrator;
+using System.Runtime.InteropServices;
+using System.Windows.Threading;
 
 namespace sirius.app.server.arbitrator.Control
 {
@@ -20,9 +23,22 @@ namespace sirius.app.server.arbitrator.Control
     /// </summary>
     public partial class Splash : UserControl
     {
+        public static Splash handle;
         public Splash()
         {
+            handle = this;
             InitializeComponent();
         }
+        public void update_progress_bar(double percent)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal,
+            new Action
+            (
+                delegate()
+                    {                        
+                        progress.Value = percent / 100;
+                    }
+            ));
+        } 
     }
 }

@@ -6,6 +6,7 @@
 #include <sirius_locks.h>
 #include <process.h>
 #include <tlhelp32.h>
+#include "sirius_version.h"
 
 sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front)
 	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
@@ -15,9 +16,13 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _thread(INVALID_HANDLE_VALUE)
 	, _system_monitor_run(false)
 	, _system_monitor_thread(INVALID_HANDLE_VALUE)
+	, _use_count(NULL)
 {
 	::InitializeCriticalSection(&_attendant_cs);
-	sirius::library::log::log4cplus::logger::create("configuration/log.properties", SAA, nullptr);
+	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
+	LOGGER::make_info_log(SAA, "%s, ======================= ", __FUNCTION__);
+	LOGGER::make_info_log(SAA, "%s, %d Sirius Start", __FUNCTION__, __LINE__);
+	LOGGER::make_info_log(SAA, "%s, ======================= ", __FUNCTION__);
 
 	_monitor = new sirius::library::misc::performance::monitor();
 
@@ -27,6 +32,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	add_command(new sirius::app::server::arbitrator::disconnect_attendant_res(_front));
 	add_command(new sirius::app::server::arbitrator::start_attendant_res(_front));
 	add_command(new sirius::app::server::arbitrator::stop_attendant_res(_front));
+	//add_command(new sirius::app::server::arbitrator::keepalivecheck_res(_front));
 	
 	add_command(CMD_ATTENDANT_INFO_IND);
 	add_command(CMD_CLIENT_INFO_XML_IND);
@@ -43,6 +49,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	add_command(CMD_MOUSE_LB_DCLICK_IND);
 	add_command(CMD_MOUSE_RB_DCLICK_IND);
 	add_command(CMD_MOUSE_WHEEL_IND);
+	add_command(CMD_KEEPALIVE_REQUEST);
 }
 
 sirius::app::server::arbitrator::proxy::core::~core(void)
@@ -112,6 +119,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::start(void)
 {
 	uint32_t thrdaddr;
 	_run = true;
+	_cluster = new sirius::library::net::backend::cluster();
+	_cluster->backend_init(GEN_VER_VERSION_STRING);
 	_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::process_cb, this, 0, &thrdaddr);
 	if(_thread)
 		return sirius::app::server::arbitrator::proxy::err_code_t::success;
@@ -129,6 +138,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 			::CloseHandle(_thread);
 			_thread = INVALID_HANDLE_VALUE;
 		}
+	}
+	::Sleep(20);
+	_cluster->backend_stop();
+	if (_cluster)
+	{
+		delete _cluster;
+		_cluster = nullptr;
 	}
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
@@ -193,7 +209,10 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 			{
 				sirius::autolock lock(&_attendant_cs);
 				dao.update(attendant[count - 1]);
+				_use_count++;
+				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
 			}
+			
 		}
 
 		for (int32_t index = 0; index < count; index++)
@@ -228,6 +247,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 			{
 				sirius::autolock lock(&_attendant_cs);
 				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
+				_use_count--;
+				_cluster->backend_client_disconnect(attendant.client_id, _use_count, attendant.id);
 			}
 		}
 	}
@@ -444,6 +465,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 							_context->handler->on_attendant_create(percent);
 
 						attendant_created = true;
+						_cluster->ssm_service_info("START", max_attendant_instance_count);
 					}
 				}
 			}
@@ -455,8 +477,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		}
 		::Sleep(10);
 	}
-
-
+	_cluster->ssm_service_info("STOP", max_attendant_instance_count);
 	if (_context && _context->handler)
 		_context->handler->on_stop();
 	sirius::library::net::sicp::server::stop();

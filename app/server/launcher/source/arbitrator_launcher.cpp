@@ -115,6 +115,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--disable-extensions");
 			proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
 			proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
+			proc_ctrl.set_cmdline(arguments, "--disable-web-security --ignore-certificate-errors");
 
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 			if (status == sirius::base::err_code_t::success)

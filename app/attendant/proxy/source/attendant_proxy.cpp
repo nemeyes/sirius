@@ -23,6 +23,11 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	, _callback(nullptr)
 	, _key_event_count(NULL)
 {
+	if (uuid && strlen(uuid) > 0)
+		strcpy_s(_client_uuid, uuid);
+	else
+		memset(_client_uuid, 0x00, sizeof(_client_uuid));
+
 	add_command(new sirius::app::attendant::connect_attendant_res(front));
 	add_command(new sirius::app::attendant::disconnect_attendant_req(front));
 	add_command(new sirius::app::attendant::start_attendant_req(front));
@@ -324,6 +329,7 @@ void sirius::app::attendant::proxy::core::disconnect_attendant_callback(void)
 
 void sirius::app::attendant::proxy::core::start_attendant_callback(const char * client_uuid, const char * client_id)
 {
+	sirius::library::log::log4cplus::logger::streamer_log_init(client_id, SLNS);
 	Json::Value wpacket;
 	Json::StyledWriter writer;
 	wpacket["id"] = _context->id;
@@ -332,6 +338,7 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 	if (response.size() > 0)
 	{
 		data_request((char*)SERVER_UUID, CMD_START_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
+		LOGGER::make_info_log(SLNS, "[CMD_START_ATTENDANT_RES] - %s(), %d,	Command:%d, id:%d, rcode:%d", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_RES, _context->id, sirius::app::attendant::proxy::err_code_t::success);
 	}
 
 	Json::Value npacket;
@@ -351,6 +358,8 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 		if (noti.size() > 0)
 		{
 			data_request((char*)client_uuid, CMD_ATTENDANT_INFO_IND, (char*)noti.c_str(), noti.size() + 1);
+			LOGGER::make_info_log(SLNS, "[attendant info notification] - %s(), %d,	Command:%d, attendant_uuid:%s, streamer_portnumber:%d, video_width:%d, video_height;%d, rcode:%d", __FUNCTION__, __LINE__, CMD_ATTENDANT_INFO_IND, uuid, STREAMER_PORTNUMBER + _context->id, _context->video_width, _context->video_height,  sirius::app::attendant::proxy::err_code_t::success);
+
 		}
 		free(uuid);
 		uuid = nullptr;
@@ -487,16 +496,17 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	/*Json::Value jsonpacket;
 	Json::StyledWriter writer;
 	int32_t size = 0;
-	std::string xml_str = packet;
+	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
-	//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
+	data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
+	LOGGER::make_info_log(SLNSC, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, packet);
 }
 
 void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)
 {
 	if (_callback)
-		_callback((char*)packet, len);
+		_callback(packet, len);
 	_framework->on_info_xml(packet, len);
 }
 

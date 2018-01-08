@@ -7,6 +7,10 @@
 #include "include/cef_parser.h"
 #include "cefclient/common/client_switches.h"
 
+#if defined(WITH_EXTERNAL_INTERFACE)
+#include "cefclient/binding/browser.h"
+#endif
+
 namespace client {
 
 namespace {
@@ -42,6 +46,10 @@ MainContextImpl::~MainContextImpl() {
   // The context must either not have been initialized, or it must have also
   // been shut down.
   DCHECK(!initialized_ || shutdown_);
+
+#if defined(WITH_EXTERNAL_INTERFACE)
+  binding::browser::release();
+#endif
 }
 
 std::string MainContextImpl::GetConsoleLogPath() {

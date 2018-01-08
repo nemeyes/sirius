@@ -15,7 +15,10 @@
 #include "cefclient/browser/test_runner.h"
 #include "cefclient/common/client_app_other.h"
 #include "cefclient/renderer/client_app_renderer.h"
-
+#if defined(WITH_EXTERNAL_INTERFACE)
+#include "cefclient/binding/attendant_proxy_wrapper.h"
+#include "cefclient/binding/socket_base_sirius.h"
+#endif
 #if defined(WITH_ATTENDANT_PROXY)
 #include <windows.h>
 #include <shellapi.h>
@@ -41,7 +44,6 @@ namespace {
 int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Enable High-DPI support on Windows 7 or newer.
   CefEnableHighDPISupport();
-
   CefMainArgs main_args(hInstance);
 
   void* sandbox_info = NULL;
@@ -56,27 +58,42 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Parse command-line arguments.
   CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
   command_line->InitFromString(::GetCommandLineW());
-
+  client::binding::attendant_proxy_wrapper& apc = client::binding::attendant_proxy_wrapper::getInstance();
   // Create a ClientApp of the correct type.
   CefRefPtr<CefApp> app;
   ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
   if (process_type == ClientApp::BrowserProcess)
+  {
     app = new ClientAppBrowser();
+  }
   else if (process_type == ClientApp::RendererProcess)
     app = new ClientAppRenderer();
   else if (process_type == ClientApp::OtherProcess)
     app = new ClientAppOther();
 
 #ifdef WITH_ATTENDANT_PROXY
+  OutputDebugStringA("++++++++++++++++++++++++++++++++cefclient+++++++++++++++++++");
   sirius::app::attendant::proxy * proxy = nullptr;
   if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {
+#if defined(WITH_EXTERNAL_INTERFACE)
 	  wchar_t * command = GetCommandLine();
 	  int32_t argc = 0;
 
 	  proxy = new sirius::app::attendant::proxy();
 	  LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
 	  sirius::app::attendant::proxy::parse_argument(argc, argv, proxy->context());
+	  proxy->initialize();
+	  apc._proxy_handle = proxy->context()->hwnd;
+	  apc._proxy = proxy;
+#else
+	  wchar_t * command = GetCommandLine();
+	  int32_t argc = 0;
+
+	  proxy = new sirius::app::attendant::proxy();
+	  LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
+	  sirius::app::attendant::proxy::parse_argument(argc, argv, proxy->context());
+#endif
   }
 #endif
 
@@ -118,7 +135,6 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   }
 
 #endif
-
   if (proxy)
   {
 	  context->GetRootWindowManager()->CreateRootWindow(
@@ -128,8 +144,10 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 		  &proxy->context()->hwnd,
 		  CefRect(0, 0, 1282, 722),       // Use default system size.
 		  std::string());   // Use default URL.
-
+#if defined(WITH_EXTERNAL_INTERFACE)
+#else
 	  proxy->initialize();
+#endif
 	  if (proxy->is_initialized())
 	  {
 		  if (proxy->context()->play_after_connect)
@@ -153,8 +171,6 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 		  CefRect(0, 0, 1282, 722),       // Use default system size.
 		  std::string());   // Use default URL.
   }
-
-
 
   // Run the message loop. This will block until Quit() is called by the
   // RootWindowManager after all windows have been destroyed.
@@ -180,6 +196,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 	  proxy = nullptr;
   }
 #endif
+
   // Shut down CEF.
   context->Shutdown();
 

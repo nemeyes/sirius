@@ -180,9 +180,14 @@
     <ClInclude Include="..\..\..\app\server\proxy\include\process_controller.h" />
     <ClInclude Include="..\..\..\base\include\resource.h" />
     <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
+    <ClInclude Include="..\..\..\base\source\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\base\source\sirius_version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\base\source\sirius.ico" />
+    <Image Include="..\..\..\base\source\sirius_application.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

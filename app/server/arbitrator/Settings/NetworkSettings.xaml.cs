@@ -18,10 +18,16 @@ namespace sirius.app.server.arbitrator.Settings
     /// <summary>
     /// Interaction logic for Configuration.xaml
     /// </summary>
+    /// 
+    public static class network_setting
+    {
+        public static NetworkSettings handle;
+    }
     public partial class NetworkSettings : UserControl
     {
         public NetworkSettings()
         {
+            network_setting.handle = this;
             InitializeComponent();
 
             this.Loaded += OnLoaded;
@@ -31,6 +37,52 @@ namespace sirius.app.server.arbitrator.Settings
         {
             // select first control on the form
             Keyboard.Focus(this.TextControllerPortnumber);
+
+            SettingValue setting_value = SettingValue.Instance();
+
+            TextControllerPortnumber.Text = setting_value.portnumber.ToString();
+            UseTLS.IsChecked = setting_value.enable_tls;
+                 
+
+        }
+        private void network_set_apply_click(object sender, RoutedEventArgs e)
+        {
+            SettingValue setting_value = SettingValue.Instance();
+
+            setting_value.portnumber = Convert.ToInt32(TextControllerPortnumber.Text);
+
+            if (UseTLS.IsChecked.Value)
+                setting_value.enable_tls = true;
+            else
+                setting_value.enable_tls = false;
+            
+            setting_value.update();
+        }
+
+        private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextKeepAliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
         }
     }
 }

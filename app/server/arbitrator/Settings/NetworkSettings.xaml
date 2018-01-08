@@ -41,12 +41,12 @@
 
                 <StackPanel>
                     <Label Content="Controller Portnumber" Target="{Binding ElementName=TextControllerPortnumber}" Width="150"/>
-                    <TextBox x:Name="TextControllerPortnumber" Width="150" Text="{Binding ControllerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                    <TextBox x:Name="TextControllerPortnumber" Width="85" Text="{Binding ControllerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextControllerPortnumber_PreviewTextInput" />
                 </StackPanel>
-                <StackPanel>
+                <!--" StackPanel>
                     <Label Content="Streamer Portnumber" Target="{Binding ElementName=TextStreamerPortnumber}" Width="150"/>
                     <TextBox x:Name="TextStreamerPortnumber" Width="150" Text="{Binding StreamerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
-                </StackPanel>
+                </StackPanel/-->
                 <StackPanel>
                     <Label Content="Use TLS" Target="{Binding ElementName=UseTLS}" Width="150"/>
                     <RadioButton x:Name="UseTLS">
@@ -63,7 +63,7 @@
                 </StackPanel>                
                 <StackPanel>
                     <Label Content="Keep Alive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
-                    <TextBox x:Name="TextKeepAliveTimeout" Width="100" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+                    <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />
                     <Label Content="sec"/>
                 </StackPanel>
                 <!--StackPanel>
@@ -101,7 +101,7 @@
                     <Button Content="Add" Margin="100,16,0,0" HorizontalAlignment="Left" />
                     <Button Content="Remove" Margin="100,16,0,0" HorizontalAlignment="Left" />
                 </StackPanel//-->
-                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" />
+                <Button Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" Click="network_set_apply_click" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

@@ -20,7 +20,11 @@
 #include "cefclient/browser/root_window_manager.h"
 #include "cefclient/browser/test_runner.h"
 #include "cefclient/common/client_switches.h"
-
+#if defined(WITH_EXTERNAL_INTERFACE)
+#include "cefclient/binding/msg_handler.h"
+#include "cefclient/binding/socket_base_sirius.h"
+#include "cefclient/binding/global.h"
+#endif
 namespace client {
 
 #if defined(OS_WIN)
@@ -45,7 +49,10 @@ enum client_menu_ids {
 
 // Musr match the value in client_renderer.cc.
 const char kFocusedNodeChangedMessage[] = "ClientRenderer.FocusedNodeChanged";
-
+#if defined(WITH_EXTERNAL_INTERFACE)
+const char msg_app_to_attendant[] = "AppToAttendant";
+const char kRequestedPID[] = "RequestedPID";
+#endif
 std::string GetTimeString(const CefTime& value) {
   if (value.GetTimeT() == 0)
     return "Unspecified";
@@ -190,7 +197,16 @@ bool ClientHandler::OnProcessMessageReceived(
     focus_on_editable_field_ = message->GetArgumentList()->GetBool(0);
     return true;
   }
-
+#if defined(WITH_EXTERNAL_INTERFACE)
+  else if (message_name == msg_app_to_attendant) {
+	  return client::binding::message_handler::
+		  getInstance().external_interface_message_received(browser, source_process, message);
+  }
+  else if (message_name == kRequestedPID) {
+	  return client::binding::message_handler::
+		  getInstance().external_interface_message_received(browser, source_process, message);
+  }
+#endif
   return false;
 }
 
@@ -834,10 +850,11 @@ void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
 	if (delegate_)
 			delegate_->OnLoadStart(browser, frame);
-//	if (!csb::CSBGlobal::getInstance().getJavaScriptInjection().empty()) {
-//		LOG_INFO("Javascript injection successfully done.\n");
-//		frame->ExecuteJavaScript(csb::CSBGlobal::getInstance().getJavaScriptInjection(), frame->GetURL(), 0);
-//	}
+#if defined(WITH_EXTERNAL_INTERFACE)
+	if (!binding::global::get_instance().get_java_script_injection().empty()) {
+		frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
+	}
+#endif
 }
 
 void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
@@ -846,6 +863,21 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	CEF_REQUIRE_UI_THREAD();
 
 	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
+#if defined(WITH_EXTERNAL_INTERFACE)
+	/*char data[1024];
+	sprintf(data,
+		"<?xml version='1.0' ?>\
+<INTERFACE>\
+<COMMAND>request</COMMAND>\
+<GROUP>BYPASS</GROUP>\
+<GTYPE>LoadApp</GTYPE>\
+<DATA>\
+ <launchInfo></launchInfo>\
+<backInfoZ</backInfo>\
+</DATA>\
+</INTERFACE>");
+binding::socketbase::calback_attendant_to_app((uint8_t *)data, strlen(data));*/
+#endif
 //	if (delegate_)
 //		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
 	return;

@@ -18,10 +18,16 @@ namespace sirius.app.server.arbitrator.Settings
     /// <summary>
     /// Interaction logic for Configuration.xaml
     /// </summary>
+    /// 
+    public static class media_setting
+    {
+        public static MediaSettings handle;
+    }
     public partial class MediaSettings : UserControl
     {
         public MediaSettings()
         {
+            media_setting.handle = this;
             InitializeComponent();
 
             this.Loaded += OnLoaded;
@@ -31,6 +37,10 @@ namespace sirius.app.server.arbitrator.Settings
         {
             // select first control on the form
             Keyboard.Focus(this.ImageCodec);
+        }
+        private void media_set_apply_click(object sender, RoutedEventArgs e)
+        {                   
+            
         }
     }
 }
