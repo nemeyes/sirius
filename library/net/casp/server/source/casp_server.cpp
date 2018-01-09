@@ -250,12 +250,12 @@ int32_t sirius::library::net::casp::server::core::stop(int32_t flags)
 	return sirius::library::net::casp::server::err_code_t::fail;
 }
 
-void sirius::library::net::casp::server::core::create_session_callback(const char * uuid)
+void sirius::library::net::casp::server::core::on_create_session(const char * uuid)
 {
 	LOGGER::make_trace_log(SLNS, "cloud.app.platform.caspstream", "%s(), connect [src=%s]" , __FUNCTION__, uuid);
 }
 
-void sirius::library::net::casp::server::core::destroy_session_callback(const char * uuid)
+void sirius::library::net::casp::server::core::on_destroy_session(const char * uuid)
 {	
 	LOGGER::make_trace_log(SLNS, "cloud.app.platform.caspstream", "%s(), disconnect [src=%s]", __FUNCTION__, uuid);
 
