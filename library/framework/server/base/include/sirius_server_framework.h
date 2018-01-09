@@ -56,7 +56,7 @@ namespace sirius
 							, video_width(0)
 							, video_height(0)
 							, video_fps(0)
-							, video_nbuffer(1)
+							, video_nbuffer(2)
 							, video_process_type(sirius::library::framework::server::base::video_memory_type_t::host)
 							, video_block_width(0)
 							, video_block_height(0)

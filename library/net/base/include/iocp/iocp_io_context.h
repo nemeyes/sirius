@@ -2,6 +2,9 @@
 #define _IOCP_IO_CONTEXT_H_
 
 #include <platform.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/x509v3.h>
 
 #define MTU						1460
 #define MAX_RECV_BUFFER_SIZE	MTU	//1024*512
@@ -22,11 +25,13 @@ namespace sirius
 					{
 						static const int32_t recv = 0;
 						static const int32_t send = 1;
+						static const int32_t connect = 2;
 					} operation_t;
 
 					WSAOVERLAPPED	overlapped;
 					WSABUF			wsabuf;
 					int32_t			operation;
+					DWORD			result;
 					_io_context_t(int32_t op)
 						: operation(op)
 					{

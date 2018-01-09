@@ -2,43 +2,42 @@
 #include <sirius_locks.h>
 #include <sicp_command.h>
 
-sirius::library::net::sicp::abstract_client::abstract_client(int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size,int32_t command_thread_pool_count, bool use_keep_alive , bool dynamic_alloc, int32_t type, bool multicast)
-	: sirius::library::net::client(mtu, so_rcvbuf_size, so_sndbuf_size,recv_buffer_size ,dynamic_alloc, type, multicast)
+sirius::library::net::sicp::abstract_client::abstract_client(int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
+	: sirius::library::net::iocp::client(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
-	, _use_keep_alive(use_keep_alive)
+	, _keepalive(keepalive)
+	, _session(nullptr)
 {
 	memcpy(_uuid, UNDEFINED_UUID, sizeof(_uuid));
 
-	::InitializeCriticalSection(&_session_cs);
-	::InitializeCriticalSection(&_commands_cs);
+	::InitializeCriticalSection(&_slock);
 
 	sirius::library::net::sicp::base::initialize();
 
 	add_command(new create_session_res(this));
 	add_command(new destroy_session_noti(this));
 
-	if (_use_keep_alive)
+	if (_keepalive)
 	{
 		add_command(new keepalive_res(this));
 	}
 }
 
-sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size,int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast)
-	: sirius::library::net::client(mtu, so_rcvbuf_size, so_sndbuf_size,recv_buffer_size, dynamic_alloc, type, multicast)
+sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
+	: sirius::library::net::iocp::client(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
-	, _use_keep_alive(use_keep_alive)
+	, _keepalive(keepalive)
 {
 	strncpy_s(_uuid, uuid, sizeof(_uuid));
 
-	::InitializeCriticalSection(&_session_cs);
-	::InitializeCriticalSection(&_commands_cs);
+	::InitializeCriticalSection(&_slock);
 
 	sirius::library::net::sicp::base::initialize();
 
 	add_command(new create_session_res(this));
 	add_command(new destroy_session_noti(this));
 
-	if (_use_keep_alive)
+	if (_keepalive)
 	{
 		add_command(new keepalive_res(this));
 	}
@@ -49,21 +48,36 @@ sirius::library::net::sicp::abstract_client::~abstract_client(void)
 	clear_command_list();
 	sirius::library::net::sicp::base::release();
 
-	::DeleteCriticalSection(&_commands_cs);
-	::DeleteCriticalSection(&_session_cs);
+	::DeleteCriticalSection(&_slock);
 }
 
-bool sirius::library::net::sicp::abstract_client::connect(const char * address, int32_t port_number, int32_t io_thread_pool_count, bool reconnection)
+int32_t sirius::library::net::sicp::abstract_client::initialize(void)
 {
-	return sirius::library::net::client::connect(address, port_number, io_thread_pool_count, reconnection);
+	sirius::library::net::iocp::client::initialize();
+	sirius::library::net::sicp::base::initialize();
+
+	return sirius::library::net::sicp::abstract_client::err_code_t::success;
 }
 
-bool sirius::library::net::sicp::abstract_client::disconnect(void)
+int32_t sirius::library::net::sicp::abstract_client::release(void)
 {
-	return sirius::library::net::client::disconnect();
+	sirius::library::net::sicp::base::release();
+	sirius::library::net::iocp::client::release();
+
+	return sirius::library::net::sicp::abstract_client::err_code_t::success;
 }
 
-bool sirius::library::net::sicp::abstract_client::is_run(void) const
+int32_t sirius::library::net::sicp::abstract_client::connect(const char * address, int32_t portnumber, int32_t io_thread_pool_count, BOOL reconnection)
+{
+	return sirius::library::net::iocp::client::connect(address, portnumber, io_thread_pool_count, reconnection);
+}
+
+int32_t sirius::library::net::sicp::abstract_client::disconnect(void)
+{
+	return sirius::library::net::iocp::client::disconnect();
+}
+
+BOOL sirius::library::net::sicp::abstract_client::active(void) const
 {
 	return _run;
 }
@@ -78,52 +92,53 @@ void sirius::library::net::sicp::abstract_client::uuid(const char * uuid)
 	strcpy_s(_uuid, uuid);
 }
 
-void sirius::library::net::sicp::abstract_client::data_indication_callback(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, size_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::abstract_client::on_data_indication(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * packet, int32_t packet_size, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	std::map<int32_t, sirius::library::net::sicp::abstract_command*>::iterator iter = _commands.find(command_id);
 	if (iter != _commands.end())
 	{
-		if (session->assoc_flag() || (command_id == CMD_KEEPALIVE_REQUEST) || (command_id == CMD_KEEPALIVE_RESPONSE) || (command_id == CMD_CREATE_SESSION_RESPONSE))
+		if (session->register_flag() || (command_id == CMD_KEEPALIVE_REQUEST) || (command_id == CMD_KEEPALIVE_RESPONSE) || (command_id == CMD_CREATE_SESSION_RESPONSE))
 		{
 			abstract_command * command = (*iter).second;
-			command->_execute(dst, src, command_id, version, msg, length, session);
+			command->_execute(dst, src, command_id, version, packet, packet_size, session);
 		}
 	}
 }
 
-void sirius::library::net::sicp::abstract_client::data_request(char * dst, int32_t command_id, char * msg, int32_t length)
+void sirius::library::net::sicp::abstract_client::data_request(const char * dst, int32_t command_id, const char * packet, int32_t packet_size)
 {
-	data_request(dst, _uuid, command_id, msg, length);
+	data_request(dst, _uuid, command_id, packet, packet_size);
 }
 
-void sirius::library::net::sicp::abstract_client::data_request(char * dst, char * src, int32_t command_id, char * msg, int32_t length)
+void sirius::library::net::sicp::abstract_client::data_request(const char * dst, const char * src, int32_t command_id, const char * packet, int32_t packet_size)
 {
 	std::shared_ptr<sirius::library::net::sicp::session> sicp_session;
 	{
-		sirius::autolock mutex(&_session_cs);
+		sirius::autolock mutex(&_slock);
 		sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(_session);
 	}
 
-	if (sicp_session && sicp_session->assoc_flag())
-		sicp_session->push_send_packet(dst, src, command_id, msg, length);
+	if (sicp_session && sicp_session->register_flag())
+		sicp_session->send(dst, src, command_id, packet, packet_size);
 }
 
-std::shared_ptr<sirius::library::net::session> sirius::library::net::sicp::abstract_client::create_session_callback(SOCKET client_socket, int32_t mtu,int32_t recv_buffer_size, bool dynamic_alloc)
+std::shared_ptr<sirius::library::net::iocp::session> sirius::library::net::sicp::abstract_client::create_session(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls, SSL_CTX * ssl_ctx, BOOL reconnection)
 {
-	std::shared_ptr<sirius::library::net::sicp::session> session(new sirius::library::net::sicp::session(this, client_socket, mtu,recv_buffer_size, dynamic_alloc));
-	return std::dynamic_pointer_cast<sirius::library::net::session>(session);
+	std::shared_ptr<sirius::library::net::sicp::session> session(new sirius::library::net::sicp::session(this, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls, ssl_ctx, reconnection));
+	return std::dynamic_pointer_cast<sirius::library::net::iocp::session>(session);
 }
 
-void sirius::library::net::sicp::abstract_client::destroy_session_callback(std::shared_ptr<sirius::library::net::session> session)
+void sirius::library::net::sicp::abstract_client::destroy_session(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
-	destroy_session_completion_callback(sicp_session);
-	
+	on_destroy_session(sicp_session);
+
+	/*
 	{
-		sirius::autolock mutex(&_session_cs);
+		sirius::autolock mutex(&_slock);
 		_session = nullptr;
 	}
-
+	*/
 }
 
 void sirius::library::net::sicp::abstract_client::add_command(sirius::library::net::sicp::abstract_command * command)
@@ -134,7 +149,6 @@ void sirius::library::net::sicp::abstract_client::add_command(sirius::library::n
 			command->set_processor(this);
 
 		{
-			sirius::autolock mutex(&_commands_cs);
 			_commands.insert(std::make_pair(command->command_id(), command));
 			_valid_command_ids.push_back(command->command_id());
 		}
@@ -147,7 +161,6 @@ void sirius::library::net::sicp::abstract_client::wait_command_thread_end(void)
 	bool running = true;
 	while (running)
 	{
-		sirius::autolock mutex(&_commands_cs);
 		running = false;
 		for (iter = _commands.begin(); iter != _commands.end(); iter++)
 		{
@@ -164,7 +177,6 @@ void sirius::library::net::sicp::abstract_client::wait_command_thread_end(void)
 
 void sirius::library::net::sicp::abstract_client::remove_command(int32_t command_id)
 {
-	sirius::autolock mutex(&_commands_cs);
 	std::map<int32_t, sirius::library::net::sicp::abstract_command*>::iterator iter = _commands.find(command_id);
 	if (iter != _commands.end())
 	{
@@ -174,27 +186,26 @@ void sirius::library::net::sicp::abstract_client::remove_command(int32_t command
 	_commands.erase(command_id);
 }
 
-void sirius::library::net::sicp::abstract_client::create_session_completion_callback(std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::abstract_client::on_create_session(std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	if (!session->assoc_flag())
+	if (!session->register_flag())
 	{
-		session->assoc_flag(true);
-		create_session_callback();
+		session->register_flag(true);
+		on_create_session();
 	}
 }
 
-void sirius::library::net::sicp::abstract_client::destroy_session_completion_callback(std::shared_ptr<sirius::library::net::sicp::session> session)
+void sirius::library::net::sicp::abstract_client::on_destroy_session(std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	if (session->assoc_flag())
+	if (session->register_flag())
 	{
-		session->assoc_flag(false);
-		destroy_session_callback();
+		session->register_flag(false);
+		on_destroy_session();
 	}
 }
 
 void sirius::library::net::sicp::abstract_client::clear_command_list(void)
 {
-	sirius::autolock mutex(&_commands_cs);
 	std::map<int32_t, sirius::library::net::sicp::abstract_command*>::iterator iter;
 	for (iter = _commands.begin(); iter != _commands.end(); iter++)
 	{
@@ -204,91 +215,102 @@ void sirius::library::net::sicp::abstract_client::clear_command_list(void)
 	_commands.clear();
 }
 
-void sirius::library::net::sicp::abstract_client::process(void)
+void sirius::library::net::sicp::abstract_client::on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock lock(&_slock);
+	_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+	_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
+}
+
+void sirius::library::net::sicp::abstract_client::on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock lock(&_slock);
+	if (_session)
+	{
+		_session->close();
+		_session = nullptr;
+	}
+}
+
+void sirius::library::net::sicp::abstract_client::on_start(void)
+{
+
+}
+
+void sirius::library::net::sicp::abstract_client::on_stop(void)
+{
+	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = nullptr;
+	
+	{
+		sirius::autolock mutex(&_slock);
+		if (_session)
+			sicp_session = _session;
+	}
+
+	if (sicp_session)
+	{
+		if (sicp_session->register_flag())
+		{
+			sicp_session->send(SERVER_UUID, _uuid, CMD_DESTROY_SESSION_INDICATION, NULL, 0);
+			on_destroy_session(sicp_session);
+		}
+		
+		sicp_session->close();
+		wait_command_thread_end();
+		close_waiting_flag(TRUE);
+	}
+	else
+	{
+		wait_command_thread_end();
+		close_waiting_flag(TRUE);
+	}
+
+	const unsigned long msleep = 100;
+	const unsigned long onesec = 1000;
+	for (int32_t count = 0; _waiting; count++)
+	{
+		if (count == (onesec%msleep)) //force close when iocp client can not detect socket disconnect during 1 sec
+			break;
+		::Sleep(msleep);
+	}
+
+	{
+		sirius::autolock mutex(&_slock);
+		if (_session)
+			_session = nullptr;
+	}
+}
+
+void sirius::library::net::sicp::abstract_client::on_running(void)
 {
 	const unsigned long msleep = 100;
 	const unsigned long onesec = 1000;
-	do
+	long long elapsed_millisec = 0;
+
+	while (_run)
 	{
-		long long elapsed_millisec = 0;
-
+		std::shared_ptr<sirius::library::net::sicp::session> sicp_session = nullptr;
 		{
-			sirius::autolock mutex(&_session_cs);
-			_session = _client->connect(_address, _port_number, _io_thread_pool_count);
-			if (_session)
-				_run = true;
-		}
-		while (_run)
-		{
-			std::shared_ptr<sirius::library::net::sicp::session> sicp_session;
-			{
-				sirius::autolock mutex(&_session_cs);
-				if (_session)
-					sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(_session);
-			}
-			
-			if (sicp_session)
-			{
-				if ((!sicp_session->assoc_flag()) && ((elapsed_millisec % 3000) == 0))
-					sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, nullptr, 0);
-
-				if (_use_keep_alive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
-				{
-					sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, nullptr, 0);
-				}
-
-				::Sleep(msleep);
-				elapsed_millisec += msleep;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		std::shared_ptr<sirius::library::net::sicp::session> sicp_session;
-		{
-			sirius::autolock mutex(&_session_cs);
-			if (_session)
-				sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(_session);
+			sirius::autolock mutex(&_slock);
+			sicp_session = _session;
 		}
 
 		if (sicp_session)
 		{
-			if (sicp_session->assoc_flag())
-			{
-				sicp_session->push_send_packet(SERVER_UUID, _uuid, CMD_DESTROY_SESSION_INDICATION, nullptr, 0);
-				destroy_session_completion_callback(sicp_session);
-				sicp_session->close();
+			if ((!sicp_session->register_flag()) && ((elapsed_millisec % 3000) == 0))
+				sicp_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
 
-				wait_command_thread_end();
-				enable_close_waiting_flag(true);
-			}
-			else
+			if (_keepalive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
 			{
-				sicp_session->close();
-
-				wait_command_thread_end();
-				enable_close_waiting_flag(true);
+				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
 			}
 		}
-
-		for (int32_t count = 0; _bwaiting; count++)
+		else
 		{
-			if (count == (onesec%msleep)) //force close when iocp client can not detect socket disconnect during 1 sec
-				break;
-			::Sleep(msleep);
+			break;
 		}
-
-		_client->disconnect();
-
-		{
-			sirius::autolock mutex(&_session_cs);
-			if (_session)
-				_session = nullptr;
-		}
-
 		::Sleep(msleep);
+		elapsed_millisec += msleep;
 
-	} while (_reconnection);
+	}
 }

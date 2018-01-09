@@ -1,3 +1,4 @@
+#include "attendant_proxy.h"
 #include "sirius_attendant_proxy.h"
 
 #include <sirius_stringhelper.h>
@@ -5,7 +6,6 @@
 #include <string>
 #include <map>
 
-#include "attendant_proxy.h"
 
 bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[], sirius::app::attendant::proxy::context_t * context)
 {

@@ -1,12 +1,11 @@
 #ifndef _WEB_SERVER_FRAMEWORK_H_
 #define _WEB_SERVER_FRAMEWORK_H_
 
-#include "sirius_web_server_framework.h"
-#include "host_video_source.h"
-
 #include <sirius_unified_server.h>
 #include <sirius_log4cplus_logger.h>
 #include <queue>
+#include "sirius_web_server_framework.h"
+#include "host_video_source.h"
 
 namespace sirius
 {

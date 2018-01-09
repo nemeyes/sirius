@@ -33,18 +33,6 @@
     <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h">
       <Filter>net\iocp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\net\base\include\abstract_client.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\net\base\include\abstract_session.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_tcp_client.h">
-      <Filter>net\iocp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_udp_client.h">
-      <Filter>net\iocp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\library\net\sicp\base\include\sicp_base.h">
       <Filter>sicp</Filter>
     </ClInclude>
@@ -66,24 +54,15 @@
     <ClInclude Include="..\..\..\library\net\sicp\client\include\sirius_sicp_client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_session.h">
+      <Filter>net\iocp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_client.cpp">
       <Filter>net\iocp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp">
-      <Filter>net\iocp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\net\base\source\abstract_session.cpp">
-      <Filter>net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\net\base\source\abstract_client.cpp">
-      <Filter>net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_tcp_client.cpp">
-      <Filter>net\iocp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_udp_client.cpp">
       <Filter>net\iocp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\net\sicp\base\source\sicp_base.cpp">
@@ -103,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\library\net\sicp\client\source\sirius_sicp_client.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_session.cpp">
+      <Filter>net\iocp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

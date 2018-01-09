@@ -19,16 +19,11 @@ namespace sirius
 				class client::core
 					: public sirius::library::net::sicp::client
 				{
-					static const int32_t IO_THREAD_POOL_COUNT = 1;
+					static const int32_t IO_THREAD_POOL_COUNT = 2;
 					static const int32_t COMMAND_THREAD_POOL_COUNT = 1;
-
-					static const int32_t RECV_BUF_SIZE = 1024 * 1024 * 2;
-					static const int32_t SEND_BUF_SIZE = 1024 * 1024 * 2;
-
-					static const int32_t MTU_SIZE = 0;
-
-					static const int32_t VIDEO_DATA_SIZE = 1024 * 1024 * 2;
-					//static const int32_t MTU_SIZE = 1500;
+					static const int32_t RECV_BUF_SIZE = 1024 * 1024;
+					static const int32_t SEND_BUF_SIZE = 1024 * 1024;
+					static const int32_t VIDEO_DATA_SIZE = 1024 * 1024;
 				public:
 					core(sirius::library::net::scsp::client * front);
 					virtual ~core(void);
@@ -40,8 +35,8 @@ namespace sirius
 					void request_play_video(void);
 
 					//callback
-					void create_session_callback(void);
-					void destroy_session_callback(void);
+					void on_create_session(void);
+					void on_destroy_session(void);
 
 					void av_stream_callback(const char * msg, int32_t length);
 

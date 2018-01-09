@@ -3,26 +3,26 @@
 #include <sirius_commands.h>
 #include "sirius_sicp_server.h"
 
-sirius::library::net::sicp::server::core::core(sirius::library::net::sicp::server * front, int32_t mtu, int32_t so_rcvbuf_size, int32_t so_sndbuf_size, int32_t recv_buffer_size, const char * uuid, int32_t command_thread_pool_count, bool use_keep_alive, bool dynamic_alloc, int32_t type, bool multicast)
-	: sirius::library::net::sicp::abstract_server(mtu, so_rcvbuf_size, so_sndbuf_size, recv_buffer_size,uuid, command_thread_pool_count, use_keep_alive, dynamic_alloc, type, multicast)
+sirius::library::net::sicp::server::core::core(sirius::library::net::sicp::server * front, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, BOOL tls)
+	: sirius::library::net::sicp::abstract_server(uuid, command_thread_pool_count, keepalive, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, _front(front)
 {
-
+	sirius::library::net::sicp::abstract_server::initialize();
 }
 
 sirius::library::net::sicp::server::core::~core(void)
 {
-
+	sirius::library::net::sicp::abstract_server::release();
 }
 
-void sirius::library::net::sicp::server::core::create_session_callback(const char * uuid)
+void sirius::library::net::sicp::server::core::on_create_session(const char * uuid)
 {
 	if (_front)
-		_front->create_session_callback(uuid);
+		_front->on_create_session(uuid);
 }
 
-void sirius::library::net::sicp::server::core::destroy_session_callback(const char * uuid)
+void sirius::library::net::sicp::server::core::on_destroy_session(const char * uuid)
 {
 	if (_front)
-		_front->destroy_session_callback(uuid);
+		_front->on_destroy_session(uuid);
 }

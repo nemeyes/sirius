@@ -24,7 +24,8 @@ namespace sirius
 					static const int32_t MAX_STREAM_QUEUE = 30;
 					static const int32_t IO_THREAD_POOL_COUNT = 4;
 					static const int32_t COMMAND_THREAD_POOL_COUNT = 2;
-					static const int32_t MTU_SIZE = 0;
+					static const int32_t RECV_BUF_SIZE = 1024 * 1024;
+					static const int32_t SEND_BUF_SIZE = 1024 * 1024;
 
 				public:
 					typedef struct _stream_session_info_t
@@ -82,8 +83,8 @@ namespace sirius
 					int32_t stop(int32_t flags);
 					int32_t invalidate(void);
 
-					void	create_session_callback(const char * uuid);
-					void	destroy_session_callback(const char * uuid);
+					void	on_create_session(const char * uuid);
+					void	on_destroy_session(const char * uuid);
 
 					int32_t play_callback(const char * client_uuid, int32_t type, const char * attendant_uuid);
 					int32_t state(int32_t type);

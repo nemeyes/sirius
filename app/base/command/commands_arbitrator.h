@@ -58,7 +58,7 @@ namespace sirius
 						wpacket["rcode"] = status;
 						std::string response = writer.write(wpacket);
 
-						session->push_send_packet(session->uuid(), uuid(), CMD_CONNECT_CLIENT_RES, (char*)response.c_str(), response.size() + 1);
+						session->send(session->uuid(), uuid(), CMD_CONNECT_CLIENT_RES, (char*)response.c_str(), response.size() + 1);
 					}
 				};
 
@@ -80,7 +80,7 @@ namespace sirius
 						wpacket["rcode"] = status;
 						std::string response = writer.write(wpacket);
 
-						session->push_send_packet(session->uuid(), uuid(), CMD_DISCONNECT_CLIENT_RES, (char*)response.c_str(), response.size() + 1);
+						session->send(session->uuid(), uuid(), CMD_DISCONNECT_CLIENT_RES, (char*)response.c_str(), response.size() + 1);
 					}
 				};
 				//end client <-> arbitrator
@@ -109,7 +109,7 @@ namespace sirius
 						wpacket["rcode"] = status;
 						std::string response = writer.write(wpacket);
 
-						session->push_send_packet(session->uuid(), uuid(), CMD_CONNECT_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
+						session->send(session->uuid(), uuid(), CMD_CONNECT_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
 					}
 				};
 

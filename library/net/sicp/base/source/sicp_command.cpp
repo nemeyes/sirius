@@ -1,7 +1,7 @@
 #include <sirius_uuid.h>
 #include <sicp_command.h>
 
-sirius::library::net::sicp::abstract_command::abstract_command(sirius::library::net::sicp::processor * prcsr, int32_t command_id)
+sirius::library::net::sicp::abstract_command::abstract_command(sirius::library::net::sicp::sicp_processor * prcsr, int32_t command_id)
 	: _processor(prcsr)
 	, _command_id(command_id)
 {
@@ -29,14 +29,14 @@ sirius::library::net::sicp::abstract_command::~abstract_command(void)
 	_tp_ready_workers.clear();
 }
 
-void sirius::library::net::sicp::abstract_command::set_processor(sirius::library::net::sicp::processor * prcsr)
+void sirius::library::net::sicp::abstract_command::set_processor(sirius::library::net::sicp::sicp_processor * prcsr)
 {
 	_processor = prcsr;
 	if (_processor)
 		_processor->add_worker(this);
 }
 
-sirius::library::net::sicp::processor * sirius::library::net::sicp::abstract_command::get_processor(void)
+sirius::library::net::sicp::sicp_processor * sirius::library::net::sicp::abstract_command::get_processor(void)
 {
 	return _processor;
 }
@@ -68,7 +68,7 @@ bool sirius::library::net::sicp::abstract_command::is_running(void)
 
 void sirius::library::net::sicp::abstract_command::_execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	if(_processor->is_run())
+	if(_processor->active())
 	{
 		sirius::library::net::sicp::abstract_command::tp_worker_scopped_lock mutex(&_srwl);
 		std::shared_ptr<sirius::library::net::sicp::abstract_command::tp_worker> worker = std::shared_ptr<sirius::library::net::sicp::abstract_command::tp_worker>(new sirius::library::net::sicp::abstract_command::tp_worker);
@@ -108,7 +108,7 @@ void sirius::library::net::sicp::abstract_command::__execute(void)
 			_tp_ready_workers.pop_front();
 		}
 	}
-	if (worker && _processor->is_run())
+	if (worker && _processor->active())
 		execute(worker->destination, worker->source, _command_id, worker->version, worker->msg, worker->length, worker->session);
 
 	//{
@@ -122,7 +122,7 @@ void sirius::library::net::sicp::abstract_command::__execute(void)
 }
 
 #if defined(WITH_WORKING_AS_SERVER)
-sirius::library::net::sicp::create_session_req::create_session_req(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::create_session_req::create_session_req(sirius::library::net::sicp::sicp_processor * prcsr)
 		: abstract_command(prcsr, CMD_CREATE_SESSION_REQUEST)
 {}
 
@@ -134,14 +134,14 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	CMD_CREATE_SESSION_RES_T res;
 	memset(&res, 0x00, sizeof(CMD_CREATE_SESSION_RES_T));
 
-	if (session->assoc_flag())	//이미 Assoc이 되어 있으면 처리를 하지 않는다.
+	if (session->register_flag())	//이미 Assoc이 되어 있으면 처리를 하지 않는다.
 	{
 
-		strcpy_s(res.uuid, src);
-		session->uuid(res.uuid);
+		//strcpy_s(res.uuid, src);
+		//session->uuid(res.uuid);
 		res.code = CMD_ERR_CODE_SUCCESS;
 
-		session->push_send_packet(session->uuid(), uuid(), CMD_CREATE_SESSION_RESPONSE, reinterpret_cast<char*>(&res), sizeof(CMD_CREATE_SESSION_RES_T));
+		session->send(session->uuid(), uuid(), CMD_CREATE_SESSION_RESPONSE, reinterpret_cast<char*>(&res), sizeof(CMD_CREATE_SESSION_RES_T));
 		return;
 	}
 
@@ -152,7 +152,7 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 		sirius::uuid  gen_uuid;
 		gen_uuid.create();
 
-		code = _processor->register_assoc_client(gen_uuid.c_str(), session);
+		code = _processor->activate_session(gen_uuid.c_str(), session);
 		if (code)
 		{
 			strcpy_s(res.uuid, gen_uuid.c_str());
@@ -165,7 +165,7 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	{
 		if (strlen(src)>0)
 		{
-			code = _processor->register_assoc_client(src, session);
+			code = _processor->activate_session(src, session);
 			if (code)
 			{
 				strcpy_s(res.uuid, src);
@@ -177,13 +177,13 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 		else
 			res.code = CMD_ERR_CODE_FAIL;
 	}
-	session->push_send_packet(session->uuid(), uuid(), CMD_CREATE_SESSION_RESPONSE, reinterpret_cast<char*>(&res), sizeof(CMD_CREATE_SESSION_RES_T));
+	session->send(session->uuid(), uuid(), CMD_CREATE_SESSION_RESPONSE, reinterpret_cast<char*>(&res), sizeof(CMD_CREATE_SESSION_RES_T));
 	if (code)
-		_processor->create_session_completion_callback(res.uuid, session);
+		_processor->on_create_session(res.uuid, session);
 }
 
 #else
-sirius::library::net::sicp::create_session_res::create_session_res(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::create_session_res::create_session_res(sirius::library::net::sicp::sicp_processor * prcsr)
 	: abstract_command(prcsr, CMD_CREATE_SESSION_RESPONSE)
 {}
 
@@ -201,13 +201,13 @@ void sirius::library::net::sicp::create_session_res::execute(const char * dst, c
 		//session->assoc_flag(true);
 		session->uuid(payload.uuid);
 		_processor->uuid(payload.uuid);
-		_processor->create_session_completion_callback(session);
+		_processor->on_create_session(session);
 	}
 }
 #endif
 
 #if defined(WITH_WORKING_AS_SERVER)
-sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::sicp_processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_DESTROY_SESSION_INDICATION)
 {}
 
@@ -216,15 +216,15 @@ sirius::library::net::sicp::destroy_session_noti::~destroy_session_noti(void)
 
 void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	if (!session->assoc_flag())	//이미 Leave 되어 있으면 처리를 하지 않는다.
+	if (!session->register_flag())	//이미 Leave 되어 있으면 처리를 하지 않는다.
 		return;
-	session->assoc_flag(false);
+	session->register_flag(false);
 
 	if(_processor)
-		_processor->destroy_session_completion_callback(src, session);
+		_processor->on_destroy_session(src, session);
 }
 #else
-sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::sicp_processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_DESTROY_SESSION_INDICATION)
 {}
 
@@ -233,11 +233,11 @@ sirius::library::net::sicp::destroy_session_noti::~destroy_session_noti(void)
 
 void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	_processor->enable_disconnect_flag(true);
+	//_processor->enable_disconnect_flag(true);
 }
 #endif
 
-sirius::library::net::sicp::keepalive_req::keepalive_req(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::keepalive_req::keepalive_req(sirius::library::net::sicp::sicp_processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_KEEPALIVE_REQUEST)
 {}
 
@@ -246,10 +246,10 @@ sirius::library::net::sicp::keepalive_req::~keepalive_req(void)
 
 void sirius::library::net::sicp::keepalive_req::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	session->push_send_packet(SERVER_UUID, uuid(), CMD_KEEPALIVE_RESPONSE, nullptr, 0);
+	session->send(SERVER_UUID, uuid(), CMD_KEEPALIVE_RESPONSE, nullptr, 0);
 }
 
-sirius::library::net::sicp::keepalive_res::keepalive_res(sirius::library::net::sicp::processor * prcsr)
+sirius::library::net::sicp::keepalive_res::keepalive_res(sirius::library::net::sicp::sicp_processor * prcsr)
 	: sirius::library::net::sicp::abstract_command(prcsr, CMD_KEEPALIVE_RESPONSE)
 {}
 

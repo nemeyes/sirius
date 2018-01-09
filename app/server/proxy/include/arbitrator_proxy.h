@@ -59,8 +59,8 @@ namespace sirius
 					static void	retrieve_db_path(char * path);
 
 				private:
-					void	create_session_callback(const char * uuid);
-					void	destroy_session_callback(const char * uuid);
+					void	on_create_session(const char * uuid);
+					void	on_destroy_session(const char * uuid);
 
 					int32_t get_attendant_count(void);
 					int32_t get_launcher_count(void);
