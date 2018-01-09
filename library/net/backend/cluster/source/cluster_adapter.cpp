@@ -164,11 +164,11 @@ int32_t sirius::library::net::backend::cluster_adapter::client_connect(char* cli
 				_ssp_bufpos = 0;
 
 			if (_client_count >= _max_attendant * (1.0 - 5.0 / 100.0))
-				LOGGER::make_error_log(SAA, "%s(),%d [CRITICAL] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::slot_count_danger_ct, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
+				LOGGER::make_error_log(SAA, "%s(),%d [CRITICAL] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::attendant_count_danger_ct, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
 			else if (_client_count >= _max_attendant * (1.0 - 10.0 / 100.0))
-				LOGGER::make_error_log(SAA, "%s(),%d [MAJOR] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::slot_count_danger_mg, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
+				LOGGER::make_error_log(SAA, "%s(),%d [MAJOR] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::attendant_count_danger_mg, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
 			else if (_client_count >= _max_attendant * (1.0 - 20.0 / 100.0))
-				LOGGER::make_error_log(SAA, "%s(),%d [MINOR] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::slot_count_danger_mn, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
+				LOGGER::make_error_log(SAA, "%s(),%d [MINOR] attendant count danger(error_code:%d) max_attendant_count %.0f%% max=%d, attendant_count=%I64d", __FUNCTION__, __LINE__, sirius::base::err_code_t::attendant_count_danger_mn, ((double)_client_count / (double)_max_attendant * 100), _max_attendant, _client_count);
 		}
 
 	return true;
