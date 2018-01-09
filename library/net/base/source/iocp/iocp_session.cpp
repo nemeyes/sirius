@@ -509,6 +509,8 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 	sirius::library::net::iocp::session::io_context_t * p = (sirius::library::net::iocp::session::io_context_t*)overlapped;
 	std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();
 	std::shared_ptr<sirius::library::net::iocp::session> self = shared_from_this();
+	if (self)
+		self->update_timestamp();
 
 	DWORD dwOverlappeddNumberOfBytesTransferred = 0, dwOverlappedFlags = 0;
 	BOOL succeeded = ::WSAGetOverlappedResult(_socket, overlapped, &dwOverlappeddNumberOfBytesTransferred, TRUE, &dwOverlappedFlags);
