@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4065BC18-D846-4E23-A16F-3FECCB1A1CE3}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>sirius_loadrunner</RootNamespace>
+    <ProjectGuid>{B6643F8B-9FCC-4B21-8A73-7ABEB036A683}</ProjectGuid>
+    <RootNamespace>sirius_stressor</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>sirius_stressor</ProjectName>
+    <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -31,6 +30,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,12 +38,14 @@
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -51,6 +53,7 @@
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -72,7 +75,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\</OutDir>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\apps\client\stressor\</OutDir>
     <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -80,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\</OutDir>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\apps\client\stressor\</OutDir>
     <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,74 +91,136 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\curl\v7_50_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\framework\client\base\include;..\..\..\library\net\curl\client\include;..\..\..\library\misc\xml\parser\include;..\..\..\app\client\proxy\include;..\..\..\app\client\stressor;..\..\..\app\client\stressor\core;..\..\..\app\client\stressor\framework;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wtsapi32.lib;userenv.lib;rpcrt4.lib;lib_json_mdd.lib;libcurl.lib;tinyxml.lib;sirius_log4cplus_logger.lib;sirius_xml_parser.lib;sirius_curl_client.lib;sirius_client_proxy.lib;sirius_unified_client.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\curl\v7_50_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\curl\v7_50_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\framework\client\base\include;..\..\..\library\net\curl\client\include;..\..\..\library\misc\xml\parser\include;..\..\..\app\client\proxy\include;..\..\..\app\client\stressor;..\..\..\app\client\stressor\core;..\..\..\app\client\stressor\framework;..\..\..\library\unified\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>
-      </ForceSymbolReferences>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;wtsapi32.lib;userenv.lib;rpcrt4.lib;lib_json_md.lib;libcurl.lib;tinyxml.lib;sirius_log4cplus_logger.lib;sirius_xml_parser.lib;sirius_curl_client.lib;sirius_client_proxy.lib;sirius_unified_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\curl\v7_50_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Image Include="..\..\..\app\client\stressor\res\sirius_stressor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\app\client\stressor\res\sirius_stressor.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\app\client\stressor\sirius_stressor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\app\client\stressor\core\stressor_controller.cpp" />
+    <ClCompile Include="..\..\..\app\client\stressor\framework\native_stressor_framework.cpp" />
+    <ClCompile Include="..\..\..\app\client\stressor\framework\sirius_native_stressor_framework.cpp" />
+    <ClCompile Include="..\..\..\app\client\stressor\SiriusStressor.cpp" />
+    <ClCompile Include="..\..\..\app\client\stressor\SiriusStressorDlg.cpp" />
+    <ClCompile Include="..\..\..\app\client\stressor\stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\app\client\stressor\core\stressor_controller.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\framework\native_stressor_framework.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\framework\sirius_native_stressor_framework.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\Resource.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\SiriusStressor.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\SiriusStressorDlg.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\stdafx.h" />
+    <ClInclude Include="..\..\..\app\client\stressor\targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\app\client\stressor\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
