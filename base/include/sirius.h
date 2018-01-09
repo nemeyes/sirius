@@ -46,21 +46,21 @@ namespace sirius
 
 			static const int32_t expected = 100;
 
-			static const int32_t slot_full = 1201;
-			static const int32_t Json_parser_fail = 1202;
-			static const int32_t slot_launcher_fail = 1203;
+			static const int32_t attendant_full = 1201;
+			static const int32_t json_parser_fail = 1202;
+			static const int32_t attendant_launcher_fail = 1203;
 			static const int32_t invaild_appid = 1204;
 			static const int32_t duplicate_uuid = 1205;
-			static const int32_t duplicate_device_id = 1206;
+			static const int32_t duplicate_client_id = 1206;
 			static const int32_t invalid_device_type = 1207;
 			static const int32_t invalid_parameter = 1208;
 			static const int32_t unsupported_resolution = 1209;
 			static const int32_t not_implemented = 1301;
 			static const int32_t socket_error = 1401;
 			static const int32_t max_es_size_over = 1402;
-			static const int32_t slot_count_danger_mn = 1403;
-			static const int32_t slot_count_danger_mg = 1404;
-			static const int32_t slot_count_danger_ct = 1405;
+			static const int32_t attendant_count_danger_mn = 1403;
+			static const int32_t attendant_count_danger_mg = 1404;
+			static const int32_t attendant_count_danger_ct = 1405;
 			static const int32_t gpu_load_danger_mg = 1406;
 			static const int32_t gpu_load_danger_ct = 1407;
 			static const int32_t gpu_error_detection = 1408;

@@ -506,44 +506,42 @@ void sirius::library::net::iocp::session::on_send(std::shared_ptr<sirius::librar
 
 void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, LPOVERLAPPED overlapped)
 {
-	BOOL bclose = FALSE;
+	sirius::library::net::iocp::session::io_context_t * p = (sirius::library::net::iocp::session::io_context_t*)overlapped;
+	std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();
+	std::shared_ptr<sirius::library::net::iocp::session> self = shared_from_this();
+
+	DWORD dwOverlappeddNumberOfBytesTransferred = 0, dwOverlappedFlags = 0;
+	BOOL succeeded = ::WSAGetOverlappedResult(_socket, overlapped, &dwOverlappeddNumberOfBytesTransferred, TRUE, &dwOverlappedFlags);
+	io_context->result = ::WSAGetLastError();
+
+	if (io_context->operation==sirius::library::net::iocp::io_context_t::operation_t::connect)
 	{
-		sirius::library::net::iocp::session::io_context_t * io_context = (sirius::library::net::iocp::session::io_context_t*)overlapped;
-
-		DWORD dwOverlappeddNumberOfBytesTransferred = 0, dwOverlappedFlags = 0;
-		BOOL succeeded = ::WSAGetOverlappedResult(_socket, overlapped, &dwOverlappeddNumberOfBytesTransferred, TRUE, &dwOverlappedFlags);
-		io_context->result = ::WSAGetLastError();
-
-		if (io_context->operation==sirius::library::net::iocp::io_context_t::operation_t::connect)
-		{
-			if ((_socket_listen == INVALID_SOCKET) || (_socket_listen == 0))
-				on_connect(io_context->shared_from_this());
-			else
-				on_accept(io_context->shared_from_this());
-		}
-		else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::recv)
-		{
-			if(_tls)
-				io_context->ssl_packet_size = bytes_transfered;
-			else
-				io_context->packet_size = bytes_transfered;
-			on_recv(io_context->shared_from_this());
-		}
-		else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::send)
-		{
-			if (_tls)
-				io_context->ssl_packet_size = bytes_transfered;
-			else
-				io_context->packet_size = bytes_transfered;
-			on_send(io_context->shared_from_this());
-		}
-
-		if (_status == sirius::library::net::iocp::session::status_t::closed)
-			bclose = TRUE;
+		if ((_socket_listen == INVALID_SOCKET) || (_socket_listen == 0))
+			on_connect(io_context);
+		else
+			on_accept(io_context);
+	}
+	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::recv)
+	{
+		if(_tls)
+			io_context->ssl_packet_size = bytes_transfered;
+		else
+			io_context->packet_size = bytes_transfered;
+		on_recv(io_context);
+	}
+	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::send)
+	{
+		if (_tls)
+			io_context->ssl_packet_size = bytes_transfered;
+		else
+			io_context->packet_size = bytes_transfered;
+		on_send(io_context);
 	}
 
-	if (bclose)
-		_processor->on_session_close(shared_from_this());
+	if (_status == sirius::library::net::iocp::session::status_t::closed)
+	{
+		_processor->on_session_close(self);
+	}
 }
 
 BOOL sirius::library::net::iocp::session::process(void)

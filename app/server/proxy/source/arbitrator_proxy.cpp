@@ -223,7 +223,10 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		free(attendant);
 		attendant = nullptr;
 	}
-	return status;
+	if (count < 1)
+		return sirius::app::server::arbitrator::proxy::err_code_t::attendant_full;
+	else
+		return status;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const char * uuid)
