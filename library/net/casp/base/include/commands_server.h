@@ -7,7 +7,6 @@
 #include "commands_payload.h"
 #include "casp_server.h"
 #include <sirius_log4cplus_logger.h>
-
 namespace sirius
 {
 	namespace library
@@ -39,7 +38,7 @@ namespace sirius
 
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
-						_cmes->client_request_stream_res(session->uuid(), msg, length, session->fd());
+						_cmes->client_request_stream_res(session->uuid(), msg, length, session->socket());
 					}
 				};
 			};

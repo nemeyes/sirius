@@ -110,8 +110,8 @@ namespace sirius
 					int32_t pause(int32_t flags);
 					int32_t stop(int32_t flags);
 
-					void create_session_callback(const char * uuid);
-					void destroy_session_callback(const char * uuid);
+					void on_create_session(const char * uuid);
+					void on_destroy_session(const char * uuid);
 					void polling_callback() {};
 					int32_t client_request_stream_res(const char * client_uuid, const char * msg, int length, SOCKET clientsocket);
 					

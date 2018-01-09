@@ -40,8 +40,8 @@ namespace sirius
 					void request_play_video(void);
 
 					//callback
-					void create_session_callback(void);
-					void destroy_session_callback(void);
+					void on_create_session(void);
+					void on_destroy_session(void);
 
 					void av_stream_callback(const char * msg, int32_t length);
 
