@@ -58,17 +58,11 @@ void stressor_controller::on_pre_disconnect(void)
 
 void stressor_controller::on_post_disconnect(void)
 {
-	if (_hmodule)
+	if (_framework)
 	{
-		fpn_destory_client_framework pfn_destroy = (fpn_destory_client_framework)::GetProcAddress(_hmodule, "destroy_client_framework");
-		if (_framework)
-		{
-			_framework->stop();
-			(pfn_destroy)(&_framework);
-			_framework = nullptr;
-		}
-		FreeLibrary(_hmodule);
-		_hmodule = NULL;
+		_framework->stop();
+		delete _framework;
+		_framework = nullptr;
 	}
 }
 
