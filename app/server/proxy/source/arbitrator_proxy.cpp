@@ -9,7 +9,7 @@
 #include "sirius_version.h"
 
 sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
+	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, TRUE, FALSE)
 	, _front(front)
 	, _monitor(nullptr)
 	, _run(false)
@@ -223,7 +223,10 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		free(attendant);
 		attendant = nullptr;
 	}
-	return status;
+	if (count < 1)
+		return sirius::app::server::arbitrator::proxy::err_code_t::attendant_full;
+	else
+		return status;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const char * uuid)

@@ -235,10 +235,10 @@ void sirius::library::net::iocp::client::on_session_connect(std::shared_ptr<siri
 
 void sirius::library::net::iocp::client::on_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
-	_on_disconnected = TRUE;
-	_on_connected = FALSE;
 	on_app_session_close(session);
 	destroy_session(session);
+	_on_disconnected = TRUE;
+	_on_connected = FALSE;
 }
 
 void sirius::library::net::iocp::client::execute(void)

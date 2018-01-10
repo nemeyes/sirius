@@ -44,36 +44,23 @@ namespace sirius
 			static const int32_t too_large_file = 98;
 			static const int32_t too_low_quality = 99;
 
-			static const int32_t expected = 100;
-
-			static const int32_t slot_full = 1201;
-			static const int32_t Json_parser_fail = 1202;
-			static const int32_t slot_launcher_fail = 1203;
-			static const int32_t invaild_appid = 1204;
-			static const int32_t duplicate_uuid = 1205;
-			static const int32_t duplicate_device_id = 1206;
-			static const int32_t invalid_device_type = 1207;
-			static const int32_t invalid_parameter = 1208;
-			static const int32_t unsupported_resolution = 1209;
-			static const int32_t not_implemented = 1301;
-			static const int32_t socket_error = 1401;
-			static const int32_t max_es_size_over = 1402;
-			static const int32_t slot_count_danger_mn = 1403;
-			static const int32_t slot_count_danger_mg = 1404;
-			static const int32_t slot_count_danger_ct = 1405;
-			static const int32_t gpu_load_danger_mg = 1406;
-			static const int32_t gpu_load_danger_ct = 1407;
-			static const int32_t gpu_error_detection = 1408;
-			static const int32_t invalid_file_path = 1409;
-			static const int32_t unsupported_media_file = 1410;
-			static const int32_t invalid_media_file = 1411;
-			static const int32_t corrupted_media_file = 1412;
-			static const int32_t not_found_sirius_ini = 1501;
-			static const int32_t not_found_applist_json = 1502;
-			static const int32_t not_found_sirius_ip = 1503;
-			static const int32_t port_is_already_use = 1504;
-
-
+			static const int32_t attendant_full = 100;
+			static const int32_t json_parser_fail = 101;
+			static const int32_t attendant_launcher_fail = 102;
+			static const int32_t duplicate_uuid = 103;
+			static const int32_t duplicate_client_id = 104;
+			static const int32_t invalid_device_type = 105;
+			static const int32_t invalid_parameter = 106;
+			static const int32_t unsupported_resolution = 107;
+			static const int32_t not_implemented = 108;
+			static const int32_t socket_error = 109;
+			static const int32_t max_es_size_over = 110;
+			static const int32_t attendant_count_danger_mn = 111;
+			static const int32_t attendant_count_danger_mg = 112;
+			static const int32_t attendant_count_danger_ct = 113;
+			static const int32_t invalid_file_path = 114;
+			static const int32_t port_is_already_use = 115;
+			static const int32_t max_err_count = 115;
 
 		} err_code_t;
 
