@@ -55,7 +55,7 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 		Sleep(100);
 		if (strlen(_localip) != 0)
 		{
-			_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=OPEN&client_id=NULL",
+			_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=OPEN&client_id=NULL",
 				get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, _client_count);
 			_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
 			if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
@@ -89,7 +89,7 @@ void sirius::library::net::backend::cluster_adapter::stop()
 		if (strlen(_localip) > 0)
 		{
 			char ssp_data[MAX_BACKOFFICE_DATA_BUFFER] = { 0, };
-			_snprintf_s(ssp_data, sizeof(ssp_data), "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=CLOSE&client_id=NULL",
+			_snprintf_s(ssp_data, sizeof(ssp_data), "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=CLOSE&client_id=NULL",
 				get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, _client_count);
 			sirius::library::net::curl::client curl_ssp(30);
 			char url[100] = { 0, };
@@ -157,7 +157,7 @@ int32_t sirius::library::net::backend::cluster_adapter::client_connect(char* cli
 				_ssp_queue.clear();
 				_ssp_bufpos = 0;
 			}
-			_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=OPEN&client_id=%s",
+			_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=OPEN&client_id=%s",
 				get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, use_count, client_id);
 			_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
 			if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
@@ -191,7 +191,7 @@ int32_t sirius::library::net::backend::cluster_adapter::client_disconnect(char* 
 			_ssp_queue.clear();
 			_ssp_bufpos = 0;
 		}
-		_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=CLOSE&client_id=%s&idc=%s",
+		_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%d&id=SIRIUS&status=CLOSE&client_id=%s&idc=%s",
 			get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, use_count, client_id, get_idc_code().c_str());
 		_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
 		if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
@@ -310,7 +310,7 @@ unsigned sirius::library::net::backend::cluster_adapter::ssp_queue_thread(void *
 void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD dw_user, DWORD dw1, DWORD dw2)
 {
 	char ssm_data[MAX_PATH] = { 0, };
-	_snprintf(ssm_data, MAX_PATH, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=ALIVE",
+	_snprintf(ssm_data, MAX_PATH, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=ALIVE",
 		SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip);
 	sirius::library::net::curl::client curl_ssm(SENDING_TIME);
 	char url[100] = { 0, };
