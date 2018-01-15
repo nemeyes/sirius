@@ -83,12 +83,12 @@ void sirius::library::net::backend::cluster::core::ssm_service_info(char* status
 		if (strcmp(status, "START") == 0)
 		{
 			SSP_ADT._max_attendant = attendant_instance;
-			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?attendant_instance=%d&cpu_name=%s&gpu_name=%s&memory=%d&host_name=%s&os_version=%s&sirius_version=%s&sirius_ip=%s&sirius_status=%s",
+			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?max_user=%d&cpu_name=%s&gpu_name=%s&memory=%d&host_name=%s&os_version=%s&sirius_version=%s&sirius_ip=%s&sirius_status=%s",
 				SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), attendant_instance, _cpu, _gpu_name, _memory, _host_name, _os, GEN_VER_VERSION_STRING, SSP_ADT._localip, status);
 		}
 		else
 		{
-			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/BC/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=%s",
+			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=%s",
 				SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip, status);
 		}
 		sirius::library::net::curl::client curl_ssm(SENDING_TIME);
@@ -100,6 +100,8 @@ void sirius::library::net::backend::cluster::core::ssm_service_info(char* status
 			int err = curl_ssm.get_send_err();
 			if (err != CURLE_OPERATION_TIMEDOUT)
 				LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, etc_error!!!!! ssm_serv_info (error_code:%d) url=%s", __FUNCTION__, __LINE__, err, ssm_data);
+			else
+				LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, time out!!!!! ssm_serv_info (error_code:%d) url=%s", __FUNCTION__, __LINE__, err, ssm_data);
 		}
 		else
 			LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, ssm_serv_info url=%s", __FUNCTION__, __LINE__, ssm_data);
@@ -116,11 +118,11 @@ void sirius::library::net::backend::cluster::core::stop(void)
 void sirius::library::net::backend::cluster::core::set_cluster_init(sirius::library::net::backend::cluster * client)
 {
 	_front = client;
-	_snprintf_s(_ssp_url, 100, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do", _ssp_ip.c_str(), _ssp_port.c_str());
+	_snprintf_s(_ssp_url, 100, "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do", _ssp_ip.c_str(), _ssp_port.c_str());
 	_curl_ssp = new sirius::library::net::curl::client(SENDING_TIME);
 	_curl_ssp->set_url(_ssp_url, strlen(_ssp_url));
 
-	_snprintf_s(_ssm_url, 100, "http://%s:%s/BC/SSPS/IFSSP_STATUS_INFO.do", _ssm_ip.c_str(), _ssm_port.c_str());
+	_snprintf_s(_ssm_url, 100, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do", _ssm_ip.c_str(), _ssm_port.c_str());
 	_curl_ssm = new sirius::library::net::curl::client(SENDING_TIME);
 	_curl_ssm->set_url(_ssm_url, strlen(_ssm_url));
 }
