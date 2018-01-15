@@ -98,11 +98,23 @@ namespace sirius
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
 						Json::Value rpacket("");
-						Json::Reader reader;
-						reader.parse(msg, rpacket);
+						std::string rerr = "";
+						Json::CharReaderBuilder rbuilder;
+						std::shared_ptr<Json::CharReader> const reader(rbuilder.newCharReader());
+						reader->parse(msg, msg + length, &rpacket, &rerr);
 
-						std::string id = rpacket.get("id", "").asString();
-						int32_t status = _proxy->connect_attendant_callback(src, id.c_str());
+						int32_t id = -1;
+						int32_t pid = -1;
+
+						if (rpacket["id"].isInt())
+							id = rpacket.get("id", -1).asInt();
+
+						if (rpacket["pid"].isInt())
+							pid = rpacket.get("pid", -1).asInt();
+
+						std::string attendant_uuid = rpacket.get("uuid", "-").asString();
+
+						int32_t status = _proxy->connect_attendant_callback(attendant_uuid.c_str(), id, pid);
 
 						Json::Value wpacket;
 						Json::StyledWriter writer;

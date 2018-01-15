@@ -33,16 +33,16 @@ namespace sirius.app.server.arbitrator.Control
             chart_view_model.handle.cpu_chart.Category = SettingValue.Instance().cpu + "\r\n\r\n";
             chart_view_model.handle.memory_chart.Category = "Memory Installed : " + SettingValue.Instance().memory + "\r\n\r\n";
 
-            if (SettingValue.Instance().enable_auto_start)
-            {
-               start_button.IsEnabled = false;
-               stop_button.IsEnabled = false;
-            }
-            else
-            {
-                start_button.IsEnabled = true;
-                stop_button.IsEnabled = false;
-            }  
+            //if (SettingValue.Instance().enable_auto_start)
+            //{
+            //   start_button.IsEnabled = false;
+            //   stop_button.IsEnabled = false;
+            //}
+            //else
+            //{
+            //    start_button.IsEnabled = true;
+            //    stop_button.IsEnabled = false;
+            //}  
         }
     
         private void ShellView_Loaded(object sender, RoutedEventArgs e)

@@ -38,10 +38,9 @@ namespace sirius
 						int32_t retrieve(sirius::app::server::arbitrator::entity::attendant_t *** entity, int32_t & count, sqlite3 * connection = nullptr);
 						int32_t retrieve(int32_t state, sirius::app::server::arbitrator::entity::attendant_t *** entity, int32_t & count, sqlite3 * connection = nullptr);
 						int32_t retrieve(const char * client_uuid, sirius::app::server::arbitrator::entity::attendant_t * entity, sqlite3 * connection = nullptr);
-
-					private:
+						
 						int32_t retrieve_count(sqlite3 * connection = nullptr);
-						int32_t retrieve_count(int32_t state, sqlite3 * connection = nullptr);
+						int32_t retrieve_count(int32_t state, sqlite3 * connection = nullptr);											
 					};
 				};
 			};

@@ -97,8 +97,8 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
 
-            if (enable_auto_start)
-                controller.start();
+            //if (enable_auto_start)
+            //    controller.start();
         }
         public unsafe void on_system_monitor_info(double cpu_usage, double memory_usage)
         {
