@@ -56,16 +56,17 @@ namespace sirius.app.server.arbitrator.Settings
                 DisaplyAttendantOff.IsChecked = true;
             }
 
-            if (setting_value.enable_auto_start)
-            {
-                AutostartOn.IsChecked = true;
-                AutostartOff.IsChecked = false;
-            }
-            else
-            {
-                AutostartOn.IsChecked = false;
-                AutostartOff.IsChecked = true;
-            }
+            setting_value.enable_auto_start = true;
+            //if (setting_value.enable_auto_start)
+            //{
+            //    AutostartOn.IsChecked = true;
+            //    AutostartOff.IsChecked = false;
+            //}
+            //else
+            //{
+            //    AutostartOn.IsChecked = false;
+            //    AutostartOff.IsChecked = true;
+            //}
         }
         private void attendants_set_apply_click(object sender, RoutedEventArgs e)
         {
@@ -81,10 +82,11 @@ namespace sirius.app.server.arbitrator.Settings
             else
                 setting_value.enable_present = false;
 
-            if (AutostartOn.IsChecked.Value)
-                setting_value.enable_auto_start = true;
-            else
-                setting_value.enable_auto_start = false;
+            setting_value.enable_auto_start = true;
+            //if (AutostartOn.IsChecked.Value)
+            //    setting_value.enable_auto_start = true;
+            //else
+            //    setting_value.enable_auto_start = false;
 
             setting_value.update();
         }

@@ -128,7 +128,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\misc\notification\internal\notifier\include;..\..\..\library\misc\injector\include;..\..\..\library\video\base\include;..\..\..\library\video\source\base\include;..\..\..\library\video\source\cpu\capturer\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\unified\server\include;..\..\..\library\framework\server\base\include;..\..\..\library\framework\server\web\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

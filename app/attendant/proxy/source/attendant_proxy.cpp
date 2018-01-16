@@ -15,7 +15,7 @@ typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::
 #define MTU_SIZE					1500
 
 sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid)
-	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, TRUE, FALSE)
+	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, FALSE)
 	, _front(front)
 	, _framework_context(NULL)
 	, _framework(NULL)
@@ -280,9 +280,10 @@ void sirius::app::attendant::proxy::core::on_create_session(void)
 
 	char * uuid = nullptr;
 	sirius::stringhelper::convert_wide2multibyte(_context->uuid, &uuid);
-
+	
 	if (uuid && strlen(uuid) > 0)
 	{
+		wpacket["pid"] = _pid;
 		wpacket["uuid"] = uuid;
 		std::string request = writer.write(wpacket);
 

@@ -65,7 +65,7 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::remove(sirius::app::
 		conn = connection;
 
 	sqlite3_stmt *stmt;
-	if (sqlite3_prepare(conn, "DELETE FROM tb_attendant WHERE pid=?;", -1, &stmt, 0) == SQLITE_OK)
+	if (sqlite3_prepare(conn, "DELETE FROM tb_attendant WHERE id=?;", -1, &stmt, 0) == SQLITE_OK)
 	{
 		sqlite3_bind_int(stmt, 1, entity->id);
 		int result = SQLITE_ERROR;
@@ -122,20 +122,20 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::update(sirius::app::
 
 	std::string sql = "UPDATE tb_attendant SET ";
 	sql += "uuid=?, client_uuid=?, ";
-	sql += "id=?, client_id=?, ";
+	sql += "pid=?, client_id=?, ";
 	sql += "state=?, total_bandwidth_bytes=? ";
-	sql += "WHERE pid=?";
+	sql += "WHERE id=?";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
 		int32_t index = 0;
 		sqlite3_bind_text(stmt, ++index, entity->uuid, -1, 0);
 		sqlite3_bind_text(stmt, ++index, entity->client_uuid, -1, 0);
-		sqlite3_bind_int(stmt, ++index, entity->id);
+		sqlite3_bind_int(stmt, ++index, entity->pid);
 		sqlite3_bind_text(stmt, ++index, entity->client_id, -1, 0);
 		sqlite3_bind_int(stmt, ++index, entity->state);
 		sqlite3_bind_int64(stmt, ++index, entity->total_bandwidth_bytes);
-		sqlite3_bind_int(stmt, ++index, entity->pid);
+		sqlite3_bind_int(stmt, ++index, entity->id);
 
 		int32_t result = sqlite3_step(stmt);
 		if (result == SQLITE_DONE)
