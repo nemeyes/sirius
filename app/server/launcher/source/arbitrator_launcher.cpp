@@ -3,6 +3,7 @@
 #include <attendant_dao.h>
 #include <attendant_entity.h>
 #include <process_controller.h>
+#include <sirius_stringhelper.h>
 #include <map>
 
 #define ARGUMENT_SIZE	1024
@@ -109,13 +110,11 @@ int main()
 	HWND hwnd = GetConsoleWindow();
 	ShowWindow(hwnd, 0);
 
-	bool attdendant_resurrection = false;
 	context_t context;
 	wchar_t * command = GetCommandLine();
 	const wchar_t * option = wcschr(command, L'--');
 	if (option)
 	{
-		attdendant_resurrection = true;
 		int32_t argc = 0;
 		LPWSTR * argv = ::CommandLineToArgvW(command, &argc);		
 		parse_argument(argc, argv, &context);
@@ -133,7 +132,7 @@ int main()
 
 	if (status == sirius::base::err_code_t::success)
 	{
-		if (!attdendant_resurrection)
+		if (!option)
 		{
 			for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
 			{
@@ -147,7 +146,7 @@ int main()
 				memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 				contenity.id = index;
 				memset(contenity.client_id, 0x00, sizeof(contenity.client_id));
-				contenity.state = attendant_state_t::idle;
+				contenity.state = attendant_state_t::available;
 				contenity.total_bandwidth_bytes = 0;
 
 				sirius::app::server::arbitrator::process::controller proc_ctrl;
@@ -193,7 +192,7 @@ int main()
 				proc_ctrl.set_cmdline(arguments, "--disable-web-security --ignore-certificate-errors");
 
 				status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
-
+		
 				::Sleep(confentity.attendant_creation_delay);
 			}
 		}
@@ -206,10 +205,9 @@ int main()
 
 			sirius::app::server::arbitrator::entity::attendant_t contenity;
 
-			char multibyte_uuid[64] = { 0 };
-			WideCharToMultiByte(CP_ACP, 0, context.uuid, -1, multibyte_uuid, 1024, NULL, NULL);
-			memmove(contenity.uuid, multibyte_uuid, strlen(multibyte_uuid) + 1);
-
+			char * uuid = nullptr;
+			sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
+			memmove(contenity.uuid, uuid, strlen(uuid) + 1);
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 			contenity.id = context.id;
 			memset(contenity.client_id, 0x00, sizeof(contenity.client_id));
@@ -259,6 +257,9 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--disable-web-security --ignore-certificate-errors");
 
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
+	
+			free(uuid);
+			uuid = nullptr;
 			
 		}		
 	}

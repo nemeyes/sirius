@@ -111,10 +111,8 @@ namespace sirius
 
 						if (rpacket["pid"].isInt())
 							pid = rpacket.get("pid", -1).asInt();
-
-						std::string attendant_uuid = rpacket.get("uuid", "-").asString();
-
-						int32_t status = _proxy->connect_attendant_callback(attendant_uuid.c_str(), id, pid);
+						
+						int32_t status = _proxy->connect_attendant_callback(src, id, pid);
 
 						Json::Value wpacket;
 						Json::StyledWriter writer;

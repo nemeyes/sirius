@@ -208,7 +208,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 			attendant[count - 1]->state = sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting;
 			{
 				sirius::autolock lock(&_attendant_cs);
-				dao.update(attendant[count - 1]);
+				dao.update(attendant[count - 1]);			
 				_use_count++;
 				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
 			}
@@ -282,9 +282,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_co
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::success;
-
 	sirius::app::server::arbitrator::entity::attendant_t contenity;
-	memmove(contenity.uuid, uuid, strlen(uuid + 1));
+	memmove(contenity.uuid, uuid, strlen(uuid) + 1);
 	memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 	contenity.id = id;
 	contenity.pid = pid;
@@ -527,7 +526,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				int32_t count = 0;
 				{
 					sirius::autolock lock(&_attendant_cs);
-					status = dao.retrieve(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, &attendant, count);
+					status = dao.retrieve(&attendant, count);
 				}
 				if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count>0)
 				{
@@ -571,6 +570,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 								CloseHandle(pi.hThread);
 							}
 						}
+						::Sleep(1000);
 					}
 				}
 				for (int32_t index = 0; index < count; index++)

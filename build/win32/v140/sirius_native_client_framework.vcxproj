@@ -129,7 +129,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SIRIUS_CLIENT_FRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\library\unified\client\include;..\..\..\library\framework\client\base\include;..\..\..\library\framework\client\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
