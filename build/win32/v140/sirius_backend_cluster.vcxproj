@@ -145,6 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\library\net\backend\cluster\include;..\..\..\library\net\curl\client\include;..\..\..\library\net\backend\cluster\base;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\misc\xml\parser\include;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

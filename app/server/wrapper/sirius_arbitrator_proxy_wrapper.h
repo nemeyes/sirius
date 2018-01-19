@@ -59,7 +59,7 @@ namespace sirius
 
 					private:
 						sirius::app::server::arbitrator::proxy::context_t * _proxy_ctx;
-						sirius::app::server::arbitrator::proxy *_proxy;
+						sirius::app::server::arbitrator::proxy * _proxy;
 
 						initialize_callback _front_on_initalize;
 						system_monitor_info_callback _front_on_system_monitor_info;

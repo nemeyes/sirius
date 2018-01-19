@@ -280,9 +280,10 @@ void sirius::app::attendant::proxy::core::on_create_session(void)
 
 	char * uuid = nullptr;
 	sirius::stringhelper::convert_wide2multibyte(_context->uuid, &uuid);
-
+	
 	if (uuid && strlen(uuid) > 0)
 	{
+		wpacket["pid"] = _pid;
 		wpacket["uuid"] = uuid;
 		std::string request = writer.write(wpacket);
 

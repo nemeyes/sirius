@@ -154,7 +154,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\curl\v7_50_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\framework\client\base\include;..\..\..\library\net\curl\client\include;..\..\..\library\misc\xml\parser\include;..\..\..\app\client\proxy\include;..\..\..\app\client\client;..\..\..\app\client\client\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

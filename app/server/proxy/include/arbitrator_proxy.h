@@ -50,7 +50,7 @@ namespace sirius
 
 					int32_t get_available_attendant_count(void);
 
-					int32_t	connect_attendant_callback(const char * uuid, const char * id);
+					int32_t	connect_attendant_callback(const char * uuid, int32_t id, int32_t pid);
 					void	disconnect_attendant_callback(const char * uuid);
 
 					void	start_attendant_callback(const char * uuid, const char * id, int32_t code);
