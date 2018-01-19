@@ -249,12 +249,12 @@ void sirius::library::net::iocp::server::execute(void)
 		BOOL value = _iocp->get_completion_status(&completion_key, &nbytes, &overlapped, &err_code);
 		if (completion_key == NULL && overlapped == NULL)
 		{
-			::OutputDebugStringA("post_completion_status\n");
+			//::OutputDebugStringA("post_completion_status\n");
 			_iocp->post_completion_status(0, 0, 0, &err_code);
 			break;
 		}
 
-		::OutputDebugStringA("execute\n");
+		//::OutputDebugStringA("execute\n");
 
 		sirius::library::net::iocp::session::io_context_t * p = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
 		std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();

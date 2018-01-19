@@ -150,7 +150,7 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 	iobuffer->input.data_size = input->data_size;
 	memmove((uint8_t*)iobuffer->input.data, input->data, iobuffer->input.data_size);
 
-	::OutputDebugStringA("compress\n");
+	//::OutputDebugStringA("compress\n");
 
 	::SetEvent(_event);
 
