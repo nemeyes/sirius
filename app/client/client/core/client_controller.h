@@ -9,7 +9,7 @@ class client_controller
 	: public sirius::app::client::proxy::handler
 {
 public:
-	client_controller(CSiriusClientDlg * front);
+	client_controller(CSiriusClientDlg * front, bool keepalive, bool tls);
 	virtual ~client_controller(void);
 
 	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection);

@@ -75,7 +75,6 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 
 	if (!_unified_server->is_video_compressor_initialized())
 	{
-		_venc_context.gpuindex		= context->gpuindex;
 		_venc_context.memtype		= context->video_process_type;
 		_venc_context.codec			= context->video_codec;
 		_venc_context.width			= context->video_width;

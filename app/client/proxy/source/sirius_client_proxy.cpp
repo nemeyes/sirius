@@ -199,10 +199,10 @@ int32_t sirius::app::client::proxy::handler::mouse_rb_up(int32_t pos_x, int32_t 
 }
 
 
-sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * hndlr, HINSTANCE instance, HWND hwnd)
-	: _handler(hndlr)
+sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * handler, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd)
+	: _handler(handler)
 {
-	_core = new sirius::app::client::proxy::core(this, instance, hwnd);
+	_core = new sirius::app::client::proxy::core(this, keepalive, tls, instance, hwnd);
 
 	if (_handler)
 		_handler->set_proxy(this);

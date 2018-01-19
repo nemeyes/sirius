@@ -126,11 +126,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_quantization_colors = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"gpu_index")))
-	{
-		value = iter->second;
-		context->gpuindex = _wtoi(value.c_str());
-	}
 	if (param.end() != (iter = param.find(L"enable_present")))
 	{
 		value = iter->second;
@@ -138,6 +133,22 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 			context->present = true;
 		else
 			context->present = false;
+	}
+	if (param.end() != (iter = param.find(L"enable_keepalive")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->keepalive = true;
+		else
+			context->keepalive = false;
+	}
+	if (param.end() != (iter = param.find(L"enable_tls")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->tls = true;
+		else
+			context->tls = false;
 	}
 	if (param.end() != (iter = param.find(L"play_after_connect")))
 	{
@@ -196,7 +207,7 @@ int32_t sirius::app::attendant::proxy::initialize(void)
 
 	if (mb_uuid && strlen(mb_uuid) > 0)
 	{
-		_core = new sirius::app::attendant::proxy::core(this, mb_uuid);
+		_core = new sirius::app::attendant::proxy::core(this, mb_uuid, context->keepalive, context->tls);
 	}
 
 	if (mb_uuid)

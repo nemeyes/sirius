@@ -110,7 +110,7 @@ namespace sirius
 
 				};
 
-				proxy(sirius::app::client::proxy::handler * hndlr, HINSTANCE instance, HWND hwnd);
+				proxy(sirius::app::client::proxy::handler * handler, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd);
 				virtual ~proxy(void);
 
 				int32_t state(void);

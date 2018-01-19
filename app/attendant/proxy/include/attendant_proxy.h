@@ -18,7 +18,7 @@ namespace sirius
 				, public sirius::library::misc::notification::internal::notifier::callee
 			{
 			public:
-				core(sirius::app::attendant::proxy * front, const char * uuid);
+				core(sirius::app::attendant::proxy * front, const char * uuid, bool keepalive, bool tls);
 				virtual ~core(void);
 
 				int32_t initialize(sirius::app::attendant::proxy::context_t * contex);

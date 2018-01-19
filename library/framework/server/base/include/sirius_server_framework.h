@@ -44,8 +44,9 @@ namespace sirius
 						int32_t video_block_height;
 						int32_t video_compression_level;
 						int32_t video_qauntization_colors;
-						int32_t gpuindex;
-						int32_t present;
+						bool	present;
+						bool	keepalive;
+						bool	tls;
 						wchar_t uuid[MAX_PATH];
 						int32_t portnumber;
 						int32_t type;
@@ -62,7 +63,6 @@ namespace sirius
 							, video_block_height(0)
 							, video_compression_level(-1)
 							, video_qauntization_colors(128)
-							, gpuindex(0)
 							, present(false)
 							, portnumber(7000)
 							, hwnd(NULL)

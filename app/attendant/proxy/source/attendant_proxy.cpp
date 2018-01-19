@@ -14,8 +14,8 @@ typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::
 #define COMMAND_THREAD_POOL_COUNT	1
 #define MTU_SIZE					1500
 
-sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid)
-	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, TRUE)
+sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid, bool keepalive, bool tls)
+	: sirius::library::net::sicp::client(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, keepalive?TRUE:FALSE, tls?TRUE:FALSE)
 	, _front(front)
 	, _framework_context(NULL)
 	, _framework(NULL)
@@ -160,8 +160,9 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->video_compression_level = _context->video_compression_level;
 	_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
-	_framework_context->gpuindex = _context->gpuindex;
 	_framework_context->present = _context->present;
+	_framework_context->keepalive = _context->keepalive;
+	_framework_context->tls = _context->tls;
 	_framework_context->hwnd = _context->hwnd;
 	_framework_context->type = _context->type;
 
@@ -175,11 +176,7 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		return status;
 	}
 
-	bool ret = sirius::library::net::sicp::client::connect("127.0.0.1", _context->controller_portnumber, _context->reconnect ? true : false);
-	if (ret)
-		status = sirius::app::attendant::proxy::err_code_t::success;
-	else
-		status = sirius::app::attendant::proxy::err_code_t::fail;
+	status = sirius::library::net::sicp::client::connect("127.0.0.1", _context->controller_portnumber, _context->reconnect ? true : false);
 
 	return status;
 }
@@ -193,15 +190,8 @@ int32_t sirius::app::attendant::proxy::core::disconnect(void)
 		return status;
 	}
 
-	bool ret = sirius::library::net::sicp::client::disconnect();
-	if (ret)
-	{
-		return sirius::app::attendant::proxy::err_code_t::success;
-	}
-	else
-	{
-		return sirius::app::attendant::proxy::err_code_t::fail;
-	}
+	status = sirius::library::net::sicp::client::disconnect();
+	return status;
 }
 
 int32_t sirius::app::attendant::proxy::core::play(void)
@@ -225,8 +215,9 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->video_compression_level = _context->video_compression_level;
 		_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
-		_framework_context->gpuindex = _context->gpuindex;
 		_framework_context->present = _context->present;
+		_framework_context->keepalive = _context->keepalive;
+		_framework_context->tls = _context->tls;
 		_framework_context->hwnd = _context->hwnd;
 		_framework_context->type = _context->type;
 

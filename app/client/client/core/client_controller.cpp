@@ -12,14 +12,14 @@
 typedef sirius::library::framework::client::base * (*fpn_create_client_framework)();
 typedef void(*fpn_destory_client_framework)(sirius::library::framework::client::base ** client_framework);
 
-client_controller::client_controller(CSiriusClientDlg * front)
+client_controller::client_controller(CSiriusClientDlg * front, bool keepalive, bool tls)
 	: _front(front)
 	, _hmodule(NULL)
 	, _framework(NULL)
 {
 	HINSTANCE inst = AfxGetInstanceHandle();
 	HWND hwnd = _front->GetSafeHwnd();
-	_controller = new sirius::app::client::proxy(this, inst, hwnd);
+	_controller = new sirius::app::client::proxy(this, keepalive, tls, inst, hwnd);
 }
 
 client_controller::~client_controller(void)

@@ -172,12 +172,21 @@ int main()
 				proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 				proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
 
+				if (confentity.enable_keepalive)
+					proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
+				else
+					proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
+
+				if (confentity.enable_tls)
+					proc_ctrl.set_cmdline(arguments, "--enable_tls=true");
+				else
+					proc_ctrl.set_cmdline(arguments, "--enable_tls=false");
+
 				if (confentity.enable_present)
 					proc_ctrl.set_cmdline(arguments, "--enable_present=true");
 				else
 					proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
-				proc_ctrl.set_cmdline(arguments, "--gpu_index=%d", 0);
 				proc_ctrl.set_cmdline(arguments, "--disable-gpu");
 				proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
 				proc_ctrl.set_cmdline(arguments, "--disable-d3d11");

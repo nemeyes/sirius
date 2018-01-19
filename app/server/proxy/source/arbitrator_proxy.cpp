@@ -8,8 +8,8 @@
 #include <tlhelp32.h>
 #include "sirius_version.h"
 
-sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, TRUE)
+sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, bool use_tls)
+	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, use_keepliave?TRUE:FALSE, use_tls?TRUE:FALSE)
 	, _front(front)
 	, _monitor(nullptr)
 	, _run(false)
@@ -85,7 +85,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_gpu, confentity.enable_present, confentity.enable_auto_start, confentity.enable_quantization, confentity.enable_caching, confentity.enable_crc, _monitor->cpu_info(), _monitor->mem_info());
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info());
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -149,7 +149,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc)
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -170,12 +170,10 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.video_compression_level = video_compression_level;
 	configuration.video_quantization_colors = video_quantization_colors;
 	configuration.enable_tls = enable_tls;
-	configuration.enable_gpu = enable_gpu;
+	configuration.enable_keepalive = enable_keepalive;
 	configuration.enable_present = enable_present;
 	configuration.enable_auto_start = enable_auto_start;
-	configuration.enable_quantization = enable_quantization;
 	configuration.enable_caching = enable_caching;
-	configuration.enable_crc = enable_crc;
 
 	status = dao.update(&configuration);
 	return status;

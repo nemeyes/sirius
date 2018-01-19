@@ -15,14 +15,11 @@ int32_t sirius::library::framework::server::web::host_video_source::start(int32_
 	int32_t code = sirius::library::video::source::cpu::capturer::err_code_t::success;
 
 
-	sirius::library::video::source::cpu::capturer::context_t::instance().gpuindex = _framework->_context.gpuindex;
 	sirius::library::video::source::cpu::capturer::context_t::instance().present = _framework->_context.present;
 	sirius::library::video::source::cpu::capturer::context_t::instance().handler = this;
 	sirius::library::video::source::cpu::capturer::context_t::instance().width = _framework->_context.video_width;
 	sirius::library::video::source::cpu::capturer::context_t::instance().height = _framework->_context.video_height;
 	sirius::library::video::source::cpu::capturer::context_t::instance().fps = fps;
-
-	LOGGER::make_trace_log(SLVSC, "%s()_%d gpu_index:%d, enablePresent:%d : ", __FUNCTION__, __LINE__, _framework->_context.gpuindex, _framework->_context.present);
 
 	code = sirius::library::video::source::cpu::capturer::instance().initialize(&sirius::library::video::source::cpu::capturer::context_t::instance());
 	if (code == sirius::library::video::source::cpu::capturer::err_code_t::success)
