@@ -471,7 +471,9 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 		delete _client;
 		_client = nullptr;
 	}
-	
+
+	BOOL keepalive = IsDlgButtonChecked(IDC_CHECK_KEEPALIVE);
+	BOOL tls = IsDlgButtonChecked(IDC_CHECK_TLS);
 	BOOL reconnection = IsDlgButtonChecked(IDC_CHECK_RETRY_CONNECTION);
 
 	CString server_address;
@@ -479,7 +481,7 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 	_ctrl_address.GetWindowTextW(server_address);
 	_ctrl_port_number.GetWindowTextW(server_port_number);
 
-	_client = new client_controller(this);
+	_client = new client_controller(this, keepalive?true:false, tls?true:false);
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection);
 
 	EnableConnectButton(FALSE);

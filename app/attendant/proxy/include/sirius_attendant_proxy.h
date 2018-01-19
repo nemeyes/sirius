@@ -54,8 +54,9 @@ namespace sirius
 					int32_t video_block_height;
 					int32_t video_compression_level;
 					int32_t video_quantization_colors;
-					int32_t gpuindex;
-					int32_t present;
+					bool	present;
+					bool	keepalive;
+					bool	tls;
 					HWND	hwnd;
 					void *	user_data;
 					int32_t id;
@@ -76,8 +77,9 @@ namespace sirius
 						, video_block_height(72)
 						, video_compression_level(-1)
 						, video_quantization_colors(128)
-						, gpuindex(0)
 						, present(false)
+						, keepalive(false)
+						, tls(false)
 						, hwnd(NULL)
 						, user_data(NULL)
 						, id(0)

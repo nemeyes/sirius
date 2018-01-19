@@ -34,7 +34,7 @@ namespace sirius
 						static const int32_t stopping = 4;
 					} attendant_state_t;
 
-					core(const char * uuid, sirius::app::server::arbitrator::proxy * front);
+					core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, bool use_tls);
 					virtual ~core(void);
 
 					int32_t initialize(sirius::app::server::arbitrator::proxy::context_t * context);
@@ -43,7 +43,7 @@ namespace sirius
 					int32_t start(void);
 					int32_t stop(void);
 
-					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc);
+					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching);
 
 					int32_t	connect_client(const char * uuid, const char * id);
 					int32_t disconnect_client(const char * uuid);

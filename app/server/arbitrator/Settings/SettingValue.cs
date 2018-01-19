@@ -23,12 +23,10 @@ namespace sirius.app.server.arbitrator.Settings
         public int video_compression_level { get; set; }
         public int video_quantization_colors { get; set; }
         public bool enable_tls { get; set; }
-        public bool enable_gpu { get; set; }
+        public bool enable_keepalive { get; set; }
         public bool enable_present { get; set; }
         public bool enable_auto_start { get; set; }
-        public bool enable_quantization { get; set; }
         public bool enable_caching { get; set; }
-        public bool enable_crc { get; set; }
         public string cpu { get; set; }
         public string memory { get; set; }
 
@@ -64,12 +62,10 @@ namespace sirius.app.server.arbitrator.Settings
                 video_compression_level, 
                 video_quantization_colors, 
                 enable_tls, 
-                enable_gpu, 
+                enable_keepalive, 
                 enable_present, 
                 enable_auto_start, 
-                enable_quantization, 
-                enable_caching, 
-                enable_crc);
+                enable_caching);
         }
     }
 }

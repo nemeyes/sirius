@@ -72,7 +72,7 @@ namespace sirius.app.server.arbitrator
             controller.initailize();
             status = status_t.initialized;
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_gpu, bool enable_present, bool enable_auto_start, bool enable_quantization, bool enable_caching, bool enable_crc, sbyte* cpu, sbyte* memory)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -88,12 +88,10 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().video_compression_level = video_compression_level;
             SettingValue.Instance().video_quantization_colors = video_quantization_colors;
             SettingValue.Instance().enable_tls = enable_tls;
-            SettingValue.Instance().enable_gpu = enable_gpu;
+            SettingValue.Instance().enable_keepalive = enable_keepalive;
             SettingValue.Instance().enable_present = enable_present;
             SettingValue.Instance().enable_auto_start = enable_auto_start;
-            SettingValue.Instance().enable_quantization = enable_quantization;
             SettingValue.Instance().enable_caching = enable_caching;
-            SettingValue.Instance().enable_crc = enable_crc;
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
 

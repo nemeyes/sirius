@@ -29,12 +29,10 @@ namespace sirius
 						int32_t video_compression_level;
 						int32_t video_quantization_colors;
 						bool	enable_tls;
-						bool	enable_gpu;
+						bool	enable_keepalive;
 						bool	enable_present;
 						bool	enable_auto_start;
-						bool	enable_quantization;
 						bool	enable_caching;
-						bool	enable_crc;
 						_configuration_t(void)
 							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
@@ -48,12 +46,10 @@ namespace sirius
 							, video_compression_level(1)
 							, video_quantization_colors(128)
 							, enable_tls(false)
-							, enable_gpu(false)
+							, enable_keepalive(false)
 							, enable_present(false)
 							, enable_auto_start(false)
-							, enable_quantization(false)
 							, enable_caching(false)
-							, enable_crc(false)
 						{
 							memset(uuid, 0x00, sizeof(uuid));
 							memset(url, 0x00, MAX_PATH);

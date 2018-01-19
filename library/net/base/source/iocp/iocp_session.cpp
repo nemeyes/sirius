@@ -333,14 +333,13 @@ void sirius::library::net::iocp::session::send(const char * packet, int32_t pack
 				int32_t bytes = 0;
 				int32_t ssl_error = 0;
 
-				OutputDebugStringA("SSL_write\n");
 				bytes = SSL_write(_ssl, _send_io_context[index]->packet, _send_io_context[index]->packet_size);
 				ssl_error = ssl_get_error(_ssl, bytes);
 				if (bytes == _send_io_context[index]->packet_size)
 				{
-					char message[MAX_PATH] = { 0 };
-					_snprintf_s(message, sizeof(message), "SSL_write Success : bytes[%d], index[%d]\n", bytes, index);
-					OutputDebugStringA(message);
+					//char message[MAX_PATH] = { 0 };
+					//_snprintf_s(message, sizeof(message), "SSL_write Success : bytes[%d], index[%d]\n", bytes, index);
+					//OutputDebugStringA(message);
 					_send_io_context[index]->packet_size = 0;
 				} 
 				else  if (ssl_is_fatal_error(ssl_error))
@@ -401,7 +400,6 @@ void sirius::library::net::iocp::session::recv(int32_t packet_size)
 			_status |= sirius::library::net::iocp::session::status_t::receiving;
 			DWORD size = 0;
 			_recv_io_context->wsabuf.len = packet_size;
-			//OutputDebugStringA("WSARecv \n");
 			::WSARecv(_socket, &_recv_io_context->wsabuf, 1, &size, &_wsa_flags[sirius::library::net::iocp::session::io_context_t::operation_t::recv], &_recv_io_context->overlapped, 0);
 			_recv_io_context->result = ::WSAGetLastError();
 			if ((_recv_io_context->result != 0) && (_recv_io_context->result != WSA_IO_PENDING))
@@ -522,22 +520,20 @@ void sirius::library::net::iocp::session::on_recv(std::shared_ptr<sirius::librar
 	{
 		BOOL fatal_error_occurred = FALSE;
 		{
-			OutputDebugStringA("on_recv\n");
 			sirius::autolock lock(&io_context->lock);
 			if (io_context->ssl_packet_size > 0)
 			{
 				int32_t bytes		= 0;
 				int32_t ssl_error	= 0;
 
-				OutputDebugStringA("BIO_write\n");
 				bytes = BIO_write(_bio[sirius::library::net::iocp::session::io_context_t::operation_t::recv], io_context->ssl_packet, io_context->ssl_packet_size);
 				ssl_error = ssl_get_error(_ssl, bytes);
 
 				if (bytes == io_context->ssl_packet_size)
 				{
-					char message[MAX_PATH] = { 0 };
-					_snprintf_s(message, sizeof(message), "BIO_write Success : bytes[%d]\n", bytes);
-					OutputDebugStringA(message);
+					//char message[MAX_PATH] = { 0 };
+					//_snprintf_s(message, sizeof(message), "BIO_write Success : bytes[%d]\n", bytes);
+					//OutputDebugStringA(message);
 					io_context->ssl_packet_size = 0;
 				}
 				else
@@ -552,18 +548,12 @@ void sirius::library::net::iocp::session::on_recv(std::shared_ptr<sirius::librar
 			}
 			else if (io_context->result != 0)
 			{
-				OutputDebugStringA("on_recv #1 before close\n");
 				close();
-				OutputDebugStringA("on_recv #1 after close\n");
 			}
 		}
 
-		OutputDebugStringA("on_recv #2 before close\n");
 		if (fatal_error_occurred)
 			close();
-		OutputDebugStringA("on_recv #2 after close\n");
-
-		OutputDebugStringA("on_recv end\n");
 	}
 	else
 	{
@@ -624,7 +614,6 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 
 	if (io_context->operation==sirius::library::net::iocp::io_context_t::operation_t::connect)
 	{
-		::OutputDebugStringA("on_completed : connect\n");
 		sirius::autolock slock(&io_context->lock);
 		if ((_socket_listen == INVALID_SOCKET) || (_socket_listen == 0))
 			on_connect(io_context);
@@ -633,7 +622,6 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 	}
 	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::recv)
 	{
-		::OutputDebugStringA("on_completed : recv\n");
 		if (_tls)
 		{
 			sirius::autolock slock(&io_context->lock);
@@ -648,16 +636,10 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 	}
 	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::send)
 	{
-		::OutputDebugStringA("on_completed : send\n");
 		if (_tls)
 		{
 			sirius::autolock slock(&io_context->lock);
 			io_context->ssl_packet_size = bytes_transfered;
-
-
-			char message[MAX_PATH] = { 0 };
-			_snprintf_s(message, sizeof(message), "on_send : bytes[%d]\n", io_context->ssl_packet_size);
-			OutputDebugStringA(message);
 		}
 		else
 		{
@@ -669,7 +651,6 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 
 	if (_status == sirius::library::net::iocp::session::status_t::closed)
 	{
-		::OutputDebugStringA("on_completed : on_session_close\n");
 		_processor->on_session_close(self);
 	}
 }
@@ -695,13 +676,12 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 				{
 					int32_t ssl_error = 0;
 
-					//OutputDebugStringA("SSL_read\n");
 					bytes = SSL_read(_ssl, _recv_io_context->packet, _recv_io_context->packet_capacity);
 					ssl_error = ssl_get_error(_ssl, bytes);
 
 					if (((_status & sirius::library::net::iocp::session::status_t::handshaking) == sirius::library::net::iocp::session::status_t::handshaking) && SSL_is_init_finished(_ssl))
 					{					
-						OutputDebugStringA("SSL_read : Connected\n");
+						//OutputDebugStringA("SSL_read : Connected\n");
 						_status &= ~sirius::library::net::iocp::session::status_t::handshaking;
 						_processor->on_session_connect(shared_from_this());
 						_status |= sirius::library::net::iocp::session::status_t::connected;
@@ -709,9 +689,9 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 
 					if (bytes > 0)
 					{
-						char message[MAX_PATH] = { 0 };
-						_snprintf_s(message, sizeof(message), "SSL_read Success : bytes[%d]\n", bytes);
-						OutputDebugStringA(message);
+						//char message[MAX_PATH] = { 0 };
+						//_snprintf_s(message, sizeof(message), "SSL_read Success : bytes[%d]\n", bytes);
+						//OutputDebugStringA(message);
 
 						_recv_io_context->packet_size = bytes;
 						int32_t packet_size = on_recv(_recv_io_context->packet, _recv_io_context->packet_size);
@@ -738,7 +718,6 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 			break;
 		}
 
-		//OutputDebugStringA("Recv Thread Sleep\n");
 		::Sleep(10);
 	}
 }
@@ -768,21 +747,15 @@ void sirius::library::net::iocp::session::secure_send_process(void)
 			{
 				int32_t ssl_error	= 0;
 
-				OutputDebugStringA("BIO_read\n");
 				_send_io_context[index]->ssl_packet_size = BIO_read(_bio[sirius::library::net::iocp::session::io_context_t::operation_t::send], _send_io_context[index]->ssl_packet, _send_io_context[index]->ssl_packet_capacity);
 				ssl_error = ssl_get_error(_ssl, _send_io_context[index]->ssl_packet_size);
 
 				if (_send_io_context[index]->ssl_packet_size > 0)
 				{
-					char message[MAX_PATH] = { 0 };
-					_snprintf_s(message, sizeof(message), "BIO_read Success : bytes[%d], index[%d]\n", _send_io_context[index]->ssl_packet_size, index);
-					OutputDebugStringA(message);
+					//char message[MAX_PATH] = { 0 };
+					//_snprintf_s(message, sizeof(message), "BIO_read Success : bytes[%d], index[%d]\n", _send_io_context[index]->ssl_packet_size, index);
+					//OutputDebugStringA(message);
 
-					/*
-					char message[MAX_PATH] = { 0 };
-					_snprintf_s(message, sizeof(message), "SSL_write Success : bytes[%d], index[%d]\n", bytes, index);
-					OutputDebugStringA(message);
-					*/
 					_send_io_context[index]->wsabuf.len = _send_io_context[index]->ssl_packet_size;
 
 					_status |= sirius::library::net::iocp::session::status_t::sending;
