@@ -42,11 +42,13 @@ namespace sirius
 					BOOL			associate(SOCKET socket, ULONG_PTR key, int32_t * err_code);
 					void			data_request(std::shared_ptr<sirius::library::net::iocp::session> session, const char * packet, int32_t packet_size);
 
+					void			on_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session);
 					void			on_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session);
 					void			on_session_close(std::shared_ptr<sirius::library::net::iocp::session> session);
 
-					virtual void	on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)	= 0;
-					virtual void	on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)		= 0;
+					virtual void	on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)	= 0;
+					virtual void	on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)		= 0;
+					virtual void	on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)			= 0;
 					virtual std::shared_ptr<sirius::library::net::iocp::session>	create_session(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls = FALSE, SSL_CTX * ssl_ctx = NULL, BOOL reconnection = FALSE) = 0;
 					virtual void													destroy_session(std::shared_ptr<sirius::library::net::iocp::session> session) = 0;
 					virtual void	on_start(void)		= 0;
@@ -83,6 +85,7 @@ namespace sirius
 					BOOL						_reconnection;
 					int32_t						_io_thread_pool_count;
 					BOOL						_waiting;
+					BOOL						_on_handshaking;
 					BOOL						_on_connected;
 					BOOL						_on_disconnected;
 

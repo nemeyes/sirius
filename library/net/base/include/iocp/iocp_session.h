@@ -146,6 +146,8 @@ namespace sirius
 					uint64_t		timestamp(void);
 					void			update_timestamp(void);
 
+					std::shared_ptr<sirius::library::net::iocp::session::io_context_t> recv_context(void);
+
 					void			close(void);
 
 					void			connect(const char * address = nullptr, int32_t portnumber = -1);
@@ -154,8 +156,8 @@ namespace sirius
 					void			send(const char * packet, int32_t packet_size);
 					void			recv(int32_t packet_size);
 
-					static BOOL		ssl_is_fatal_error(int32_t error);
-					static int32_t	ssl_get_error(SSL *ssl, int32_t result);
+					BOOL			ssl_is_fatal_error(int32_t error);
+					int32_t			ssl_get_error(SSL *ssl, int32_t result);
 
 					virtual int32_t on_recv(const char * packet, int32_t packet_size) = 0;
 					virtual int32_t packet_header_size(void) = 0;
@@ -167,7 +169,10 @@ namespace sirius
 					void			on_send(std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context);
 					void			on_completed(DWORD bytes_transfered, LPOVERLAPPED overlapped);
 
-					BOOL			process(void);
+					static unsigned __stdcall	secure_send_process_cb(void * param);
+					void						secure_send_process(void);
+					static unsigned __stdcall	secure_recv_process_cb(void * param);
+					void						secure_recv_process(void);
 
 
 				protected:
@@ -189,8 +194,11 @@ namespace sirius
 					SSL *																_ssl;
 					BIO *																_bio[2];
 
-					//CRITICAL_SECTION													_lock;
-					//CRITICAL_SECTION													_connect_lock;
+					HANDLE																_secure_send_thread;
+					BOOL																_secure_send_run;
+					HANDLE																_secure_recv_thread;
+					BOOL																_secure_recv_run;
+
 					LPFN_CONNECTEX														_pfn_connect;
 					char																_address[MAX_PATH];
 					int32_t																_portnumber;
@@ -200,6 +208,8 @@ namespace sirius
 					uint32_t															_so_send_buffer_size;
 					uint32_t															_recv_buffer_size;
 					uint32_t															_send_buffer_size;
+
+					CRITICAL_SECTION													_lock;
 				};
 			};
 		};
