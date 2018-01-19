@@ -117,7 +117,8 @@
       <AdditionalIncludeDirectories>$(IntDir);..\..\..\common\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>..\..\..\script\copy_client_dlls.bat ..\..\..\ debug</Command>
+      <Command>del $(outputpath)$(assemblyname).ilk
+..\..\..\script\copy_client_dlls.bat ..\..\..\ debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

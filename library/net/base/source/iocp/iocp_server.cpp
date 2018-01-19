@@ -216,9 +216,18 @@ void sirius::library::net::iocp::server::data_request(std::shared_ptr<sirius::li
 	session->send(packet, packet_size);
 }
 
+void sirius::library::net::iocp::server::on_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	session->recv(session->recv_context()->packet_capacity);
+	on_app_session_handshaking(session);
+}
+
 void sirius::library::net::iocp::server::on_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
-	session->recv(session->packet_header_size());
+	if (_tls)
+		session->recv(session->recv_context()->packet_capacity);
+	else
+		session->recv(session->packet_header_size());	
 	on_app_session_connect(session);
 }
 
@@ -240,9 +249,12 @@ void sirius::library::net::iocp::server::execute(void)
 		BOOL value = _iocp->get_completion_status(&completion_key, &nbytes, &overlapped, &err_code);
 		if (completion_key == NULL && overlapped == NULL)
 		{
+			::OutputDebugStringA("post_completion_status\n");
 			_iocp->post_completion_status(0, 0, 0, &err_code);
 			break;
 		}
+
+		::OutputDebugStringA("execute\n");
 
 		sirius::library::net::iocp::session::io_context_t * p = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
 		std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();

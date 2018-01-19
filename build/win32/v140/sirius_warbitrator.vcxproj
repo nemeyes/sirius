@@ -115,7 +115,8 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>..\..\..\script\copy_arbitrator_dlls.bat ..\..\..\ debug</Command>
+      <Command>del $(outputpath)$(assemblyname).ilk
+..\..\..\script\copy_arbitrator_dlls.bat ..\..\..\ debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

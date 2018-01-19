@@ -61,6 +61,8 @@ namespace sirius
 
 				protected:
 					void			clear_command_list(void);
+
+					virtual void	on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session);
 					virtual void	on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session);
 					virtual void	on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session);
 

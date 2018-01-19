@@ -41,6 +41,7 @@ namespace sirius
 					void			data_request(const char * dst, const char * src, int32_t command_id, const char * packet, int32_t packet_size);
 
 
+					int32_t			clean_handshaking_session(BOOL force_clean);
 					int32_t			clean_connected_session(BOOL force_clean);
 					int32_t			clean_activated_session(BOOL force_clean);
 					int32_t			clean_closing_session(BOOL force_clean);
@@ -66,6 +67,8 @@ namespace sirius
 
 				protected:
 					void			clean_command_list(void);
+
+					virtual void	on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session);
 					virtual void	on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session);
 					virtual void	on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session);
 
@@ -74,9 +77,13 @@ namespace sirius
 					BOOL																		_keepalive;
 					char																		_uuid[64];
 					int32_t																		_sequence;
+
+					CRITICAL_SECTION															_handshaking_slock;
 					CRITICAL_SECTION															_connected_slock;
 					CRITICAL_SECTION															_closing_slock;
 					CRITICAL_SECTION															_active_slock;
+
+					std::vector<std::shared_ptr<sirius::library::net::sicp::session>>			_handshaking_sessions;
 					std::vector<std::shared_ptr<sirius::library::net::sicp::session>>			_connected_sessions;
 					std::vector<std::shared_ptr<sirius::library::net::sicp::session>>			_closing_sessions;
 					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>	_activated_sessions;

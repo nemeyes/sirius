@@ -142,6 +142,7 @@ sirius::library::net::iocp::client::client(int32_t so_recv_buffer_size, int32_t 
 	, _reconnection(FALSE)
 	, _io_thread_pool_count(0)
 	, _waiting(FALSE)
+	, _on_handshaking(FALSE)
 	, _on_connected(FALSE)
 	, _on_disconnected(FALSE)
 {
@@ -225,11 +226,24 @@ void sirius::library::net::iocp::client::data_request(std::shared_ptr<sirius::li
 	session->send(packet, packet_size);
 }
 
+void sirius::library::net::iocp::client::on_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	_on_handshaking = TRUE;
+	_on_connected = FALSE;
+	_on_disconnected = FALSE;
+	session->recv(session->recv_context()->packet_capacity);
+	on_app_session_handshaking(session);
+}
+
 void sirius::library::net::iocp::client::on_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	_on_connected = TRUE;
+	_on_handshaking = FALSE;
 	_on_disconnected = FALSE;
-	session->recv(session->packet_header_size());
+	if(_tls)
+		session->recv(session->recv_context()->packet_capacity);
+	else
+		session->recv(session->packet_header_size());
 	on_app_session_connect(session);
 }
 
@@ -239,6 +253,7 @@ void sirius::library::net::iocp::client::on_session_close(std::shared_ptr<sirius
 	destroy_session(session);
 	_on_disconnected = TRUE;
 	_on_connected = FALSE;
+	_on_handshaking = FALSE;
 }
 
 void sirius::library::net::iocp::client::execute(void)
@@ -374,24 +389,24 @@ unsigned __stdcall sirius::library::net::iocp::client::process_cb(void * param)
 
 void sirius::library::net::iocp::client::process(void)
 {
-	int32_t err_code;
-	if (!_iocp->create(_io_thread_pool_count, &err_code))
-		return;
-
-	_iocp->create_thread_pool();
-
 	if (_tls)
 		initialization_tls();
 
 	do
 	{
+		int32_t err_code;
+		if (!_iocp->create(_io_thread_pool_count, &err_code))
+			return;
+
+		_iocp->create_thread_pool();
+
 		std::shared_ptr<sirius::library::net::iocp::session> session = create_session(_so_recv_buffer_size, _so_send_buffer_size, _recv_buffer_size, _send_buffer_size, _tls, _ssl_ctx);
 		session->connect(_address, _portnumber);
 
-		for(int32_t t = 0; t < 20 && !_on_connected; t++)
+		for(int32_t t = 0; t < 20 && !_on_handshaking && !_on_connected; t++)
 			::Sleep(50);
 
-		if (_on_connected)
+		if (_on_handshaking || _on_connected)
 		{
 			on_start();
 			on_running();
@@ -401,13 +416,14 @@ void sirius::library::net::iocp::client::process(void)
 		{
 			continue;
 		}
+
+		if (_iocp)
+			_iocp->close_thread_pool();
+		_iocp->destroy();
+
 		
 	} while (_reconnection);
 
 	if (_tls)
 		release_tls();
-
-	if (_iocp)
-		_iocp->close_thread_pool();
-	_iocp->destroy();
 }

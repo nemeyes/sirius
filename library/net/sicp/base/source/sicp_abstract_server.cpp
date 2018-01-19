@@ -8,6 +8,7 @@ sirius::library::net::sicp::abstract_server::abstract_server(const char * uuid, 
 	, _keepalive(keepalive)
 	, _sequence(0)
 {
+	::InitializeCriticalSection(&_handshaking_slock);
 	::InitializeCriticalSection(&_connected_slock);
 	::InitializeCriticalSection(&_active_slock);
 	::InitializeCriticalSection(&_closing_slock);
@@ -34,6 +35,7 @@ sirius::library::net::sicp::abstract_server::~abstract_server(void)
 	::DeleteCriticalSection(&_closing_slock);
 	::DeleteCriticalSection(&_active_slock);
 	::DeleteCriticalSection(&_connected_slock);
+	::DeleteCriticalSection(&_handshaking_slock);
 }
 
 int32_t sirius::library::net::sicp::abstract_server::initialize(void)
@@ -160,6 +162,59 @@ void sirius::library::net::sicp::abstract_server::data_request(const char * dst,
 	}
 }
 
+int32_t sirius::library::net::sicp::abstract_server::clean_handshaking_session(BOOL force_clean)
+{
+	std::vector<std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
+	std::vector<std::shared_ptr<sirius::library::net::sicp::session>> handshaking_sessions;
+
+	{
+		sirius::autolock lock(&_handshaking_slock);
+		if (_handshaking_sessions.size() > 0)
+		{
+			handshaking_sessions = _handshaking_sessions;
+			_handshaking_sessions.clear();
+		}
+	}
+
+	std::vector<std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
+	uint64_t now = ::GetTickCount64();
+	iter = handshaking_sessions.begin();
+	while (iter != handshaking_sessions.end())
+	{
+		std::shared_ptr<sirius::library::net::sicp::session> session = *iter;
+		int64_t interval = now - session->timestamp();
+		if ((interval > MAXIUM_REGISTING_SESSION_WAITING_INTERVAL) || force_clean)
+		{
+			session->close();
+			sirius::autolock lock(&_closing_slock);
+			session->update_timestamp();
+			_closing_sessions.push_back(session);
+		}
+		else
+		{
+			if (session->socket() == NULL && session->socket() == INVALID_SOCKET)
+			{
+				sirius::autolock lock(&_closing_slock);
+				session->update_timestamp();
+				_closing_sessions.push_back(session);
+			}
+			else
+			{
+				finalized_sessions.push_back(session);
+			}
+		}
+		++iter;
+	}
+
+	{
+		sirius::autolock lock(&_handshaking_slock);
+		for (iter = finalized_sessions.begin(); iter != finalized_sessions.end(); iter++)
+			_handshaking_sessions.push_back(*iter);
+	}
+
+	return _handshaking_sessions.size();
+}
+
 int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOOL force_clean)
 {
 	std::vector<std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
@@ -185,6 +240,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 		{
 			session->close();
 			sirius::autolock lock(&_closing_slock);
+			session->update_timestamp();
 			_closing_sessions.push_back(session);
 		}
 		else
@@ -192,6 +248,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 			if (session->socket() == NULL && session->socket() == INVALID_SOCKET)
 			{
 				sirius::autolock lock(&_closing_slock);
+				session->update_timestamp();
 				_closing_sessions.push_back(session);
 			}
 			else
@@ -245,6 +302,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 			}
 
 			sirius::autolock lock(&_closing_slock);
+			session->update_timestamp();
 			_closing_sessions.push_back(session);
 		}
 		else
@@ -252,6 +310,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 			if ((session->socket() == NULL) || (session->socket() == INVALID_SOCKET))
 			{
 				sirius::autolock lock(&_closing_slock);
+				session->update_timestamp();
 				_closing_sessions.push_back(session);
 			}
 			else
@@ -400,10 +459,26 @@ void sirius::library::net::sicp::abstract_server::clean_command_list(void)
 	_commands.clear();
 }
 
+void sirius::library::net::sicp::abstract_server::on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock lock(&_handshaking_slock);
+	_handshaking_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
+}
+
 void sirius::library::net::sicp::abstract_server::on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
-	sirius::autolock lock(&_connected_slock);
-	_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
+	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+	{
+		sirius::autolock lock(&_handshaking_slock);
+		std::vector<std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = std::find(_handshaking_sessions.begin(), _handshaking_sessions.end(), sicp_session);
+		if (iter != _handshaking_sessions.end())
+			_handshaking_sessions.erase(iter);
+	}
+
+	{
+		sirius::autolock lock(&_connected_slock);
+		_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
+	}
 }
 
 void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)
@@ -444,6 +519,7 @@ void sirius::library::net::sicp::abstract_server::on_start(void)
 
 void sirius::library::net::sicp::abstract_server::on_stop(void)
 {
+	clean_handshaking_session(TRUE);
 	clean_connected_session(TRUE);
 	clean_activated_session(TRUE);
 	clean_closing_session(TRUE);
@@ -458,7 +534,11 @@ void sirius::library::net::sicp::abstract_server::on_running(void)
 	while (_run)
 	{
 		if (elapsed_millisec%onesec == 0)
+		{
+			//clean_handshaking_session(FALSE);
+			//clean_connected_session(FALSE);
 			clean_closing_session(FALSE);
+		}
 
 		if (_keepalive)
 			clean_activated_session(FALSE);
@@ -478,6 +558,4 @@ void sirius::library::net::sicp::abstract_server::on_running(void)
 			session->send(session->uuid(), _uuid, CMD_DESTROY_SESSION_INDICATION, NULL, 0);
 		}
 	}
-
-
 }

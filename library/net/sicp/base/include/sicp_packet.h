@@ -18,12 +18,12 @@ namespace sirius
 			{
 				typedef struct _packet_header_t
 				{
-					char  pid;
-					char  dst[16];
-					char  src[16];
-					uint8_t  version;
-					uint16_t command;
-					uint32_t length;
+					char		pid;
+					char		dst[16];
+					char		src[16];
+					uint8_t		version;
+					uint16_t	command;
+					uint32_t	length;
 				} packet_header_t;
 			};
 		};

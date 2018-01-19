@@ -215,10 +215,17 @@ void sirius::library::net::sicp::abstract_client::clear_command_list(void)
 	_commands.clear();
 }
 
-void sirius::library::net::sicp::abstract_client::on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
+void sirius::library::net::sicp::abstract_client::on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	sirius::autolock lock(&_slock);
 	_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+}
+
+void sirius::library::net::sicp::abstract_client::on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock lock(&_slock);
+	if(!_session)
+		_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
 	_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
 }
 
@@ -237,10 +244,44 @@ void sirius::library::net::sicp::abstract_client::on_start(void)
 
 }
 
+void sirius::library::net::sicp::abstract_client::on_running(void)
+{
+	const unsigned long msleep = 100;
+	const unsigned long onesec = 1000;
+	long long elapsed_millisec = 0;
+
+	while (_run)
+	{
+		std::shared_ptr<sirius::library::net::sicp::session> sicp_session = nullptr;
+		{
+			sirius::autolock mutex(&_slock);
+			sicp_session = _session;
+		}
+
+		if (sicp_session && _on_connected)
+		{
+			if ((!sicp_session->register_flag()) && ((elapsed_millisec % 3000) == 0))
+				sicp_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
+
+			if (_keepalive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
+			{
+				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
+			}
+		}
+		else if(!sicp_session)
+		{
+			break;
+		}
+		::Sleep(msleep);
+		elapsed_millisec += msleep;
+
+	}
+}
+
 void sirius::library::net::sicp::abstract_client::on_stop(void)
 {
 	std::shared_ptr<sirius::library::net::sicp::session> sicp_session = nullptr;
-	
+
 	{
 		sirius::autolock mutex(&_slock);
 		if (_session)
@@ -254,7 +295,7 @@ void sirius::library::net::sicp::abstract_client::on_stop(void)
 			sicp_session->send(SERVER_UUID, _uuid, CMD_DESTROY_SESSION_INDICATION, NULL, 0);
 			on_destroy_session(sicp_session);
 		}
-		
+
 		sicp_session->close();
 		wait_command_thread_end();
 		close_waiting_flag(TRUE);
@@ -278,39 +319,5 @@ void sirius::library::net::sicp::abstract_client::on_stop(void)
 		sirius::autolock mutex(&_slock);
 		if (_session)
 			_session = nullptr;
-	}
-}
-
-void sirius::library::net::sicp::abstract_client::on_running(void)
-{
-	const unsigned long msleep = 100;
-	const unsigned long onesec = 1000;
-	long long elapsed_millisec = 0;
-
-	while (_run)
-	{
-		std::shared_ptr<sirius::library::net::sicp::session> sicp_session = nullptr;
-		{
-			sirius::autolock mutex(&_slock);
-			sicp_session = _session;
-		}
-
-		if (sicp_session)
-		{
-			if ((!sicp_session->register_flag()) && ((elapsed_millisec % 3000) == 0))
-				sicp_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
-
-			if (_keepalive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
-			{
-				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
-			}
-		}
-		else
-		{
-			break;
-		}
-		::Sleep(msleep);
-		elapsed_millisec += msleep;
-
 	}
 }
