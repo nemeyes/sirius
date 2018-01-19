@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <sirius_unified_client.h>
 #include "sirius_scsp_receiver.h"
-#include "sirius_casp_receiver.h"
 #include "sirius_file_receiver.h"
 #include <map>
 
@@ -38,7 +37,6 @@ namespace sirius
 
 				sirius::library::unified::file::receiver * _file_receiver;
 				sirius::library::unified::scsp::receiver * _scsp_receiver;
-				sirius::library::unified::casp::receiver * _casp_receiver;
 
 				CRITICAL_SECTION			_cs;
 
