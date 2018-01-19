@@ -33,9 +33,6 @@
     <ClInclude Include="..\..\..\library\unified\client\include\sirius_file_receiver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\unified\client\include\sirius_casp_receiver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\unified\client\source\sirius_unified_client.cpp">
@@ -51,9 +48,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\unified\client\source\sirius_file_receiver.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\unified\client\source\sirius_casp_receiver.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

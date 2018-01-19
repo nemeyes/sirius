@@ -8,7 +8,6 @@ sirius::library::unified::client::core::core(sirius::library::unified::client * 
 	: _front(front)
 	, _state(sirius::library::unified::client::state_t::none)
 	, _scsp_receiver(nullptr)
-	, _casp_receiver(nullptr)
 	, _file_receiver(nullptr)
 	, _bfile(false)
 {
@@ -58,13 +57,8 @@ int32_t sirius::library::unified::client::core::play(void)
 		}
 		else
 		{
-#ifdef WITH_CASP
-			_casp_receiver = new sirius::library::unified::casp::receiver(_front);
-			_casp_receiver->play(_url, _port, _recv_option, _repeat);	
-#else
 			_scsp_receiver = new sirius::library::unified::scsp::receiver(_front);
 			_scsp_receiver->play(_url, _port, _recv_option, _repeat);
-#endif
 		}
 		_state = sirius::library::unified::client::state_t::running;
 		return sirius::library::unified::client::err_code_t::success;
@@ -97,13 +91,6 @@ int32_t sirius::library::unified::client::core::stop(void)
 				_scsp_receiver->stop();
 				delete _scsp_receiver;
 				_scsp_receiver = nullptr;
-			}
-
-			if (_casp_receiver)
-			{
-				_casp_receiver->stop();
-				delete _casp_receiver;
-				_casp_receiver = nullptr;
 			}
 		}
 		_state = sirius::library::unified::client::state_t::stopped;
