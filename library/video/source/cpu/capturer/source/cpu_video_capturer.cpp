@@ -72,7 +72,7 @@ int32_t sirius::library::video::source::cpu::capturer::core::post(int32_t smt, u
 		memmove(input.data, video, input.data_size);
 		sirius::library::video::source::cpu::capturer::context_t::instance().handler->on_process(&input);
 
-		::OutputDebugStringA("post\n");
+		//::OutputDebugStringA("post\n");
 	}
 
 	return sirius::library::video::source::cpu::capturer::err_code_t::success;

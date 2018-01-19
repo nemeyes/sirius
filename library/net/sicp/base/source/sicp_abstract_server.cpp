@@ -535,8 +535,9 @@ void sirius::library::net::sicp::abstract_server::on_running(void)
 	{
 		if (elapsed_millisec%onesec == 0)
 		{
-			//clean_handshaking_session(FALSE);
-			//clean_connected_session(FALSE);
+			if(_tls)
+				clean_handshaking_session(FALSE);
+			clean_connected_session(FALSE);
 			clean_closing_session(FALSE);
 		}
 
