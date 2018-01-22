@@ -182,13 +182,14 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * id)
 {
+	sirius::autolock lock(&_attendant_cs);
+
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
 	int32_t count = 0;
-	{
-		sirius::autolock lock(&_attendant_cs);
+	{	
 		status = dao.retrieve(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, &attendant, count);
 	}
 	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count>0)
@@ -200,18 +201,15 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
 		{
-			data_request(attendant[count - 1]->uuid, CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
-
 			strncpy_s(attendant[count - 1]->client_uuid, uuid, sizeof(attendant[count - 1]->client_uuid)-1);
 			strncpy_s(attendant[count - 1]->client_id, id, sizeof(attendant[count - 1]->client_id) - 1);
 			attendant[count - 1]->state = sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting;
 			{
-				sirius::autolock lock(&_attendant_cs);
 				dao.update(attendant[count - 1]);			
 				_use_count++;
 				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
 			}
-			
+			data_request(attendant[count - 1]->uuid, CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 		}
 
 		for (int32_t index = 0; index < count; index++)

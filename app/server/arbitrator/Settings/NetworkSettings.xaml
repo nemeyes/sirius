@@ -43,10 +43,10 @@
                     <Label Content="Controller Portnumber" Target="{Binding ElementName=TextControllerPortnumber}" Width="150"/>
                     <TextBox x:Name="TextControllerPortnumber" Width="85" Text="{Binding ControllerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextControllerPortnumber_PreviewTextInput" />
                 </StackPanel>
-                <!--" StackPanel>
+                <StackPanel>
                     <Label Content="Streamer Portnumber" Target="{Binding ElementName=TextStreamerPortnumber}" Width="150"/>
-                    <TextBox x:Name="TextStreamerPortnumber" Width="150" Text="{Binding StreamerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
-                </StackPanel/-->
+                    <TextBox x:Name="TextStreamerPortnumber" Width="85" Text="{Binding StreamerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextStreamerPortnumber_PreviewTextInput"/>
+                </StackPanel>
                 <StackPanel>
                     <Label Content="Use TLS" Target="{Binding ElementName=UseTLS}" Width="150"/>
                     <RadioButton x:Name="UseTLS">

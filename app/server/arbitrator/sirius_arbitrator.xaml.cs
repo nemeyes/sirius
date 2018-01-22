@@ -72,13 +72,14 @@ namespace sirius.app.server.arbitrator
             controller.initailize();
             status = status_t.initialized;
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
             SettingValue.Instance().max_attendant_instance = max_attendant_instance;
             SettingValue.Instance().attendant_creation_delay = attendant_creation_delay;
-            SettingValue.Instance().portnumber = portnumber;
+            SettingValue.Instance().controller_portnumber = controller_portnumber;
+            SettingValue.Instance().streamer_portnumber = streamer_portnumber;
             SettingValue.Instance().video_codec = video_codec;
             SettingValue.Instance().video_width = video_width;
             SettingValue.Instance().video_height = video_height;

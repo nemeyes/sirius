@@ -1,9 +1,10 @@
 #include "sirius_native_stressor_framework.h"
 #include "native_stressor_framework.h"
 
-sirius::library::framework::stressor::native::native(void)
+sirius::library::framework::stressor::native::native(stressor_controller * front)
+	: _front(front)
 {
-	_core = new sirius::library::framework::stressor::native::core();
+	_core = new sirius::library::framework::stressor::native::core(this);
 }
 
 sirius::library::framework::stressor::native::~native(void)
@@ -33,4 +34,16 @@ int32_t sirius::library::framework::stressor::native::play(HWND hwnd)
 int32_t sirius::library::framework::stressor::native::stop(void)
 {
 	return _core->stop();
+}
+
+void sirius::library::framework::stressor::native::stream_connect_callback()
+{
+	if (_front)
+		_front->stream_connect_callback();
+}
+
+void sirius::library::framework::stressor::native::stream_disconnect_callback()
+{
+	if (_front)
+		_front->stream_disconnect_callback();
 }

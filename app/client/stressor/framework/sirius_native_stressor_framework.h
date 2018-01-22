@@ -7,7 +7,9 @@
 #include <atlbase.h>
 
 #include <sirius_client_framework.h>
+#include <stressor_controller.h>
 
+class stressor_controller;
 namespace sirius
 {
 	namespace library
@@ -22,7 +24,7 @@ namespace sirius
 				public:
 					class core;
 				public:
-					native(void);
+					native(stressor_controller * front);
 					virtual ~native(void);
 
 					int32_t state(void);
@@ -30,9 +32,12 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
+					void stream_connect_callback();
+					void stream_disconnect_callback();
+
 				private:
 					sirius::library::framework::stressor::native::core * _core;
-
+					stressor_controller * _front;
 				};
 			};
 		};

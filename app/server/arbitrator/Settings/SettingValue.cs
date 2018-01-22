@@ -13,7 +13,8 @@ namespace sirius.app.server.arbitrator.Settings
         public string url { get; set; }
         public int max_attendant_instance { get; set; }
         public int attendant_creation_delay { get; set; }
-        public int portnumber { get; set; }
+        public int controller_portnumber { get; set; }
+        public int streamer_portnumber { get; set; }
         public int video_codec { get; set; }
         public int video_width { get; set; }
         public int video_height { get; set; }
@@ -52,7 +53,8 @@ namespace sirius.app.server.arbitrator.Settings
                 (sbyte*)purl, 
                 max_attendant_instance, 
                 attendant_creation_delay, 
-                portnumber, 
+                controller_portnumber,
+                streamer_portnumber, 
                 video_codec, 
                 video_width, 
                 video_height, 
