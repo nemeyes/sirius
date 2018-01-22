@@ -23,7 +23,7 @@ namespace sirius
 			{
 				class core;
 			public:
-				static const int32_t STREAMER_PORTNUMBER = 7000;
+				//static const int32_t STREAMER_PORTNUMBER = 7000;
 				typedef struct _netstate_t
 				{
 					static const int32_t connecting = 0;
@@ -42,7 +42,7 @@ namespace sirius
 				typedef struct EXP_ATTENDANT_PROXY_CLASS _context_t
 				{
 					int32_t type;
-					int32_t reconnect;
+					bool	reconnect;
 					wchar_t url[MAX_PATH];
 					int32_t video_codec;
 					int32_t video_width;
@@ -62,6 +62,7 @@ namespace sirius
 					int32_t id;
 					wchar_t uuid[MAX_PATH];
 					int32_t controller_portnumber;
+					int32_t streamer_portnumber;
 					int32_t play_after_connect;
 
 					_context_t(void)
@@ -84,6 +85,7 @@ namespace sirius
 						, user_data(NULL)
 						, id(0)
 						, controller_portnumber(5000)
+						, streamer_portnumber(7000)
 						, play_after_connect(0)
 					{
 						memset(url, 0x00, sizeof(url));

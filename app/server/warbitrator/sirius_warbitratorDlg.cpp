@@ -80,6 +80,7 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_AUTOSTART, _enable_auto_start);
 	DDX_Control(pDX, IDC_LIST_ATTENDANTS, _attendants);
 	DDX_Control(pDX, IDC_CHECK_KEEPALIVE, _enable_keepalive);
+	DDX_Control(pDX, IDC_EDIT_STREAMER_PORTNUMBER, _streamer_portnumber);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -255,7 +256,15 @@ void sirius_warbitrator_dlg::OnBnClickedButtonStart()
 
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
-	_proxy->start();
+
+	if (_proxy)
+	{
+		_proxy->initialize(_proxy_ctx);
+		if (!_auto_start)
+		{
+			_proxy->start();
+		}
+	}
 }
 
 
@@ -264,7 +273,12 @@ void sirius_warbitrator_dlg::OnBnClickedButtonStop()
 	// TODO: Add your control notification handler code here
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
-	_proxy->stop();
+
+	if (_proxy)
+	{
+		_proxy->stop();
+		_proxy->release();
+	}
 }
 
 
@@ -275,7 +289,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wurl;
 	CString wattendant_instance;
 	CString wattendant_creation_delay;
-	CString wportnumber;
+	CString wcontroller_portnumber;
+	CString wstreamer_portnumber;
 
 	CString wvideo_fps;
 	CString wvideo_quantization_colors;
@@ -284,7 +299,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	char * url = nullptr;
 	int32_t attendant_instance;
 	int32_t attendant_creation_delay = 2000;
-	int32_t portnumber;
+	int32_t controller_portnumber;
+	int32_t streamer_portnumber;
 	int32_t video_fps = 0;
 	int32_t video_compression_level = 5;
 	int32_t video_quantization_colors = 128;
@@ -298,7 +314,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_url.GetWindowTextW(wurl);
 	_attendant_instance.GetWindowTextW(wattendant_instance);
 	_attendant_creation_delay.GetWindowTextW(wattendant_creation_delay);
-	_arbitrator_control_portnumber.GetWindowTextW(wportnumber);
+	_arbitrator_control_portnumber.GetWindowTextW(wcontroller_portnumber);
+	_streamer_portnumber.GetWindowTextW(wstreamer_portnumber);
 
 	_video_fps.GetWindowTextW(wvideo_fps);
 	video_compression_level = _video_compression_level.GetCurSel() + 1;
@@ -316,7 +333,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 
 	attendant_instance = _wtoi(wattendant_instance);
 	attendant_creation_delay = _wtoi(wattendant_creation_delay);
-	portnumber = _wtoi(wportnumber);
+	controller_portnumber = _wtoi(wcontroller_portnumber);
+	streamer_portnumber = _wtoi(wstreamer_portnumber);
 	video_fps = _wtoi(wvideo_fps);
 
 	if (_enable_keepalive.GetCheck())
@@ -327,7 +345,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_present = true;
 	if (_enable_auto_start.GetCheck())
 		enable_auto_start = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, 128, 72, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, false);
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, 128, 72, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, false);
 
 	if (uuid)
 		free(uuid);
@@ -338,11 +356,12 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
-	wchar_t	wportnumber[MAX_PATH] = { 0 };
+	wchar_t	wcontroler_portnumber[MAX_PATH] = { 0 };
+	wchar_t wstreamer_portnumber[MAX_PATH] = { 0 };
 	wchar_t wattendant_instance[MAX_PATH] = { 0 };
 	wchar_t wattendant_creation_delay[MAX_PATH] = { 0 };
 	wchar_t wvideo_fps[MAX_PATH] = { 0 };
@@ -353,11 +372,12 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	sirius::stringhelper::convert_multibyte2wide((char*)url, &wurl);
 	_itow_s(attendant_instance, wattendant_instance, 10);
 	_itow_s(attendant_creation_delay, wattendant_creation_delay, 10);
-	_itow_s(portnumber, wportnumber, 10);
+	_itow_s(controller_portnumber, wcontroler_portnumber, 10);
+	_itow_s(streamer_portnumber, wstreamer_portnumber, 10);
 	_itow_s(video_fps, wvideo_fps, 10);
 
 	_label_arbitrator_uuid.SetWindowText(wuuid);
-	_label_arbitrator_portnumber.SetWindowTextW(wportnumber);
+	_label_arbitrator_portnumber.SetWindowTextW(wcontroler_portnumber);
 
 	sirius::stringhelper::convert_multibyte2wide((char*)cpu, &wcpu);
 	_label_cpu_name.SetWindowTextW(wcpu);
@@ -372,7 +392,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_url.SetWindowTextW(wurl);
 	_attendant_instance.SetWindowTextW(wattendant_instance);
 	_attendant_creation_delay.SetWindowTextW(wattendant_creation_delay);
-	_arbitrator_control_portnumber.SetWindowTextW(wportnumber);
+	_arbitrator_control_portnumber.SetWindowTextW(wcontroler_portnumber);
+	_streamer_portnumber.SetWindowTextW(wstreamer_portnumber);
 
 	_video_fps.SetWindowTextW(wvideo_fps);
 	_video_compression_level.SetCurSel(video_compression_level - 1);
