@@ -85,7 +85,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info());
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info());
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -149,7 +149,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching)
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -160,7 +160,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	strncpy_s(configuration.url, url, sizeof(configuration.url) - 1);
 	configuration.max_attendant_instance = max_attendant_instance;
 	configuration.attendant_creation_delay = attendant_creation_delay;
-	configuration.portnumber = portnumber;
+	configuration.controller_portnumber = controller_portnumber;
+	configuration.streamer_portnumber = streamer_portnumber;
 	configuration.video_codec = video_codec;
 	configuration.video_width = video_width;
 	configuration.video_height = video_height;
@@ -451,7 +452,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
 		{
 			max_attendant_instance_count = confentity.max_attendant_instance;
-			sirius::library::net::sicp::server::start(nullptr, confentity.portnumber);
+			sirius::library::net::sicp::server::start(nullptr, confentity.controller_portnumber);
 			if (_context && _context->handler)
 				_context->handler->on_start();		
 		

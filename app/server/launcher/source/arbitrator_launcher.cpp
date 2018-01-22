@@ -150,6 +150,7 @@ int main()
 				sirius::uuid uuidgen;
 				uuidgen.create();
 				memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
+				memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 				contenity.id = index;
 			}
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
@@ -176,7 +177,9 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
 			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
-			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.portnumber);
+				proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
+				proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
+
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
 
@@ -214,6 +217,8 @@ int main()
 			{
 				if (uuid)
 				{
+			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
+			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
 					free(uuid);
 					uuid = nullptr;
 				}
