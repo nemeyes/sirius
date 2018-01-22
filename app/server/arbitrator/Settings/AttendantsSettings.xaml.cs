@@ -56,7 +56,7 @@ namespace sirius.app.server.arbitrator.Settings
                 DisaplyAttendantOff.IsChecked = true;
             }
 
-            setting_value.enable_auto_start = true;
+            setting_value.enable_auto_start = false;
             //if (setting_value.enable_auto_start)
             //{
             //    AutostartOn.IsChecked = true;
@@ -82,7 +82,7 @@ namespace sirius.app.server.arbitrator.Settings
             else
                 setting_value.enable_present = false;
 
-            setting_value.enable_auto_start = true;
+            setting_value.enable_auto_start = false;
             //if (AutostartOn.IsChecked.Value)
             //    setting_value.enable_auto_start = true;
             //else

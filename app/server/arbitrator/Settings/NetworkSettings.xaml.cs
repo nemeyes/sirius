@@ -42,8 +42,7 @@ namespace sirius.app.server.arbitrator.Settings
 
             TextControllerPortnumber.Text = setting_value.portnumber.ToString();
             UseTLS.IsChecked = setting_value.enable_tls;
-                 
-
+            UseKeepAlive.IsChecked = setting_value.enable_keepalive;
         }
         private void network_set_apply_click(object sender, RoutedEventArgs e)
         {
@@ -55,24 +54,16 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.enable_tls = true;
             else
                 setting_value.enable_tls = false;
+
+            if (UseKeepAlive.IsChecked.Value)
+                setting_value.enable_keepalive = true;
+            else
+                setting_value.enable_keepalive = false;
             
             setting_value.update();
         }
 
         private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            //only number type
-            foreach (char c in e.Text)
-            {
-                if (!char.IsDigit(c))
-                {
-                    e.Handled = true;
-                    break;
-                }
-            }
-        }
-
-        private void TextKeepAliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //only number type
             foreach (char c in e.Text)

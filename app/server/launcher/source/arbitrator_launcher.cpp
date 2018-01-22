@@ -132,97 +132,30 @@ int main()
 
 	if (status == sirius::base::err_code_t::success)
 	{
-		if (!option)
+		for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
 		{
-			for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
+			unsigned long pid = 0;
+			char arguments[ARGUMENT_SIZE] = { 0 };
+			char * uuid = nullptr;
+
+			sirius::app::server::arbitrator::entity::attendant_t contenity;
+			if (option)
 			{
-				unsigned long pid = 0;
-				char arguments[ARGUMENT_SIZE] = { 0 };
+				sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
+				memmove(contenity.uuid, uuid, strlen(uuid) + 1);
+				contenity.id = context.id;
+			}
+			else
+			{
 				sirius::uuid uuidgen;
 				uuidgen.create();
-
-				sirius::app::server::arbitrator::entity::attendant_t contenity;
 				memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
 				memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 				contenity.id = index;
-				memset(contenity.client_id, 0x00, sizeof(contenity.client_id));
-				contenity.state = attendant_state_t::available;
-				contenity.total_bandwidth_bytes = 0;
-
-				sirius::app::server::arbitrator::process::controller proc_ctrl;
-				proc_ctrl.set_cmdline(arguments, "--reconnect=false");
-				proc_ctrl.set_cmdline(arguments, "--uuid=\"%s\"", contenity.uuid);
-				proc_ctrl.set_cmdline(arguments, "--attendant_type=\"web\"");
-				proc_ctrl.set_cmdline(arguments, "--url=\"%s\"", confentity.url);
-				switch (confentity.video_codec)
-				{
-				case sirius::base::video_submedia_type_t::png:
-					proc_ctrl.set_cmdline(arguments, "--video_codec=\"png\"");
-					break;
-				}
-				proc_ctrl.set_cmdline(arguments, "--video_width=%d", confentity.video_width);
-				proc_ctrl.set_cmdline(arguments, "--video_height=%d", confentity.video_height);
-				proc_ctrl.set_cmdline(arguments, "--video_fps=%d", confentity.video_fps);
-				proc_ctrl.set_cmdline(arguments, "--video_buffer_count=6");
-				proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
-				proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
-				proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
-				proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
-				proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
-
-				proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
-				proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
-
-				if (confentity.enable_keepalive)
-					proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
-				else
-					proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
-
-				if (confentity.enable_tls)
-					proc_ctrl.set_cmdline(arguments, "--enable_tls=true");
-				else
-					proc_ctrl.set_cmdline(arguments, "--enable_tls=false");
-
-				if (confentity.enable_present)
-					proc_ctrl.set_cmdline(arguments, "--enable_present=true");
-				else
-					proc_ctrl.set_cmdline(arguments, "--enable_present=false");
-
-				proc_ctrl.set_cmdline(arguments, "--disable-gpu");
-				proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
-				proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
-				proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
-				proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
-				proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=6");
-
-				proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
-				proc_ctrl.set_cmdline(arguments, "--disable-extensions");
-				proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
-				proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
-				proc_ctrl.set_cmdline(arguments, "--disable-web-security --ignore-certificate-errors");
-
-				status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
-		
-				::Sleep(confentity.attendant_creation_delay);
 			}
-		}
-		else
-		{		
-			int32_t status = sirius::base::err_code_t::fail;
-							
-			unsigned long pid = 0;
-			char arguments[ARGUMENT_SIZE] = { 0 };
-
-			sirius::app::server::arbitrator::entity::attendant_t contenity;
-
-			char * uuid = nullptr;
-			sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
-			memmove(contenity.uuid, uuid, strlen(uuid) + 1);
-			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
-			contenity.id = context.id;
+			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
 			memset(contenity.client_id, 0x00, sizeof(contenity.client_id));
-			contenity.state = attendant_state_t::available;
+			contenity.state = attendant_state_t::idle;
 			contenity.total_bandwidth_bytes = 0;
 
 			sirius::app::server::arbitrator::process::controller proc_ctrl;
@@ -244,17 +177,27 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
 			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
-			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
-			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
+				proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
+				proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
+
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
+
+			if (confentity.enable_keepalive)
+				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
+
+			if (confentity.enable_tls)
+				proc_ctrl.set_cmdline(arguments, "--enable_tls=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_tls=false");
 
 			if (confentity.enable_present)
 				proc_ctrl.set_cmdline(arguments, "--enable_present=true");
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
-			proc_ctrl.set_cmdline(arguments, "--gpu_index=%d", 0);
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
 			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
@@ -269,10 +212,19 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--disable-web-security --ignore-certificate-errors");
 
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
-	
-			free(uuid);
-			uuid = nullptr;
-			
+
+			if (option)
+			{
+				if (uuid)
+				{
+			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
+			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
+					free(uuid);
+					uuid = nullptr;
+				}
+				break;
+			}		
+			::Sleep(confentity.attendant_creation_delay);
 		}		
 	}
 	return status;
