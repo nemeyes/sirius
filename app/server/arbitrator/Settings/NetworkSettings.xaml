@@ -59,13 +59,13 @@
                     <RadioButton x:Name="UseKeepAlive" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
-                    <RadioButton Content="No" Margin="8,0,0,0" />
+                    <RadioButton Content="No" Margin="8,0,0,0" IsChecked="True"/>
                 </StackPanel>                
-                <StackPanel>
+                <!--StackPanel>
                     <Label Content="Keep Alive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
                     <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />
                     <Label Content="sec"/>
-                </StackPanel>
+                </StackPanel-->
                 <!--StackPanel>
                     <Label Content="Accept Allowed IP" Target="{Binding ElementName=RadioGendeMale}" Width="150"/>
                     <RadioButton x:Name="AcceptAllowedIP">
