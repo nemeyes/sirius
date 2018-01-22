@@ -150,13 +150,10 @@ int main()
 				sirius::uuid uuidgen;
 				uuidgen.create();
 				memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
-				memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);
 				contenity.id = index;
 			}
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
-			memset(contenity.client_id, 0x00, sizeof(contenity.client_id));
 			contenity.state = attendant_state_t::idle;
-			contenity.total_bandwidth_bytes = 0;
 
 			sirius::app::server::arbitrator::process::controller proc_ctrl;
 			proc_ctrl.set_cmdline(arguments, "--reconnect=false");
@@ -177,9 +174,8 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
 			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
-				proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
-				proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
-
+			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
+			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
 
@@ -217,8 +213,6 @@ int main()
 			{
 				if (uuid)
 				{
-			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
-			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
 					free(uuid);
 					uuid = nullptr;
 				}

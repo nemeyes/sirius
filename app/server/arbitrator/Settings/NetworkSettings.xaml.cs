@@ -40,7 +40,8 @@ namespace sirius.app.server.arbitrator.Settings
 
             SettingValue setting_value = SettingValue.Instance();
 
-            TextControllerPortnumber.Text = setting_value.portnumber.ToString();
+            TextControllerPortnumber.Text = setting_value.controller_portnumber.ToString();
+            TextStreamerPortnumber.Text = setting_value.streamer_portnumber.ToString();
             UseTLS.IsChecked = setting_value.enable_tls;
             UseKeepAlive.IsChecked = setting_value.enable_keepalive;
         }
@@ -48,7 +49,8 @@ namespace sirius.app.server.arbitrator.Settings
         {
             SettingValue setting_value = SettingValue.Instance();
 
-            setting_value.portnumber = Convert.ToInt32(TextControllerPortnumber.Text);
+            setting_value.controller_portnumber = Convert.ToInt32(TextControllerPortnumber.Text);
+            setting_value.streamer_portnumber = Convert.ToInt32(TextStreamerPortnumber.Text);
 
             if (UseTLS.IsChecked.Value)
                 setting_value.enable_tls = true;
@@ -64,6 +66,19 @@ namespace sirius.app.server.arbitrator.Settings
         }
 
         private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextStreamerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //only number type
             foreach (char c in e.Text)
