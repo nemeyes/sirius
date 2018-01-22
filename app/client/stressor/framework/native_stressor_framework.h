@@ -18,7 +18,7 @@ namespace sirius
 					: public sirius::library::unified::client
 				{
 				public:
-					core(void);
+					core(sirius::library::framework::stressor::native * front);
 					virtual ~core(void);
 
 					int32_t play(HWND hwnd);
@@ -29,9 +29,10 @@ namespace sirius
 					virtual void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts);
 					virtual void on_end_video(void);
 
-				private:
+				private:			
 					HWND				_hwnd;			
 					CRITICAL_SECTION	_vcs;
+					sirius::library::framework::stressor::native * _front;
 				};
 			};
 		};
