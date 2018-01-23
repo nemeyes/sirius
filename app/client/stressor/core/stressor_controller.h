@@ -1,5 +1,5 @@
-#ifndef _CONTROL_CLIENT_H_
-#define _CONTROL_CLIENT_H_
+#ifndef _CONTROL_STRESSOR_H_
+#define _CONTROL_STRESSOR_H_
 
 #include <sirius_client_framework.h>
 #include <sirius_client_proxy.h>
@@ -49,15 +49,26 @@ public:
 	void on_error(int32_t error_code);
 	void on_post_error(int32_t error_code);
 
-	void stream_connect_callback();
-	void stream_disconnect_callback();
-	
+	void on_connect_stream(void);
+	void on_disconnect_stream(void);
+	void on_recv_stream(void);
+
+	void check_stream_state(void);
+
+	HANDLE							_key_event_thread;
+	static unsigned __stdcall		key_event_process_cb(void * param);
+	void							key_event_process(void);
+	void							close_key_event_thread_wait();
+
 private:
-	CSiriusStressorDlg *			_front;
-	int32_t							_index;
-	sirius::app::client::proxy *	_controller;
-	HMODULE							_hmodule;
-	wchar_t							_address[MAX_PATH];
-	sirius::library::framework::client::base * _framework;
+	CSiriusStressorDlg *						_front;
+	int32_t										_index;
+	int32_t										_recv_stream_count;
+	DWORD										_latency;
+	sirius::app::client::proxy *				_controller;
+	HMODULE										_hmodule;
+	wchar_t										_address[MAX_PATH];
+	sirius::library::framework::client::base *	_framework;
+	bool										_key_event_run;
 };
 #endif

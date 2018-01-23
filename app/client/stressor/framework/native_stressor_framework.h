@@ -28,11 +28,12 @@ namespace sirius
 					virtual void on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts);
 					virtual void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts);
 					virtual void on_end_video(void);
-
+				
 				private:			
 					HWND				_hwnd;			
 					CRITICAL_SECTION	_vcs;
 					sirius::library::framework::stressor::native * _front;
+					int32_t				_stream_count;
 				};
 			};
 		};

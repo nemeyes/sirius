@@ -115,10 +115,12 @@ int32_t sirius::app::client::proxy::core::disconnect(void)
 	if (_front)
 		_front->on_pre_disconnect();
 
-	_state = sirius::app::client::proxy::state_t::disconnecting;
-	if (sirius::library::net::sicp::client::disconnect())
-		status = sirius::app::client::proxy::err_code_t::success;
-
+	if (_state != sirius::app::client::proxy::state_t::disconnected)
+	{
+		_state = sirius::app::client::proxy::state_t::disconnecting;
+		if (sirius::library::net::sicp::client::disconnect())
+			status = sirius::app::client::proxy::err_code_t::success;
+	}
 	if (_front)
 		_front->on_post_disconnect();
 

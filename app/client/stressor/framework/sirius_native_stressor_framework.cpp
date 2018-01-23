@@ -36,14 +36,20 @@ int32_t sirius::library::framework::stressor::native::stop(void)
 	return _core->stop();
 }
 
-void sirius::library::framework::stressor::native::stream_connect_callback()
+void sirius::library::framework::stressor::native::on_connect_stream(void)
 {
 	if (_front)
-		_front->stream_connect_callback();
+		_front->on_connect_stream();
 }
 
-void sirius::library::framework::stressor::native::stream_disconnect_callback()
+void sirius::library::framework::stressor::native::on_disconnect_stream(void)
 {
 	if (_front)
-		_front->stream_disconnect_callback();
+		_front->on_disconnect_stream();
+}
+
+void sirius::library::framework::stressor::native::on_recv_stream(void)
+{
+	if (_front)
+		_front->on_recv_stream();
 }
