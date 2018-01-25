@@ -491,7 +491,7 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
-	data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
+	//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
 	LOGGER::make_info_log(SLNSC, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, packet);
 }
 
