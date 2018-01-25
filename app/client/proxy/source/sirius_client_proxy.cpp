@@ -198,6 +198,12 @@ int32_t sirius::app::client::proxy::handler::mouse_rb_up(int32_t pos_x, int32_t 
 	return status;
 }
 
+void sirius::app::client::proxy::handler::xml_data(const char * msg, size_t length)
+{
+	if (_proxy)
+		_proxy->xml_data(msg, length);
+
+}
 
 sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * handler, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd)
 	: _handler(handler)
@@ -403,6 +409,12 @@ int32_t sirius::app::client::proxy::mouse_rb_up(int32_t pos_x, int32_t pos_y)
 		status = _core->mouse_rb_up(pos_x, pos_y);
 
 	return status;
+}
+
+void sirius::app::client::proxy::xml_data(const char * msg, size_t length)
+{
+	if (_core)
+		_core->xml_data(msg, length);
 }
 
 //CALLBACK

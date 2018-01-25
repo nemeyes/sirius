@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSiriusClientDlg::OnBnClickedButtonStop)
 	ON_BN_CLICKED(IDC_BUTTON_CONNECT, &CSiriusClientDlg::OnBnClickedButtonConnect)
 	ON_BN_CLICKED(IDC_BUTTON_DISCONNECT, &CSiriusClientDlg::OnBnClickedButtonDisconnect)
+	ON_BN_CLICKED(IDC_BUTTON_TOAPP, &CSiriusClientDlg::OnBnClickedButtonToApp)
 	ON_WM_TIMER()
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSEWHEEL()
@@ -500,6 +501,26 @@ void CSiriusClientDlg::OnBnClickedButtonDisconnect()
 	EnableDisconnectButton(FALSE);
 
 	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));
+}
+
+void CSiriusClientDlg::OnBnClickedButtonToApp()
+{
+	if (_client)
+	{
+		CString str;
+		wchar_t* wchar_str;
+		char*  char_str;
+		int  char_str_len;
+
+		GetDlgItemText(IDC_EDIT_TOAPP_DATA, str);
+		wchar_str = str.GetBuffer(str.GetLength());
+		char_str_len = WideCharToMultiByte(CP_ACP, 0, wchar_str, -1, NULL, 0, NULL, NULL);
+		char_str = new char[char_str_len];
+		WideCharToMultiByte(CP_ACP, 0, wchar_str, -1, char_str, char_str_len, 0, 0);
+
+		_client->xml_data(char_str, char_str_len);
+		delete[] char_str;
+	}
 }
 
 bool CSiriusClientDlg::ParseArgument(int argc, wchar_t * argv[])

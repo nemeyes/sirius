@@ -75,6 +75,7 @@ protected:
 	afx_msg void OnBnClickedButtonStop();
 	afx_msg void OnBnClickedButtonConnect();
 	afx_msg void OnBnClickedButtonDisconnect();
+	afx_msg void OnBnClickedButtonToApp();
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
