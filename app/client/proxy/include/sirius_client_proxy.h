@@ -68,6 +68,7 @@ namespace sirius
 					int32_t			mouse_rb_double(int32_t pos_x, int32_t pos_y);
 					int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 					int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
+					void				xml_data(const char * msg, size_t length);
 
 					virtual void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
 					virtual void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
@@ -137,6 +138,7 @@ namespace sirius
 				int32_t			mouse_rb_double(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
+				void				xml_data(const char * msg, size_t length);
 
 			private:
 				void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection);

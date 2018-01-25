@@ -282,6 +282,14 @@ int32_t sirius::app::client::proxy::core::mouse_rb_up(int32_t pos_x, int32_t pos
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
+void sirius::app::client::proxy::core::xml_data(const char * msg, size_t length)
+{
+	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
+	{
+		data_request(_szattendant_uuid, CMD_CLIENT_INFO_XML_IND, msg, length);
+	}
+}
+
 //IPCClient CALLBACK
 void sirius::app::client::proxy::core::on_create_session(void)
 {
