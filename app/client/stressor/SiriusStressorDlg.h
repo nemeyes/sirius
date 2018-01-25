@@ -20,6 +20,14 @@
 #define WM_STREAM_DISCONNECTING_MSG		WM_USER+906
 #define WM_STREAM_DISCONNECTED_MSG		WM_USER+907
 
+#define WM_STREAM_STATE_NONE_MSG		WM_USER+908
+#define WM_STREAM_STATE_RUNNING_MSG		WM_USER+909
+#define WM_STREAM_STATE_PAUSED_MSG		WM_USER+910
+#define WM_STREAM_STATE_STOPPED_MSG		WM_USER+911
+
+#define WM_STREAM_COUNT_MSG				WM_USER+912
+#define WM_STREAM_LATENCY_MSG			WM_USER+913
+
 // CSiriusStressorDlg 대화 상자
 class CSiriusStressorDlg : public CDialogEx
 {
@@ -57,6 +65,12 @@ public:
 	afx_msg LRESULT OnStreamConnectedMsg(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStreamDisconnectingMsg(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStreamDisconnectedMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamStateNoneMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamStateRunningMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamStatePausedMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamStateStoppedMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamCountMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam);
 public:
 	CListCtrl _attendant_list;
 	CButton _connect_button;
@@ -66,20 +80,40 @@ public:
 	CEdit _client_id;
 	CEdit _connect_count;
 	CEdit _connect_interval;
+	int _key_interval;
+	bool _key_loop;
 public:
 	afx_msg void OnBnClickedButtonConnect();
 	afx_msg void OnBnClickedButtonDisconnect();		
+	afx_msg void OnEnChangeEditPort();
+	afx_msg void OnIpnFieldchangedIpaddressServer(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditClientId();
+	afx_msg void OnEnChangeEditConnectCount();
+	afx_msg void OnEnChangeEditConnectInterval();
+	afx_msg void OnBnClickedCheckAuto();
+	afx_msg void OnBnClickedCheckKeyEvent();
+	afx_msg void OnCustomdrawList(NMHDR* pNMHDR, LRESULT* pResult);
 	
 	HANDLE _connect_thread;
 	void close_connect_thread_wait();
 	static unsigned __stdcall connect_proc_cb(void* param);
-	void connect_proc();
-	bool _connect_stop;
+	void connect_proc();	
 
 	HANDLE _disconnect_thread;
-	void close_disconnect_thread_wait();
 	static unsigned __stdcall disconnect_proc_cb(void* param);
 	void disconnect_proc();
 	static unsigned __stdcall disconnect_proc_inner(void * param);
-	bool _disconnect_stop;
+	void close_disconnect_thread_wait();
+	
+	bool _auto_mode_run;
+	HANDLE _auto_mode_thread;
+	void close_auto_mode_thread_wait();
+	static unsigned __stdcall auto_mode_proc_cb(void* param);
+	void auto_mode_proc();
+
+	void load_config(void);
+	void update_config(void);	
+	afx_msg void OnBnClickedButtonAutoStart();
+	afx_msg void OnBnClickedButtonAutoStop();
+	afx_msg void OnBnClickedButtonKeySetting();
 };

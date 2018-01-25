@@ -30,22 +30,29 @@ void sirius::library::framework::stressor::native::core::on_begin_video(int32_t 
 {
 	sirius::autolock mutex(&_vcs);	
 	if (_front)
-		_front->stream_connect_callback();
+	{
+		_front->on_connect_stream();
+		_front->on_recv_stream();
+	}
 }
 
 void sirius::library::framework::stressor::native::core::on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts)
-{
+{	
 	sirius::autolock mutex(&_vcs);	
+	if (_front)
+		_front->on_recv_stream();
 }
 
 void sirius::library::framework::stressor::native::core::on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts)
 {
 	sirius::autolock mutex(&_vcs);
+	if (_front)
+		_front->on_recv_stream();
 }
 
 void sirius::library::framework::stressor::native::core::on_end_video(void)
 {
 	sirius::autolock mutex(&_vcs);	
 	if (_front)
-		_front->stream_disconnect_callback();
+		_front->on_disconnect_stream();
 }

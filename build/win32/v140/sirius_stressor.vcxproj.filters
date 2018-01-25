@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\..\app\client\stressor\framework\sirius_native_stressor_framework.cpp">
       <Filter>framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\client\stressor\Resource.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\app\client\stressor\framework\sirius_native_stressor_framework.h">
       <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

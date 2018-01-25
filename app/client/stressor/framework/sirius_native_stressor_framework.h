@@ -32,8 +32,9 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
-					void stream_connect_callback();
-					void stream_disconnect_callback();
+					void on_connect_stream(void);
+					void on_disconnect_stream(void);
+					void on_recv_stream(void);
 
 				private:
 					sirius::library::framework::stressor::native::core * _core;
