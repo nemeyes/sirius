@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "SiriusStressor.h"
 #include "SiriusStressorDlg.h"
+#include "SiriusStressorKeyMacroDlg.h"
 #include "afxdialogex.h"
 
 #include <thread>
@@ -99,6 +100,12 @@ BEGIN_MESSAGE_MAP(CSiriusStressorDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_CLIENT_ID, &CSiriusStressorDlg::OnEnChangeEditClientId)
 	ON_EN_CHANGE(IDC_EDIT_CONNECT_COUNT, &CSiriusStressorDlg::OnEnChangeEditConnectCount)
 	ON_EN_CHANGE(IDC_EDIT_CONNECT_INTERVAL, &CSiriusStressorDlg::OnEnChangeEditConnectInterval)
+	ON_BN_CLICKED(IDC_CHECK_AUTO, &CSiriusStressorDlg::OnBnClickedCheckAuto)
+	ON_BN_CLICKED(IDC_CHECK_KEY_EVENT, &CSiriusStressorDlg::OnBnClickedCheckKeyEvent)
+	ON_BN_CLICKED(IDC_BUTTON_AUTO_START, &CSiriusStressorDlg::OnBnClickedButtonAutoStart)
+	ON_BN_CLICKED(IDC_BUTTON_AUTO_STOP, &CSiriusStressorDlg::OnBnClickedButtonAutoStop)
+	ON_BN_CLICKED(IDC_BUTTON_KEY_SETTING, &CSiriusStressorDlg::OnBnClickedButtonKeySetting)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST_ATTENDANT, OnCustomdrawList)
 END_MESSAGE_MAP()
 
 
@@ -134,7 +141,20 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	
+	GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_AUTO_STOP)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(FALSE);
 
+	CButton * pLoopCheckOn = (CButton*)GetDlgItem(IDC_RADIO_KEY_LOOP_ON);
+	pLoopCheckOn->SetCheck(true);
+	SetDlgItemText(IDC_EDIT_KEY_INTERVAL, L"5");
+	
 	_attendant_list.InsertColumn(0, _T("no."), LVCFMT_CENTER, 50);
 	_attendant_list.InsertColumn(1, _T("ip address"), LVCFMT_CENTER, 130);
 	_attendant_list.InsertColumn(2, _T("server connect"), LVCFMT_CENTER, 120);
@@ -203,8 +223,15 @@ HCURSOR CSiriusStressorDlg::OnQueryDragIcon()
 void CSiriusStressorDlg::OnBnClickedButtonConnect()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	_connect_button.EnableWindow(FALSE);
-	_disconnect_button.EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CHECK_AUTO)->EnableWindow(FALSE);
+
+	GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(FALSE);
 
 	unsigned int connect_thread_id = 0;
 	_connect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::connect_proc_cb, this, 0, &connect_thread_id);	
@@ -213,8 +240,9 @@ void CSiriusStressorDlg::OnBnClickedButtonConnect()
 void CSiriusStressorDlg::OnBnClickedButtonDisconnect()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	_connect_button.EnableWindow(FALSE);
-	_disconnect_button.EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+
 	unsigned int disconnect_thread_id = 0;
 	_disconnect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::disconnect_proc_cb, this, 0, &disconnect_thread_id);
 }
@@ -228,6 +256,11 @@ unsigned CSiriusStressorDlg::connect_proc_cb(void* param)
 
 void CSiriusStressorDlg::connect_proc()
 {
+	CString str_key_interval;
+	GetDlgItem(IDC_EDIT_KEY_INTERVAL)->GetWindowTextW(str_key_interval);
+	_key_interval = _ttoi(str_key_interval);
+	_key_loop = ((CButton*)GetDlgItem(IDC_RADIO_KEY_LOOP_ON))->GetCheck();
+
 	CString str_server_address;
 	CString str_server_port;
 	CString str_connect_count;
@@ -271,8 +304,12 @@ void CSiriusStressorDlg::connect_proc()
 		if (connect_count > 1)
 			::Sleep(connect_interval);
 	}
-	_connect_button.EnableWindow(TRUE);
-	_disconnect_button.EnableWindow(TRUE);
+
+	if (!IsDlgButtonChecked(IDC_CHECK_AUTO))
+	{
+		GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(TRUE);
+	}
 }
 
 void CSiriusStressorDlg::close_connect_thread_wait()
@@ -328,18 +365,35 @@ void CSiriusStressorDlg::disconnect_proc()
 	_attendant_list.DeleteAllItems();
 
 	::Sleep(1000);
+	
+	if (!IsDlgButtonChecked(IDC_CHECK_AUTO))
+	{
+		GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+		GetDlgItem(IDC_CHECK_AUTO)->EnableWindow(TRUE);
 
-	_connect_button.EnableWindow(TRUE);
-	_disconnect_button.EnableWindow(TRUE);
+		if (IsDlgButtonChecked(IDC_CHECK_KEY_EVENT))
+		{
+			GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(TRUE);
+			GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(TRUE);
+			GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(TRUE);
+			GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(TRUE);
+			GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(TRUE);
+		}
+		else
+		{
+			GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(TRUE);
+		}
+	}	
 }
 
 unsigned CSiriusStressorDlg::disconnect_proc_inner(void* param)
 {
 	stressor_controller * client = static_cast<stressor_controller*>(param);	
-
 	if (client->state() != sirius::app::client::proxy::state_t::disconnected)
+	{
 		client->disconnect();
-
+	}
 	delete client;
 	client = nullptr;
 	return 0;
@@ -356,6 +410,95 @@ void CSiriusStressorDlg::close_disconnect_thread_wait()
 		_disconnect_thread = INVALID_HANDLE_VALUE;
 	}
 }
+
+
+
+unsigned CSiriusStressorDlg::auto_mode_proc_cb(void* param)
+{
+	CSiriusStressorDlg * self = static_cast<CSiriusStressorDlg*>(param);
+	self->auto_mode_proc();
+	return 0;
+}
+
+void CSiriusStressorDlg::auto_mode_proc()
+{
+	unsigned int disconnect_thread_id = 0;
+	_disconnect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::disconnect_proc_cb, this, 0, &disconnect_thread_id);
+	close_disconnect_thread_wait();
+
+	while (_auto_mode_run)
+	{
+		// connect
+		unsigned int connect_thread_id = 0;
+		_connect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::connect_proc_cb, this, 0, &connect_thread_id);
+		close_connect_thread_wait();
+		// !connect
+		
+		::Sleep(1000 * 3);
+
+		// disconnect		
+		_disconnect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::disconnect_proc_cb, this, 0, &disconnect_thread_id);
+		close_disconnect_thread_wait();
+		//!disconnect
+	}
+	GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(TRUE);
+	GetDlgItem(IDC_CHECK_AUTO)->EnableWindow(TRUE);
+
+	if (IsDlgButtonChecked(IDC_CHECK_KEY_EVENT))
+	{
+		GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(TRUE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(TRUE);
+		GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(TRUE);
+	}
+	else
+	{
+		GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(TRUE);
+	}
+}
+
+void CSiriusStressorDlg::close_auto_mode_thread_wait()
+{
+	if (_auto_mode_thread != INVALID_HANDLE_VALUE)
+	{
+		if (::WaitForSingleObject(_auto_mode_thread, INFINITE) == WAIT_OBJECT_0)
+		{
+			::CloseHandle(_auto_mode_thread);
+		}
+		_auto_mode_thread = INVALID_HANDLE_VALUE;
+	}
+}
+
+
+void CSiriusStressorDlg::OnBnClickedButtonAutoStart()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	GetDlgItem(IDC_CHECK_AUTO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_AUTO_STOP)->EnableWindow(TRUE);
+
+	GetDlgItem(IDC_CHECK_KEY_EVENT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(FALSE);
+
+	_auto_mode_run = true;
+	unsigned int auto_mode_thread_id = 0;
+	_auto_mode_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::auto_mode_proc_cb, this, 0, &auto_mode_thread_id);	
+}
+
+
+void CSiriusStressorDlg::OnBnClickedButtonAutoStop()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_AUTO_STOP)->EnableWindow(FALSE);
+	
+	_auto_mode_run = false;
+}
+
 
 LRESULT CSiriusStressorDlg::OnClientConnectingMsg(WPARAM wParam, LPARAM lParam)
 {
@@ -600,6 +743,56 @@ void CSiriusStressorDlg::update_config(void)
 
 }
 
+void CSiriusStressorDlg::OnBnClickedCheckAuto()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (IsDlgButtonChecked(IDC_CHECK_AUTO))
+	{
+		GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+
+		GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_AUTO_STOP)->EnableWindow(FALSE);		
+	}
+	else
+	{
+		GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
+
+		GetDlgItem(IDC_BUTTON_AUTO_START)->EnableWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_AUTO_STOP)->EnableWindow(FALSE);
+	}	
+}
+
+
+void CSiriusStressorDlg::OnBnClickedCheckKeyEvent()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (IsDlgButtonChecked(IDC_CHECK_KEY_EVENT))
+	{
+		GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(TRUE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(TRUE);
+		GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(TRUE);	
+	}
+	else
+	{
+		GetDlgItem(IDC_BUTTON_KEY_SETTING)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_ON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_RADIO_KEY_LOOP_OFF)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_KEY_INTERVAL)->EnableWindow(FALSE);
+
+	}
+}
+
+void CSiriusStressorDlg::OnBnClickedButtonKeySetting()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CSiriusStressorKeyMacroDlg sirius_stressor_key_macro_dlg;
+	sirius_stressor_key_macro_dlg.DoModal();
+	sirius_stressor_key_macro_dlg.DestroyWindow();
+}
+
 void CSiriusStressorDlg::OnIpnFieldchangedIpaddressServer(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMIPADDRESS pIPAddr = reinterpret_cast<LPNMIPADDRESS>(pNMHDR);
@@ -628,4 +821,28 @@ void CSiriusStressorDlg::OnEnChangeEditConnectCount()
 void CSiriusStressorDlg::OnEnChangeEditConnectInterval()
 {
 	update_config();
+}
+
+void CSiriusStressorDlg::OnCustomdrawList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
+	*pResult = 0;
+	if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
+	{
+		*pResult = CDRF_NOTIFYITEMDRAW;
+	}
+	else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
+	{
+		if ((pLVCD->nmcd.dwItemSpec % 2) == 0)
+		{
+			pLVCD->clrText = RGB(0, 0, 0);
+			pLVCD->clrTextBk = RGB(230, 230, 230);
+		}
+		else
+		{
+			pLVCD->clrText = RGB(0, 0, 0);
+			pLVCD->clrTextBk = RGB(255, 255, 255);
+		}
+		*pResult = CDRF_DODEFAULT;
+	}
 }

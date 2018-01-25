@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <fstream>
 
 stressor_controller::stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, bool tls)
 	: _front(front)
@@ -43,7 +44,7 @@ void stressor_controller::on_post_connect(wchar_t * address, int32_t portNumber,
 	if (!_framework)
 	{
 		_framework = new sirius::library::framework::stressor::native(this);
-	}
+	}	
 }
 
 void stressor_controller::on_pre_disconnect(void)
@@ -199,9 +200,12 @@ void stressor_controller::on_connect_stream(void)
 	HWND hwnd = _front->GetSafeHwnd();
 	::PostMessage(hwnd, WM_STREAM_CONNECTED_MSG, _index, NULL);
 
-	_key_event_run = true;
-	unsigned int thread_id = 0;
-	_key_event_thread = (HANDLE)_beginthreadex(NULL, 0, stressor_controller::key_event_process_cb, this, 0, &thread_id);
+	if (_front->IsDlgButtonChecked(IDC_CHECK_KEY_EVENT))
+	{
+		_key_event_run = true;
+		unsigned int thread_id = 0;
+		_key_event_thread = (HANDLE)_beginthreadex(NULL, 0, stressor_controller::key_event_process_cb, this, 0, &thread_id);
+	}
 }
 
 void stressor_controller::on_disconnect_stream(void)
@@ -263,21 +267,67 @@ unsigned stressor_controller::key_event_process_cb(void * param)
 
 void stressor_controller::key_event_process()
 {
-	while (_key_event_run)
-	{	
-		if (_recv_stream_count > 0)
-		{
-			_latency = GetTickCount();
-			key_down(39);
-			key_up(39);
-			::Sleep(5000);
+	::Sleep(_front->_key_interval * 1000);
+	std::ifstream fin;
+	fin.open(L"key_macro.json");
+	const int bufferLength = 1024;
+	char readBuffer[bufferLength] = { 0, };
+	fin.read(readBuffer, bufferLength);
+	fin.close();
 
-			_latency = GetTickCount();
-			key_down(37);
-			key_up(37);
-			::Sleep(5000);
+	std::string config_doc = readBuffer;
+
+	Json::Value root;
+	Json::Reader reader;
+	std::vector<int> keys;
+	if (reader.parse(config_doc, root) == false)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			keys.push_back(-1);
 		}
 	}
+	else
+	{
+		char key_name[20] = { 0 };
+		for (int i = 0; i < 10; i++)
+		{
+			sprintf_s(key_name, "key_0%d", i);
+			if (root[key_name].isInt())
+			{
+				int value = root[key_name].asInt();
+				keys.push_back(value);
+			}
+		}
+	}
+
+	while (_key_event_run)
+	{		
+		if (_recv_stream_count > 0)
+		{				
+			for (int index = 0; index < keys.size(); index++)
+			{
+				if (keys[index] < 0) continue;
+
+				_latency = GetTickCount();
+				key_down(keys[index]);
+				key_up(keys[index]);					
+		
+				int32_t sleep_second = 0;
+				while(_front->_key_interval > sleep_second)
+				{
+					::Sleep(1000 * 1);
+					sleep_second++;
+
+					if (!_key_event_run) break;						
+				}
+				if (!_key_event_run) break;
+			}
+			if (!_front->_key_loop) 
+				_key_event_run = false;
+		}	
+	}	
+	keys.clear();
 }
 
 void stressor_controller::close_key_event_thread_wait()

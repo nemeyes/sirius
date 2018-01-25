@@ -80,9 +80,19 @@ public:
 	CEdit _client_id;
 	CEdit _connect_count;
 	CEdit _connect_interval;
+	int _key_interval;
+	bool _key_loop;
 public:
 	afx_msg void OnBnClickedButtonConnect();
 	afx_msg void OnBnClickedButtonDisconnect();		
+	afx_msg void OnEnChangeEditPort();
+	afx_msg void OnIpnFieldchangedIpaddressServer(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditClientId();
+	afx_msg void OnEnChangeEditConnectCount();
+	afx_msg void OnEnChangeEditConnectInterval();
+	afx_msg void OnBnClickedCheckAuto();
+	afx_msg void OnBnClickedCheckKeyEvent();
+	afx_msg void OnCustomdrawList(NMHDR* pNMHDR, LRESULT* pResult);
 	
 	HANDLE _connect_thread;
 	void close_connect_thread_wait();
@@ -94,12 +104,16 @@ public:
 	void disconnect_proc();
 	static unsigned __stdcall disconnect_proc_inner(void * param);
 	void close_disconnect_thread_wait();
+	
+	bool _auto_mode_run;
+	HANDLE _auto_mode_thread;
+	void close_auto_mode_thread_wait();
+	static unsigned __stdcall auto_mode_proc_cb(void* param);
+	void auto_mode_proc();
 
 	void load_config(void);
 	void update_config(void);	
-	afx_msg void OnEnChangeEditPort();
-	afx_msg void OnIpnFieldchangedIpaddressServer(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnEnChangeEditClientId();
-	afx_msg void OnEnChangeEditConnectCount();
-	afx_msg void OnEnChangeEditConnectInterval();
+	afx_msg void OnBnClickedButtonAutoStart();
+	afx_msg void OnBnClickedButtonAutoStop();
+	afx_msg void OnBnClickedButtonKeySetting();
 };
