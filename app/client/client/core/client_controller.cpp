@@ -221,17 +221,17 @@ void client_controller::on_stop_streaming(void)
 		_framework->stop();
 }
 
-void client_controller::on_pre_xml(const char * msg, size_t length)
+void client_controller::on_pre_end2end_data(const char * packet, int32_t packet_size)
 {
 
 }
 
-void client_controller::on_xml(const char * msg, size_t length)
+void client_controller::on_end2end_data(const char * packet, int32_t packet_size)
 {
 
 }
 
-void client_controller::on_post_xml(const char * msg, size_t length)
+void client_controller::on_post_end2end_data(const char * packet, int32_t packet_size)
 {
 
 }

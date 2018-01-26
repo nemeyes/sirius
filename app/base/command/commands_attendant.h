@@ -346,13 +346,13 @@ namespace sirius
 			};
 
 
-			class infoxml_noti : public sirius::app::attendant::attendant_cmd
+			class end2end_data_noti : public sirius::app::attendant::attendant_cmd
 			{
 			public:
-				infoxml_noti(sirius::app::attendant::proxy * attendant)
-					: sirius::app::attendant::attendant_cmd(attendant, CMD_CLIENT_INFO_XML_IND)
+				end2end_data_noti(sirius::app::attendant::proxy * attendant)
+					: sirius::app::attendant::attendant_cmd(attendant, CMD_END2END_DATA_IND)
 				{}
-				virtual ~infoxml_noti(void)
+				virtual ~end2end_data_noti(void)
 				{}
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)

@@ -35,8 +35,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	//add_command(new sirius::app::server::arbitrator::keepalivecheck_res(_front));
 	
 	add_command(CMD_ATTENDANT_INFO_IND);
-	add_command(CMD_CLIENT_INFO_XML_IND);
-	add_command(CMD_CLIENT_INFO_JSON_IND);
+	add_command(CMD_END2END_DATA_IND);
 	add_command(CMD_ERROR_IND);
 
 	add_command(CMD_KEY_DOWN_IND);

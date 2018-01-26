@@ -99,9 +99,9 @@ void sirius::library::framework::server::web::on_mouse_wheel(int32_t pos_x, int3
 	_core->on_mouse_wheel(pos_x, pos_y, wheel_delta);
 }
 
-void sirius::library::framework::server::web::on_info_xml(const uint8_t * msg, int32_t length)
+void sirius::library::framework::server::web::on_end2end_data(const uint8_t * packet, int32_t packet_size)
 {
-	_core->on_info_xml(msg, length);
+	_core->on_end2end_data(packet, packet_size);
 }
 
 sirius::library::framework::server::base * create_server_framework(void)

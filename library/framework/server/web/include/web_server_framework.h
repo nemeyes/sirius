@@ -52,9 +52,9 @@ namespace sirius
 					void	on_mouse_move(int32_t pos_x, int32_t pos_y);
 					void	on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_delta);
 
-					void		on_info_xml(const uint8_t * msg, int32_t length);
-					int32_t*	get_xml_msg(void);
-					void		send_xml_msg(uint8_t * msg);
+					void		on_end2end_data(const uint8_t * packet, int32_t packet_size);
+					int32_t*	get_end2end_data(void);
+					void		send_end2end_data(uint8_t * msg);
 
 				private:
 					void on_video_initialize(void * device, int32_t hwnd, int32_t smt, int32_t width, int32_t height);
@@ -77,12 +77,12 @@ namespace sirius
 					sirius::library::unified::server::video_compressor_context_t _venc_context;
 
 				private:
-					struct st_xml_msg
+					struct st_data_msg
 					{
-						int size;
-						std::string msg;
+						int32_t			size;
+						std::string		msg;
 					};
-					std::queue<st_xml_msg> _xml_msg_que;
+					std::queue<st_data_msg> _data_msg_queue;
 
 					sirius::library::misc::notification::internal::notifier * _notifier;
 					sirius::library::unified::server::context_t * _unified_server_ctx;

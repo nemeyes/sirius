@@ -44,7 +44,7 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	add_command(new sirius::app::attendant::mouse_lb_dclick_noti(front));
 	add_command(new sirius::app::attendant::mouse_rb_dclick_noti(front));
 	add_command(new sirius::app::attendant::mouse_wheel_noti(front));
-	add_command(new sirius::app::attendant::infoxml_noti(front));
+	add_command(new sirius::app::attendant::end2end_data_noti(front));
 }
 
 sirius::app::attendant::proxy::core::~core(void)
@@ -491,7 +491,7 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
-	//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, (char*)packet, len);
+	data_request(_client_uuid, CMD_END2END_DATA_IND, (char*)packet, len);
 	LOGGER::make_info_log(SLNSC, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, packet);
 }
 
@@ -499,7 +499,7 @@ void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * pa
 {
 	if (_callback)
 		_callback(packet, len);
-	_framework->on_info_xml(packet, len);
+	_framework->on_end2end_data(packet, len);
 }
 
 void sirius::app::attendant::proxy::core::on_recv_notification(int32_t type, char * msg, int32_t size)
@@ -544,10 +544,7 @@ void sirius::app::attendant::proxy::core::on_recv_notification(int32_t type, cha
 	case sirius::library::misc::notification::internal::notifier::type_t::gyro_interval:
 		//data_request(_client_uuid, CMD_GYRO_UPDATEINTERVAL, msg, size);
 		break;
-	case sirius::library::misc::notification::internal::notifier::type_t::info_xml:
-		//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, msg, size);
-		break;
-	case sirius::library::misc::notification::internal::notifier::type_t::info_json:
+	case sirius::library::misc::notification::internal::notifier::type_t::end2end_data:
 		//data_request(_client_uuid, CMD_CLIENT_INFO_XML_IND, msg, size);
 		break;
 	case sirius::library::misc::notification::internal::notifier::type_t::error :

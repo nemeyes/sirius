@@ -198,11 +198,10 @@ int32_t sirius::app::client::proxy::handler::mouse_rb_up(int32_t pos_x, int32_t 
 	return status;
 }
 
-void sirius::app::client::proxy::handler::xml_data(const char * msg, size_t length)
+void sirius::app::client::proxy::handler::post_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (_proxy)
-		_proxy->xml_data(msg, length);
-
+		_proxy->post_end2end_data(packet, packet_size);
 }
 
 sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * handler, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd)
@@ -411,10 +410,10 @@ int32_t sirius::app::client::proxy::mouse_rb_up(int32_t pos_x, int32_t pos_y)
 	return status;
 }
 
-void sirius::app::client::proxy::xml_data(const char * msg, size_t length)
+void sirius::app::client::proxy::post_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (_core)
-		_core->xml_data(msg, length);
+		_core->post_end2end_data(packet, packet_size);
 }
 
 //CALLBACK
@@ -544,22 +543,22 @@ void sirius::app::client::proxy::on_stop_streaming(void)
 		_handler->on_stop_streaming();
 }
 
-void sirius::app::client::proxy::on_pre_xml(const char * msg, size_t length)
+void sirius::app::client::proxy::on_pre_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (_handler)
-		_handler->on_pre_xml(msg, length);
+		_handler->on_pre_end2end_data(packet, packet_size);
 }
 
-void sirius::app::client::proxy::on_xml(const char * msg, size_t length)
+void sirius::app::client::proxy::on_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (_handler)
-		_handler->on_xml(msg, length);
+		_handler->on_end2end_data(packet, packet_size);
 }
 
-void sirius::app::client::proxy::on_post_xml(const char * msg, size_t length)
+void sirius::app::client::proxy::on_post_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (_handler)
-		_handler->on_post_xml(msg, length);
+		_handler->on_post_end2end_data(packet, packet_size);
 }
 
 void sirius::app::client::proxy::on_pre_error(int32_t error_code)

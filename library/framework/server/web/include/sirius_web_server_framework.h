@@ -45,7 +45,7 @@ namespace sirius
 					void	on_R_mouse_dclick(int32_t pos_x, int32_t pos_y);
 					void	on_mouse_move(int32_t pos_x, int32_t pos_y);
 					void	on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_delta);
-					void	on_info_xml(const uint8_t * msg, int32_t len);
+					void	on_end2end_data(const uint8_t * packet, int32_t packet_size);
 
 				private:
 					sirius::library::framework::server::web::core * _core;
