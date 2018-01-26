@@ -518,7 +518,7 @@ void CSiriusClientDlg::OnBnClickedButtonToApp()
 		char_str = new char[char_str_len];
 		WideCharToMultiByte(CP_ACP, 0, wchar_str, -1, char_str, char_str_len, 0, 0);
 
-		_client->xml_data(char_str, char_str_len);
+		_client->on_post_end2end_data(char_str, char_str_len);
 		delete[] char_str;
 	}
 }

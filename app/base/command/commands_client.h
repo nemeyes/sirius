@@ -104,18 +104,18 @@ namespace sirius
 				}
 			};
 
-			class xml_noti : public sirius::app::client::abstract_client_cmd
+			class end2end_data_noti : public sirius::app::client::abstract_client_cmd
 			{
 			public:
-				xml_noti(sirius::app::client::proxy::core * prxy)
-					: sirius::app::client::abstract_client_cmd(prxy, CMD_CLIENT_INFO_XML_IND)
+				end2end_data_noti(sirius::app::client::proxy::core * prxy)
+					: sirius::app::client::abstract_client_cmd(prxy, CMD_END2END_DATA_IND)
 				{}
-				virtual ~xml_noti(void)
+				virtual ~end2end_data_noti(void)
 				{}
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
-					_proxy->xml_callback(msg, length);
+					_proxy->end2end_data_callback(msg, length);
 				}
 			};
 

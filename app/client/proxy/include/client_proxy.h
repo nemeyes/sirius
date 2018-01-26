@@ -42,7 +42,7 @@ namespace sirius
 				int32_t			mouse_rb_double(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
-				void				xml_data(const char * msg, size_t length);
+				void			post_end2end_data(const char * packet, int32_t packet_size);
 
 			private:
 				void			on_create_session(void);
@@ -53,7 +53,7 @@ namespace sirius
 				void			disconnect_client_callback(int32_t code);
 				void			attendant_info_callback(int32_t code, const char * container_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height);
 
-				void			xml_callback(const char * msg, size_t length);
+				void			end2end_data_callback(const char * packet, int32_t packet_size);
 				void			error_callback(int32_t code);
 
 			private:
