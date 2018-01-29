@@ -92,6 +92,7 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_STB_ID, _ctrl_device_id);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
+	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)

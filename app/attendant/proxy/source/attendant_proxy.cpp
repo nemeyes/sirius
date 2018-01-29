@@ -332,7 +332,7 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 		data_request((char*)SERVER_UUID, CMD_START_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
 		LOGGER::make_info_log(SLNS, "[CMD_START_ATTENDANT_RES] - %s(), %d,	Command:%d, id:%d, rcode:%d", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_RES, _context->id, sirius::app::attendant::proxy::err_code_t::success);
 	}
-
+	memcpy(&_client_uuid, client_uuid, strlen(client_uuid));
 	Json::Value npacket;
 	Json::StyledWriter nbuilder;
 
