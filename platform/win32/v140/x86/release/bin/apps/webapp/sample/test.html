@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script type="text/javascript" src="./jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="./injection.js"></script>
+
+	<script>
+
+	$(document).keydown(function(event) {
+			//cssApi.log(">>> keydown: " + event.which);
+			var now = $("li.select");
+			var next = null;
+
+			switch (event.which) {
+				case 10:	// enter
+				case 13:
+					CoTExt.api.setTimeout(0);
+					break;
+			}
+
+			if (next != null) {
+				now.removeClass("select");
+				next.addClass("select");
+			}
+
+		});
+	</script>
+
+	<style>
+		li {
+			display:inline;
+			border: 1px solid black;
+		}
+		.select {
+			background-color: yellow;
+		}
+	</style>
+
+</head>
+<body style="width: 960px; height: 540px; overflow: hidden; margin: 0">
+<textarea id="debug" style="width:900px; height:400px;"></textarea>
+<div style="position:absolute; left:0px; top:400px; font-size: 8pt; font-weight:bold;">
+	<ul id="menu" style="padding: 0">
+		<li class="select" data-action="KeyInfo">Send To STB</li>
+	</ul>
+</div>
+</body>
+</html>
