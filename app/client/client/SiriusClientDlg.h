@@ -38,7 +38,7 @@ private:
 	CEdit		_ctrl_device_id;
 	CEdit		_ctrl_url;
 	CEdit		_ctrl_port;
-
+	CEdit		_ctrl_end2end_data;
 	client_controller * _client;
 		
 	sirius::library::framework::client::base *	_framework;

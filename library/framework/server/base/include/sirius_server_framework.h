@@ -156,7 +156,7 @@ namespace sirius
 					virtual void		on_R_mouse_dclick(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_mouse_move(int32_t pos_x, int32_t pos_y) = 0;
 					virtual void		on_mouse_wheel(int32_t pos_x, int32_t pos_y, int32_t wheel_delta) = 0;
-					virtual void		on_info_xml(const uint8_t * msg, int32_t length) = 0;
+					virtual void		on_end2end_data(const uint8_t * packet, int32_t packet_size) = 0;
 				};
 			};
 		};

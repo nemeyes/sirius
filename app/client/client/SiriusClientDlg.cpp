@@ -92,6 +92,7 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_STB_ID, _ctrl_device_id);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
+	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
@@ -518,7 +519,7 @@ void CSiriusClientDlg::OnBnClickedButtonToApp()
 		char_str = new char[char_str_len];
 		WideCharToMultiByte(CP_ACP, 0, wchar_str, -1, char_str, char_str_len, 0, 0);
 
-		_client->xml_data(char_str, char_str_len);
+		_client->on_post_end2end_data(char_str, char_str_len);
 		delete[] char_str;
 	}
 }

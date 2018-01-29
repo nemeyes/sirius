@@ -41,9 +41,9 @@ public:
 	void on_play_streaming(void);
 	void on_stop_streaming(void);
 
-	void on_pre_xml(const char * msg, size_t length);
-	void on_xml(const char * msg, size_t length);
-	void on_post_xml(const char * msg, size_t length);
+	void on_pre_end2end_data(const char * packet, int32_t packet_size);
+	void on_end2end_data(const char * packet, int32_t packet_size);
+	void on_post_end2end_data(const char * packet, int32_t packet_size);
 
 	void on_pre_error(int32_t error_code);
 	void on_error(int32_t error_code);

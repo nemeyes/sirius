@@ -23,7 +23,7 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, bool 
 	add_command(new sirius::app::client::connect_client_res(this));
 	add_command(new sirius::app::client::disconnect_client_res(this));
 	add_command(new sirius::app::client::attendant_info_noti(this));
-	add_command(new sirius::app::client::xml_noti(this));
+	add_command(new sirius::app::client::end2end_data_noti(this));
 	add_command(new sirius::app::client::error_noti(this));
 
 	add_command(CMD_PLAY_RES);
@@ -282,11 +282,11 @@ int32_t sirius::app::client::proxy::core::mouse_rb_up(int32_t pos_x, int32_t pos
 	return sirius::app::client::proxy::err_code_t::success;
 }
 
-void sirius::app::client::proxy::core::xml_data(const char * msg, size_t length)
+void sirius::app::client::proxy::core::post_end2end_data(const char * packet, int32_t packet_size)
 {
 	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
 	{
-		data_request(_szattendant_uuid, CMD_CLIENT_INFO_XML_IND, msg, length);
+		data_request(_szattendant_uuid, CMD_END2END_DATA_IND, packet, packet_size);
 	}
 }
 
@@ -394,16 +394,16 @@ void sirius::app::client::proxy::core::attendant_info_callback(int32_t code, con
 		_front->on_post_attendant_info(code, _szwattendant_uuid, streamer_portnumber, video_width, video_height);
 }
 
-void sirius::app::client::proxy::core::xml_callback(const char * msg, size_t length)
+void sirius::app::client::proxy::core::end2end_data_callback(const char * packet, int32_t packet_size)
 {
 	if (_front)
-		_front->on_pre_xml(msg, length);
+		_front->on_pre_end2end_data(packet, packet_size);
 
 	if (_front)
-		_front->on_xml(msg, length);
+		_front->on_end2end_data(packet, packet_size);
 
 	if (_front)
-		_front->on_post_xml(msg, length);
+		_front->on_post_end2end_data(packet, packet_size);
 }
 
 void sirius::app::client::proxy::core::error_callback(int32_t code)

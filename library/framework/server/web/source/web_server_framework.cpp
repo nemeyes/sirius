@@ -12,8 +12,8 @@ sirius::library::framework::server::web::core::core(void)
 	, _unified_server(nullptr)
 {
 	_notifier = new sirius::library::misc::notification::internal::notifier();
-	while (_xml_msg_que.empty() == false)
-		_xml_msg_que.pop();
+	while (_data_msg_queue.empty() == false)
+		_data_msg_queue.pop();
 
 	_unified_server_ctx = new sirius::library::unified::server::context_t();
 	_unified_server = new sirius::library::unified::server();
@@ -38,8 +38,8 @@ sirius::library::framework::server::web::core::~core()
 		_notifier = nullptr;
 	}
 
-	while (_xml_msg_que.empty() == false)
-		_xml_msg_que.pop();
+	while (_data_msg_queue.empty() == false)
+		_data_msg_queue.pop();
 }
 
 void sirius::library::framework::server::web::core::set_notification_callee(sirius::library::misc::notification::internal::notifier::callee * callee)
@@ -204,32 +204,32 @@ void sirius::library::framework::server::web::core::on_mouse_wheel(int32_t pos_x
 
 }
 
-void sirius::library::framework::server::web::core::on_info_xml(const uint8_t * msg, int32_t length)
+void sirius::library::framework::server::web::core::on_end2end_data(const uint8_t * packet, int32_t packet_size)
 {
-	st_xml_msg st_msg;
-	st_msg.size = length;
-	st_msg.msg =(const char*)msg;
-	_xml_msg_que.push(st_msg);
+	st_data_msg data;
+	data.size = packet_size;
+	data.msg =(const char*)packet;
+	_data_msg_queue.push(data);
 }
 
-int* sirius::library::framework::server::web::core::get_xml_msg(void)
+int* sirius::library::framework::server::web::core::get_end2end_data(void)
 {
-	if (_xml_msg_que.empty())
+	if (_data_msg_queue.empty())
 		return nullptr;
 	
-	static st_xml_msg front;
-	front = _xml_msg_que.front();
-	_xml_msg_que.pop();
+	static st_data_msg front;
+	front = _data_msg_queue.front();
+	_data_msg_queue.pop();
 	
 	return (int*)front.msg.c_str();
 }
 
-void sirius::library::framework::server::web::core::send_xml_msg(uint8_t * msg)
+void sirius::library::framework::server::web::core::send_end2end_data(uint8_t * msg)
 {
 	VARIANT var;
 	var.vt = VT_LPSTR;
 	var.pcVal = (char*)msg;
-	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::info_xml, var);
+	_notifier->push(sirius::library::misc::notification::internal::notifier::type_t::end2end_data, var);
 }
 
 void sirius::library::framework::server::web::core::on_video_initialize(void * device, int32_t hwnd, int32_t smt, int32_t width, int32_t height)

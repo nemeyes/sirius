@@ -68,7 +68,7 @@ namespace sirius
 					int32_t			mouse_rb_double(int32_t pos_x, int32_t pos_y);
 					int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 					int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
-					void				xml_data(const char * msg, size_t length);
+					void			post_end2end_data(const char * packet, int32_t packet_size);
 
 					virtual void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
 					virtual void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
@@ -98,9 +98,9 @@ namespace sirius
 					virtual void on_play_streaming(void) = 0;
 					virtual void on_stop_streaming(void) = 0;
 
-					virtual void on_pre_xml(const char * msg, size_t length) = 0;
-					virtual void on_xml(const char * msg, size_t length) = 0;
-					virtual void on_post_xml(const char * msg, size_t length) = 0;
+					virtual void on_pre_end2end_data(const char * packet, int32_t packet_size) = 0;
+					virtual void on_end2end_data(const char * packet, int32_t packet_size) = 0;
+					virtual void on_post_end2end_data(const char * packet, int32_t packet_size) = 0;
 
 					virtual void on_pre_error(int32_t error_code) = 0;
 					virtual void on_error(int32_t error_code) = 0;
@@ -138,7 +138,7 @@ namespace sirius
 				int32_t			mouse_rb_double(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
-				void				xml_data(const char * msg, size_t length);
+				void			post_end2end_data(const char * packet, int32_t packet_size);
 
 			private:
 				void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection);
@@ -170,9 +170,9 @@ namespace sirius
 				void on_play_streaming(void);
 				void on_stop_streaming(void);
 
-				void on_pre_xml(const char * msg, size_t length);
-				void on_xml(const char * msg, size_t length);
-				void on_post_xml(const char * msg, size_t length);
+				void on_pre_end2end_data(const char * packet, int32_t packet_size);
+				void on_end2end_data(const char * packet, int32_t packet_size);
+				void on_post_end2end_data(const char * packet, int32_t packet_size);
 
 				void on_pre_error(int32_t error_code);
 				void on_error(int32_t error_code);

@@ -42,8 +42,7 @@ namespace sirius
 							static const int32_t gyro_enabled_user_acceleration = 8;
 							static const int32_t gyro_interval = 9;
 
-							static const int32_t info_xml = 10;
-							static const int32_t info_json = 11;
+							static const int32_t end2end_data = 10;
 
 							static const int32_t error = 10000;
 						} type_t;
