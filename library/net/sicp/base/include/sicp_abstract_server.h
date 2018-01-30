@@ -48,6 +48,7 @@ namespace sirius
 
 					bool			activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
 					bool			deactivate_session(std::shared_ptr<sirius::library::net::sicp::session> session);
+					bool			check_activate_session(const char * uuid);
 
 					void			add_command(sirius::library::net::sicp::abstract_command * command);
 					void			remove_command(int32_t command_id);

@@ -95,6 +95,7 @@ BEGIN_MESSAGE_MAP(CSiriusStressorDlg, CDialogEx)
 	ON_MESSAGE(WM_STREAM_STATE_PAUSED_MSG, &CSiriusStressorDlg::OnStreamStatePausedMsg)
 	ON_MESSAGE(WM_STREAM_STATE_STOPPED_MSG, &CSiriusStressorDlg::OnStreamStateStoppedMsg)
 	ON_MESSAGE(WM_STREAM_LATENCY_MSG, &CSiriusStressorDlg::OnStreamLatencyMsg)
+	ON_MESSAGE(WM_STREAM_PORT_MSG, &CSiriusStressorDlg::OnStreamPortMsg)
 	ON_EN_CHANGE(IDC_EDIT_PORT, &CSiriusStressorDlg::OnEnChangeEditPort)
 	ON_NOTIFY(IPN_FIELDCHANGED, IDC_IPADDRESS_SERVER, &CSiriusStressorDlg::OnIpnFieldchangedIpaddressServer)
 	ON_EN_CHANGE(IDC_EDIT_CLIENT_ID, &CSiriusStressorDlg::OnEnChangeEditClientId)
@@ -155,13 +156,14 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	pLoopCheckOn->SetCheck(true);
 	SetDlgItemText(IDC_EDIT_KEY_INTERVAL, L"5");
 	
-	_attendant_list.InsertColumn(0, _T("no."), LVCFMT_CENTER, 50);
+	_attendant_list.InsertColumn(0, _T("no."), LVCFMT_CENTER, 30);
 	_attendant_list.InsertColumn(1, _T("ip address"), LVCFMT_CENTER, 130);
-	_attendant_list.InsertColumn(2, _T("server connect"), LVCFMT_CENTER, 120);
-	_attendant_list.InsertColumn(3, _T("stream connect"), LVCFMT_CENTER, 120);
-	_attendant_list.InsertColumn(4, _T("stream state"), LVCFMT_CENTER, 100);
-	_attendant_list.InsertColumn(5, _T("frame count"), LVCFMT_CENTER, 90);
-	_attendant_list.InsertColumn(6, _T("latency(ms)"), LVCFMT_CENTER, 100);
+	_attendant_list.InsertColumn(2, _T("port"), LVCFMT_CENTER, 70);
+	_attendant_list.InsertColumn(3, _T("server connect"), LVCFMT_CENTER, 120);
+	_attendant_list.InsertColumn(4, _T("stream connect"), LVCFMT_CENTER, 120);
+	_attendant_list.InsertColumn(5, _T("stream state"), LVCFMT_CENTER, 100);
+	_attendant_list.InsertColumn(6, _T("frame count"), LVCFMT_CENTER, 90);
+	_attendant_list.InsertColumn(7, _T("latency(ms)"), LVCFMT_CENTER, 100);
 	_attendant_list.ModifyStyle(LVS_TYPEMASK, LVS_REPORT);
 
 	_attendant_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
@@ -286,11 +288,12 @@ void CSiriusStressorDlg::connect_proc()
 		strItem.Format(_T("%d"), index);
 		_attendant_list.InsertItem(index, strItem);
 		_attendant_list.SetItem(index, 1, LVIF_TEXT, server_address, 0, 0, 0, NULL);
-		_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
+		_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("-"), 0, 0, 0, NULL);
 		_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
-		_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("none"), 0, 0, 0, NULL);
-		_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("0"), 0, 0, 0, NULL);
+		_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
+		_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("none"), 0, 0, 0, NULL);
 		_attendant_list.SetItem(index, 6, LVIF_TEXT, _T("0"), 0, 0, 0, NULL);
+		_attendant_list.SetItem(index, 7, LVIF_TEXT, _T("0"), 0, 0, 0, NULL);
 		_attendant_list.Update(index);
 	}
 		
@@ -503,7 +506,7 @@ void CSiriusStressorDlg::OnBnClickedButtonAutoStop()
 LRESULT CSiriusStressorDlg::OnClientConnectingMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("connecting"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("connecting"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -512,7 +515,7 @@ LRESULT CSiriusStressorDlg::OnClientConnectingMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnClientConnectedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("connected"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("connected"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -521,7 +524,7 @@ LRESULT CSiriusStressorDlg::OnClientConnectedMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnClientDisconnectingMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("disconnecting"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("disconnecting"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -530,7 +533,7 @@ LRESULT CSiriusStressorDlg::OnClientDisconnectingMsg(WPARAM wParam, LPARAM lPara
 LRESULT CSiriusStressorDlg::OnClientDisconnectedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 2, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -539,7 +542,7 @@ LRESULT CSiriusStressorDlg::OnClientDisconnectedMsg(WPARAM wParam, LPARAM lParam
 LRESULT CSiriusStressorDlg::OnStreamConnectingMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("connecting"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("connecting"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -548,7 +551,7 @@ LRESULT CSiriusStressorDlg::OnStreamConnectingMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnStreamConnectedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("connected"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("connected"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -557,7 +560,7 @@ LRESULT CSiriusStressorDlg::OnStreamConnectedMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnStreamDisconnectingMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("disconnecting"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("disconnecting"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -566,7 +569,7 @@ LRESULT CSiriusStressorDlg::OnStreamDisconnectingMsg(WPARAM wParam, LPARAM lPara
 LRESULT CSiriusStressorDlg::OnStreamDisconnectedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 3, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("disconnected"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -580,7 +583,7 @@ LRESULT CSiriusStressorDlg::OnStreamCountMsg(WPARAM wParam, LPARAM lParam)
 	CString str_stream_count;
 	str_stream_count.Format(_T("%d"), stream_count);
 
-	_attendant_list.SetItem(index, 5, LVIF_TEXT, str_stream_count, 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 6, LVIF_TEXT, str_stream_count, 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -590,7 +593,7 @@ LRESULT CSiriusStressorDlg::OnStreamCountMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnStreamStateNoneMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("none"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("none"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -599,7 +602,7 @@ LRESULT CSiriusStressorDlg::OnStreamStateNoneMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnStreamStateRunningMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("running"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("running"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -608,7 +611,7 @@ LRESULT CSiriusStressorDlg::OnStreamStateRunningMsg(WPARAM wParam, LPARAM lParam
 LRESULT CSiriusStressorDlg::OnStreamStatePausedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("paused"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("paused"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -617,7 +620,7 @@ LRESULT CSiriusStressorDlg::OnStreamStatePausedMsg(WPARAM wParam, LPARAM lParam)
 LRESULT CSiriusStressorDlg::OnStreamStateStoppedMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
-	_attendant_list.SetItem(index, 4, LVIF_TEXT, _T("stopped"), 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 5, LVIF_TEXT, _T("stopped"), 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
@@ -631,11 +634,27 @@ LRESULT CSiriusStressorDlg::OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam)
 	CString str_latency;
 	str_latency.Format(_T("%d"), latency);
 
-	_attendant_list.SetItem(index, 6, LVIF_TEXT, str_latency, 0, 0, 0, NULL);
+	_attendant_list.SetItem(index, 7, LVIF_TEXT, str_latency, 0, 0, 0, NULL);
 	_attendant_list.Update(index);
 
 	return 0;
 }
+
+
+LRESULT CSiriusStressorDlg::OnStreamPortMsg(WPARAM wParam, LPARAM lParam)
+{
+	int index = wParam;
+	int port = lParam;
+
+	CString str_port;
+	str_port.Format(_T("%d"), port);
+
+	_attendant_list.SetItem(index, 2, LVIF_TEXT, str_port, 0, 0, 0, NULL);
+	_attendant_list.Update(index);
+
+	return 0;
+}
+
 
 void CSiriusStressorDlg::load_config(void)
 {

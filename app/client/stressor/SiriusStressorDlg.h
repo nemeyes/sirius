@@ -27,6 +27,7 @@
 
 #define WM_STREAM_COUNT_MSG				WM_USER+912
 #define WM_STREAM_LATENCY_MSG			WM_USER+913
+#define WM_STREAM_PORT_MSG				WM_USER+914
 
 // CSiriusStressorDlg 대화 상자
 class CSiriusStressorDlg : public CDialogEx
@@ -71,6 +72,7 @@ public:
 	afx_msg LRESULT OnStreamStateStoppedMsg(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStreamCountMsg(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnStreamPortMsg(WPARAM wParam, LPARAM lParam);
 public:
 	CListCtrl _attendant_list;
 	CButton _connect_button;
