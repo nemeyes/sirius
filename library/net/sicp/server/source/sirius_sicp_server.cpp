@@ -34,6 +34,11 @@ int32_t sirius::library::net::sicp::server::stop(void)
 	return _server->stop();
 }
 
+bool sirius::library::net::sicp::server::is_valid(const char * uuid)
+{
+	return _server->check_activate_session(uuid);
+}
+
 void sirius::library::net::sicp::server::data_request(char * dst, int32_t command_id, const char * packet, int32_t packet_size)
 {
 	_server->data_request(dst, command_id, packet, packet_size);

@@ -256,23 +256,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_count()
 {
-	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
-	int32_t count = 0;
-	{
-		sirius::autolock lock(&_attendant_cs);
-		dao.retrieve(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, &attendant, count);
-	}
-
-	for (int32_t index = 0; index < count; index++)
-	{
-		free(attendant[index]);
-		attendant[index] = nullptr;
-	}
-	free(attendant);
-	attendant = nullptr;
-
-	return count;
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);	
+	return dao.retrieve_count(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);
 }
 
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)

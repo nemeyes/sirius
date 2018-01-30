@@ -25,6 +25,7 @@ namespace sirius
 					void	uuid(const char * uuid);
 					int32_t start(char * address, int32_t port_number);
 					int32_t stop(void);
+					bool is_valid(const char * uuid);
 
 					void	data_request(char * dst, int32_t command_id, const char * packet, int32_t packet_size);
 					void	add_command(sirius::library::net::sicp::abstract_command * command);

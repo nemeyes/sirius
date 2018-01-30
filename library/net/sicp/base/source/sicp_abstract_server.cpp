@@ -416,6 +416,22 @@ bool sirius::library::net::sicp::abstract_server::deactivate_session(std::shared
 	return false;
 }
 
+bool sirius::library::net::sicp::abstract_server::check_activate_session(const char * uuid)
+{
+	sirius::autolock lock(&_active_slock);
+
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
+	iter = _activated_sessions.find(uuid);
+	if (iter == _activated_sessions.end())
+		return false;
+
+	std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
+	if (session->socket() == INVALID_SOCKET)
+		return false;
+
+	return true;
+}
+
 void sirius::library::net::sicp::abstract_server::add_command(sirius::library::net::sicp::abstract_command * command)
 {
 	if (command != nullptr)

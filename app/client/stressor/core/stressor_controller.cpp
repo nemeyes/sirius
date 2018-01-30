@@ -134,6 +134,10 @@ void stressor_controller::on_post_disconnect_client(int32_t code)
 
 void stressor_controller::on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height)
 {
+
+	HWND hwnd = _front->GetSafeHwnd();
+	::PostMessage(hwnd, WM_STREAM_PORT_MSG, _index, streamer_portnumber);
+
 	wchar_t title[500] = { 0 };
 	_snwprintf_s(title, sizeof(title), L"sirius_client attendant_uuid=%s, port=%d", attendant_uuid, streamer_portnumber);
 	_front->SetWindowTextW(title);
