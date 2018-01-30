@@ -216,10 +216,21 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	uint8_t **	pcompressed = new uint8_t*[block_count];
 	int32_t *	plength = new int32_t[block_count];
 
+	int32_t		nbytes_compressed = (_context->block_width*_context->block_height) << 2;
+	int32_t *	cached_index = new int32_t[block_count];
+	uint8_t **	cached_compressed = new uint8_t*[block_count];
+	int32_t *	cached_capacity = new int32_t[block_count];
+	int32_t *	cached_length = new int32_t[block_count];
+	for (int32_t index = 0; index < block_count; index++)
+	{
+		cached_index[index] = index;
+		cached_capacity[index] = nbytes_compressed;
+		cached_compressed[index] = new uint8_t[cached_capacity[index]];
+		cached_length[index] = 0;
+	}
 
 	int32_t		process_data_capacity = (_context->width * _context->height) << 2;
 	int32_t		process_data_size = 0;
-	int32_t		last_process_data_size = 0;
 	uint8_t *	process_data = (uint8_t*)malloc(process_data_capacity);
 	long long	process_timestamp = 0;
 	while (_run)
@@ -228,22 +239,174 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		{
 			_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressing;
 
-			if (_invalidate)
 			{
-				if (prev_me_filled)
+				sirius::autolock lock(&_cs);
+				iobuffer = _iobuffer_queue.get_pending();
+				if (!iobuffer)
 				{
-					prev_me_filled = false;
-					process_data_size = last_process_data_size;
+					if (!_invalidate)
+					{
+						_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+						continue;
+					}
+					process_data_size = 0;
 				}
 				else
 				{
+					process_data_size = iobuffer->input.data_size;
+					process_timestamp = iobuffer->input.timestamp;
+					memmove(process_data, iobuffer->input.data, process_data_size);
+				}
+			}
+
+
+
+			if (_invalidate && (process_data_size == 0))
+			{
+				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+				_invalidate = false;
+			}
+			else
+			{
+				while (process_data_size>0)
+				{
+					before_encode_timestamp = process_timestamp;
+
+					SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
+					SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
+					if (prev_me_filled)
+					{
+						int32_t count = 0;
+						int32_t index = 0;
+
+						uint8_t * real_compressed_buffer = compressed_buffer;
+
+						for (int32_t h = 0, h2 = 0; h < _context->height; h = h + _context->block_height, h2 = h2 + block_height)
+						{
+							for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + block_width)
+							{
+								uint64_t sum = 0;
+								SimdAbsDifferenceSum(me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height, &sum);
+								if (sum > 0)
+								{
+									for (int32_t bh = 0; bh < _context->block_height; bh++)
+									{
+										int32_t src_index = (h + bh) * (_context->width << 2) + (w << 2);
+										int32_t dst_index = bh * (_context->block_width << 2);
+										memmove(block_buffer + dst_index, process_data + src_index, (_context->block_width << 2));
+									}
+
+									if (_front)
+									{
+										sirius::library::video::transform::codec::partial::png::compressor::entity_t input;
+										input.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
+										input.data = block_buffer;
+										input.data_capacity = block_buffer_size;
+										input.data_size = block_buffer_size;
+
+										sirius::library::video::transform::codec::partial::png::compressor::entity_t bitstream;
+										bitstream.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
+										bitstream.data = real_compressed_buffer;
+										bitstream.data_capacity = real_compressed_buffer - compressed_buffer;
+										bitstream.data_capacity = compressed_buffer_size - bitstream.data_capacity;
+										bitstream.data_size = 0;
+
+										status = _real_compressor->compress(&input, &bitstream);
+										if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
+										{
+											pindex[count] = index;
+											pcompressed[count] = (uint8_t*)bitstream.data;
+											plength[count] = bitstream.data_size;
+											real_compressed_buffer += bitstream.data_size;
+
+											cached_index[index] = index;
+											cached_length[index] = bitstream.data_size;
+											memmove(cached_compressed[index], pcompressed[count], cached_length[index]);
+
+											count++;
+										}
+									}
+								}
+								index++;
+							}
+						}
+						if (_invalidate)
+						{
+							_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+							_invalidate = false;
+						}
+						else
+						{
+							if (count>0)
+								_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
+						}
+					}
+					else
+					{
+						int32_t count = 0;
+						int32_t index = 0;
+
+						uint8_t * real_compressed_buffer = compressed_buffer;
+
+						for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
+						{
+							for (int32_t w = 0; w < _context->width; w = w + _context->block_width)
+							{
+
+								for (int32_t bh = 0; bh < _context->block_height; bh++)
+								{
+									int32_t src_index = (h + bh) * (_context->width << 2) + (w << 2);
+									int32_t dst_index = bh * (_context->block_width << 2);
+									memmove(block_buffer + dst_index, process_data + src_index, (_context->block_width << 2));
+								}
+
+								if (_front)
+								{
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t input;
+									input.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
+									input.data = block_buffer;
+									input.data_capacity = block_buffer_size;
+									input.data_size = block_buffer_size;
+
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t bitstream;
+									bitstream.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
+									bitstream.data = real_compressed_buffer;
+									bitstream.data_capacity = real_compressed_buffer - compressed_buffer;
+									bitstream.data_capacity = compressed_buffer_size - bitstream.data_capacity;
+									bitstream.data_size = 0;
+
+									status = _real_compressor->compress(&input, &bitstream);
+									if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
+									{
+										pindex[count] = index;
+										pcompressed[count] = (uint8_t*)bitstream.data;
+										plength[count] = bitstream.data_size;
+										real_compressed_buffer += bitstream.data_size;
+
+										cached_index[index] = index;
+										cached_length[index] = plength[count];
+										memmove(cached_compressed[index], pcompressed[count], cached_length[index]);
+
+										count++;
+									}
+								}
+								index++;
+							}
+						}
+						_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
+					}
+
+					if (!prev_me_filled)
+						prev_me_filled = true;
+					memcpy(prev_me_buffer, me_buffer, me_buffer_size);
+
 					{
 						sirius::autolock lock(&_cs);
 						iobuffer = _iobuffer_queue.get_pending();
 					}
 					if (!iobuffer)
 					{
-						_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+						process_data_size = 0;
 						continue;
 					}
 
@@ -251,165 +414,11 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 					process_timestamp = iobuffer->input.timestamp;
 					memmove(process_data, iobuffer->input.data, process_data_size);
 
-					last_process_data_size = process_data_size;
-				}
-				_invalidate = false;
-			}
-			else
-			{
-				{
-					sirius::autolock lock(&_cs);
-					iobuffer = _iobuffer_queue.get_pending();
-				}
-				if (!iobuffer)
-				{
-					_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
 					continue;
 				}
-
-				process_data_size = iobuffer->input.data_size;
-				process_timestamp = iobuffer->input.timestamp;
-				memmove(process_data, iobuffer->input.data, process_data_size);
-
-				last_process_data_size = process_data_size;
 			}
+			_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
 		}
-
-		while (process_data_size>0)
-		{
-			before_encode_timestamp = process_timestamp;
-
-			SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
-			SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
-			if (prev_me_filled)
-			{
-				int32_t count = 0;
-				int32_t index = 0;
-
-				uint8_t * real_compressed_buffer = compressed_buffer;
-
-				for (int32_t h = 0, h2 = 0; h < _context->height; h = h + _context->block_height, h2 = h2 + block_height)
-				{
-					for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + block_width)
-					{
-						uint64_t sum = 0;
-						SimdAbsDifferenceSum(me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height, &sum);
-						if (sum > 0)
-						{
-							for (int32_t bh = 0; bh < _context->block_height; bh++)
-							{
-								int32_t src_index = (h + bh) * (_context->width << 2) + (w << 2);
-								int32_t dst_index = bh * (_context->block_width << 2);
-								memmove(block_buffer + dst_index, process_data + src_index, (_context->block_width << 2));
-							}
-
-							if (_front)
-							{
-								sirius::library::video::transform::codec::partial::png::compressor::entity_t input;
-								input.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-								input.data = block_buffer;
-								input.data_capacity = block_buffer_size;
-								input.data_size = block_buffer_size;
-
-								sirius::library::video::transform::codec::partial::png::compressor::entity_t bitstream;
-								bitstream.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-								bitstream.data = real_compressed_buffer;
-								bitstream.data_capacity = real_compressed_buffer - compressed_buffer;
-								bitstream.data_capacity = compressed_buffer_size - bitstream.data_capacity;
-								bitstream.data_size = 0;
-
-								status = _real_compressor->compress(&input, &bitstream);
-								if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
-								{
-									pindex[count] = index;
-									pcompressed[count] = (uint8_t*)bitstream.data;
-									plength[count] = bitstream.data_size;
-
-									real_compressed_buffer += bitstream.data_size;
-									count++;
-								}
-							}
-						}
-						index++;
-					}
-				}
-				if (count>0)
-					_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
-			}
-			else
-			{
-				int32_t count = 0;
-				int32_t index = 0;
-
-				uint8_t * real_compressed_buffer = compressed_buffer;
-
-				for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
-				{
-					for (int32_t w = 0; w < _context->width; w = w + _context->block_width)
-					{
-
-						for (int32_t bh = 0; bh < _context->block_height; bh++)
-						{
-							int32_t src_index = (h + bh) * (_context->width << 2) + (w << 2);
-							int32_t dst_index = bh * (_context->block_width << 2);
-							memmove(block_buffer + dst_index, process_data + src_index, (_context->block_width << 2));
-						}
-
-						if (_front)
-						{
-							sirius::library::video::transform::codec::partial::png::compressor::entity_t input;
-							input.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-							input.data = block_buffer;
-							input.data_capacity = block_buffer_size;
-							input.data_size = block_buffer_size;
-
-							sirius::library::video::transform::codec::partial::png::compressor::entity_t bitstream;
-							bitstream.memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-							bitstream.data = real_compressed_buffer;
-							bitstream.data_capacity = real_compressed_buffer - compressed_buffer;
-							bitstream.data_capacity = compressed_buffer_size - bitstream.data_capacity;
-							bitstream.data_size = 0;
-
-							status = _real_compressor->compress(&input, &bitstream);
-							if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
-							{
-								pindex[count] = index;
-								pcompressed[count] = (uint8_t*)bitstream.data;
-								plength[count] = bitstream.data_size;
-
-								real_compressed_buffer += bitstream.data_size;
-								count++;
-							}
-						}
-						index++;
-					}
-				}
-
-				if (count>0)
-					_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
-			}
-
-			if (!prev_me_filled)
-				prev_me_filled = true;
-			memcpy(prev_me_buffer, me_buffer, me_buffer_size);
-
-			{
-				sirius::autolock lock(&_cs);
-				iobuffer = _iobuffer_queue.get_pending();
-			}
-			if (!iobuffer)
-			{
-				process_data_size = 0;
-				continue;
-			}
-
-			process_data_size = iobuffer->input.data_size;
-			process_timestamp = iobuffer->input.timestamp;
-			memmove(process_data, iobuffer->input.data, process_data_size);
-
-			continue;
-		}
-		_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
 	}
 
 	if (process_data)
@@ -423,31 +432,44 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	if (pcompressed)
 		delete[] pcompressed;
 
+	if (cached_index)
+		delete[] cached_index;
+	if (cached_length)
+		delete[] cached_length;
+	if (cached_capacity)
+		delete[] cached_capacity;
+	if (cached_compressed)
 	{
-		if (compressed_buffer)
-			free(compressed_buffer);
-		compressed_buffer = nullptr;
-		compressed_buffer_size = 0;
-
-		if (block_buffer)
-			free(block_buffer);
-		block_buffer = nullptr;
-		block_buffer_size = 0;
-
-
-		if (prev_me_buffer)
-			free(prev_me_buffer);
-		prev_me_buffer = nullptr;
-
-		if (me_buffer)
-			free(me_buffer);
-		me_buffer = nullptr;
-		me_buffer_size = 0;
-
-		if (converted_buffer)
-			free(converted_buffer);
-		converted_buffer = nullptr;
+		for (int32_t index = 0; index < block_count; index++)
+		{
+			delete[] cached_compressed[index];
+		}
+		delete[] cached_compressed;
 	}
+
+	if (compressed_buffer)
+		free(compressed_buffer);
+	compressed_buffer = nullptr;
+	compressed_buffer_size = 0;
+
+	if (block_buffer)
+		free(block_buffer);
+	block_buffer = nullptr;
+	block_buffer_size = 0;
+
+
+	if (prev_me_buffer)
+		free(prev_me_buffer);
+	prev_me_buffer = nullptr;
+
+	if (me_buffer)
+		free(me_buffer);
+	me_buffer = nullptr;
+	me_buffer_size = 0;
+
+	if (converted_buffer)
+		free(converted_buffer);
+	converted_buffer = nullptr;
 }
 
 int32_t sirius::library::video::transform::codec::partial::png::compressor::core::allocate_io_buffers(void)
