@@ -173,7 +173,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	long long before_encode_timestamp = 0;
 	long long after_encode_timestamp = 0;
 
-	uint8_t *	resized_buffer = nullptr;
+	uint8_t *	converted_buffer = nullptr;
+	//uint8_t *	resized_buffer = nullptr;
 	int32_t		me_buffer_size = 0;
 	uint8_t *	me_buffer = nullptr;
 	uint8_t *	prev_me_buffer = nullptr;;
@@ -193,7 +194,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		context_height = _context->height >> 2;
 		block_width = _context->block_width >> 2;
 		block_height = _context->block_height >> 2;
-		resized_buffer = static_cast<uint8_t*>(malloc((context_width * context_height) << 2));
+		converted_buffer = static_cast<uint8_t*>(malloc(_context->width * _context->height));
 
 		me_buffer_size = context_width * context_height;
 		me_buffer = static_cast<uint8_t*>(malloc(me_buffer_size));
@@ -278,8 +279,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		{
 			before_encode_timestamp = process_timestamp;
 
-			SimdResizeBilinear(process_data, _context->width, _context->height, _context->width << 2, resized_buffer, context_width, context_height, context_width << 2, 4);
-			SimdBgraToGray(resized_buffer, context_width, context_height, context_width << 2, me_buffer, context_width);
+			SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
+			SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
 			if (prev_me_filled)
 			{
 				int32_t count = 0;
@@ -443,9 +444,9 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		me_buffer = nullptr;
 		me_buffer_size = 0;
 
-		if (resized_buffer)
-			free(resized_buffer);
-		resized_buffer = nullptr;
+		if (converted_buffer)
+			free(converted_buffer);
+		converted_buffer = nullptr;
 	}
 }
 
