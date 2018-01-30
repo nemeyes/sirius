@@ -416,11 +416,11 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	process_data = nullptr;
 
 	if (pindex)
-		delete pindex;
+		delete[] pindex;
 	if (plength)
-		delete plength;
+		delete[] plength;
 	if (pcompressed)
-		delete pcompressed;
+		delete[] pcompressed;
 
 	{
 		if (compressed_buffer)
