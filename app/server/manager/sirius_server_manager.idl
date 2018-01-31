@@ -1,0 +1,12 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(37408648-4F24-4F23-AF29-2F22F5016AA0),
+	version(1.0),
+]
+library SERVERMANAGERLIB
+{
+	importlib("stdole2.tlb");
+};
+
