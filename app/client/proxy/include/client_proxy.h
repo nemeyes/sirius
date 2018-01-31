@@ -27,6 +27,7 @@ namespace sirius
 
 				int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection);
 				int32_t			disconnect(void);
+				void			disconnect(BOOL enable);
 
 				int32_t			connect_client(wchar_t * id);
 				int32_t			disconnect_client(void);
