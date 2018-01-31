@@ -146,7 +146,7 @@
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetDir)..\..\ssm_watchdog.bat" "$(TargetDir)ssm_watchdog.bat"</Command>
+      <Command>copy /Y "$(TargetDir)..\..\ssm_watchdog.exe" "$(TargetDir)ssm_watchdog.exe"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -217,7 +217,7 @@
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetDir)..\..\ssm_watchdog.bat" "$(TargetDir)ssm_watchdog.bat"</Command>
+      <Command>copy /Y "$(TargetDir)..\..\ssm_watchdog.exe" "$(TargetDir)ssm_watchdog.exe"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
