@@ -31,6 +31,11 @@ int32_t sirius::library::net::sicp::client::disconnect(void)
 	return _client->disconnect();
 }
 
+void sirius::library::net::sicp::client::disconnect(BOOL enable)
+{
+	_client->disconnect(enable);
+}
+
 void sirius::library::net::sicp::client::data_request(const char * dst, int32_t command_id, const char * packet, int32_t packet_size)
 {
 	_client->data_request(dst, command_id, packet, packet_size);

@@ -25,6 +25,7 @@ namespace sirius
 
 					int32_t connect(const char * address, int32_t portnumber, BOOL reconnection = TRUE);
 					int32_t disconnect(void);
+					void	disconnect(BOOL enable);
 
 					void data_request(const char * dst, int32_t command_id, const char * packet, int32_t packet_size);
 					void add_command(abstract_command * command);

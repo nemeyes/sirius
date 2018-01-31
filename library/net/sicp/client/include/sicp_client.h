@@ -25,6 +25,7 @@ namespace sirius
 
 					int32_t connect(const char * address, int32_t portnumber, BOOL reconnection = TRUE);
 
+
 					void on_create_session(void);
 					void on_destroy_session(void);
 

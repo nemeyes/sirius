@@ -84,7 +84,7 @@ int32_t	sirius::library::net::iocp::client::disconnect(void)
 
 void sirius::library::net::iocp::client::disconnect(BOOL enable)
 {
-	_reconnection = !enable;
+	//_reconnection = !enable;
 	_run = !enable;
 }
 
@@ -273,6 +273,7 @@ void sirius::library::net::iocp::client::process(void)
 
 		if (_on_handshaking || _on_connected)
 		{
+			//_run = TRUE;
 			on_start();
 			on_running();
 			on_stop();
