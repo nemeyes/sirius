@@ -499,8 +499,8 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		{			
 			int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 			sirius::app::server::arbitrator::process::controller proc;		
-			int32_t count = (get_attendant_count()) >> 1;
-			if (count < max_attendant_instance_count && proc.find("sirius_arbitrator_launcher.exe") == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
+			int32_t current_attendant_instance_count = (get_attendant_count()) >> 1;
+			if (current_attendant_instance_count < max_attendant_instance_count && proc.find("sirius_arbitrator_launcher.exe") == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
 			{
 				sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 				sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
@@ -550,8 +550,8 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 								CloseHandle(pi.hProcess);
 								CloseHandle(pi.hThread);
 							}
-						}
-						::Sleep(1000);
+							::Sleep(100);
+						}						
 					}
 				}
 				for (int32_t index = 0; index < count; index++)
