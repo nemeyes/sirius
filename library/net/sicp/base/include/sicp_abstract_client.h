@@ -34,6 +34,7 @@ namespace sirius
 
 					int32_t			connect(const char * address, int32_t portnumber, int32_t io_thread_pool_count, BOOL reconnection = TRUE);
 					int32_t			disconnect(void);
+					void			disconnect(BOOL enable);
 					BOOL			active(void) const;
 
 					const char *	uuid(void);

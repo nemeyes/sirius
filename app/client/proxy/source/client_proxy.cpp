@@ -127,6 +127,11 @@ int32_t sirius::app::client::proxy::core::disconnect(void)
 	return status;
 }
 
+void sirius::app::client::proxy::core::disconnect(BOOL enable)
+{
+	sirius::library::net::sicp::client::disconnect(enable);
+}
+
 int32_t sirius::app::client::proxy::core::connect_client(wchar_t * id)
 {
 	char * client_id = nullptr;
@@ -354,8 +359,8 @@ void sirius::app::client::proxy::core::disconnect_client_callback(int32_t code)
 	if (_front)
 		_front->on_disconnect_client(code);
 
-	//this->disconnect()
 	disconnect();
+	//disconnect(TRUE);
 
 	if (_front)
 		_front->on_post_disconnect_client(code);

@@ -78,6 +78,12 @@ int32_t sirius::app::client::proxy::handler::disconnect(void)
 	return status;
 }
 
+void sirius::app::client::proxy::handler::disconnect(BOOL enable)
+{
+	if (_proxy)
+		_proxy->disconnect(enable);
+}
+
 int32_t sirius::app::client::proxy::handler::connect_client(wchar_t * id)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
@@ -288,6 +294,12 @@ int32_t sirius::app::client::proxy::disconnect(void)
 		status = _core->disconnect();
 
 	return status;
+}
+
+void sirius::app::client::proxy::disconnect(BOOL enable)
+{
+	if (_core)
+		_core->disconnect(enable);
 }
 
 int32_t sirius::app::client::proxy::connect_client(wchar_t * id)

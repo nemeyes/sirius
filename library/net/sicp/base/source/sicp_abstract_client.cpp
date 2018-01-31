@@ -77,6 +77,11 @@ int32_t sirius::library::net::sicp::abstract_client::disconnect(void)
 	return sirius::library::net::iocp::client::disconnect();
 }
 
+void sirius::library::net::sicp::abstract_client::disconnect(BOOL enable)
+{
+	sirius::library::net::iocp::client::disconnect(enable);
+}
+
 BOOL sirius::library::net::sicp::abstract_client::active(void) const
 {
 	return _run;
