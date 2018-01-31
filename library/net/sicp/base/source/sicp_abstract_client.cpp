@@ -235,7 +235,7 @@ void sirius::library::net::sicp::abstract_client::on_app_session_close(std::shar
 	if (_session)
 	{
 		_session->close();
-		_session = nullptr;
+		//_session = nullptr;
 	}
 }
 
@@ -268,13 +268,12 @@ void sirius::library::net::sicp::abstract_client::on_running(void)
 				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
 			}
 		}
-		else if(!sicp_session)
+		else if(_on_disconnected)
 		{
 			break;
 		}
 		::Sleep(msleep);
 		elapsed_millisec += msleep;
-
 	}
 }
 
