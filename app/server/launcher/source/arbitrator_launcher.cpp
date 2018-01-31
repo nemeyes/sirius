@@ -132,6 +132,11 @@ int main()
 
 	if (status == sirius::base::err_code_t::success)
 	{
+		sirius::app::server::arbitrator::process::controller proc_ctrl;
+
+		if(!option) 
+			proc_ctrl.kill("sirius_web_attendant.exe");
+
 		for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
 		{
 			unsigned long pid = 0;
@@ -154,8 +159,7 @@ int main()
 			}
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
 			contenity.state = attendant_state_t::idle;
-
-			sirius::app::server::arbitrator::process::controller proc_ctrl;
+			
 			proc_ctrl.set_cmdline(arguments, "--reconnect=false");
 			proc_ctrl.set_cmdline(arguments, "--uuid=\"%s\"", contenity.uuid);
 			proc_ctrl.set_cmdline(arguments, "--attendant_type=\"web\"");
