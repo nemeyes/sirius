@@ -354,6 +354,7 @@ void sirius::app::client::proxy::core::disconnect_client_callback(int32_t code)
 	if (_front)
 		_front->on_disconnect_client(code);
 
+	//this->disconnect()
 	disconnect();
 
 	if (_front)
