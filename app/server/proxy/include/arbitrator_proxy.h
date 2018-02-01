@@ -67,6 +67,7 @@ namespace sirius
 
 					void check_alive_attendant(void);
 					void close_unconnected_attendant(void);
+					void update_available_attendant(void);
 
 					static unsigned __stdcall process_cb(void * param);
 					void process(void);

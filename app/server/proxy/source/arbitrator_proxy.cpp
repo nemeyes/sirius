@@ -341,11 +341,6 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 	sirius::autolock lock(&_attendant_cs);
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
-	//{
-	//	sirius::autolock lock(&_attendant_cs);
-	//	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	//	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
-	//}
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)
@@ -569,6 +564,38 @@ void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(v
 	}	
 }
 
+void sirius::app::server::arbitrator::proxy::core::update_available_attendant(void)
+{
+	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
+	int32_t count = 0;
+	{
+		sirius::autolock lock(&_attendant_cs);
+		status = dao.retrieve(&attendant, count);
+	}
+	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
+	{
+		for (int32_t index = 0; index < count; index++)
+		{
+			if (attendant[index]->state != sirius::app::server::arbitrator::proxy::core::attendant_state_t::available
+				&& is_valid(attendant[index]->client_uuid) == false)
+			{
+				sirius::autolock lock(&_attendant_cs);
+				sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, attendant[index]->client_uuid);
+			}		
+		}
+	}
+	for (int32_t index = 0; index < count; index++)
+	{
+		free(attendant[index]);
+		attendant[index] = nullptr;
+	}
+	free(attendant);
+	attendant = nullptr;
+}
+
 unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
 {
 	sirius::app::server::arbitrator::proxy::core * self = static_cast<sirius::app::server::arbitrator::proxy::core*>(param);
@@ -646,7 +673,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 
 	bool attendant_created = false;
 
-	int32_t msleep = 1000 * 10;
+	int32_t msleep = 0;
 	while (_run)
 	{		
 		if (!attendant_created)
@@ -681,11 +708,12 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{		
-			check_alive_attendant();
+		{				
+			check_alive_attendant();		
 
-			if (msleep > 1000 * 5)
-			{				
+			if (msleep > 1000 * 10)
+			{		
+				update_available_attendant();
 				close_unconnected_attendant();
 				msleep = 0;
 			}

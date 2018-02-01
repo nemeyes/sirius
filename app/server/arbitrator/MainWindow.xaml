@@ -18,11 +18,11 @@
                 <mui:Link DisplayName="Status" Source="/Control/Status.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroup DisplayName="Attendants">
+        <!--mui:LinkGroup DisplayName="Attendants">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="Status" Source="/Attendants/AttendantsList.xaml" />
             </mui:LinkGroup.Links>
-        </mui:LinkGroup>
+        </-->
         <mui:LinkGroup DisplayName="Settings" GroupKey="settings">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="System Settings" Source="Settings/Settings.xaml" />
