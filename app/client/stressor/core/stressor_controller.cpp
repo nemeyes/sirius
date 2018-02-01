@@ -229,11 +229,11 @@ void stressor_controller::on_recv_stream(void)
 		_recv_stream_count++;
 		::PostMessage(hwnd, WM_STREAM_COUNT_MSG, _index, _recv_stream_count);
 
-		if (_latency > 0 )
+		/*if (_latency > 0 )
 		{			
 			::PostMessage(hwnd, WM_STREAM_LATENCY_MSG, _index, recv_stream_time - _latency);
 			_latency = 0;
-		}
+		}*/
 	}
 }
 

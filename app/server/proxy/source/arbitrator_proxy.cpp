@@ -341,11 +341,6 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 	sirius::autolock lock(&_attendant_cs);
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
-	//{
-	//	sirius::autolock lock(&_attendant_cs);
-	//	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	//	dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, uuid);
-	//}
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)
@@ -382,6 +377,223 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
 
 	CloseHandle(hSnap);
 	return dwCount;
+}
+
+void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
+{
+	sirius::app::server::arbitrator::process::controller proc;
+	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
+	sirius::app::server::arbitrator::entity::configuration_t confentity;
+	{
+		sirius::app::server::arbitrator::db::configuration_dao confdao(_context->db_path);
+		status = confdao.retrieve(&confentity);
+	}
+
+	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
+	{		
+		int32_t max_attendant_instance_count = confentity.max_attendant_instance;			
+		int32_t current_attendant_instance_count = (get_attendant_count()) >> 1;
+
+		if (current_attendant_instance_count < max_attendant_instance_count && get_launcher_count() == 0)
+		{
+			sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+			sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
+			int32_t count = 0;
+			{
+				sirius::autolock lock(&_attendant_cs);
+				status = dao.retrieve(&attendant, count);
+			}
+			if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
+			{
+				if (count == max_attendant_instance_count)
+				{
+					for (int index = 0; index < count; index++)
+					{
+						if (proc.find(attendant[index]->pid) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
+						{
+							{
+								sirius::autolock lock(&_attendant_cs);
+								dao.remove(attendant[index]);
+							}
+							STARTUPINFOA si;
+							PROCESS_INFORMATION pi;
+							memset(&si, 0x00, sizeof(si));
+							memset(&pi, 0x00, sizeof(pi));
+							si.cb = sizeof(STARTUPINFO);
+
+							char module_path[MAX_PATH] = { 0 };
+							char * module_name = module_path;
+							module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
+							if (module_name != module_path)
+							{
+								CHAR * slash = strrchr(module_path, '\\');
+								if (slash != NULL)
+								{
+									module_name = slash + 1;
+									_strset_s(module_name, strlen(module_name) + 1, 0);
+								}
+								else
+								{
+									_strset_s(module_path, strlen(module_path) + 1, 0);
+								}
+							}
+							char command_line[MAX_PATH] = { 0 };
+							sprintf_s(command_line, "sirius_arbitrator_launcher.exe --uuid=%s --id=%d", attendant[index]->uuid, attendant[index]->id);
+
+							BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
+							if (result)
+							{
+								CloseHandle(pi.hProcess);
+								CloseHandle(pi.hThread);
+							}
+							::Sleep(100);
+						}
+					}
+				}
+				else
+				{						
+					for(int id =0; id < max_attendant_instance_count;id++)
+					{
+						bool is_vaild = false;
+						for (int index = 0; index < count; index++)
+						{
+							if (attendant[index]->id == id)
+							{
+								is_vaild = true;
+								break;
+							}
+						}
+
+						if (is_vaild == false)
+						{
+							STARTUPINFOA si;
+							PROCESS_INFORMATION pi;
+							memset(&si, 0x00, sizeof(si));
+							memset(&pi, 0x00, sizeof(pi));
+							si.cb = sizeof(STARTUPINFO);
+
+							char module_path[MAX_PATH] = { 0 };
+							char * module_name = module_path;
+							module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
+							if (module_name != module_path)
+							{
+								CHAR * slash = strrchr(module_path, '\\');
+								if (slash != NULL)
+								{
+									module_name = slash + 1;
+									_strset_s(module_name, strlen(module_name) + 1, 0);
+								}
+								else
+								{
+									_strset_s(module_path, strlen(module_path) + 1, 0);
+								}
+							}
+							char command_line[MAX_PATH] = { 0 };
+							sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", id);
+
+							BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
+							if (result)
+							{
+								CloseHandle(pi.hProcess);
+								CloseHandle(pi.hThread);
+							}
+						}
+					}									
+				}
+			}
+			for (int32_t index = 0; index < count; index++)
+			{
+				free(attendant[index]);
+				attendant[index] = nullptr;
+			}
+			free(attendant);
+			attendant = nullptr;
+		}
+	}	
+}
+
+
+void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(void)
+{
+	sirius::app::server::arbitrator::process::controller proc;
+	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
+	int32_t count = 0;
+	{
+		sirius::autolock lock(&_attendant_cs);
+		status = dao.retrieve(&attendant, count);
+	}
+	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
+	{
+		DWORD dwCount = 0;
+		HANDLE hSnap = NULL;
+		PROCESSENTRY32 proc32;
+
+		if ((hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)) == INVALID_HANDLE_VALUE)
+			return;
+
+		proc32.dwSize = sizeof(PROCESSENTRY32);
+		while ((Process32Next(hSnap, &proc32)) == TRUE)
+		{
+			if (_wcsicmp(proc32.szExeFile, L"sirius_web_attendant.exe") == 0)
+			{
+				bool is_vaild =false;
+				for (int index = 0; index < count; index++)
+				{
+					if (attendant[index]->pid == proc32.th32ProcessID || 
+						attendant[index]->pid == proc32.th32ParentProcessID)
+					{
+						is_vaild = true;
+						break;
+					}						
+				}
+
+				if (is_vaild == false)				
+					proc.kill(proc32.th32ProcessID);				
+			}			
+		}
+		CloseHandle(hSnap);
+		for (int32_t index = 0; index < count; index++)
+		{
+			free(attendant[index]);
+			attendant[index] = nullptr;
+		}
+		free(attendant);
+		attendant = nullptr;
+	}	
+}
+
+void sirius::app::server::arbitrator::proxy::core::update_available_attendant(void)
+{
+	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
+	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
+	int32_t count = 0;
+	{
+		sirius::autolock lock(&_attendant_cs);
+		status = dao.retrieve(&attendant, count);
+	}
+	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
+	{
+		for (int32_t index = 0; index < count; index++)
+		{
+			if (attendant[index]->state != sirius::app::server::arbitrator::proxy::core::attendant_state_t::available
+				&& is_valid(attendant[index]->client_uuid) == false)
+			{
+				sirius::autolock lock(&_attendant_cs);
+				sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
+				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, attendant[index]->client_uuid);
+			}		
+		}
+	}
+	for (int32_t index = 0; index < count; index++)
+	{
+		free(attendant[index]);
+		attendant[index] = nullptr;
+	}
+	free(attendant);
+	attendant = nullptr;
 }
 
 unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
@@ -457,13 +669,13 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 	else
 	{
 		_run = false;
-
 	}
 
 	bool attendant_created = false;
 
+	int32_t msleep = 0;
 	while (_run)
-	{
+	{		
 		if (!attendant_created)
 		{
 			if (max_attendant_instance_count > 0)
@@ -496,74 +708,18 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{			
-			int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
-			sirius::app::server::arbitrator::process::controller proc;		
-			int32_t count = (get_attendant_count()) >> 1;
-			if (count < max_attendant_instance_count && proc.find("sirius_arbitrator_launcher.exe") == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
-			{
-				sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-				sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
-				int32_t count = 0;
-				{
-					sirius::autolock lock(&_attendant_cs);
-					status = dao.retrieve(&attendant, count);
-				}
-				if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count>0)
-				{
-					for (int index = 0; index < count; index++) 
-					{
-						if (proc.find(attendant[index]->pid) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
-						{
-							{
-								sirius::autolock lock(&_attendant_cs);
-								dao.remove(attendant[index]);
-							}
-							STARTUPINFOA si;
-							PROCESS_INFORMATION pi;
-							memset(&si, 0x00, sizeof(si));
-							memset(&pi, 0x00, sizeof(pi));
-							si.cb = sizeof(STARTUPINFO);
+		{				
+			check_alive_attendant();		
 
-							char module_path[MAX_PATH] = { 0 };
-							char * module_name = module_path;
-							module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-							if (module_name != module_path)
-							{
-								CHAR * slash = strrchr(module_path, '\\');
-								if (slash != NULL)
-								{
-									module_name = slash + 1;
-									_strset_s(module_name, strlen(module_name) + 1, 0);
-								}
-								else
-								{
-									_strset_s(module_path, strlen(module_path) + 1, 0);
-								}
-							}
-							char command_line[MAX_PATH] = { 0 };
-							sprintf_s(command_line, "sirius_arbitrator_launcher.exe --uuid=%s --id=%d", attendant[index]->uuid, attendant[index]->id);
-
-							BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
-							if (result)
-							{
-								CloseHandle(pi.hProcess);
-								CloseHandle(pi.hThread);
-							}
-						}
-						::Sleep(1000);
-					}
-				}
-				for (int32_t index = 0; index < count; index++)
-				{
-					free(attendant[index]);
-					attendant[index] = nullptr;
-				}
-				free(attendant);
-				attendant = nullptr;
+			if (msleep > 1000 * 10)
+			{		
+				update_available_attendant();
+				close_unconnected_attendant();
+				msleep = 0;
 			}
-		}
-		::Sleep(10);
+			::Sleep(500);
+			msleep += 500;
+		}		
 	}
 	_cluster->ssm_service_info("STOP", max_attendant_instance_count);
 	if (_context && _context->handler)

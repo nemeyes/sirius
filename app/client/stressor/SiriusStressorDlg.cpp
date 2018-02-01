@@ -163,7 +163,7 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	_attendant_list.InsertColumn(4, _T("stream connect"), LVCFMT_CENTER, 120);
 	_attendant_list.InsertColumn(5, _T("stream state"), LVCFMT_CENTER, 100);
 	_attendant_list.InsertColumn(6, _T("frame count"), LVCFMT_CENTER, 90);
-	_attendant_list.InsertColumn(7, _T("latency(ms)"), LVCFMT_CENTER, 100);
+	//_attendant_list.InsertColumn(7, _T("latency(ms)"), LVCFMT_CENTER, 100);
 	_attendant_list.ModifyStyle(LVS_TYPEMASK, LVS_REPORT);
 
 	_attendant_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
@@ -628,14 +628,14 @@ LRESULT CSiriusStressorDlg::OnStreamStateStoppedMsg(WPARAM wParam, LPARAM lParam
 
 LRESULT CSiriusStressorDlg::OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam)
 {
-	int index = wParam;
+	/*int index = wParam;
 	int latency = lParam;
 
 	CString str_latency;
 	str_latency.Format(_T("%d"), latency);
 
 	_attendant_list.SetItem(index, 7, LVIF_TEXT, str_latency, 0, 0, 0, NULL);
-	_attendant_list.Update(index);
+	_attendant_list.Update(index);*/
 
 	return 0;
 }

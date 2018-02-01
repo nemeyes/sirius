@@ -132,6 +132,11 @@ int main()
 
 	if (status == sirius::base::err_code_t::success)
 	{
+		sirius::app::server::arbitrator::process::controller proc_ctrl;
+
+		if(!option) 
+			proc_ctrl.kill("sirius_web_attendant.exe");
+
 		for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
 		{
 			unsigned long pid = 0;
@@ -141,8 +146,17 @@ int main()
 			sirius::app::server::arbitrator::entity::attendant_t contenity;
 			if (option)
 			{
-				sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
-				memmove(contenity.uuid, uuid, strlen(uuid) + 1);
+				if (wcslen(context.uuid) > 0)
+				{
+					sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
+					memmove(contenity.uuid, uuid, strlen(uuid) + 1);				
+				}
+				else
+				{
+					sirius::uuid uuidgen;
+					uuidgen.create();
+					memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
+				}			
 				contenity.id = context.id;
 			}
 			else
@@ -154,8 +168,7 @@ int main()
 			}
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
 			contenity.state = attendant_state_t::idle;
-
-			sirius::app::server::arbitrator::process::controller proc_ctrl;
+			
 			proc_ctrl.set_cmdline(arguments, "--reconnect=false");
 			proc_ctrl.set_cmdline(arguments, "--uuid=\"%s\"", contenity.uuid);
 			proc_ctrl.set_cmdline(arguments, "--attendant_type=\"web\"");
