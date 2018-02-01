@@ -146,8 +146,17 @@ int main()
 			sirius::app::server::arbitrator::entity::attendant_t contenity;
 			if (option)
 			{
-				sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
-				memmove(contenity.uuid, uuid, strlen(uuid) + 1);
+				if (wcslen(context.uuid) > 0)
+				{
+					sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
+					memmove(contenity.uuid, uuid, strlen(uuid) + 1);				
+				}
+				else
+				{
+					sirius::uuid uuidgen;
+					uuidgen.create();
+					memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
+				}			
 				contenity.id = context.id;
 			}
 			else
