@@ -10,8 +10,8 @@
 typedef sirius::library::framework::server::base * (*fpn_create_server_framework)();
 typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::base ** server_framework);
 
-#define IO_THREAD_POOL_COUNT		1
-#define COMMAND_THREAD_POOL_COUNT	1
+#define IO_THREAD_POOL_COUNT		2
+#define COMMAND_THREAD_POOL_COUNT	2
 #define MTU_SIZE					1500
 
 sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid, bool keepalive, bool tls)

@@ -320,12 +320,16 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_video_fps.GetWindowTextW(wvideo_fps);
 	video_compression_level = _video_compression_level.GetCurSel() + 1;
 	if (_video_quantization_colors.GetCurSel() == 0)
+		video_quantization_colors = 8;
+	if (_video_quantization_colors.GetCurSel() == 1)
+		video_quantization_colors = 16;
+	if (_video_quantization_colors.GetCurSel() == 2)
 		video_quantization_colors = 32;
-	else if (_video_quantization_colors.GetCurSel() == 1)
-		video_quantization_colors = 64;
-	else if (_video_quantization_colors.GetCurSel() == 2)
-		video_quantization_colors = 128;
 	else if (_video_quantization_colors.GetCurSel() == 3)
+		video_quantization_colors = 64;
+	else if (_video_quantization_colors.GetCurSel() == 4)
+		video_quantization_colors = 128;
+	else if (_video_quantization_colors.GetCurSel() == 5)
 		video_quantization_colors = 256;
 
 	sirius::stringhelper::convert_wide2multibyte((LPTSTR)(LPCTSTR)wuuid, &uuid);
@@ -398,14 +402,18 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_video_fps.SetWindowTextW(wvideo_fps);
 	_video_compression_level.SetCurSel(video_compression_level - 1);
 
-	if (video_quantization_colors == 32)
+	if (video_quantization_colors == 8)
 		_video_quantization_colors.SetCurSel(0);
-	else if (video_quantization_colors == 64)
+	else if (video_quantization_colors == 16)
 		_video_quantization_colors.SetCurSel(1);
-	else if (video_quantization_colors == 128)
+	else if (video_quantization_colors == 32)
 		_video_quantization_colors.SetCurSel(2);
-	else if (video_quantization_colors == 256)
+	else if (video_quantization_colors == 64)
 		_video_quantization_colors.SetCurSel(3);
+	else if (video_quantization_colors == 128)
+		_video_quantization_colors.SetCurSel(4);
+	else if (video_quantization_colors == 256)
+		_video_quantization_colors.SetCurSel(5);
 
 	_enable_keepalive.SetCheck(enable_keepalive ? 1 : 0);
 	_use_tls.SetCheck(enable_tls ? 1 : 0);

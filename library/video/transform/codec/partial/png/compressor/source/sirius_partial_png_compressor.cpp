@@ -10,6 +10,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, max_colors(128)
 	, min_quality(50)
 	, max_quality(80)
+	//, quantization(false)
 	, fast_compression(true)
 {
 
@@ -25,6 +26,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
+	//quantization = clone.quantization;
 	fast_compression = clone.fast_compression;
 }
 
@@ -38,6 +40,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
+	//quantization = clone.quantization;
 	fast_compression = clone.fast_compression;
 	return (*this);
 }

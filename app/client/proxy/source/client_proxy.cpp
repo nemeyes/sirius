@@ -9,8 +9,8 @@
 #include <sirius_client_framework.h>
 
 #define MTU_SIZE					1500
-#define IO_THREAD_POOL_COUNT		1
-#define COMMAND_THREAD_POOL_COUNT	1
+#define IO_THREAD_POOL_COUNT		2
+#define COMMAND_THREAD_POOL_COUNT	2
 
 sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd)
 	: sirius::library::net::sicp::client(MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, keepalive?TRUE:FALSE, tls?TRUE:FALSE)
