@@ -168,19 +168,22 @@ namespace sirius
 							int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::entity_t * bitstream);
 
 						private:
-							int32_t allocate_io_buffers(void);
-							int32_t release_io_buffers(void);
+							int32_t				allocate_io_buffers(void);
+							int32_t				release_io_buffers(void);
 
-							static void		png_error_handler(png_structp png_ptr, png_const_charp msg);
-							static void		png_write_callback(png_structp  png_ptr, png_bytep data, png_size_t length);
-							static void		png_flush_callback(png_structp png_ptr);
-							static void		png_set_gamma(png_infop info_ptr, png_structp png_ptr, double gamma, png_color_transform color);
-							static void		png_free_chunks(png_chunk_t * chunk);
-							static int32_t	write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t fast_compression);
-							static void		write_png_end(png_infopp info_ptr_p, png_structpp png_ptr_p, png_bytepp row_pointers);
+							static void			png_error_handler(png_structp png_ptr, png_const_charp msg);
+							static void			png_write_callback(png_structp  png_ptr, png_bytep data, png_size_t length);
+							static void			png_flush_callback(png_structp png_ptr);
+							static void			png_set_gamma(png_infop info_ptr, png_structp png_ptr, double gamma, png_color_transform color);
+							static void			png_free_chunks(png_chunk_t * chunk);
+							static int32_t		write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t fast_compression);
+							static void			write_png_end(png_infopp info_ptr_p, png_structpp png_ptr_p, png_bytepp row_pointers);
+							static png_bytepp	png_create_row_pointers(png_infop info_ptr, png_structp png_ptr, unsigned char *base, unsigned int height, png_size_t rowbytes);
 
-							int32_t			write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed);
-							void			free_png_image8(png8_image_t * image);
+							int32_t				write_png_image24(png24_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed);
+							void				free_png_image24(png24_image_t * image);
+							int32_t				write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed);
+							void				free_png_image8(png8_image_t * image);
 
 						private:
 							sirius::library::video::transform::codec::partial::png::compressor * _front;

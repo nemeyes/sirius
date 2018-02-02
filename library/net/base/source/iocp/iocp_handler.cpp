@@ -109,6 +109,7 @@ void sirius::library::net::iocp::handler::close_thread_pool(void)
 	::WaitForMultipleObjects(_nthreads, _threads, TRUE, INFINITE);
 	for (int32_t i = 0; i<_nthreads; i++)
 		::CloseHandle(_threads[i]);
+	free(_threads);
 }
 
 unsigned __stdcall sirius::library::net::iocp::handler::process(void * param)

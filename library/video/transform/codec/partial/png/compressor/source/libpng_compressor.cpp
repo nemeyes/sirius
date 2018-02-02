@@ -104,6 +104,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		memmove((uint8_t*)iobuffer->input.data, input->data, iobuffer->input.data_size);
 	}
 
+	//if(_context->quantization)
 	{
 		iobuffer = _iobuffer_queue.get_pending();
 
@@ -160,17 +161,10 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 			for (unsigned int i = 0; i < palette->count; i++)
 			{
 				const liq_color px = palette->entries[i];
-#if 0
-				qntpng.palette[i].r = px.r;
-				qntpng.palette[i].g = px.g;
-				qntpng.palette[i].b = px.b;
-				qntpng.palette[i].a = px.a;
-#else
 				qntpng.palette[i].r = px.b;
 				qntpng.palette[i].g = px.g;
 				qntpng.palette[i].b = px.r;
 				qntpng.palette[i].a = px.a;
-#endif
 			}
 
 			double palette_error = liq_get_quantization_error(remap);
@@ -212,6 +206,40 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 
 		iobuffer->output.data_size = 0;
 	}
+	/*
+	else
+	{
+		iobuffer = _iobuffer_queue.get_pending();
+
+		uint8_t * pixels = (uint8_t*)iobuffer->input.data;
+		//memcpy(_rgba_buffer, pixels, (_context->block_width * _context->block_height) << 2);
+
+		png24_image_t qntpng = { 0 };
+		qntpng.width = _context->block_width;
+		qntpng.height = _context->block_height;
+		qntpng.output_color = RWPNG_SRGB;
+		qntpng.rgba_data = static_cast<uint8_t*>(malloc((_context->block_width * _context->block_height) << 2));
+		memmove(qntpng.rgba_data, pixels, (_context->block_width * _context->block_height) << 2);
+		//memset(qntpng.rgba_data, 0x00, (_context->block_width * _context->block_height) << 2);
+		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
+		status = write_png_image24(&qntpng, &iobuffer->output);
+		free_png_image24(&qntpng);
+
+		bitstream->memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
+		if (iobuffer->output.data_size > bitstream->data_capacity)
+		{
+			bitstream->data_size = bitstream->data_capacity;
+			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+		}
+		else
+		{
+			bitstream->data_size = iobuffer->output.data_size;
+			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
+		}
+
+		iobuffer->output.data_size = 0;
+	}
+	*/
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -344,6 +372,62 @@ void sirius::library::video::transform::codec::libpng::compressor::write_png_end
 	png_destroy_write_struct(png_ptr_p, info_ptr_p);
 }
 
+png_bytepp sirius::library::video::transform::codec::libpng::compressor::png_create_row_pointers(png_infop info_ptr, png_structp png_ptr, unsigned char * base, unsigned int height, png_size_t rowbytes)
+{
+	if (!rowbytes) 
+	{
+		rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+	}
+
+	png_bytepp row_pointers = static_cast<png_bytepp>(malloc(height * sizeof(row_pointers[0])));
+	if (!row_pointers) 
+		return NULL;
+	
+	for (size_t row = 0; row < height; row++) 
+		row_pointers[row] = base + row * rowbytes;
+	
+	return row_pointers;
+}
+
+int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_image24(png24_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed)
+{
+	png_structp png_ptr;
+	png_infop info_ptr;
+	int32_t retval = write_png_begin((png_image_t*)out, &png_ptr, &info_ptr, 0);
+	if (retval)
+		return retval;
+
+	png_write_state_t write_state;
+	//write_state.maximum_file_size = out->maximum_file_size;
+	write_state.retval = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
+	write_state.compressed = compressed;
+	png_set_write_fn(png_ptr, &write_state, png_write_callback, png_flush_callback);
+
+	png_set_compression_strategy(png_ptr, Z_RLE);
+	//png_set_gamma(info_ptr, png_ptr, out->gamma, out->output_color);
+
+	png_set_IHDR(png_ptr, info_ptr, out->width, out->height, 8, PNG_COLOR_TYPE_RGB_ALPHA, 0, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
+
+
+	png_bytepp row_pointers = png_create_row_pointers(info_ptr, png_ptr, out->rgba_data, out->height, 0);
+	write_png_end(&info_ptr, &png_ptr, row_pointers);
+	free(row_pointers);
+
+	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
+}
+
+void sirius::library::video::transform::codec::libpng::compressor::free_png_image24(png24_image_t * image)
+{
+	free(image->row_pointers);
+	image->row_pointers = NULL;
+
+	free(image->rgba_data);
+	image->rgba_data = NULL;
+
+	png_free_chunks(image->chunks);
+	image->chunks = NULL;
+}
+
 int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed)
 {
 	png_structp png_ptr;
@@ -371,7 +455,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
 #endif
 	// Palette images generally don't gain anything from filtering
-	png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
+	//png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
 
 	png_set_gamma(info_ptr, png_ptr, out->gamma, out->output_color);
 
