@@ -50,7 +50,7 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->controller_portnumber = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"stream_server_portnumber")))
+	if (param.end() != (iter = param.find(L"streaming_server_portnumber")))
 	{
 		value = iter->second;
 		context->streamer_portnumber = _wtoi(value.c_str());
@@ -124,12 +124,12 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_block_height = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"video_compressilevel")))
+	if (param.end() != (iter = param.find(L"video_compression_level")))
 	{
 		value = iter->second;
 		context->video_compression_level = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"video_quantizaticolors")))
+	if (param.end() != (iter = param.find(L"video_quantization_colors")))
 	{
 		value = iter->second;
 		context->video_quantization_colors = _wtoi(value.c_str());
