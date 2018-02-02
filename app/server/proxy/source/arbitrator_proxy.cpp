@@ -450,9 +450,9 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 						}
 					}
 				}
-				else
+				else if (count < max_attendant_instance_count)
 				{						
-					for(int id =0; id < max_attendant_instance_count;id++)
+					for(int id =0; id < max_attendant_instance_count; id++)
 					{
 						bool is_vaild = false;
 						for (int index = 0; index < count; index++)
@@ -578,7 +578,7 @@ void sirius::app::server::arbitrator::proxy::core::update_available_attendant(vo
 	{
 		for (int32_t index = 0; index < count; index++)
 		{
-			if (attendant[index]->state != sirius::app::server::arbitrator::proxy::core::attendant_state_t::available
+			if (attendant[index]->state > sirius::app::server::arbitrator::proxy::core::attendant_state_t::available
 				&& is_valid(attendant[index]->client_uuid) == false)
 			{
 				sirius::autolock lock(&_attendant_cs);
@@ -673,7 +673,10 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 
 	bool attendant_created = false;
 
-	int32_t msleep = 0;
+	const unsigned long msleep = 100;
+	const unsigned long onesec = 1000;
+	long long elapsed_millisec = 0;
+
 	while (_run)
 	{		
 		if (!attendant_created)
@@ -709,16 +712,16 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		}
 		else
 		{				
-			check_alive_attendant();		
+			if (elapsed_millisec%onesec == 0)			
+				check_alive_attendant();
 
-			if (msleep > 1000 * 10)
-			{		
+			if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
+			{
 				update_available_attendant();
 				close_unconnected_attendant();
-				msleep = 0;
-			}
-			::Sleep(500);
-			msleep += 500;
+			}			
+			::Sleep(msleep);
+			elapsed_millisec += msleep;					
 		}		
 	}
 	_cluster->ssm_service_info("STOP", max_attendant_instance_count);
