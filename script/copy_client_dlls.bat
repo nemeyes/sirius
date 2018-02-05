@@ -21,15 +21,33 @@ IF /i %build_mode%=="release" xcopy /Y %work_dir%\3rdparty\gperftools\v2_6_1\win
 xcopy /Y %work_dir%\3rdparty\simd\v4_0_58_1229\win32\v140\x86\bin\Simd.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\zlib1.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\libpng16.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_casp_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_casp_client.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompressor.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompressor.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_native_client_framework.dll %work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_native_client_framework.pdb %work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_client_proxy.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_client_proxy.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 
 
 ECHO copy complited.

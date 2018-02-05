@@ -5,7 +5,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	: block_width(128)
 	, block_height(72)
 	, gamma(1 / 2.2f)
-	, floyd(0.5f)
+	, floyd(0)
 	, speed(10)
 	, max_colors(128)
 	, min_quality(50)
