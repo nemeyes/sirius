@@ -19,7 +19,7 @@ namespace sirius
 					: public sirius::library::net::sicp::server
 				{
 					static const int32_t BASE_PORTNUMBER = 7000;
-					static const int32_t IO_THREAD_POOL_COUNT = 200;
+					static const int32_t IO_THREAD_POOL_COUNT = 500;
 					static const int32_t COMMAND_THREAD_POOL_COUNT = 500;
 					static const int32_t MTU_SIZE = 1500;
 					static const int32_t ARGUMENT_SIZE = 1024;

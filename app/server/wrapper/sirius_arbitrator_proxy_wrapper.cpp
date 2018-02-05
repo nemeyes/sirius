@@ -142,44 +142,62 @@ int sirius::app::server::arbitrator::wrapper::handler::get_available_attendant_c
 
 void sirius::app::server::arbitrator::wrapper::handler::set_initialize_callback(delegate_initialize_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	initialize_callback fptr = static_cast<initialize_callback>(ptr.ToPointer());
 	_core->set_initialize_callback(fptr);
+	GC::Collect();
+	gch.Free();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_system_monitor_info_callback(delegate_system_monitor_info_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	system_monitor_info_callback fptr = static_cast<system_monitor_info_callback>(ptr.ToPointer());
 	_core->set_system_monitor_info_callback(fptr);
+	GC::Collect();
+	gch.Free();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_attendant_create_callback(delegate_attendant_create_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	attendant_create_callback fptr = static_cast<attendant_create_callback>(ptr.ToPointer());
-	_core->set_attendant_create_callback(fptr);
+	_core->set_attendant_create_callback(fptr);	
+	GC::Collect();
+	gch.Free();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_start_callback(delegate_start_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	start_callback fptr = static_cast<start_callback>(ptr.ToPointer());
 	_core->set_start_callback(fptr);
+	GC::Collect();
+	gch.Free();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_stop_callback(delegate_stop_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	stop_callback fptr = static_cast<stop_callback>(ptr.ToPointer());
 	_core->set_stop_callback(fptr);
+	GC::Collect();
+	gch.Free();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_release_callback(delegate_release_callback^ cbf)
 {
+	GCHandle gch = GCHandle::Alloc(cbf);
 	IntPtr ptr = Marshal::GetFunctionPointerForDelegate(cbf);
 	release_callback fptr = static_cast<release_callback>(ptr.ToPointer());
 	_core->set_release_callback(fptr);
+	GC::Collect();
+	gch.Free();
 }
 
 

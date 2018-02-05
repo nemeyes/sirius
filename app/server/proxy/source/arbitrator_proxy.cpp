@@ -712,14 +712,15 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		}
 		else
 		{				
-			if (elapsed_millisec%onesec == 0)			
+			if (elapsed_millisec % onesec == 0)			
 				check_alive_attendant();
 
-			if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
-			{
-				update_available_attendant();
+			if (elapsed_millisec % (onesec * 10))
+				update_available_attendant();				
+
+			if(elapsed_millisec == (onesec * 10))
 				close_unconnected_attendant();
-			}			
+						
 			::Sleep(msleep);
 			elapsed_millisec += msleep;					
 		}		
