@@ -44,6 +44,7 @@ namespace sirius.app.server.arbitrator.Settings
             TextAttendantUrl.Text = setting_value.url;
             TextAttendantInstanceCount.Text = setting_value.max_attendant_instance.ToString();
             TextAttendantCreationDelay.Text = setting_value.attendant_creation_delay.ToString();
+            QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
             SliderImageCompressionLevel.Value = setting_value.video_compression_level;
             if (setting_value.enable_present)
             {
@@ -76,6 +77,7 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
             setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
+            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;

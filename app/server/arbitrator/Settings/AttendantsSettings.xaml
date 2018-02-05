@@ -57,12 +57,25 @@
                     <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantCreationDelay_PreviewTextInput" /> 
                     <Label Content="ms"/>
                 </StackPanel>
+                
+                <StackPanel>
+                    <Label Content="QuantizationColors" Target="{Binding ElementName=QuantizationColors}" Width="150"/>
+                    <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Left" MinWidth="70">
+                        <ComboBoxItem Content="8" IsSelected="true" />
+                        <ComboBoxItem Content="16" />
+                        <ComboBoxItem Content="32" />
+                        <ComboBoxItem Content="64" />
+                        <ComboBoxItem Content="128" />
+                        <ComboBoxItem Content="256" />
+                    </ComboBox>
+                </StackPanel>
+
 
                 <StackPanel>
                     <Label Content="Image Compression Level" Target="{Binding ElementName=SliderImageCompressionLevel}" Width="150"/>
                 </StackPanel>
                 <Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" />
-
+               
                 <StackPanel>
                     <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150"/>
                     <RadioButton x:Name="DisaplyAttendantOn" IsChecked="True">

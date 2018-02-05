@@ -6,12 +6,12 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-typedef void(*initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *);
-typedef void(*system_monitor_info_callback)(double, double);
-typedef void(*attendant_create_callback)(double);
-typedef void(*start_callback)(void);
-typedef void(*stop_callback)(void);
-typedef void(*release_callback)(void);
+typedef void(__stdcall *initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *);
+typedef void(__stdcall *system_monitor_info_callback)(double, double);
+typedef void(__stdcall *attendant_create_callback)(double);
+typedef void(__stdcall *start_callback)(void);
+typedef void(__stdcall *stop_callback)(void);
+typedef void(__stdcall *release_callback)(void);
 
 public delegate void delegate_initialize_callback(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *);
 public delegate void delegate_system_monitor_info_callback(double, double);
