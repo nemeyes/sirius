@@ -223,14 +223,19 @@ void sirius::library::net::sicp::abstract_client::clear_command_list(void)
 void sirius::library::net::sicp::abstract_client::on_app_session_handshaking(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	sirius::autolock lock(&_slock);
-	_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+	if (!_session || ((_session->status() & sirius::library::net::iocp::session::status_t::closed) == sirius::library::net::iocp::session::status_t::closed))
+	{
+		_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+	}
 }
 
 void sirius::library::net::sicp::abstract_client::on_app_session_connect(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	sirius::autolock lock(&_slock);
-	if(!_session)
+	if (!_session || ((_session->status() & sirius::library::net::iocp::session::status_t::closed) == sirius::library::net::iocp::session::status_t::closed))
+	{
 		_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
+	}
 	_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
 }
 

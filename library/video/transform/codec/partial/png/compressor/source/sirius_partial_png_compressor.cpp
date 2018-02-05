@@ -4,6 +4,7 @@
 sirius::library::video::transform::codec::partial::png::compressor::_context_t::_context_t(void)
 	: block_width(128)
 	, block_height(72)
+	, compression_level(-1)
 	, gamma(1 / 2.2f)
 	, floyd(0)
 	, speed(10)
@@ -11,7 +12,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, min_quality(50)
 	, max_quality(80)
 	//, quantization(false)
-	, fast_compression(true)
+	//, fast_compression(true)
 {
 
 }
@@ -20,6 +21,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 {
 	block_width = clone.block_width;
 	block_height = clone.block_height;
+	compression_level = clone.compression_level;
 	gamma = clone.gamma;
 	floyd = clone.floyd;
 	speed = clone.speed;
@@ -27,13 +29,14 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
 	//quantization = clone.quantization;
-	fast_compression = clone.fast_compression;
+	//fast_compression = clone.fast_compression;
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t & sirius::library::video::transform::codec::partial::png::compressor::_context_t::operator=(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
 {
 	block_width = clone.block_width;
 	block_height = clone.block_height;
+	compression_level = clone.compression_level;
 	gamma = clone.gamma;
 	floyd = clone.floyd;
 	speed = clone.speed;
@@ -41,7 +44,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
 	//quantization = clone.quantization;
-	fast_compression = clone.fast_compression;
+	//fast_compression = clone.fast_compression;
 	return (*this);
 }
 
