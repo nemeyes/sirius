@@ -101,7 +101,7 @@ namespace sirius
 								unsigned int num_palette;
 								png_rgba_t palette[256];
 								png_color_transform output_color;
-								char fast_compression;
+								int32_t compression_level;
 							} png8_image_t;
 
 							typedef union _png_image_t
@@ -176,7 +176,7 @@ namespace sirius
 							static void			png_flush_callback(png_structp png_ptr);
 							static void			png_set_gamma(png_infop info_ptr, png_structp png_ptr, double gamma, png_color_transform color);
 							static void			png_free_chunks(png_chunk_t * chunk);
-							static int32_t		write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t fast_compression);
+							static int32_t		write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t compression_level);
 							static void			write_png_end(png_infopp info_ptr_p, png_structpp png_ptr_p, png_bytepp row_pointers);
 							static png_bytepp	png_create_row_pointers(png_infop info_ptr, png_structp png_ptr, unsigned char *base, unsigned int height, png_size_t rowbytes);
 

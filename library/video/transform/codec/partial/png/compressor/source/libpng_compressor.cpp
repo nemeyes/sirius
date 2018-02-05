@@ -183,7 +183,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 
 		if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
 		{
-			qntpng.fast_compression = _context->fast_compression;
+			qntpng.compression_level = _context->compression_level;
 			status = write_png_image8(&qntpng, &iobuffer->output);
 		}
 
@@ -322,7 +322,7 @@ void sirius::library::video::transform::codec::libpng::compressor::png_free_chun
 	free(chunk);
 }
 
-int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t fast_compression)
+int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_begin(png_image_t * img, png_structpp png_ptr_p, png_infopp info_ptr_p, int32_t compression_level)
 {
 	*png_ptr_p = png_create_write_struct(PNG_LIBPNG_VER_STRING, img, NULL, NULL);
 
@@ -349,12 +349,8 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 		return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::libpng_init_error;
 	}
 
-#if defined(WITH_IPP)
-	png_set_compression_level(*png_ptr_p, Z_IPP_COMPRESSION);
-#else
-	png_set_compression_level(*png_ptr_p, fast_compression ? Z_BEST_SPEED : Z_BEST_COMPRESSION);
-#endif
-	png_set_compression_mem_level(*png_ptr_p, fast_compression ? 9 : 5); // judging by optipng results, smaller mem makes libpng compress slightly better
+	png_set_compression_level(*png_ptr_p, (compression_level <= 0) ? Z_BEST_SPEED : compression_level);
+	png_set_compression_mem_level(*png_ptr_p, 9); // judging by optipng results, smaller mem makes libpng compress slightly better
 
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -436,7 +432,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	if (out->num_palette > 256)
 		return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::invalid_argument;
 
-	int32_t retval = write_png_begin((png_image_t*)out, &png_ptr, &info_ptr, out->fast_compression);
+	int32_t retval = write_png_begin((png_image_t*)out, &png_ptr, &info_ptr, out->compression_level);
 	if (retval)
 		return retval;
 
@@ -448,12 +444,9 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 
 	//if(_context->memtype==sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host)
 	//	png_set_bgr(png_ptr);
-
-#if defined(WITH_IPP)
+	
 	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
-#else
-	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
-#endif
+	
 	// Palette images generally don't gain anything from filtering
 	//png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
 
@@ -509,7 +502,8 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 
 	png_set_PLTE(png_ptr, info_ptr, palette, out->num_palette);
 
-	if (num_trans > 0) {
+	if (num_trans > 0) 
+	{
 		png_set_tRNS(png_ptr, info_ptr, trans, num_trans, NULL);
 	}
 

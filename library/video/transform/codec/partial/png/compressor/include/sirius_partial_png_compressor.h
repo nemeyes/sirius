@@ -42,7 +42,7 @@ namespace sirius
 									int32_t min_quality;
 									int32_t max_quality;
 									//bool	quantization;
-									bool	fast_compression;
+									//bool	fast_compression;
 									_context_t(void);
 									_context_t(const _context_t & clone);
 									_context_t & operator=(const _context_t & clone);
