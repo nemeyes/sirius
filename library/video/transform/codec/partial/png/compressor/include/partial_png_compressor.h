@@ -34,8 +34,8 @@ namespace sirius
 								: public sirius::library::video::transform::codec::processor
 							{
 							public:
-								static const int32_t MAX_IO_BUFFERS = 30;
-								static const int32_t MAX_PNG_SIZE = 1024 * 1024 * 4;
+								static const int32_t MAX_IO_BUFFERS = 15;
+								static const int32_t MAX_PNG_SIZE = 1024 * 1024 * 1;
 
 								typedef struct _ibuffer_t
 								{

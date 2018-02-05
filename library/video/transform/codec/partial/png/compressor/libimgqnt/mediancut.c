@@ -445,7 +445,7 @@ static void adjust_histogram(hist_item *achv, const struct box* bv, unsigned int
 static f_pixel averagepixels(unsigned int clrs, const hist_item achv[])
 {
     double r = 0, g = 0, b = 0, a = 0, sum = 0;
-
+	
     for(unsigned int i = 0; i < clrs; i++) {
         const f_pixel px = achv[i].acolor;
         const double weight = achv[i].adjusted_weight;
