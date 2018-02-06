@@ -1,5 +1,9 @@
 #include "device_manager.h"
-
+#define IS_ALNUM(ch) \
+            ( ch >= 'a' && ch <= 'z' ) || \
+            ( ch >= 'A' && ch <= 'Z' ) || \
+            ( ch >= '0' && ch <= '9' ) || \
+            ( ch >= '-' && ch <= '.' ) 
 sirius::library::net::backend::device_manager::device_manager()
 {
 }
@@ -23,7 +27,29 @@ char * sirius::library::net::backend::device_manager::get_cpu_name()
 	int wc_size = WideCharToMultiByte(CP_ACP, 0, wc_cpu_name, -1, NULL, 0, NULL, NULL);
 	cpu_name = new char[wc_size];
 	WideCharToMultiByte(CP_ACP, 0, wc_cpu_name, -1, cpu_name, wc_size, 0, 0);
+	cpu_name = url_encode(cpu_name);
 	return cpu_name;
+}
+
+char* sirius::library::net::backend::device_manager::url_encode(const char* str)
+{
+	int i, j = 0, len;
+	char* tmp;
+	len = strlen(str);
+	tmp = (char*)malloc((sizeof(char) * 3 * len) + 1);
+	for (i = 0; i < len; i++)
+	{
+		if (IS_ALNUM(str[i]))
+			tmp[j] = str[i];
+		else {
+			snprintf(&tmp[j], 4, "%%%02X\n", (unsigned char)str[i]);
+			j += 2;
+		}
+		j++;
+	}
+	tmp[j] = 0;
+
+	return tmp;
 }
 
 char * sirius::library::net::backend::device_manager::get_operatingsystem_name()
@@ -50,6 +76,7 @@ char * sirius::library::net::backend::device_manager::get_operatingsystem_name()
 		int str_size = WideCharToMultiByte(CP_ACP, 0, product_name, -1, NULL, 0, NULL, NULL);
 		os = new char[str_size];
 		WideCharToMultiByte(CP_ACP, 0, product_name, -1, os, str_size, 0, 0);
+		os = url_encode(os);
 		return os;
 	}
 
@@ -62,6 +89,8 @@ char * sirius::library::net::backend::device_manager::get_operatingsystem_name()
 	int str_size = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, NULL, NULL);
 	os = new char[str_size];
 	WideCharToMultiByte(CP_ACP, 0, wstr, -1, os, str_size, 0, 0);
+	os = url_encode(os);
+	os = url_encode(os);
 	return os;
 }
 

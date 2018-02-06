@@ -15,6 +15,8 @@ namespace client {
 		CefRefPtr<browser> browser::_ptr_this = NULL;
 
 		browser::browser() {
+			OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!browser!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			socket_win::get_instance();
 		}
 
 		browser::~browser() {

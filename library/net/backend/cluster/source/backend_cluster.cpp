@@ -55,6 +55,8 @@ void sirius::library::net::backend::cluster::core::backend_init(std::string vers
 		int gpu_name_size = (int)wcslen(gpu_name);
 		size_t converted_chars = 0;
 		wcstombs_s(&converted_chars, _gpu_name, gpu_name_size + 1, gpu_name, _TRUNCATE);
+		sprintf_s(_gpu_name, MAX_PATH, "%s", sirius::library::net::backend::device_manager::url_encode(_gpu_name));
+		
 		SSP_ADT.start(version);
 	}
 }
@@ -123,7 +125,7 @@ void sirius::library::net::backend::cluster::core::set_cluster_init(sirius::libr
 	_curl_ssp->set_url(_ssp_url, strlen(_ssp_url));
 
 	_snprintf_s(_ssm_url, 100, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do", _ssm_ip.c_str(), _ssm_port.c_str());
-	_curl_ssm = new sirius::library::net::curl::client(SENDING_TIME);
+	_curl_ssm = new sirius::library::net::curl::client(10000);
 	_curl_ssm->set_url(_ssm_url, strlen(_ssm_url));
 }
 
@@ -183,6 +185,7 @@ bool sirius::library::net::backend::cluster::core::set_hostname()
 	}
 	_host_name_length = strlen(host_name);
 	memcpy_s(_host_name, MAX_PATH, &host_name, MAX_PATH);
+	_host_name = sirius::library::net::backend::device_manager::url_encode(_host_name);
 	return true;
 }
 
