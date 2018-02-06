@@ -80,16 +80,20 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		conn = connection;
 
 	int32_t count = retrieve_count(conn);
-	if (count < 1)
+
+	if (count < 0)
+		return status;
+
+	if (count == 0)
 	{
 		sirius::uuid uuidgen;
 		uuidgen.create();
 
 		sirius::app::server::arbitrator::entity::configuration_t c_entity;
 		strncpy_s(c_entity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
-		strncpy_s(c_entity.url, "https://www.youtube.com/tv", sizeof(c_entity.url));
-		c_entity.max_attendant_instance = 400;
-		c_entity.attendant_creation_delay = 2000;
+		strncpy_s(c_entity.url, "about:blank", sizeof(c_entity.url));
+		c_entity.max_attendant_instance = 1;
+		c_entity.attendant_creation_delay = 1000;
 		c_entity.controller_portnumber = 5000;
 		c_entity.streamer_portnumber = 7000;
 		c_entity.video_codec = sirius::app::server::arbitrator::db::configuration_dao::video_submedia_type_t::png;
@@ -99,11 +103,11 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.video_block_width = 128;
 		c_entity.video_block_height = 72;
 		c_entity.video_compression_level = 5;
-		c_entity.video_quantization_colors = 128;
-		c_entity.enable_tls = true;
+		c_entity.video_quantization_colors = 36;
+		c_entity.enable_tls = false;
 		c_entity.enable_keepalive = false;
-		c_entity.enable_present = true;
-		c_entity.enable_auto_start = true;
+		c_entity.enable_present = false;
+		c_entity.enable_auto_start = false;
 		c_entity.enable_caching = false;
 		status = create(&c_entity, conn);
 		if (status != sirius::app::server::arbitrator::db::configuration_dao::err_code_t::success)
@@ -213,7 +217,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 
 int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve_count(sqlite3 * connection)
 {
-	int32_t count = 0;
+	int32_t count = -1;
 	sqlite3_stmt * stmt;
 	sqlite3 * conn;
 

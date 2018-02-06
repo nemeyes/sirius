@@ -58,6 +58,12 @@ namespace sirius.app.server.arbitrator.Settings
             }
 
             setting_value.enable_auto_start = false;
+
+            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started)
+                attendants_apply_button.IsEnabled = false;
+            else if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.stopped)
+                attendants_apply_button.IsEnabled = true;
+
             //if (setting_value.enable_auto_start)
             //{
             //    AutostartOn.IsChecked = true;

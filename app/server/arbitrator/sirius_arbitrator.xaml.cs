@@ -24,6 +24,7 @@ namespace sirius.app.server.arbitrator
     /// </summary>
     public partial class sirius_arbitrator : UserControl
     {
+        public static sirius_arbitrator handle;
         public struct status_t
         {
             public const int initialized = 0;
@@ -46,6 +47,7 @@ namespace sirius.app.server.arbitrator
                 
         public sirius_arbitrator(MainWindow wnd)
         {
+            sirius_arbitrator.handle = this;
             InitializeComponent();
             front = wnd;
             controller = new sirius.app.server.arbitrator.wrapper.handler();
@@ -163,6 +165,10 @@ namespace sirius.app.server.arbitrator
         public unsafe void on_release()
         {
             status = status_t.released;
+        }
+        public int get_status()
+        {
+            return status;
         }
     }
 }
