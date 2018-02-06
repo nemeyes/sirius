@@ -114,6 +114,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		liq_attr * liq = liq_attr_create();
 		liq_set_speed(liq, _context->speed);
 		liq_set_max_colors(liq, _context->max_colors);
+		liq_set_min_posterization(liq, 2);
 
 		int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
 		png8_image_t qntpng = { 0 };
