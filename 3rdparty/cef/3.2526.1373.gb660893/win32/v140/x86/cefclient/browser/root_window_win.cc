@@ -107,6 +107,7 @@ RootWindowWin::RootWindowWin()
       find_hwnd_(NULL),
       find_message_id_(0),
       find_wndproc_old_(NULL),
+	  outter_hwnd_(NULL),
       find_state_(),
       find_next_(false),
       find_match_case_last_(false),
