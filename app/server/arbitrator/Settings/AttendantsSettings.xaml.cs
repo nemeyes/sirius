@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace sirius.app.server.arbitrator.Settings
 {
@@ -77,14 +78,40 @@ namespace sirius.app.server.arbitrator.Settings
         }
         private void attendants_set_apply_click(object sender, RoutedEventArgs e)
         {
-            SettingValue setting_value = SettingValue.Instance();
+            Uri uriResult;
+            if (!Uri.TryCreate(TextAttendantUrl.Text, UriKind.Absolute, out uriResult))
+            {
+                var v = new ModernDialog
+                {
+                    Title = "Error",
+                    Content = "CODE: INVALID URL \n\n [SETTINGS] -> [ATTENDANT] -> [URL]"
+                };
+                v.ShowDialog();
+                return;
+            }
 
+            if (uriResult.Scheme == Uri.UriSchemeFile)
+            {
+                System.IO.FileInfo fi = new System.IO.FileInfo(TextAttendantUrl.Text);
+                if (!fi.Exists)
+                {
+                    var v = new ModernDialog
+                    {
+                        Title = "Error",
+                        Content = "CODE: INVALID URL \n\n [SETTINGS] -> [ATTENDANT] -> [URL]"
+                    };
+                    v.ShowDialog();
+                    return;
+                }
+            }       
+
+            SettingValue setting_value = SettingValue.Instance();
             setting_value.url = TextAttendantUrl.Text;
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
             setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
             setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
-
+            
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
             else

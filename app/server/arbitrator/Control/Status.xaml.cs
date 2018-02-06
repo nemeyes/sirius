@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using sirius.app.server.arbitrator.Settings;
+using sirius.app.server.arbitrator.Controls;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace sirius.app.server.arbitrator.Control
 {
@@ -61,6 +63,34 @@ namespace sirius.app.server.arbitrator.Control
       
         private void start_button_click(object sender, RoutedEventArgs e)
         {
+            SettingValue setting_value = SettingValue.Instance();
+            Uri uriResult;
+            if (!Uri.TryCreate(setting_value.url, UriKind.Absolute, out uriResult))
+            {
+                var v = new ModernDialog
+                {
+                    Title = "Error",
+                    Content = "CODE: INVALID URL \n\n [SETTINGS] -> [ATTENDANT] -> [URL]"
+                };
+                v.ShowDialog();
+                return;                
+            }
+
+            if (uriResult.Scheme == Uri.UriSchemeFile)
+            {
+                System.IO.FileInfo fi = new System.IO.FileInfo(setting_value.url);
+                if (!fi.Exists)
+                {
+                    var v = new ModernDialog
+                    {
+                        Title = "Error",
+                        Content = "CODE: INVALID URL \n\n [SETTINGS] -> [ATTENDANT] -> [URL]"
+                    };
+                    v.ShowDialog();
+                    return;
+                }
+            }
+
             Dispatcher.Invoke(DispatcherPriority.Normal,
             new Action
             (
