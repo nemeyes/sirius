@@ -43,7 +43,10 @@ namespace client {
 				CallbackMap;
 			CallbackMap callback_map_;
 			void deleteCallbackMap();
+			void send_to_javascript(const CefString& data);
 			message_handler();
+			IMPLEMENT_REFCOUNTING(message_handler);
+			DISALLOW_COPY_AND_ASSIGN(message_handler);
 		};
 	}
 }

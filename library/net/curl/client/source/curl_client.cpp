@@ -22,8 +22,8 @@ sirius::library::net::curl::client::core::core(int sending_timeout)
 
 	if (_core)
 	{
-		curl_easy_setopt(_core, CURLOPT_WRITEFUNCTION, sirius::library::net::curl::client::core::response_callback);
-		curl_easy_setopt(_core, CURLOPT_WRITEDATA, this);
+		//curl_easy_setopt(_core, CURLOPT_WRITEFUNCTION, sirius::library::net::curl::client::core::response_callback);
+		//curl_easy_setopt(_core, CURLOPT_WRITEDATA, this);
 	}
 }
 
@@ -113,6 +113,6 @@ void sirius::library::net::curl::client::core::set_callback_function(void(*func)
 size_t sirius::library::net::curl::client::core::response_callback(void *data, size_t size, size_t count, void * curl)
 {
 	//((string*)rsp)->append((char*)data,0, size * count);
-	static_cast<sirius::library::net::curl::client::core*>(curl)->_callback(size, count, data, size * count);
-	return size * count;
+	//static_cast<sirius::library::net::curl::client::core*>(curl)->_callback(size, count, data, size * count);
+	return 0;
 }

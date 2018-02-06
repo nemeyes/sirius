@@ -4,7 +4,7 @@
 #include "WinSock2.h"
 #include <stdint.h>
 #include <string>
-#define SENDING_TIME 30
+#define SENDING_TIME 100
 #if defined(EXPORTS_BACKEND_CLUSTER_LIB)
 #define EXP_BACKEND_CLUSTER_CLASS __declspec(dllexport)
 #else

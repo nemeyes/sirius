@@ -71,6 +71,7 @@ namespace sirius
 					std::string get_ssm_ip() { return _ssm_ip; };
 					std::string get_ssm_port() { return _ssm_port; };
 					std::string get_idc_code() { return _idc_code; };
+					std::string get_alive_interval() { return _alive_interval; };
 					int _max_attendant;
 				private:
 					cluster_adapter_configuration_t _config;
@@ -81,6 +82,7 @@ namespace sirius
 					std::string _ssm_ip;
 					std::string _ssm_port;
 					std::string _idc_code;
+					std::string  _alive_interval;
 				};
 			};
 		};

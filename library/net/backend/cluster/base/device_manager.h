@@ -17,6 +17,7 @@ namespace sirius
 					device_manager();
 					~device_manager();
 					static char* get_cpu_name();
+					static char * url_encode(const char * str);
 					static char* get_operatingsystem_name();
 					static int get_memory_info();
 				};
