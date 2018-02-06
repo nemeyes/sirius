@@ -188,7 +188,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
 			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
 			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
-			proc_ctrl.set_cmdline(arguments, "--stream_server_portnumber=%d", confentity.streamer_portnumber);
+			proc_ctrl.set_cmdline(arguments, "--streaming_server_portnumber=%d", confentity.streamer_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
 

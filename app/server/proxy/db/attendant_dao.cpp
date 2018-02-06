@@ -416,6 +416,42 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::retrieve(const char 
 	return status;
 }
 
+
+int32_t sirius::app::server::arbitrator::db::attendant_dao::retrieve(int32_t id, sqlite3 * connection)
+{
+	int32_t status = sirius::app::server::arbitrator::db::attendant_dao::err_code_t::fail;
+	int32_t count = -1;
+
+	sqlite3_stmt * stmt;
+	sqlite3 * conn;
+
+	if (connection == 0)
+		conn = _db;
+	else
+		conn = connection;
+
+	if (sqlite3_prepare(conn, "SELECT count(*) FROM tb_attendant WHERE id=?;", -1, &stmt, 0) == SQLITE_OK)
+	{
+		sqlite3_bind_int(stmt, 1, id);
+		int result = SQLITE_ERROR;
+		while (true)
+		{
+			result = sqlite3_step(stmt);
+			if (result == SQLITE_ROW)
+			{			
+				count = sqlite3_column_int(stmt, 0);	
+				if (count > 0)
+					status = sirius::app::server::arbitrator::db::attendant_dao::err_code_t::success;
+			}
+			else
+				break;
+		}
+	}	
+	sqlite3_reset(stmt);
+	sqlite3_finalize(stmt);
+	return status;
+}
+
 int32_t sirius::app::server::arbitrator::db::attendant_dao::retrieve_count(sqlite3 * connection)
 {
 	int32_t count = 0;

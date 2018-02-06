@@ -200,7 +200,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
 		{
-			strncpy_s(attendant[count - 1]->client_uuid, uuid, sizeof(attendant[count - 1]->client_uuid)-1);
+			strncpy_s(attendant[count - 1]->client_uuid, uuid, sizeof(attendant[count - 1]->client_uuid) - 1);
 			strncpy_s(attendant[count - 1]->client_id, id, sizeof(attendant[count - 1]->client_id) - 1);
 			attendant[count - 1]->state = sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting;
 			{
@@ -274,7 +274,11 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback
 	{
 		sirius::autolock lock(&_attendant_cs);
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-		dao.add(&contenity);
+		
+		if (dao.retrieve(contenity.id) == sirius::app::server::arbitrator::proxy::err_code_t::success)
+			dao.update(&contenity);		
+		else
+			dao.add(&contenity);
 	}
 	return status;
 }
@@ -411,10 +415,6 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 					{
 						if (proc.find(attendant[index]->pid) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
 						{
-							{
-								sirius::autolock lock(&_attendant_cs);
-								dao.remove(attendant[index]);
-							}
 							STARTUPINFOA si;
 							PROCESS_INFORMATION pi;
 							memset(&si, 0x00, sizeof(si));
@@ -712,13 +712,13 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		}
 		else
 		{				
-			if (elapsed_millisec % onesec == 0)			
+			if (elapsed_millisec % (onesec * 3) == 0)			
 				check_alive_attendant();
 
-			if (elapsed_millisec % (onesec * 10))
+			if (elapsed_millisec % (onesec * 5))
 				update_available_attendant();				
 
-			if(elapsed_millisec == (onesec * 10))
+			if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
 				close_unconnected_attendant();
 						
 			::Sleep(msleep);

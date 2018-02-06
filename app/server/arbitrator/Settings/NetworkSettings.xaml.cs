@@ -44,6 +44,12 @@ namespace sirius.app.server.arbitrator.Settings
             TextStreamerPortnumber.Text = setting_value.streamer_portnumber.ToString();
             UseTLS.IsChecked = setting_value.enable_tls;
             UseKeepAlive.IsChecked = setting_value.enable_keepalive;
+
+            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started)
+                network_apply_button.IsEnabled = false;
+            else if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.stopped)
+                network_apply_button.IsEnabled = true;
+
         }
         private void network_set_apply_click(object sender, RoutedEventArgs e)
         {
