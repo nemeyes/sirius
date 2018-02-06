@@ -8,10 +8,6 @@
 
 #include <sirius_locks.h>
 
-#define SEND_QUEUE_SIZE		100
-#define SEND_BUFFER_SIZE	1024*1024*4
-#define RECV_BUFFER_SIZE	1024*1024*4
-
 sirius::library::net::iocp::session::session(sirius::library::net::iocp::processor * processor, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls, SSL_CTX * ssl_ctx, BOOL reconnection)
 	: _processor(processor)
 	, _socket_listen(INVALID_SOCKET)

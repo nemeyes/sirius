@@ -242,6 +242,10 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 			sirius::autolock lock(&_closing_slock);
 			session->update_timestamp();
 			_closing_sessions.push_back(session);
+			if(!force_clean)
+				OutputDebugStringA("connected session is not activated during waiting interval, connected session is closed and moved to closing list\n");
+			else
+				OutputDebugStringA("connected session is force to close and move to closing list\n");
 		}
 		else
 		{
@@ -250,6 +254,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
+				OutputDebugStringA("connected session is already closed and moved to closing list\n");
 			}
 			else
 			{
@@ -289,9 +294,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 		std::string uuid = activated_session_iter->first;
 		std::shared_ptr<sirius::library::net::sicp::session> session = activated_session_iter->second;
 		uint64_t interval = now - session->timestamp();
-		if (interval > KEEPALIVE_INTERVAL)
+		if (interval > KEEPALIVE_INTERVAL || force_clean)
 		{
-			if ((session->socket() != NULL && session->socket() != INVALID_SOCKET) || force_clean)
+			if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 			{
 				if (session->register_flag())
 				{
@@ -299,11 +304,17 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 					session->register_flag(false);
 				}
 				session->close();
+				if (!force_clean)
+					OutputDebugStringA("activated session doesn't recv/send any data during keepalive interval, activated session is closed and moved to closing list\n");
+				else
+					OutputDebugStringA("activated session is force to close and move to closing list\n");
 			}
-
-			sirius::autolock lock(&_closing_slock);
-			session->update_timestamp();
-			_closing_sessions.push_back(session);
+			
+			{
+				sirius::autolock lock(&_closing_slock);
+				session->update_timestamp();
+				_closing_sessions.push_back(session);
+			}
 		}
 		else
 		{
@@ -312,6 +323,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
+				OutputDebugStringA("activated session is already closed and moved to closing list\n");
 			}
 			else
 			{
@@ -359,8 +371,21 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 		{
 			std::shared_ptr<sirius::library::net::sicp::session> session = *iter;
 			uint64_t interval = now - session->timestamp();
-			if (interval < MAXIUM_CLOSING_SESSION_WAITING_INTERVAL)
+			if (interval > MAXIUM_CLOSING_SESSION_WAITING_INTERVAL || force_clean)
+			{
+				if (!force_clean)
+				{
+					OutputDebugStringA("closing session is removed from memory after waiting interval\n");
+				}
+				else
+				{
+					OutputDebugStringA("closing session is force to be removed from memory\n");
+				}
+			}
+			else
+			{
 				final_sessions.push_back(session);
+			}
 			++iter;
 		}
 
@@ -494,6 +519,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_connect(std::sh
 	{
 		sirius::autolock lock(&_connected_slock);
 		_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
+		OutputDebugStringA("on_app_session_connect\n");
 	}
 }
 
@@ -505,13 +531,17 @@ void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shar
 		sicp_session = std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session);
 		std::vector<std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = std::find(_connected_sessions.begin(), _connected_sessions.end(), sicp_session);
 		if (iter != _connected_sessions.end())
+		{
 			_connected_sessions.erase(iter);
+			OutputDebugStringA("on_app_session_close 1\n");
+		}
 	}
 
 	if (sicp_session)
 	{
 		sirius::autolock lock(&_closing_slock);
 		_closing_sessions.push_back(sicp_session);
+		OutputDebugStringA("on_app_session_close 2\n");
 	}
 }
 
@@ -563,6 +593,8 @@ void sirius::library::net::sicp::abstract_server::on_running(void)
 
 		::Sleep(msleep);
 		elapsed_millisec += msleep;
+		if (elapsed_millisec % onesec == 0)
+			::OutputDebugStringA("onesec elapsed\n");
 	}
 
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> sessions = activated_sessions();
