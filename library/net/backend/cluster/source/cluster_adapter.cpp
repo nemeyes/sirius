@@ -53,14 +53,14 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 		_ssp_bufpos = 0;
 		set_sirius_ip();
 		Sleep(100);
-		if (strlen(_localip) != 0)
+		/*if (strlen(_localip) != 0)
 		{
 			_snprintf(_ssp_url_st[_ssp_bufpos], MAX_BACKOFFICE_DATA_BUFFER, "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=OPEN&client_id=NULL",
 				get_ssp_ip().c_str(), get_ssp_port().c_str(), _localip, _client_count);
 			_ssp_queue.push_back(_ssp_url_st[_ssp_bufpos]);
 			if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
 				_ssp_bufpos = 0;
-		}
+		}*/
 		if (_stat_timer == NULL)
 		{
 			TIMECAPS _timecaps;
@@ -72,7 +72,8 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 			if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
 				return -1;
 
-			_keepalive_delay_time = 10000;
+			std::string::size_type sz;
+			_keepalive_delay_time = std::stoi(get_alive_interval(), &sz) * 1000;
 			_keepalive_timeset_event = timeSetEvent(_keepalive_delay_time, _timer_res, &timer_keepalive, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 			_stat_timer = true;
 		}
@@ -86,7 +87,7 @@ void sirius::library::net::backend::cluster_adapter::stop()
 	{
 		_client_count = NULL;
 		_ssp_queue.clear();
-		if (strlen(_localip) > 0)
+		/*if (strlen(_localip) > 0)
 		{
 			char ssp_data[MAX_BACKOFFICE_DATA_BUFFER] = { 0, };
 			_snprintf_s(ssp_data, sizeof(ssp_data), "http://%s:%s/SSPS/IFSSP_STATUS_INFO.do?ip=%s&count=%I64d&id=SIRIUS&status=CLOSE&client_id=NULL",
@@ -103,7 +104,7 @@ void sirius::library::net::backend::cluster_adapter::stop()
 			{
 				LOGGER::make_info_log(SAA, "[[[backoffice data request]]] %s, %d, sending_time:%d(ms), ssp_status_info=%s ", __FUNCTION__, __LINE__, dwEndTime - dwStartTime, ssp_data);
 			}
-		}
+		}*/
 		_stat_timer = false;
 		backend_deinit();
 	}
@@ -211,7 +212,7 @@ bool sirius::library::net::backend::cluster_adapter::configure_load()
 	if (!::PathFileExists(szFileName))
 		return false;
 
-	char *ssp_ip, *ssp_port, *ssm_ip, *ssm_port, *idc_code, *use_cluster;
+	char *ssp_ip, *ssp_port, *ssm_ip, *ssm_port, *idc_code, *use_cluster, *alive_interval;
 	TCHAR value[MAX_PATH] = { 0 };
 
 	::GetPrivateProfileString(_T("CLUSTER"), _T("USE_CLUSTER"), _T("ON"), value, MAX_PATH, szFileName);
@@ -243,6 +244,12 @@ bool sirius::library::net::backend::cluster_adapter::configure_load()
 	convert_wide2multibyte(value, &idc_code);
 	_idc_code = idc_code;
 	delete idc_code;
+
+	::GetPrivateProfileString(_T("CLUSTER"), _T("ALIVE_INTERVAL"), _T("60"), value, MAX_PATH, szFileName);
+	convert_wide2multibyte(value, &alive_interval);
+	_alive_interval = alive_interval;
+	delete alive_interval;
+
 
 	return true;
 }

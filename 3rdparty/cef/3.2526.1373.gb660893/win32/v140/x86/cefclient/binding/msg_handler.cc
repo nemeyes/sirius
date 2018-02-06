@@ -34,6 +34,19 @@ namespace client {
 				}
 			}
 		}
+		void message_handler::send_to_javascript(const CefString & data)
+		{
+			RootWindowWin* rootWin =
+				GetUserDataPtr<RootWindowWin*>(binding::global::get_instance().get_window_handle());
+			DCHECK(rootWin);
+			CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+
+			CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("AttendantToApp");
+			msg->GetArgumentList()->SetString(0, data);
+
+			browser->SendProcessMessage(PID_RENDERER, msg);
+		}
+
 		bool message_handler::external_interface_message_received(CefRefPtr<CefBrowser> browser,
 			CefProcessId source_process,
 			CefRefPtr<CefProcessMessage> message) {
