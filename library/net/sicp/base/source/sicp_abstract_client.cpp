@@ -284,6 +284,8 @@ void sirius::library::net::sicp::abstract_client::on_running(void)
 		}
 		::Sleep(msleep);
 		elapsed_millisec += msleep;
+		//if (elapsed_millisec % onesec == 0)
+		//	::OutputDebugStringA("onesec elapsed\n");
 	}
 }
 
