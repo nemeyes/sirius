@@ -350,7 +350,7 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 		if (noti.size() > 0)
 		{
 			data_request((char*)client_uuid, CMD_ATTENDANT_INFO_IND, (char*)noti.c_str(), noti.size() + 1);
-			LOGGER::make_info_log(SLNS, "[attendant info notification] - %s(), %d,	Command:%d, attendant_uuid:%s, streamer_portnumber:%d, video_width:%d, video_height;%d, rcode:%d", __FUNCTION__, __LINE__, CMD_ATTENDANT_INFO_IND, uuid, _context->streamer_portnumber + _context->id, _context->video_width, _context->video_height,  sirius::app::attendant::proxy::err_code_t::success);
+			LOGGER::make_info_log(SLNS, "[attendant info notification] - %s(), %d,	Command:%d, attendant_uuid:%s, client_uuid:%s, streamer_portnumber:%d, video_width:%d, video_height;%d, rcode:%d", __FUNCTION__, __LINE__, CMD_ATTENDANT_INFO_IND, uuid, client_uuid, _context->streamer_portnumber + _context->id, _context->video_width, _context->video_height,  sirius::app::attendant::proxy::err_code_t::success);
 
 		}
 		free(uuid);
