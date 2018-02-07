@@ -540,6 +540,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_connect(std::sh
 
 	{
 		sirius::autolock lock(&_connected_slock);
+		session->update_timestamp();
 		_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 		OutputDebugStringA("on_app_session_connect\n");
 	}
