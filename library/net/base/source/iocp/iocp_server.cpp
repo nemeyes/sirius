@@ -256,15 +256,18 @@ void sirius::library::net::iocp::server::execute(void)
 
 		//::OutputDebugStringA("execute\n");
 
-		sirius::library::net::iocp::session::io_context_t * p = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
-		std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();
-		if (io_context)
+		if (overlapped)
 		{
-			if (io_context->session)
+			sirius::library::net::iocp::session::io_context_t * p = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
+			std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();
+			if (io_context)
 			{
-				std::shared_ptr<sirius::library::net::iocp::session> session = io_context->session->shared_from_this();
-				if(session)
-					session->on_completed(nbytes, overlapped);
+				if (io_context->session)
+				{
+					std::shared_ptr<sirius::library::net::iocp::session> session = io_context->session->shared_from_this();
+					if (session)
+						session->on_completed(nbytes, overlapped);
+				}
 			}
 		}
 	}
@@ -444,6 +447,7 @@ void sirius::library::net::iocp::server::process(void)
 
 	on_running();
 
+	closesocket(s);
 
 	if (_tls)
 	{
@@ -453,8 +457,6 @@ void sirius::library::net::iocp::server::process(void)
 	if (_iocp)
 		_iocp->close_thread_pool();
 	_iocp->destroy();
-
-	closesocket(s);
 
 	on_stop();
 }
