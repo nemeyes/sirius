@@ -246,8 +246,8 @@ bool sirius::library::log::log4cplus::logger::first_log_directory_check(const ch
 			}
 			if (strcmp(log_type, SLNS) == 0 || strcmp(log_type, SLNSC) == 0)
 			{
-				log_configuration(SLNSC);
-				streamer_log_init(_device_id, SLNS);
+				log_configuration(log_type);
+				//streamer_log_init(_device_id, SLNS);
 			}
 			else
 			log_configuration(log_type);
@@ -337,8 +337,8 @@ void sirius::library::log::log4cplus::logger::log_directory_check(const char * s
 		}
 		if (strcmp(secion, SLNS) == 0 || strcmp(secion, SLNSC) == 0)
 		{
-			log_configuration(SLNSC);
-			streamer_log_init(_device_id, SLNS);
+			log_configuration(secion);
+			//streamer_log_init(_device_id, SLNS);
 		}
 		else
 		log_configuration(secion);
@@ -358,7 +358,7 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 	WCHAR wc_error_buffer[MAX_PATH] = { 0 };
 	WCHAR wstr[MAX_PATH] = { 0 };
 	WCHAR wstr_error[MAX_PATH] = { 0 };
-
+	char * change_device_id;
 	int str_len = strlen((char *)_wc_last_file_name);
 	if (str_len > 0)
 		_append->close();
@@ -393,7 +393,10 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 	}
 	else if (strcmp(secion, SLNS) == 0)
 	{
-
+		change_device_id = replace_all(_device_id, ":", "-");
+		sprintf_s(mb_file_name, sizeof(mb_file_name), "%s\\sirius_%s.log", _device_log_name, change_device_id);
+		MultiByteToWideChar(CP_ACP, 0, SLNS, -1, wc_buffer, MAX_PATH);
+		_log_type = streamer;
 	}
 		else
 		{
@@ -965,7 +968,6 @@ void sirius::library::log::log4cplus::logger::streamer_log_init(const char * dev
 	WCHAR wstr_error[MAX_PATH] = { 0 };
 	CHAR mb_attendant_file_name[MAX_PATH] = { 0 };
 	CHAR mb_error_file_name[MAX_PATH] = { 0 };
-
 	memcpy(_device_id, device_id, MAX_PATH);
 	if (strlen(_device_id) > 0)
 	{
