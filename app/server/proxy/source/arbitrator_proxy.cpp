@@ -182,6 +182,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * id)
 {
 	sirius::autolock lock(&_attendant_cs);
+	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);
 
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -211,6 +212,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 
 				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
 			}
+			LOGGER::make_info_log(SAA, "%s, %d, [CMD_START_ATTENDANT_REQ] attendant_uuid=%s, request_msg=%s", __FUNCTION__, __LINE__, attendant[count - 1]->uuid, (char*)request.c_str());
 			data_request(attendant[count - 1]->uuid, CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 		}
 
@@ -295,6 +297,7 @@ void sirius::app::server::arbitrator::proxy::core::disconnect_attendant_callback
 
 void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(const char * uuid, const char * id, int32_t code)
 {
+	LOGGER::make_info_log(SAA, "%s, %d, attendant_uuid=%s", __FUNCTION__, __LINE__, uuid);
 	if (code == sirius::app::server::arbitrator::proxy::err_code_t::success)
 	{
 		sirius::autolock lock(&_attendant_cs);
@@ -338,7 +341,7 @@ void sirius::app::server::arbitrator::proxy::core::retrieve_db_path(char * path)
 
 void sirius::app::server::arbitrator::proxy::core::on_create_session(const char * uuid)
 {
-	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "create_session_callback");
+	sirius::library::log::log4cplus::logger::make_info_log(SAA, "create_session_callback uuid=%s", uuid);
 }
 
 void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char * uuid)
