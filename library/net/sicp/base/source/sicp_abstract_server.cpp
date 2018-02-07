@@ -401,42 +401,64 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 
 bool sirius::library::net::sicp::abstract_server::activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	sirius::autolock lock(&_active_slock);
-
-	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = _activated_sessions.find(uuid);
-	if (iter != _activated_sessions.end())
+	//std::shared_ptr<sirius::library::net::iocp::session> iocp_session = std::dynamic_pointer_cast<sirius::library::net::iocp::session>(session);
 	{
-		std::shared_ptr<sirius::library::net::sicp::session> temp = (*iter).second;
-		temp->close();
+		sirius::autolock lock(&_active_slock);
+		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = _activated_sessions.find(uuid);
+		if (iter != _activated_sessions.end())
+		{
+			std::shared_ptr<sirius::library::net::sicp::session> temp = (*iter).second;
+			temp->close();
+		}
 	}
 
-	if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 	{
-		_activated_sessions.insert(std::make_pair(uuid, session));
-		session->uuid(uuid);
-		session->register_flag(true);
-		return true;
+		sirius::autolock lock(&_connected_slock);
+		std::vector<std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
+		iter = std::find(_connected_sessions.begin(), _connected_sessions.end(), session);
+		if (iter != _connected_sessions.end())
+			_connected_sessions.erase(iter);
 	}
-	else
-		return false;
+
+	{
+		sirius::autolock lock(&_active_slock);
+		if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
+		{
+			session->update_timestamp();
+			_activated_sessions.insert(std::make_pair(uuid, session));
+			session->uuid(uuid);
+			session->register_flag(true);
+			return true;
+		}
+		else
+			return false;
+	}
 }
 
 bool sirius::library::net::sicp::abstract_server::deactivate_session(std::shared_ptr<sirius::library::net::sicp::session> session)
 {
-	sirius::autolock lock(&_active_slock);
-
-	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
-	for (iter = _activated_sessions.begin(); iter != _activated_sessions.end(); iter++)
 	{
-		if (session.get() == (*iter).second.get())
-			break;
+		sirius::autolock lock(&_active_slock);
+		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
+		for (iter = _activated_sessions.begin(); iter != _activated_sessions.end(); iter++)
+		{
+			if (session.get() == (*iter).second.get())
+				break;
+		}
+		if (iter != _activated_sessions.end())
+		{
+			std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
+			_activated_sessions.erase(iter);
+			session->register_flag(false);
+			return true;
+		}
 	}
-	if (iter != _activated_sessions.end())
+
 	{
-		std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
-		_activated_sessions.erase(iter);
-		session->register_flag(false);
-		return true;
+		sirius::autolock lock(&_closing_slock);
+		session->update_timestamp();
+		_closing_sessions.push_back(session);
+
 	}
 	return false;
 }
@@ -518,6 +540,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_connect(std::sh
 
 	{
 		sirius::autolock lock(&_connected_slock);
+		session->update_timestamp();
 		_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 		OutputDebugStringA("on_app_session_connect\n");
 	}
@@ -540,6 +563,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shar
 	if (sicp_session)
 	{
 		sirius::autolock lock(&_closing_slock);
+		sicp_session->update_timestamp();
 		_closing_sessions.push_back(sicp_session);
 		OutputDebugStringA("on_app_session_close 2\n");
 	}

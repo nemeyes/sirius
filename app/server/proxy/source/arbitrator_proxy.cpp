@@ -206,6 +206,9 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 			{
 				dao.update(attendant[count - 1]);			
 				_use_count++;
+				if (_use_count != count)
+					_use_count = count;
+
 				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
 			}
 			data_request(attendant[count - 1]->uuid, CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
