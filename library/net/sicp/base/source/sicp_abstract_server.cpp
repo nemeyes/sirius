@@ -563,6 +563,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shar
 	if (sicp_session)
 	{
 		sirius::autolock lock(&_closing_slock);
+		sicp_session->update_timestamp();
 		_closing_sessions.push_back(sicp_session);
 		OutputDebugStringA("on_app_session_close 2\n");
 	}
