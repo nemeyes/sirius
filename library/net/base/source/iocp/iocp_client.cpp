@@ -154,9 +154,12 @@ void sirius::library::net::iocp::client::execute(void)
 			break;
 		}
 
-		sirius::library::net::iocp::session::io_context_t * io_context = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
-		if(io_context && io_context->session)
-			io_context->session->on_completed(nbytes, overlapped);
+		if (overlapped)
+		{
+			sirius::library::net::iocp::session::io_context_t * io_context = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
+			if (io_context && io_context->session)
+				io_context->session->on_completed(nbytes, overlapped);
+		}
 	}
 }
 
