@@ -245,9 +245,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 			_closing_sessions.push_back(session);
 
 			if(!force_clean)
-				sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "connected session is not activated during waiting interval, connected session is closed and moved to closing list");
+				sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "connected session is not activated during waiting interval, connected session is closed and moved to closing list");
 			else
-				sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "connected session is force to close and move to closing list\n");
+				sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "connected session is force to close and move to closing list\n");
 		}
 		else
 		{
@@ -256,7 +256,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
-				sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "connected session is already closed and moved to closing list\n");
+				sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "connected session is already closed and moved to closing list\n");
 			}
 			else
 			{
@@ -307,9 +307,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				}
 				session->close();
 				if (!force_clean)
-					sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "activated session doesn't recv/send any data during keepalive interval, activated session is closed and moved to closing list\n");
+					sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "activated session doesn't recv/send any data during keepalive interval, activated session is closed and moved to closing list\n");
 				else
-					sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "activated session is force to close and move to closing list\n");
+					sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "activated session is force to close and move to closing list\n");
 			}
 			
 			{
@@ -325,7 +325,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
-				sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "activated session is already closed and moved to closing list\n");
+				sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "activated session is already closed and moved to closing list\n");
 			}
 			else
 			{
@@ -377,11 +377,11 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 			{
 				if (!force_clean)
 				{
-					sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "closing session is removed from memory after waiting interval\n");
+					sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "closing session is removed from memory after waiting interval\n");
 				}
 				else
 				{
-					sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "closing session is force to be removed from memory\n");
+					sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "closing session is force to be removed from memory\n");
 				}
 			}
 			else
@@ -544,7 +544,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_connect(std::sh
 		sirius::autolock lock(&_connected_slock);
 		session->update_timestamp();
 		_connected_sessions.push_back(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
-		sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "on_app_session_connect\n");
+		sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "on_app_session_connect\n");
 	}
 }
 
@@ -558,7 +558,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shar
 		if (iter != _connected_sessions.end())
 		{
 			_connected_sessions.erase(iter);
-			sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "on_app_session_close : removed from connected session list\n");
+			sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "on_app_session_close : removed from connected session list\n");
 		}
 	}
 
@@ -567,7 +567,7 @@ void sirius::library::net::sicp::abstract_server::on_app_session_close(std::shar
 		sirius::autolock lock(&_closing_slock);
 		sicp_session->update_timestamp();
 		_closing_sessions.push_back(sicp_session);
-		sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "on_app_session_close : added to closing sessioin list\n");
+		sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "on_app_session_close : added to closing sessioin list\n");
 	}
 }
 
@@ -616,11 +616,10 @@ void sirius::library::net::sicp::abstract_server::on_running(void)
 		if (_keepalive)
 			clean_activated_session(FALSE);
 
-
 		::Sleep(msleep);
 		elapsed_millisec += msleep;
 		//if (elapsed_millisec % onesec == 0)
-		//	::sirius::library::log::log4cplus::logger::make_debug_log(SLNC, "onesec elapsed\n");
+		//	::sirius::library::log::log4cplus::logger::make_debug_log(SLNS, "onesec elapsed\n");
 	}
 
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> sessions = activated_sessions();
