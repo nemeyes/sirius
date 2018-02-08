@@ -485,7 +485,7 @@ int32_t sirius::app::server::arbitrator::db::attendant_dao::retrieve_count(sqlit
 
 int32_t sirius::app::server::arbitrator::db::attendant_dao::retrieve_count(int32_t state, sqlite3 * connection)
 {
-	int32_t count = 0;
+	int32_t count = -1;
 
 	sqlite3_stmt * stmt;
 	sqlite3 * conn;

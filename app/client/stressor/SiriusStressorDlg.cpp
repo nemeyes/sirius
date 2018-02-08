@@ -628,14 +628,14 @@ LRESULT CSiriusStressorDlg::OnStreamStateStoppedMsg(WPARAM wParam, LPARAM lParam
 
 LRESULT CSiriusStressorDlg::OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam)
 {
-	/*int index = wParam;
+	int index = wParam;
 	int latency = lParam;
 
 	CString str_latency;
 	str_latency.Format(_T("%d"), latency);
 
 	_attendant_list.SetItem(index, 7, LVIF_TEXT, str_latency, 0, 0, 0, NULL);
-	_attendant_list.Update(index);*/
+	_attendant_list.Update(index);
 
 	return 0;
 }

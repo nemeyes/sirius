@@ -29,15 +29,19 @@ IF /i %build_mode%=="debug" xcopy /Y %work_dir%\platform\win32\v140\x86\%build_m
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.ipdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_performance_monitor.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_performance_monitor.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_performance_monitor.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_launcher.exe		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_launcher.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_launcher.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy_wrapper.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_arbitrator_proxy_wrapper.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
@@ -47,6 +51,8 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_backend_clus
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
+
 xcopy /Y %work_dir%\3rdparty\curl\v7_50_0\win32\v140\x86\bin\libcurl.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\3rdparty\curl\v7_50_0\win32\v140\x86\bin\zlib1.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\3rdparty\curl\v7_50_0\win32\v140\x86\bin\libidn-11.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\

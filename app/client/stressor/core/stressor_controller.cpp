@@ -5,6 +5,7 @@
 #include <json/json.h>
 #include <sirius_xml_parser.h>
 #include <sirius_stringhelper.h>
+#include <sirius_uuid.h>
 
 #include <memory>
 #include <string>
@@ -67,16 +68,40 @@ void stressor_controller::on_post_disconnect(void)
 
 void stressor_controller::on_pre_create_session(void)
 {
-	HWND hwnd = _front->GetSafeHwnd();
-	::PostMessage(hwnd, WM_CLIENT_CONNECTED_MSG, _index, NULL);
+
 }
 
 void stressor_controller::on_create_session(void)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 	CString client_id = L"";
+#if 1
 	_front->_client_id.GetWindowTextW(client_id);
 	connect_client((LPWSTR)(LPCWSTR)client_id);
+#else
+	sirius::uuid new_stbid;
+	new_stbid.create();
+
+	char stb_id[64];
+	char octet[6];
+
+	memcpy(octet, (void *)&new_stbid.hton(), sizeof(octet));
+	sprintf_s(stb_id, "%02X:%02X:%02X:%02X:%02X:%02X", octet[0] & 0xff,
+		octet[1] & 0xff,
+		octet[2] & 0xff,
+		octet[3] & 0xff,
+		octet[4] & 0xff,
+		octet[5] & 0xff);
+	wchar_t* unicode_stb_id = nullptr;
+	sirius::stringhelper::convert_multibyte2wide(stb_id, &unicode_stb_id);
+
+	client_id.Format(L"{%s}", unicode_stb_id);
+
+	if (unicode_stb_id)
+		SysFreeString(unicode_stb_id);
+
+	connect_client((LPWSTR)(LPCWSTR)client_id);
+#endif
 }
 
 void stressor_controller::on_post_create_session(void)
@@ -109,7 +134,11 @@ void stressor_controller::on_pre_connect_client(int32_t code, wchar_t * msg)
 
 void stressor_controller::on_connect_client(int32_t code, wchar_t * msg)
 {
-
+	if (code == sirius::app::client::proxy::err_code_t::success)
+	{
+		HWND hwnd = _front->GetSafeHwnd();
+		::PostMessage(hwnd, WM_CLIENT_CONNECTED_MSG, _index, NULL);
+	}
 }
 
 void stressor_controller::on_post_connect_client(int32_t code, wchar_t * msg)
@@ -229,11 +258,11 @@ void stressor_controller::on_recv_stream(void)
 		_recv_stream_count++;
 		::PostMessage(hwnd, WM_STREAM_COUNT_MSG, _index, _recv_stream_count);
 
-		/*if (_latency > 0 )
+		if (_latency > 0 )
 		{			
-			::PostMessage(hwnd, WM_STREAM_LATENCY_MSG, _index, recv_stream_time - _latency);
+			//::PostMessage(hwnd, WM_STREAM_LATENCY_MSG, _index, recv_stream_time - _latency);
 			_latency = 0;
-		}*/
+		}
 	}
 }
 

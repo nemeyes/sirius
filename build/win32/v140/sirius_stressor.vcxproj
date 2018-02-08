@@ -216,6 +216,7 @@
     <ClCompile Include="..\..\..\app\client\stressor\SiriusStressorDlg.cpp" />
     <ClCompile Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.cpp" />
     <ClCompile Include="..\..\..\app\client\stressor\stdafx.cpp" />
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\client\stressor\core\stressor_controller.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.h" />
     <ClInclude Include="..\..\..\app\client\stressor\stdafx.h" />
     <ClInclude Include="..\..\..\app\client\stressor\targetver.h" />
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\app\client\stressor\ReadMe.txt" />
