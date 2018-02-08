@@ -20,18 +20,23 @@ xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\libpng16.dll			%w
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.ipdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_dinput_receiver.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_client.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_client.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_client_proxy.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_client_proxy.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_client_proxy.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 
 
 ECHO copy complited.

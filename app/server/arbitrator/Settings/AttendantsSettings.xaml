@@ -71,10 +71,10 @@
                 </StackPanel>
 
 
-                <StackPanel>
+                <!--StackPanel>
                     <Label Content="Image Compression Level" Target="{Binding ElementName=SliderImageCompressionLevel}" Width="150"/>
-                </StackPanel>
-                <Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" />
+                </-->
+                <!--Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" /-->
                
                 <StackPanel>
                     <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150"/>

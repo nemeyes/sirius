@@ -19,6 +19,9 @@
     <Filter Include="framework">
       <UniqueIdentifier>{aaf3a9d3-3552-49fe-bd22-f8686dd4ea15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{c1fcf39e-0a86-4881-9c8b-a0e926b9472d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\app\client\stressor\res\sirius_stressor.ico">
@@ -57,6 +60,9 @@
     <ClCompile Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\client\stressor\Resource.h">
@@ -85,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\app\client\stressor\SiriusStressorKeyMacroDlg.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
