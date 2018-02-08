@@ -63,6 +63,9 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\libpng_compressor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\base\include\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\partial_png_compressor.cpp">
@@ -104,5 +107,10 @@
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
