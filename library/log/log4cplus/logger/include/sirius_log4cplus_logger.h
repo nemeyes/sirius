@@ -161,10 +161,8 @@ static sirius::library::log::log4cplus::logger::critical_section g_log4cplus_cri
 #define SAC		"sirius.app.client"
 #define SAW		"sirius.app.watchdog"
 
-#define SLNC	"sirius.library.net.controller"
 #define SLNS	"sirius.library.net.streamer"
 #define SLNSC		"sirius.library.net.streamer.create"
-#define SLVSC	"sirius.library.video.source.capturer"
 
 #define log_create(theProperties,default_section) \
 sirius::library::log::log4cplus::logger::create(#theProperties) ; \

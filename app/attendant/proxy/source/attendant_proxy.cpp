@@ -321,7 +321,7 @@ void sirius::app::attendant::proxy::core::disconnect_attendant_callback(void)
 
 void sirius::app::attendant::proxy::core::start_attendant_callback(const char * client_uuid, const char * client_id)
 {
-	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNS, (char *)client_id);
+	sirius::library::log::log4cplus::logger::streamer_log_init(client_id, SLNS);
 	Json::Value wpacket;
 	Json::StyledWriter writer;
 	wpacket["id"] = _context->id;

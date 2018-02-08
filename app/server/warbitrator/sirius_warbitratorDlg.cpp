@@ -257,6 +257,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonStart()
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
 
+	_about_to_destory = FALSE;
+
 	if (_proxy)
 	{
 		_proxy->initialize(_proxy_ctx);
@@ -273,6 +275,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonStop()
 	// TODO: Add your control notification handler code here
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
+
+	_about_to_destory = TRUE;
 
 	if (_proxy)
 	{

@@ -16,6 +16,8 @@
 
 #include "libpng_compressor.h"
 
+#include <immintrin.h>
+
 namespace sirius
 {
 	namespace library
@@ -34,8 +36,9 @@ namespace sirius
 								: public sirius::library::video::transform::codec::processor
 							{
 							public:
-								static const int32_t MAX_IO_BUFFERS = 15;
-								static const int32_t MAX_PNG_SIZE = 1024 * 1024 * 1;
+								static const int32_t	MAX_IO_BUFFERS = 15;
+								static const int32_t	MAX_PNG_SIZE = 1024 * 1024 * 1;
+								static const size_t		ALIGN_SIZE = sizeof(__m256i);
 
 								typedef struct _ibuffer_t
 								{
@@ -96,6 +99,22 @@ namespace sirius
 								void	process(void);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
+
+
+							private:
+								__forceinline size_t	aligned_high(size_t size, size_t align);
+								__forceinline void *	align_high(const void * ptr, size_t align);
+								__forceinline size_t	align_low(size_t size, size_t align);
+								__forceinline void *	align_low(const void * ptr, size_t align);
+								__forceinline bool		is_aligned(size_t size, size_t align);
+								__forceinline bool		is_aligned(const void * ptr, size_t align);
+
+								__forceinline __m256i	set_mask(bool aligned, uint8_t first, size_t position, uint8_t second);
+								__forceinline __m256i	load(bool aligned, const __m256i * p);
+								__forceinline uint64_t	extract(bool aligned, __m256i value);
+
+								bool					is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
+
 
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;

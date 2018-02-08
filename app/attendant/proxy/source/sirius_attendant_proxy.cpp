@@ -208,7 +208,7 @@ sirius::app::attendant::proxy::~proxy(void)
 int32_t sirius::app::attendant::proxy::initialize(void)
 {
 	sirius::app::attendant::proxy::context_t * context = this->context();
-	//sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNSC, "");
+	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SLNSC, "");
 
 	char * mb_uuid = nullptr;
 	sirius::stringhelper::convert_wide2multibyte((wchar_t*)context->uuid, &mb_uuid);
