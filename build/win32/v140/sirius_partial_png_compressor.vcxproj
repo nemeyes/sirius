@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\base\include\resource.h" />
     <ClInclude Include="..\..\..\library\video\base\include\sirius_video.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_compressor.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_processor.h" />
@@ -189,6 +190,9 @@
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\sirius_partial_png_compressor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\partial_png_compressor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
