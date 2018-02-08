@@ -198,9 +198,9 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		converted_buffer = static_cast<uint8_t*>(malloc(_context->width * _context->height));
 
 		me_buffer_size = context_width * context_height;
-		me_buffer = static_cast<uint8_t*>(malloc(me_buffer_size));
+		me_buffer = static_cast<uint8_t*>(_aligned_malloc(me_buffer_size, AVX2_ALIGN_SIZE));
 		memset(me_buffer, 0x00, me_buffer_size);
-		prev_me_buffer = static_cast<uint8_t*>(malloc(me_buffer_size));
+		prev_me_buffer = static_cast<uint8_t*>(_aligned_malloc(me_buffer_size, AVX2_ALIGN_SIZE));
 		memset(prev_me_buffer, 0x00, me_buffer_size);
 
 		block_buffer_size = (_context->block_width * _context->block_height) << 2;
@@ -272,8 +272,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				while (process_data_size>0)
 				{
 					before_encode_timestamp = process_timestamp;
-
-					SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
+					avx2_bgra2gray(true, process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
 					SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
 					if (prev_me_filled)
 					{
@@ -286,7 +285,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + block_width)
 							{
-								bool bdiff = is_different(false, me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height);
+								bool bdiff = avx2_is_different(true, me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height);
 								if (bdiff)
 								{
 									for (int32_t bh = 0; bh < _context->block_height; bh++)
@@ -499,39 +498,121 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
-size_t sirius::library::video::transform::codec::partial::png::compressor::core::aligned_high(size_t size, size_t align)
+size_t sirius::library::video::transform::codec::partial::png::compressor::core::avx2_aligned_high(size_t size, size_t align)
 {
 	return (size + align - 1) & ~(align - 1);
 }
 
-void * sirius::library::video::transform::codec::partial::png::compressor::core::align_high(const void * ptr, size_t align)
+void * sirius::library::video::transform::codec::partial::png::compressor::core::avx2_align_high(const void * ptr, size_t align)
 {
 	return (void *)((((size_t)ptr) + align - 1) & ~(align - 1));
 }
 
-size_t sirius::library::video::transform::codec::partial::png::compressor::core::align_low(size_t size, size_t align)
+size_t sirius::library::video::transform::codec::partial::png::compressor::core::avx2_align_low(size_t size, size_t align)
 {
 	return size & ~(align - 1);
 }
 
-void * sirius::library::video::transform::codec::partial::png::compressor::core::align_low(const void * ptr, size_t align)
+void * sirius::library::video::transform::codec::partial::png::compressor::core::avx2_align_low(const void * ptr, size_t align)
 {
 	return (void *)(((size_t)ptr) & ~(align - 1));
 }
 
-bool sirius::library::video::transform::codec::partial::png::compressor::core::is_aligned(size_t size, size_t align)
+bool sirius::library::video::transform::codec::partial::png::compressor::core::avx2_is_aligned(size_t size, size_t align)
 {
-	return size == align_low(size, align);
+	return size == avx2_align_low(size, align);
 }
 
-bool sirius::library::video::transform::codec::partial::png::compressor::core::is_aligned(const void * ptr, size_t align)
+bool sirius::library::video::transform::codec::partial::png::compressor::core::avx2_is_aligned(const void * ptr, size_t align)
 {
-	return ptr == align_low(ptr, align);
+	return ptr == avx2_align_low(ptr, align);
 }
 
-__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::set_mask(bool aligned, uint8_t first, size_t position, uint8_t second)
+__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::avx2_load(bool aligned, const __m256i * p)
 {
-	const size_t size = ALIGN_SIZE / sizeof(uint8_t);
+	if (aligned)
+		return _mm256_load_si256(p);
+	else
+		return _mm256_loadu_si256(p);
+}
+
+void sirius::library::video::transform::codec::partial::png::compressor::core::avx2_store(bool aligned, __m256i * p, __m256i a)
+{
+	if (aligned)
+		return _mm256_store_si256(p, a);
+	else
+		return _mm256_storeu_si256(p, a);
+}
+
+__m256i sirius::library::video::transform::codec::partial::png::compressor::core::avx2_pack_u16tou8(__m256i lo, __m256i hi)
+{
+	return _mm256_permute4x64_epi64(_mm256_packus_epi16(lo, hi), 0xD8);
+}
+
+__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::avx2_packi32toi16(__m256i lo, __m256i hi)
+{
+	return _mm256_permute4x64_epi64(_mm256_packs_epi32(lo, hi), 0xD8);
+}
+
+__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra2gray32(__m256i bgra)
+{
+	const __m256i g0a0 = _mm256_and_si256(_mm256_srli_si256(bgra, 1), K16_00FF);
+	const __m256i b0r0 = _mm256_and_si256(bgra, K16_00FF);
+	const __m256i weightedSum = _mm256_add_epi32(_mm256_madd_epi16(g0a0, K16_GREEN_0000), _mm256_madd_epi16(b0r0, K16_BLUE_RED));
+	return _mm256_srli_epi32(_mm256_add_epi32(weightedSum, K32_ROUND_TERM), BGR_TO_GRAY_AVERAGING_SHIFT);
+}
+
+__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra2gray(__m256i bgra[4])
+{
+	const __m256i lo = avx2_packi32toi16(avx2_bgra2gray32(bgra[0]), avx2_bgra2gray32(bgra[1]));
+	const __m256i hi = avx2_packi32toi16(avx2_bgra2gray32(bgra[2]), avx2_bgra2gray32(bgra[3]));
+	return avx2_pack_u16tou8(lo, hi);
+}
+
+/*
+void sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra_load(bool aligned, const uint8_t * p, __m256i a[4])
+{
+	a[0] = avx2_load(aligned, (__m256i*)p + 0);
+	a[1] = avx2_load(aligned, (__m256i*)p + 1);
+	a[2] = avx2_load(aligned, (__m256i*)p + 2);
+	a[3] = avx2_load(aligned, (__m256i*)p + 3);
+}
+*/
+
+void sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra2gray(bool aligned, const uint8_t * bgra, size_t width, size_t height, size_t bgra_stride, uint8_t * gray, size_t gray_stride)
+{
+	assert(width >= AVX2_ALIGN_SIZE);
+	if (aligned)
+		assert(avx2_is_aligned(bgra, AVX2_ALIGN_SIZE) && avx2_is_aligned(bgra_stride, AVX2_ALIGN_SIZE) && avx2_is_aligned(gray, AVX2_ALIGN_SIZE) && avx2_is_aligned(gray_stride, AVX2_ALIGN_SIZE));
+
+	size_t aligned_width = avx2_align_low(width, AVX2_ALIGN_SIZE);
+	__m256i a[4];
+	for (size_t row = 0; row < height; ++row)
+	{
+		for (size_t col = 0; col < aligned_width; col += AVX2_ALIGN_SIZE)
+		{
+			a[0] = avx2_load(aligned, (__m256i*)(bgra + 4 * col) + 0);
+			a[1] = avx2_load(aligned, (__m256i*)(bgra + 4 * col) + 1);
+			a[2] = avx2_load(aligned, (__m256i*)(bgra + 4 * col) + 2);
+			a[3] = avx2_load(aligned, (__m256i*)(bgra + 4 * col) + 3);
+			avx2_store(aligned, (__m256i*)(gray + col), avx2_bgra2gray(a));
+		}
+		if (aligned_width != width)
+		{
+			a[0] = avx2_load(aligned, (__m256i*)(bgra + 4 * (width - AVX2_ALIGN_SIZE)) + 0);
+			a[1] = avx2_load(aligned, (__m256i*)(bgra + 4 * (width - AVX2_ALIGN_SIZE)) + 1);
+			a[2] = avx2_load(aligned, (__m256i*)(bgra + 4 * (width - AVX2_ALIGN_SIZE)) + 2);
+			a[3] = avx2_load(aligned, (__m256i*)(bgra + 4 * (width - AVX2_ALIGN_SIZE)) + 3);
+			avx2_store(false, (__m256i*)(gray + width - AVX2_ALIGN_SIZE), avx2_bgra2gray(a));
+		}
+		bgra += bgra_stride;
+		gray += gray_stride;
+	}
+}
+
+__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::avx2_set_mask(bool aligned, uint8_t first, size_t position, uint8_t second)
+{
+	const size_t size = AVX2_ALIGN_SIZE / sizeof(uint8_t);
 	assert(position <= size);
 	uint8_t mask[size];
 	for (size_t i = 0; i < position; ++i)
@@ -544,17 +625,9 @@ __m256i	sirius::library::video::transform::codec::partial::png::compressor::core
 		return _mm256_loadu_si256((__m256i*)mask);
 }
 
-__m256i	sirius::library::video::transform::codec::partial::png::compressor::core::load(bool aligned, const __m256i * p)
+uint64_t sirius::library::video::transform::codec::partial::png::compressor::core::avx2_extract(bool aligned, __m256i value)
 {
-	if(aligned)
-		return _mm256_load_si256(p);
-	else
-		return _mm256_loadu_si256(p);
-}
-
-uint64_t sirius::library::video::transform::codec::partial::png::compressor::core::extract(bool aligned, __m256i value)
-{
-	const size_t size = ALIGN_SIZE / sizeof(uint64_t);
+	const size_t size = AVX2_ALIGN_SIZE / sizeof(uint64_t);
 	uint64_t buffer[size];
 
 	if(aligned)
@@ -569,46 +642,45 @@ uint64_t sirius::library::video::transform::codec::partial::png::compressor::cor
 	return sum;
 }
 
-bool sirius::library::video::transform::codec::partial::png::compressor::core::is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height)
+bool sirius::library::video::transform::codec::partial::png::compressor::core::avx2_is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height)
 {
-	assert(width >= ALIGN_SIZE);
+	assert(width >= AVX2_ALIGN_SIZE);
 	if (aligned)
 	{
-		assert(is_aligned(a, ALIGN_SIZE));
-		assert(is_aligned(a_stride, ALIGN_SIZE));
-		assert(is_aligned(b, ALIGN_SIZE));
-		assert(is_aligned(b_stride, ALIGN_SIZE));
+		assert(avx2_is_aligned(a_stride, AVX2_ALIGN_SIZE));
+		assert(avx2_is_aligned(b_stride, AVX2_ALIGN_SIZE));
+		assert(avx2_is_aligned(b, AVX2_ALIGN_SIZE));
+		assert(avx2_is_aligned(a, AVX2_ALIGN_SIZE));
 	}
 
-	size_t body_width	= align_low(width, ALIGN_SIZE);
-	__m256i tail_mask	= set_mask(aligned, 0, ALIGN_SIZE - width + body_width, 0xFF);
+	size_t body_width	= avx2_align_low(width, AVX2_ALIGN_SIZE);
+	__m256i tail_mask	= avx2_set_mask(aligned, 0, AVX2_ALIGN_SIZE - width + body_width, 0xFF);
 	__m256i sum			= _mm256_setzero_si256();
 	__m256i compare		= _mm256_setzero_si256();
 	for (size_t row = 0; row < height; ++row)
 	{
-		for (size_t col = 0; col < body_width; col += ALIGN_SIZE)
+		for (size_t col = 0; col < body_width; col += AVX2_ALIGN_SIZE)
 		{
-			const __m256i a_ = load(aligned, (__m256i*)(a + col));
-			const __m256i b_ = load(aligned, (__m256i*)(b + col));
+			const __m256i a_ = avx2_load(aligned, (__m256i*)(a + col));
+			const __m256i b_ = avx2_load(aligned, (__m256i*)(b + col));
 			sum = _mm256_add_epi64(_mm256_sad_epu8(a_, b_), sum);
 
-			if (extract(false, sum) > 0)
+			if (avx2_extract(false, sum) > 0)
 				return true;
 		}
 		if (width - body_width)
 		{
-			const __m256i a_ = _mm256_and_si256(tail_mask, load(aligned, (__m256i*)(a + width - ALIGN_SIZE)));
-			const __m256i b_ = _mm256_and_si256(tail_mask, load(aligned, (__m256i*)(b + width - ALIGN_SIZE)));
+			const __m256i a_ = _mm256_and_si256(tail_mask, avx2_load(false, (__m256i*)(a + width - AVX2_ALIGN_SIZE)));
+			const __m256i b_ = _mm256_and_si256(tail_mask, avx2_load(false, (__m256i*)(b + width - AVX2_ALIGN_SIZE)));
 			sum = _mm256_add_epi64(_mm256_sad_epu8(a_, b_), sum);
+			if (avx2_extract(false, sum) > 0)
+				return true;
 		}
-		if (extract(false, sum) > 0)
-			return true;
-
 		a += a_stride;
 		b += b_stride;
 	}
 
-	if (extract(false, sum) > 0)
+	if (avx2_extract(false, sum) > 0)
 		return true;
 	else
 		return false;
