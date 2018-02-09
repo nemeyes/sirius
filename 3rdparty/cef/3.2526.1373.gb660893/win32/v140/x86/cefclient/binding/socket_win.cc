@@ -243,7 +243,19 @@ namespace client {
 		}
 
 		bool socket_win::sirius_to_javascript(uint8_t * data, size_t size) {
-			send_to_javascript((char *)data);
+			if (strcmp((const char *)data, "reload") != 0)
+			{
+				send_to_javascript((char *)data);
+			}
+			else
+			{
+				RootWindowWin* rootWin =
+					GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
+				DCHECK(rootWin);
+				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+				browser->Reload();
+				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant Reload");
+			}
 
 			return true;
 		}

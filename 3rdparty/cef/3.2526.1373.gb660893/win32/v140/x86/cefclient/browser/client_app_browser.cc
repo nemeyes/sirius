@@ -21,7 +21,7 @@ void ClientAppBrowser::OnBeforeCommandLineProcessing(
   if (process_type.empty()) {
     // Pass additional command-line flags when off-screen rendering is enabled.
     if (command_line->HasSwitch(switches::kOffScreenRenderingEnabled)) {
-      // If the PDF extension is enabled then cc Surfaces must be disabled for
+      // If the PDF extension is enabled then cc Surfaces must be disabled for 
       // PDFs to render correctly.
       // See https://bitbucket.org/chromiumembedded/cef/issues/1689 for details.
       if (!command_line->HasSwitch("disable-extensions") &&

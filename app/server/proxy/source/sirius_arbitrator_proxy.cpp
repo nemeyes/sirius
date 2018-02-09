@@ -49,50 +49,74 @@ int32_t sirius::app::server::arbitrator::proxy::release(void)
 
 int32_t sirius::app::server::arbitrator::proxy::start(void)
 {
-	return _core->start();
+	if (_core)
+		return _core->start();
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::stop(void)
 {
-	return _core->stop();
+	if (_core)
+		return _core->stop();
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::update(const char * uuid, const char * url, int32_t max_containter_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching)
 {
-	return _core->update(uuid, url, max_containter_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching);
+	if (_core)
+		return _core->update(uuid, url, max_containter_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching);
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t	sirius::app::server::arbitrator::proxy::connect_client(const char * uuid, const char * id)
 {
-	return _core->connect_client(uuid, id);
+	if (_core)
+		return _core->connect_client(uuid, id);
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::disconnect_client(const char * uuid)
 {
-	return _core->disconnect_client(uuid);
+	if (_core)
+		return _core->disconnect_client(uuid);
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::get_available_attendant_count(void)
 {
-	return _core->get_available_attendant_count();
+	if (_core)
+		return _core->get_available_attendant_count();
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 int32_t	sirius::app::server::arbitrator::proxy::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
-	return _core->connect_attendant_callback(uuid, id, pid);
+	if (_core)
+		return _core->connect_attendant_callback(uuid, id, pid);
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
 void sirius::app::server::arbitrator::proxy::disconnect_attendant_callback(const char * uuid)
 {
-	_core->disconnect_attendant_callback(uuid);
+	if (_core)
+		_core->disconnect_attendant_callback(uuid);
 }
 
 void sirius::app::server::arbitrator::proxy::start_attendant_callback(const char * uuid, const char * id, int32_t code)
 {
-	_core->start_attendant_callback(uuid, id, code);
+	if (_core)
+		_core->start_attendant_callback(uuid, id, code);
 }
 
 void sirius::app::server::arbitrator::proxy::stop_attendant_callback(const char * uuid, int32_t code)
 {
-	_core->stop_attendant_callback(uuid, code);
+	if (_core)
+		_core->stop_attendant_callback(uuid, code);
 }
