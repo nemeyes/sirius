@@ -416,8 +416,9 @@ void sirius::library::log::log4cplus::logger::log_configuration(const char * sec
 
 	_logger_coordinator = ::log4cplus::Logger::getInstance(wc_buffer);
 	_logger_coordinator.addAppender(_append);
-	_logger_coordinator.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
-
+	bool ret = configure_load();
+	if(ret == false)
+		_logger_coordinator.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
 
 	/*if (strlen(change_device_id) > 0)
 	{
@@ -493,7 +494,7 @@ sirius::library::log::log4cplus::logger::logger(const char * configuration_path,
 		}
 
 		_snprintf_s(_module_path, sizeof(_module_path), "%s%s", _module_path, configuration_path);
-		set_file_monitor(_module_path, file_changed);
+		set_file_monitor(_module_path, configure_load);
 		memcpy(_device_id, device_id, MAX_PATH);
 		bool result = first_log_directory_check(log_type);
 		if (result == false) { log_configuration(log_type); }
@@ -868,7 +869,7 @@ bool sirius::library::log::log4cplus::logger::set_file_monitor(std::string file_
 	return true;
 }
 
-bool sirius::library::log::log4cplus::logger::file_changed()
+bool sirius::library::log::log4cplus::logger::configure_load()
 {
 #if !defined(WITH_DISABLE)
 	scopped_lock mutex(&g_log4cplus_critical_section);
@@ -887,37 +888,37 @@ bool sirius::library::log::log4cplus::logger::file_changed()
 	TCHAR value[MAX_PATH] = { 0 };
 	if (_log_type == arbitrator)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAA"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAA"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, arbitrator);
 	}
 	else if (_log_type == streamer_create)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNSC"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNSC"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, streamer_create);
 	}
 	else if (_log_type == streamer)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNS"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNS"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, streamer);
 	}
 	else if (_log_type == client)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAC"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAC"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, client);
 	}
 	else if (_log_type == stressor)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAS"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAS"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, stressor);
 	}
 	else if (_log_type == watchdog)
 	{
-		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAW"), _T(""), value, MAX_PATH, file_name);
+		::GetPrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAW"), _T("20000"), value, MAX_PATH, file_name);
 		_change_log_type = _ttoi(value);
 		log_level_change(_change_log_type, watchdog);
 	}
@@ -994,10 +995,13 @@ void sirius::library::log::log4cplus::logger::streamer_log_init(const char * dev
 		MultiByteToWideChar(CP_ACP, 0, SLNS, -1, wc_attendant_buffer, MAX_PATH);
 		_logger_attendant = ::log4cplus::Logger::getInstance(wc_attendant_buffer);
 		_logger_attendant.addAppender(_append_attendant);
-		_logger_attendant.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
-		_append_attendant->setLayout(_layout_error);
 		_log_type = streamer;
+		bool ret = configure_load();
+		if (ret == false)
+			_logger_attendant.setLogLevel(::log4cplus::INFO_LOG_LEVEL);
 
+		_append_attendant->setLayout(_layout_error);
+		
 		int str_last_len = strlen((char *)wc_last_attendant_error_file_name);
 		if (str_last_len > 0)
 			_append_attendant_error->close();
