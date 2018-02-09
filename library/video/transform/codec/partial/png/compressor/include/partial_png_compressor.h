@@ -33,6 +33,7 @@ namespace sirius
 					{
 						namespace png
 						{
+#if defined(WITH_AVX2_SIMD)
 							template <class T> __forceinline char to_char(T value, size_t index)
 							{
 								return ((char*)&value)[index];
@@ -126,6 +127,7 @@ namespace sirius
 
 #define ASIGN_MM256_SETR_EPI64(a0, a1, a2, a3) \
     {FORCE_TO_8CHARS(a0), FORCE_TO_8CHARS(a1), FORCE_TO_8CHARS(a2), FORCE_TO_8CHARS(a3)}
+#endif
 
 							class compressor::core
 								: public sirius::library::video::transform::codec::processor
@@ -133,7 +135,7 @@ namespace sirius
 							public:
 								static const int32_t	MAX_IO_BUFFERS = 15;
 								static const int32_t	MAX_PNG_SIZE = 1024 * 1024 * 1;
-
+#if defined(WITH_AVX2_SIMD)
 								const __m256i	K16_00FF = ASIGN_MM256_SET1_EPI16(0x00FF);
 								const int32_t	BGR_TO_GRAY_AVERAGING_SHIFT = 14;
 								const int32_t	BGR_TO_GRAY_ROUND_TERM = 1 << (BGR_TO_GRAY_AVERAGING_SHIFT - 1);
@@ -145,7 +147,7 @@ namespace sirius
 								const __m256i	K16_GREEN_0000 = ASIGN_MM256_SET2_EPI16(GREEN_TO_GRAY_WEIGHT, 0x0000);
 								const __m256i	K32_ROUND_TERM = ASIGN_MM256_SET1_EPI32(BGR_TO_GRAY_ROUND_TERM);
 								static const size_t	AVX2_ALIGN_SIZE = sizeof(__m256i);
-
+#endif
 								typedef struct _ibuffer_t
 								{
 									void *		data;
@@ -208,6 +210,7 @@ namespace sirius
 
 
 							private:
+#if defined(WITH_AVX2_SIMD)
 								__forceinline size_t	avx2_aligned_high(size_t size, size_t align);
 								__forceinline void *	avx2_align_high(const void * ptr, size_t align);
 								__forceinline size_t	avx2_align_low(size_t size, size_t align);
@@ -227,7 +230,7 @@ namespace sirius
 								__forceinline __m256i	avx2_set_mask(bool aligned, uint8_t first, size_t position, uint8_t second);
 								__forceinline uint64_t	avx2_extract(bool aligned, __m256i value);
 								bool					avx2_is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
-
+#endif
 
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;
