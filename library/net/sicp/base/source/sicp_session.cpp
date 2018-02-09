@@ -109,7 +109,7 @@ int32_t	sirius::library::net::sicp::session::on_recv(const char * packet, int32_
 		if (header.pid != 'S')
 			return -1;
 
-		uint16_t command = header.command;
+		//uint16_t command = header.command;
 		header.command = ntohs(header.command);
 		header.length = ntohl(header.length);
 
