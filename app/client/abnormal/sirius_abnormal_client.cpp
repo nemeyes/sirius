@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <string>
 #include <regex>
+#include <json/json.h>
 
 #define SERVER_UUID		"00000000-0000-0000-0000-000000000000"
 #define BROADCAST_UUID	"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
@@ -16,6 +17,11 @@
 #define CMD_DESTROY_SESSION_INDICATION		1003
 #define CMD_KEEPALIVE_REQUEST				1004
 #define CMD_KEEPALIVE_RESPONSE				1005
+#define CMD_CONNECT_CLIENT_REQ							2101
+#define CMD_CONNECT_CLIENT_RES							2102
+#define CMD_ATTENDANT_INFO_IND							2104
+#define CMD_DISCONNECT_CLIENT_REQ						2105
+#define CMD_DISCONNECT_CLIENT_RES						2106
 
 class uuid
 	: GUID
@@ -284,7 +290,7 @@ void deserialize(char * packet, int packet_size, char * dst, char * src, int & c
 
 int main(int argc, char const * argv[])
 {
-	if (argc < 3)
+	if (argc < 4)
 		return 0;
 
 	WSADATA wsd;
@@ -298,6 +304,7 @@ int main(int argc, char const * argv[])
 		return -1;
 	}
 
+	int mode = atoi(argv[3]);
 	memset(&serv_addr, '0', sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(atoi(argv[2]));
@@ -312,6 +319,14 @@ int main(int argc, char const * argv[])
 		return -1;
 	}
 
+	if (mode == 1)
+	{
+		closesocket(sock);
+		::getchar();
+		WSACleanup();
+		return -1;
+	}
+
 	memcpy(g_uuid, UNDEFINED_UUID, sizeof(g_uuid));
 	char recv_dst_uuid[64] = { 0 };
 	char recv_src_uuid[64] = { 0 };
@@ -320,28 +335,105 @@ int main(int argc, char const * argv[])
 	int recv_payload_size = 0;
 	int wsa_error = 0;
 
-	//create session req
-	int nsend = serialize(SERVER_UUID, g_uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
-	int rsend = send(sock, g_send_buffer, nsend, 0);
-	if (rsend < 0)
+
+	//create session
 	{
-		wsa_error = WSAGetLastError();
+		//create session req
+		int nsend = serialize(SERVER_UUID, g_uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
+		int rsend = send(sock, g_send_buffer, nsend, 0);
+		if (rsend < 0)
+		{
+			wsa_error = WSAGetLastError();
+		}
+
+
+		if (mode == 2)
+		{
+			closesocket(sock);
+			::getchar();
+			WSACleanup();
+			return -1;
+		}
+
+		//create session res
+		int nread = 0;
+		do
+		{
+			nread = recv(sock, g_recv_buffer, 1500, 0);
+			::Sleep(10);
+		} while (nread < 1);
+
+		deserialize(g_recv_buffer, nread, recv_dst_uuid, recv_src_uuid, recv_command, &recv_payload, recv_payload_size);
+		CMD_CREATE_SESSION_RES_T create_session_res;
+		memset(&create_session_res, 0x00, sizeof(CMD_CREATE_SESSION_RES_T));
+		memcpy(&create_session_res, recv_payload, sizeof(CMD_CREATE_SESSION_RES_T));
+		memcpy(g_uuid, create_session_res.uuid, sizeof(g_uuid));
+
+		if (mode == 3)
+		{
+			closesocket(sock);
+			::getchar();
+			WSACleanup();
+			return -1;
+		}
 	}
-	//create session res
-	int nread = 0;
-	do
+
+	//connect client
 	{
-		nread = recv(sock, g_recv_buffer, 1500, 0);
-		::Sleep(10);
-	} while (nread < 1);
+		//connect client req
+		Json::Value wpacket;
+		Json::StyledWriter writer;
+		wpacket["id"] = "11:bb:cc:dd:ee";
+		std::string request = writer.write(wpacket);
+		int nsend = serialize(SERVER_UUID, g_uuid, CMD_CONNECT_CLIENT_REQ, request.c_str(), request.size() + 1);
+		int rsend = send(sock, g_send_buffer, nsend, 0);
+		if (rsend < 0)
+		{
+			wsa_error = WSAGetLastError();
+		}
 
-	deserialize(g_recv_buffer, nread, recv_dst_uuid, recv_src_uuid, recv_command, &recv_payload, recv_payload_size);
-	CMD_CREATE_SESSION_RES_T create_session_res;
-	memset(&create_session_res, 0x00, sizeof(CMD_CREATE_SESSION_RES_T));
-	memcpy(&create_session_res, recv_payload, sizeof(CMD_CREATE_SESSION_RES_T));
-	memcpy(g_uuid, create_session_res.uuid, sizeof(g_uuid));
+		if (mode == 4)
+		{
+			closesocket(sock);
+			::getchar();
+			WSACleanup();
+			return -1;
+		}
+
+		//connect client res
+		int nread = 0;
+		do
+		{
+			nread = recv(sock, g_recv_buffer, 1500, 0);
+			::Sleep(10);
+		} while (nread < 1);
+
+		deserialize(g_recv_buffer, nread, recv_dst_uuid, recv_src_uuid, recv_command, &recv_payload, recv_payload_size);
+
+		Json::Value rpacket;
+		Json::Reader reader;
+		reader.parse(recv_payload, rpacket);
+
+		int32_t rcode = -1;
+		if (rpacket["rcode"].isInt())
+		rcode = rpacket["rcode"].asInt();
+
+		//std::string rmsg = rpacket["msg"].asString();
+		printf(recv_payload);
+
+		if (mode == 5)
+		{
+			closesocket(sock);
+			::getchar();
+			WSACleanup();
+			return -1;
+		}
+	}
 
 
+	::getchar();
+
+	::closesocket(sock);
 
 	WSACleanup();
 }

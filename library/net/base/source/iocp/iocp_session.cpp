@@ -7,6 +7,7 @@
 #endif
 
 #include <sirius_locks.h>
+#include <sirius_log4cplus_logger.h>
 
 sirius::library::net::iocp::session::session(sirius::library::net::iocp::processor * processor, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls, SSL_CTX * ssl_ctx, BOOL reconnection)
 	: _processor(processor)
@@ -615,39 +616,60 @@ void sirius::library::net::iocp::session::on_completed(DWORD bytes_transfered, L
 			on_connect(io_context);
 		else
 			on_accept(io_context);
+
+		//sirius::library::log::log4cplus::logger::make_debug_log(SAA, "operation == on_accept");
 	}
 	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::recv)
 	{
-		if (_tls)
+		if (bytes_transfered > 0)
 		{
-			sirius::autolock slock(&io_context->lock);
-			io_context->ssl_packet_size = bytes_transfered;
+			if (_tls)
+			{
+				sirius::autolock slock(&io_context->lock);
+				io_context->ssl_packet_size = bytes_transfered;
+			}
+			else
+			{
+				sirius::autolock slock(&io_context->lock);
+				io_context->packet_size = bytes_transfered;
+			}
+			on_recv(io_context);
 		}
 		else
 		{
-			sirius::autolock slock(&io_context->lock);
-			io_context->packet_size = bytes_transfered;
+			_processor->on_session_close(shared_from_this());
 		}
-		on_recv(io_context);
 	}
 	else if (io_context->operation == sirius::library::net::iocp::io_context_t::operation_t::send)
 	{
-		if (_tls)
+		if (bytes_transfered > 0)
 		{
-			sirius::autolock slock(&io_context->lock);
-			io_context->ssl_packet_size = bytes_transfered;
+			if (_tls)
+			{
+				sirius::autolock slock(&io_context->lock);
+				io_context->ssl_packet_size = bytes_transfered;
+			}
+			else
+			{
+				sirius::autolock slock(&io_context->lock);
+				io_context->packet_size = bytes_transfered;
+			}
+			on_send(io_context);
 		}
 		else
 		{
-			sirius::autolock slock(&io_context->lock);
-			io_context->packet_size = bytes_transfered;
+			_processor->on_session_close(shared_from_this());
 		}
-		on_send(io_context);
+	}
+	else
+	{
+		sirius::library::log::log4cplus::logger::make_debug_log(SAA, "undefined operation in iocp completion routine");
 	}
 
 	if (_status == sirius::library::net::iocp::session::status_t::closed)
 	{
 		_processor->on_session_close(shared_from_this());
+		//sirius::library::log::log4cplus::logger::make_debug_log(SAA, "operation == close");
 	}
 }
 
