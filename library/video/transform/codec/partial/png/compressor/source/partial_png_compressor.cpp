@@ -458,11 +458,11 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 
 	if (prev_me_buffer)
-		free(prev_me_buffer);
+		_aligned_free(prev_me_buffer);
 	prev_me_buffer = nullptr;
 
 	if (me_buffer)
-		free(me_buffer);
+		_aligned_free(me_buffer);
 	me_buffer = nullptr;
 	me_buffer_size = 0;
 
