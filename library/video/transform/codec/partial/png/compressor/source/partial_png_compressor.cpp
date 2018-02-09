@@ -197,11 +197,19 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		block_height = _context->block_height >> 2;
 		converted_buffer = static_cast<uint8_t*>(malloc(_context->width * _context->height));
 
+#if defined(WITH_AVX2_SIMD)
 		me_buffer_size = context_width * context_height;
 		me_buffer = static_cast<uint8_t*>(_aligned_malloc(me_buffer_size, AVX2_ALIGN_SIZE));
 		memset(me_buffer, 0x00, me_buffer_size);
 		prev_me_buffer = static_cast<uint8_t*>(_aligned_malloc(me_buffer_size, AVX2_ALIGN_SIZE));
 		memset(prev_me_buffer, 0x00, me_buffer_size);
+#else
+		me_buffer_size = context_width * context_height;
+		me_buffer = static_cast<uint8_t*>(malloc(me_buffer_size));
+		memset(me_buffer, 0x00, me_buffer_size);
+		prev_me_buffer = static_cast<uint8_t*>(malloc(me_buffer_size));
+		memset(prev_me_buffer, 0x00, me_buffer_size);
+#endif
 
 		block_buffer_size = (_context->block_width * _context->block_height) << 2;
 		block_buffer = static_cast<uint8_t*>(malloc(block_buffer_size));
@@ -272,8 +280,13 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				while (process_data_size>0)
 				{
 					before_encode_timestamp = process_timestamp;
+#if defined(WITH_AVX2_SIMD)
 					avx2_bgra2gray(true, process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
 					SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
+#else
+					SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, converted_buffer, _context->width);
+					SimdResizeBilinear(converted_buffer, _context->width, _context->height, _context->width, me_buffer, context_width, context_height, context_width, 1);
+#endif
 					if (prev_me_filled)
 					{
 						int32_t count = 0;
@@ -285,8 +298,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + block_width)
 							{
+#if defined(WITH_AVX2_SIMD)
 								bool bdiff = avx2_is_different(true, me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height);
 								if (bdiff)
+#else
+								uint64_t sum = 0;
+								SimdAbsDifferenceSum(me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height, &sum);
+								if(sum>0)
+#endif
 								{
 									for (int32_t bh = 0; bh < _context->block_height; bh++)
 									{
@@ -456,7 +475,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	block_buffer = nullptr;
 	block_buffer_size = 0;
 
-
+#if defined(WITH_AVX2_SIMD)
 	if (prev_me_buffer)
 		_aligned_free(prev_me_buffer);
 	prev_me_buffer = nullptr;
@@ -464,6 +483,16 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	if (me_buffer)
 		_aligned_free(me_buffer);
 	me_buffer = nullptr;
+#else
+	if (prev_me_buffer)
+		free(prev_me_buffer);
+	prev_me_buffer = nullptr;
+
+	if (me_buffer)
+		free(me_buffer);
+	me_buffer = nullptr;
+#endif
+
 	me_buffer_size = 0;
 
 	if (converted_buffer)
@@ -498,6 +527,7 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
+#if defined(WITH_AVX2_SIMD)
 size_t sirius::library::video::transform::codec::partial::png::compressor::core::avx2_aligned_high(size_t size, size_t align)
 {
 	return (size + align - 1) & ~(align - 1);
@@ -568,16 +598,6 @@ __m256i	sirius::library::video::transform::codec::partial::png::compressor::core
 	const __m256i hi = avx2_packi32toi16(avx2_bgra2gray32(bgra[2]), avx2_bgra2gray32(bgra[3]));
 	return avx2_pack_u16tou8(lo, hi);
 }
-
-/*
-void sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra_load(bool aligned, const uint8_t * p, __m256i a[4])
-{
-	a[0] = avx2_load(aligned, (__m256i*)p + 0);
-	a[1] = avx2_load(aligned, (__m256i*)p + 1);
-	a[2] = avx2_load(aligned, (__m256i*)p + 2);
-	a[3] = avx2_load(aligned, (__m256i*)p + 3);
-}
-*/
 
 void sirius::library::video::transform::codec::partial::png::compressor::core::avx2_bgra2gray(bool aligned, const uint8_t * bgra, size_t width, size_t height, size_t bgra_stride, uint8_t * gray, size_t gray_stride)
 {
@@ -685,3 +705,4 @@ bool sirius::library::video::transform::codec::partial::png::compressor::core::a
 	else
 		return false;
 }
+#endif
