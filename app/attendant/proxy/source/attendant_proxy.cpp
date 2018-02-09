@@ -497,9 +497,18 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 
 void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)
 {
+	sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d packet=%s, len=%d", __FUNCTION__, __LINE__, packet, len);
 	if (_callback)
+	{
 		_callback(packet, len);
-	_framework->on_end2end_data(packet, len);
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+	}
+
+	if (strcmp((const char *)packet, ATTENDANT_RELOAD) != 0)
+	{
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d ", __FUNCTION__, __LINE__);
+		_framework->on_end2end_data(packet, len);
+	}
 }
 
 void sirius::app::attendant::proxy::core::on_recv_notification(int32_t type, char * msg, int32_t size)

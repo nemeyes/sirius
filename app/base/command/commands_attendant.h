@@ -8,7 +8,7 @@
 #include "commands_payload.h"
 #include "sirius_attendant_proxy.h"
 #include "sirius_log4cplus_logger.h"
-
+#define ATTENDANT_RELOAD		"reload"
 namespace sirius
 {
 	namespace app
@@ -113,6 +113,8 @@ namespace sirius
 					std::string client_uuid = rpacket["client_uuid"].asString();
 
 					_attendant->stop_attendant_callback(client_uuid.c_str());
+
+					_attendant->attendant_to_app_callback((uint8_t*)ATTENDANT_RELOAD, strlen(ATTENDANT_RELOAD));
 				}
 			};
 

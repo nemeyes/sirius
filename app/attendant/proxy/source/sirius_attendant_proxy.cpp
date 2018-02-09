@@ -392,8 +392,12 @@ void sirius::app::attendant::proxy::app_to_attendant(uint8_t * packet, int32_t l
 
 void sirius::app::attendant::proxy::attendant_to_app_callback(uint8_t * packet, int32_t len)
 {
+	sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
 	if (_core)
+	{
 		_core->attendant_to_app_callback(packet, len);
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+	}
 }
 
 void sirius::app::attendant::proxy::set_attendant_cb(FuncPtrCallback fncallback)
