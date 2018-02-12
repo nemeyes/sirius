@@ -181,18 +181,46 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * id)
 {
-	sirius::autolock lock(&_attendant_cs);
+	
 	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);
 
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
-
 	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
-	int32_t count = 0;
-	{	
+	std::string attendant_uuid;
+	int32_t count = 0;	
+	{
+		sirius::autolock lock(&_attendant_cs);
+		
 		status = dao.retrieve(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, &attendant, count);
+		if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
+		{
+			strncpy_s(attendant[count - 1]->client_uuid, uuid, sizeof(attendant[count - 1]->client_uuid) - 1);
+			strncpy_s(attendant[count - 1]->client_id, id, sizeof(attendant[count - 1]->client_id) - 1);
+			attendant[count - 1]->state = sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting;
+			
+			status = dao.update(attendant[count - 1]);
+			if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
+			{
+				attendant_uuid = attendant[count - 1]->uuid;
+				_use_count++;
+				if (_use_count != count)
+					_use_count = count;
+
+				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1]->id);
+			}	
+
+			for (int32_t index = 0; index < count; index++)
+			{
+				free(attendant[index]);
+				attendant[index] = nullptr;
+			}
+			free(attendant);
+			attendant = nullptr;
+		}
 	}
-	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count>0)
+
+	if (attendant_uuid.size() > 0)
 	{
 		Json::Value wpacket;
 		Json::StyledWriter writer;
@@ -201,29 +229,11 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
 		{
-			strncpy_s(attendant[count - 1]->client_uuid, uuid, sizeof(attendant[count - 1]->client_uuid) - 1);
-			strncpy_s(attendant[count - 1]->client_id, id, sizeof(attendant[count - 1]->client_id) - 1);
-			attendant[count - 1]->state = sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting;
-			{
-				dao.update(attendant[count - 1]);			
-				_use_count++;
-				if (_use_count != count)
-					_use_count = count;
-
-				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1] ->id);
-			}
-			LOGGER::make_info_log(SAA, "%s, %d, [CMD_START_ATTENDANT_REQ] attendant_uuid=%s, request_msg=%s", __FUNCTION__, __LINE__, attendant[count - 1]->uuid, (char*)request.c_str());
-			data_request(attendant[count - 1]->uuid, CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
+			LOGGER::make_info_log(SAA, "%s, %d, [CMD_START_ATTENDANT_REQ] attendant_uuid=%s, request_msg=%s", __FUNCTION__, __LINE__, attendant_uuid.c_str(), (char*)request.c_str());
+			data_request((char*)attendant_uuid.c_str(), CMD_START_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 		}
-
-		for (int32_t index = 0; index < count; index++)
-		{
-			free(attendant[index]);
-			attendant[index] = nullptr;
-		}
-		free(attendant);
-		attendant = nullptr;
 	}
+
 	if (count < 1)
 		return sirius::app::server::arbitrator::proxy::err_code_t::attendant_full;
 	else

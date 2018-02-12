@@ -340,11 +340,12 @@ void stressor_controller::key_event_process()
 		{				
 			for (int index = 0; index < keys.size(); index++)
 			{
-				if (keys[index] < 0) continue;
-
-				_latency = GetTickCount();
-				key_down(keys[index]);
-				key_up(keys[index]);					
+				if (keys[index] > 0)
+				{
+					_latency = GetTickCount();
+					key_down(keys[index]);
+					key_up(keys[index]);
+				}				
 		
 				int32_t sleep_second = 0;
 				while(_front->_key_interval > sleep_second)
