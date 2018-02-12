@@ -203,10 +203,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 			if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
 			{
 				attendant_uuid = attendant[count - 1]->uuid;
-				_use_count++;
-				if (_use_count != count)
-					_use_count = count;
-
+				_use_count = dao.retrieve_count() - dao.retrieve_count(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);
 				_cluster->backend_client_connect(attendant[count - 1]->client_id, _use_count, attendant[count - 1]->id);
 			}	
 
@@ -261,7 +258,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::disconnect_client(const ch
 			{
 				sirius::autolock lock(&_attendant_cs);
 				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
-				_use_count--;
+				_use_count = dao.retrieve_count(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
 				_cluster->backend_client_disconnect(attendant.client_id, _use_count, attendant.id);
 			}
 		}
