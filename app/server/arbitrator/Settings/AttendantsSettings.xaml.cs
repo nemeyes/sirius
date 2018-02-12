@@ -107,7 +107,7 @@ namespace sirius.app.server.arbitrator.Settings
             }       
 
             SettingValue setting_value = SettingValue.Instance();
-            setting_value.url = TextAttendantUrl.Text;
+            setting_value.url = TextAttendantUrl.Text.Trim();
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
             //setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
