@@ -9,8 +9,8 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, floyd(0)
 	, speed(10)
 	, max_colors(128)
-	, min_quality(50)
-	, max_quality(80)
+	, min_quality(0)
+	, max_quality(100)
 	//, quantization(false)
 	//, fast_compression(true)
 {
