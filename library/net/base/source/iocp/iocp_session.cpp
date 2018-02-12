@@ -27,6 +27,7 @@ sirius::library::net::iocp::session::session(sirius::library::net::iocp::process
 	, _secure_send_run(FALSE)
 	, _secure_recv_thread(INVALID_HANDLE_VALUE)
 	, _secure_recv_run(FALSE)
+	, _ndestroy_session(0)
 {
 	::InitializeCriticalSection(&_lock);
 
@@ -154,6 +155,21 @@ BOOL sirius::library::net::iocp::session::pending(void)
 			return TRUE;
 	}
 	return FALSE;
+}
+
+BOOL sirius::library::net::iocp::session::is_session_destroy(void)
+{
+	if (_ndestroy_session > 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+void sirius::library::net::iocp::session::increase_session_destroy_count(void)
+{
+	::InterlockedIncrement(&_ndestroy_session);
+
+	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "ndestroy_session_count=%d", _ndestroy_session);
 }
 
 void sirius::library::net::iocp::session::close(void)
