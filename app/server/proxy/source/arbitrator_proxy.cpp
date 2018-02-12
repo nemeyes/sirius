@@ -408,7 +408,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 			data_request(attendant.uuid, CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
 			{
 				dao.update(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available, sirius::app::server::arbitrator::db::attendant_dao::type_t::client, uuid);
-				_use_count--;
+				_use_count = dao.retrieve_count(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
 				_cluster->backend_client_disconnect(attendant.client_id, _use_count, attendant.id);
 			}
 		}
