@@ -46,6 +46,7 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	add_command(new sirius::app::attendant::mouse_rb_dclick_noti(front));
 	add_command(new sirius::app::attendant::mouse_wheel_noti(front));
 	add_command(new sirius::app::attendant::end2end_data_noti(front));
+	add_command(new sirius::app::attendant::end2end2_data_noti(front));
 }
 
 sirius::app::attendant::proxy::core::~core(void)
@@ -505,7 +506,7 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
-	data_request(_client_uuid, CMD_END2END_DATA_IND, (char*)packet, len);
+	data_request(_client_uuid, CMD_END2END2_DATA_IND, (char*)packet, len);
 	LOGGER::make_info_log(SLNS, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, packet);
 }
 
