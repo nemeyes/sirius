@@ -39,8 +39,8 @@ namespace sirius
 									float	floyd;
 									int32_t speed;
 									int32_t max_colors;
-									int32_t min_quality;
-									int32_t max_quality;
+									int32_t	min_quality;
+									int32_t	max_quality;
 									//bool	quantization;
 									//bool	fast_compression;
 									_context_t(void);
