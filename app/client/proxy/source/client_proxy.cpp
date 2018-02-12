@@ -145,7 +145,7 @@ int32_t sirius::app::client::proxy::core::connect_client(wchar_t * id)
 		wpacket["id"] = client_id;
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
-			data_request(SERVER_UUID, CMD_CONNECT_CLIENT_REQ, (char*)request.c_str(), request.size() + 1);
+			data_request(SERVER_UUID, CMD_CONNECT_CLIENT_REQ, request.c_str(), request.size() + 1);
 
 		free(client_id);
 		client_id = nullptr;

@@ -106,7 +106,7 @@ namespace sirius
 					static const char * get_section() { return _default_section; };
 					static char *replace_all(char *s, const char *olds, const char *news);
 					static bool set_file_monitor(std::string file_path, fpn_file_changed pfn);
-					static bool file_changed();
+					static bool configure_load();
 					static bool file_monitor_start();
 					static bool file_monitor_stop();
 					static void log_level_change(int log_level, int log_type);
