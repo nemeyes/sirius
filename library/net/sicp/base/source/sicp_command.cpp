@@ -220,7 +220,7 @@ void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst,
 		return;
 	session->register_flag(false);
 
-	if(_processor)
+	if(_processor && !session->is_session_destroy())
 		_processor->on_destroy_session(src, session);
 }
 #else

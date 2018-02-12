@@ -510,6 +510,7 @@ void sirius::library::net::sicp::abstract_server::on_create_session(const char *
 
 void sirius::library::net::sicp::abstract_server::on_destroy_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
+	session->increase_session_destroy_count();
 	on_destroy_session(uuid);
 }
 

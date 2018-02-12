@@ -109,10 +109,10 @@ void sirius::app::server::arbitrator::proxy::disconnect_attendant_callback(const
 		_core->disconnect_attendant_callback(uuid);
 }
 
-void sirius::app::server::arbitrator::proxy::start_attendant_callback(const char * uuid, const char * id, int32_t code)
+void sirius::app::server::arbitrator::proxy::start_attendant_callback(const char * uuid, const char * id, const char * client_id, const char * client_uuid, int32_t code)
 {
 	if (_core)
-		_core->start_attendant_callback(uuid, id, code);
+		_core->start_attendant_callback(uuid, id, client_id, client_uuid, code);
 }
 
 void sirius::app::server::arbitrator::proxy::stop_attendant_callback(const char * uuid, int32_t code)
