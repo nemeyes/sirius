@@ -58,7 +58,7 @@
                     <Label Content="ms"/>
                 </StackPanel>
                 
-                <StackPanel>
+                <!--StackPanel>
                     <Label Content="QuantizationColors" Target="{Binding ElementName=QuantizationColors}" Width="150"/>
                     <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Left" MinWidth="70">
                         <ComboBoxItem Content="8" IsSelected="true" />
@@ -68,7 +68,7 @@
                         <ComboBoxItem Content="128" />
                         <ComboBoxItem Content="256" />
                     </ComboBox>
-                </StackPanel>
+                </-->
 
 
                 <!--StackPanel>
