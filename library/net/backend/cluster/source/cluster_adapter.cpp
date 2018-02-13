@@ -5,8 +5,13 @@
 #include <tchar.h>
 #include <process.h>
 #include <mmSystem.h>
+#include <wininet.h>
 #pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "Wininet.lib")
+
 #define TARGET_RESOLUTION				1
+//#define EXTERNALIP_FINDER_URL "http://checkip.dyndns.org/"
+#define TITLE_PARSER _T("<body>Current IP Address: ")
 
 int32_t sirius::library::net::backend::cluster_adapter::start(std::string version)
 {
@@ -51,7 +56,7 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 			memset(_ssp_url_st[i], 0, sizeof(char) * MAX_BACKOFFICE_DATA_BUFFER);
 		}
 		_ssp_bufpos = 0;
-		set_sirius_ip();
+		set_external_ip(_localip);
 		Sleep(100);
 		/*if (strlen(_localip) != 0)
 		{
@@ -254,28 +259,42 @@ bool sirius::library::net::backend::cluster_adapter::configure_load()
 	return true;
 }
 
-bool sirius::library::net::backend::cluster_adapter::set_sirius_ip()
+bool sirius::library::net::backend::cluster_adapter::set_external_ip(char * ip)
 {
-	WSADATA wsa_data;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0)
-		return false;
+	HINTERNET internet, file;
+	DWORD size;
+	char buffer[MAX_PATH] = { 0 };
+	char title_parser[MAX_PATH] = { 0 };
+	LPCWSTR external_ip_finder_url = L"http://checkip.dyndns.org/";
+	sprintf_s(title_parser, MAX_PATH, "%s", "<body>Current IP Address: ");
+	internet = InternetOpen(NULL, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	if (NULL == internet)
+		return 0;
 
-	char host_name[MAX_PATH] = { NULL, };
-	char local_ip[MAX_PATH] = { NULL, };
-	HOSTENT* phost_ent;
-
-	if (gethostname(host_name, sizeof(host_name)) != NULL)
+	file = InternetOpenUrl(internet, external_ip_finder_url, NULL, 0, INTERNET_FLAG_RELOAD, 0);
+	if (file)
 	{
-		int err = WSAGetLastError();
-		LOGGER::make_error_log(SAA, "%s, %d, err=%d", __FUNCTION__, __LINE__, err);
-		return false;
-	}
-	if ((phost_ent = gethostbyname(host_name)) != NULL)
-	{
-		strcpy(_localip, inet_ntoa(*(struct in_addr *)*phost_ent->h_addr_list));
+		InternetReadFile(file, &buffer, sizeof(buffer), &size);
+		buffer[size] = '\0';
+		int shift = strlen(title_parser);
+		std::string str_html = buffer;
+		std::string::size_type nIdx = str_html.find(title_parser);
+		str_html.erase(str_html.begin(), str_html.begin() + nIdx + shift);
+		nIdx = str_html.find("</body>");
+		str_html.erase(str_html.begin() + nIdx, str_html.end());
+
+		wchar_t _wtext[MAX_PATH];
+		std::wstring widestr = std::wstring(str_html.begin(), str_html.end());
+		const wchar_t* widecstr = widestr.c_str();
+
+		_tcscpy(_wtext, widecstr);
+		WideCharToMultiByte(CP_ACP, 0, _wtext, -1, ip, wcslen(_wtext), 0, 0);
+
+		InternetCloseHandle(file);
+		InternetCloseHandle(internet);
 	}
 
-	return true;
+	return 0;
 }
 
 unsigned sirius::library::net::backend::cluster_adapter::ssp_queue_thread(void * param)
