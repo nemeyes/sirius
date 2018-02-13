@@ -363,6 +363,22 @@ namespace sirius
 					LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app data=%s", __FUNCTION__, __LINE__, msg);
 				}
 			};
+
+			class end2end2_data_noti : public sirius::app::attendant::attendant_cmd
+			{
+			public:
+				end2end2_data_noti(sirius::app::attendant::proxy * attendant)
+					: sirius::app::attendant::attendant_cmd(attendant, CMD_END2END2_DATA_IND)
+				{}
+				virtual ~end2end2_data_noti(void)
+				{}
+
+				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+				{
+					_attendant->app_to_attendant((uint8_t*)msg, length);
+					LOGGER::make_info_log(SLNS, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, msg);
+				}
+			};
 		};
 	};
 };

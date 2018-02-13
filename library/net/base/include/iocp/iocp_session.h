@@ -140,6 +140,8 @@ namespace sirius
 					SOCKET			socket(void);
 					void			socket(SOCKET s);
 					BOOL			pending(void);
+					BOOL			is_session_destroy(void);
+					void			increase_session_destroy_count(void);
 					
 					uint32_t		status(void);
 					void			status(uint32_t value);
@@ -210,6 +212,7 @@ namespace sirius
 					uint32_t															_send_buffer_size;
 
 					CRITICAL_SECTION													_lock;
+					volatile long														_ndestroy_session;
 				};
 			};
 		};

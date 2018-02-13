@@ -155,8 +155,10 @@ namespace sirius
 						reader.parse(msg, rpacket);
 
 						std::string id = rpacket.get("id", "").asString();
+						std::string client_id = rpacket.get("client_id", "").asString();
+						std::string client_uuid = rpacket.get("client_uuid", "").asString();
 						int32_t rcode = rpacket.get("rcode", -1).asInt();
-						_proxy->start_attendant_callback(src, id.c_str(), rcode);
+						_proxy->start_attendant_callback(src, id.c_str(), client_id.c_str(),client_uuid.c_str(), rcode);
 					}
 				};
 

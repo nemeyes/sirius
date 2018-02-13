@@ -49,7 +49,7 @@ namespace sirius
 					int32_t client_connect(char* client_id, int32_t use_count, int32_t attendant_num);
 					int32_t client_disconnect(char* client_id, int32_t use_count, int32_t attendant_num);
 					bool configure_load();
-					bool	set_sirius_ip();
+					bool	set_external_ip(char* ip);
 					bool is_cluster_use() { return _use_cluster; };
 					static unsigned __stdcall ssp_queue_thread(void * param);
 					sirius::library::net::backend::cluster * _client;

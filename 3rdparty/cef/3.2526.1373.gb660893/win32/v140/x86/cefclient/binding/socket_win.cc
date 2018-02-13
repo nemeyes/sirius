@@ -219,7 +219,7 @@ namespace client {
 			}
 
 			int rtn = send_data(send_packet, size);
-			binding::socketbase::calback_attendant_to_app((uint8_t *)send_packet, strlen(send_packet));
+			//binding::socketbase::calback_attendant_to_app((uint8_t *)send_packet, strlen(send_packet));
 			if (rtn <= 0) {
 				if (send_packet)
 					delete[] send_packet;
