@@ -220,8 +220,8 @@ void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst,
 		return;
 	session->register_flag(false);
 
-	if(_processor && !session->is_session_destroy())
-		_processor->on_destroy_session(src, session);
+	if (_processor && !session->is_session_destroy())
+		_processor->on_destroy_session(session->uuid(), session);	
 }
 #else
 sirius::library::net::sicp::destroy_session_noti::destroy_session_noti(sirius::library::net::sicp::sicp_processor * prcsr)
