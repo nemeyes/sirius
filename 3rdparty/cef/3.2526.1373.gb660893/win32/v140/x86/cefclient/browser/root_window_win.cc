@@ -670,6 +670,7 @@ LRESULT CALLBACK RootWindowWin::RootWndProc(HWND hWnd, UINT message,
       // Clear the reference to |self|.
       SetUserDataPtr(hWnd, NULL);
       self->hwnd_ = NULL;
+	  self->outter_hwnd_ = NULL;
       self->OnDestroyed();
       return 0;
 
