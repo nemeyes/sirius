@@ -30,6 +30,21 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\sirius_partial_png_compressor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\library\video\base\include\sirius_video.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_compressor.h">
+      <Filter>compressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_processor.h">
+      <Filter>compressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\libpng_compressor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\base\include\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.h">
       <Filter>libimgqnt</Filter>
     </ClInclude>
@@ -51,24 +66,24 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.h">
       <Filter>libimgqnt</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\video\base\include\sirius_video.h">
-      <Filter>video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_compressor.h">
-      <Filter>compressor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\base\include\sirius_video_processor.h">
-      <Filter>compressor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\libpng_compressor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\base\include\resource.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\partial_png_compressor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\sirius_partial_png_compressor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\base\source\sirius_video.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp">
+      <Filter>compressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_processor.cpp">
+      <Filter>compressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.c">
@@ -91,21 +106,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.c">
       <Filter>libimgqnt</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\sirius_partial_png_compressor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\video\base\source\sirius_video.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp">
-      <Filter>compressor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_processor.cpp">
-      <Filter>compressor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
