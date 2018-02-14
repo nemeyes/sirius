@@ -194,7 +194,13 @@ namespace sirius
 							sirius::queue<sirius::library::video::transform::codec::libpng::compressor::buffer_t> _iobuffer_queue;
 
 
-							uint8_t * _rgba_buffer;
+							//uint8_t * _rgba_buffer;
+#if defined(WITH_ONETIME_CREATION)
+							liq_attr * _liq;
+							liq_result * _remap;
+							int32_t _remap_count;
+							int32_t _ncompress;
+#endif
 							ATL::CComPtr<ID3D11Device> _device;
 							ATL::CComPtr<ID3D11DeviceContext> _device_ctx;
 							ATL::CComPtr<ID3D11Texture2D> _intermediate_tex;
