@@ -87,6 +87,7 @@ namespace sirius
 					sirius::library::misc::performance::monitor * _monitor;
 					HANDLE _system_monitor_thread;
 					bool _system_monitor_run;
+					int32_t _max_attendant_instance_count;
 
 					CRITICAL_SECTION _attendant_cs;
 				};
