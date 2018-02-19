@@ -240,13 +240,16 @@ bool ClientHandler::OnContextMenuCommand(
     int command_id,
     EventFlags event_flags) {
   CEF_REQUIRE_UI_THREAD();
+  HWND hwnd = NULL;
 
   switch (command_id) {
     case CLIENT_ID_SHOW_DEVTOOLS:
       ShowDevTools(browser, CefPoint());
       return true;
     case CLIENT_ID_CLOSE_DEVTOOLS:
-      CloseDevTools(browser);
+		//CloseDevTools(browser);
+		hwnd = binding::global::get_instance().get_window_handle();
+		::SendMessage(hwnd, WM_CLOSE, NULL, NULL);
       return true;
     case CLIENT_ID_INSPECT_ELEMENT:
       ShowDevTools(browser, CefPoint(params->GetXCoord(), params->GetYCoord()));
