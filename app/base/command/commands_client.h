@@ -4,6 +4,7 @@
 #include <json\json.h>
 #include <sicp_command.h>
 #include "client_proxy.h"
+#include "sirius_log4cplus_logger.h"
 
 namespace sirius
 {
@@ -115,7 +116,8 @@ namespace sirius
 
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
-					_proxy->end2end_data_callback(msg, length);
+					LOGGER::make_info_log(SAC, "%s, %d client end2end_data_noti data=%s", __FUNCTION__, __LINE__, msg);
+					//_proxy->end2end_data_callback(msg, length);
 				}
 			};
 
