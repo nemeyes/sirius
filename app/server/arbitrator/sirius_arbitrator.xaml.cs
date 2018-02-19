@@ -127,7 +127,7 @@ namespace sirius.app.server.arbitrator
 
                 if (percent >= 100)
                 {
-                    System.Threading.Thread.Sleep(1000 * 1);
+                    System.Threading.Thread.Sleep(200);
                     Dispatcher.Invoke(DispatcherPriority.Normal,
                     new Action
                     (
