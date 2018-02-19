@@ -177,6 +177,7 @@
     <ClInclude Include="..\..\..\app\server\proxy\entity\configuration_entity.h" />
     <ClInclude Include="..\..\..\app\server\proxy\include\arbitrator_proxy.h" />
     <ClInclude Include="..\..\..\app\server\proxy\include\process_controller.h" />
+    <ClInclude Include="..\..\..\app\server\proxy\include\arbitrator_session.h" />
     <ClInclude Include="..\..\..\app\server\proxy\include\sirius_arbitrator_proxy.h" />
     <ClInclude Include="..\..\..\base\include\resource.h" />
     <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="..\..\..\app\server\proxy\db\sqlite3.c" />
     <ClCompile Include="..\..\..\app\server\proxy\source\arbitrator_proxy.cpp" />
     <ClCompile Include="..\..\..\app\server\proxy\source\process_controller.cpp" />
+    <ClCompile Include="..\..\..\app\server\proxy\source\arbitrator_session.cpp" />
     <ClCompile Include="..\..\..\app\server\proxy\source\sirius_arbitrator_proxy.cpp" />
     <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp" />
   </ItemGroup>

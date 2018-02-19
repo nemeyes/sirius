@@ -69,6 +69,9 @@
     <ClInclude Include="..\..\..\base\include\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\app\server\proxy\include\arbitrator_session.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\app\server\proxy\source\arbitrator_proxy.cpp">
@@ -96,6 +99,9 @@
       <Filter>db</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\app\server\proxy\source\process_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\app\server\proxy\source\arbitrator_session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,12 +1,17 @@
 #ifndef _ARBITRATOR_PROXY_H_
 #define _ARBITRATOR_PROXY_H_
 
+#include <memory>
+#include <map>
+
 #include <sirius_uuid.h>
 #include "sirius_arbitrator_proxy.h"
 #include <sirius_sicp_server.h>
 #include "process_controller.h"
 #include <sirius_performance_monitor.h>
 #include "backend_cluster.h"
+#include "arbitrator_session.h"
+
 namespace sirius
 {
 	namespace app
@@ -53,7 +58,7 @@ namespace sirius
 					int32_t	connect_attendant_callback(const char * uuid, int32_t id, int32_t pid);
 					void	disconnect_attendant_callback(const char * uuid);
 
-					void	start_attendant_callback(const char * uuid, const char * id, const char * client_id, const char * client_uuid, int32_t code);
+					void	start_attendant_callback(const char * uuid, int32_t id, const char * client_id, const char * client_uuid, int32_t code);
 					void	stop_attendant_callback(const char * uuid, int32_t code);
 
 					static void	retrieve_db_path(char * path);
@@ -79,7 +84,8 @@ namespace sirius
 					sirius::app::server::arbitrator::proxy * _front;
 					sirius::app::server::arbitrator::proxy::context_t * _context;
 					sirius::library::net::backend::cluster * _cluster;
-
+					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
+					
 					HANDLE _thread;
 					bool _run;
 					int32_t _use_count;
@@ -88,7 +94,7 @@ namespace sirius
 					HANDLE _system_monitor_thread;
 					bool _system_monitor_run;
 					int32_t _max_attendant_instance_count;
-
+					
 					CRITICAL_SECTION _attendant_cs;
 				};
 			};
