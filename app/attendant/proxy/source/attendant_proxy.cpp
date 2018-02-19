@@ -46,7 +46,6 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	add_command(new sirius::app::attendant::mouse_rb_dclick_noti(front));
 	add_command(new sirius::app::attendant::mouse_wheel_noti(front));
 	add_command(new sirius::app::attendant::end2end_data_noti(front));
-	add_command(new sirius::app::attendant::end2end2_data_noti(front));
 }
 
 sirius::app::attendant::proxy::core::~core(void)
@@ -335,8 +334,8 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 	if (response.size() > 0)
 	{
 		data_request((char*)SERVER_UUID, CMD_START_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
-		LOGGER::make_info_log(SLNS, "[CMD_START_ATTENDANT_RES] - %s(), %d,	Command:%d, id:%d, rcode:%d", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_RES, _context->id, sirius::app::attendant::proxy::err_code_t::success);
-	}	
+		LOGGER::make_info_log(SLNS, "[CMD_START_ATTENDANT_RES] - %s(), %d,	Command:%d, id:%d, rcode:%d, client_uuid:%s", __FUNCTION__, __LINE__, CMD_START_ATTENDANT_RES, _context->id, sirius::app::attendant::proxy::err_code_t::success, client_uuid);
+	}
 	
 	memcpy(&_client_uuid, client_uuid, strlen(client_uuid));
 	Json::Value npacket;
@@ -496,8 +495,8 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
-	data_request(_client_uuid, CMD_END2END2_DATA_IND, (char*)packet, len);
-	LOGGER::make_info_log(SLNS, "%s, %d app_to_attendant data=%s", __FUNCTION__, __LINE__, packet);
+	data_request(_client_uuid, CMD_END2END_DATA_IND, (char*)packet, len);
+	LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, app_to_attendant data=%s", __FUNCTION__, __LINE__, _client_uuid, packet);
 }
 
 void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)

@@ -103,6 +103,7 @@ void sirius::library::net::sicp::abstract_server::on_data_indication(const char 
 		if (session)
 		{
 			session->send(dst, src, command_id, packet, packet_size);
+			LOGGER::make_info_log(SAA, "%s, %d on_data_indication, command_id=%d, dst=%s, src=%s", __FUNCTION__, __LINE__, command_id, dst, src);
 		}
 	}
 }
@@ -114,6 +115,7 @@ void sirius::library::net::sicp::abstract_server::data_request(const char * dst,
 
 void sirius::library::net::sicp::abstract_server::data_request(const char * dst, const char * src, int32_t command_id, const char * packet, int32_t packet_size)
 {
+	LOGGER::make_info_log(SAA, "%s, %d data_request. command_id=%d, dst=%s, src=%s", __FUNCTION__, __LINE__, command_id, dst, src);
 	if (!strncmp(BROADCAST_UUID, dst, strlen(BROADCAST_UUID)))
 	{
 		std::vector< std::shared_ptr<sirius::library::net::sicp::session>> sessions;
@@ -155,10 +157,15 @@ void sirius::library::net::sicp::abstract_server::data_request(const char * dst,
 		{
 			char src_uuid[64] = { 0 };
 			if (!strncmp(_uuid, dst, sizeof(_uuid) - 1) || !strncmp(SERVER_UUID, dst, sizeof(_uuid) - 1))
-				strncpy_s(src_uuid, _uuid, sizeof(src_uuid) - 1);
+			{
+				//strncpy_s(src_uuid, _uuid, sizeof(src_uuid) - 1);
+			}
 			else
-				strncpy_s(src_uuid, dst, sizeof(src_uuid) - 1);
-			session->send(_uuid, src_uuid, command_id, packet, packet_size);
+			{
+				//strncpy_s(src_uuid, dst, sizeof(src_uuid) - 1);
+				//session->send(_uuid, src_uuid, command_id, packet, packet_size);
+				session->send(dst, _uuid, command_id, packet, packet_size);
+			}
 		}
 	}
 }
