@@ -141,31 +141,18 @@ int main()
 		{
 			unsigned long pid = 0;
 			char arguments[ARGUMENT_SIZE] = { 0 };
-			char * uuid = nullptr;
-
+		
 			sirius::app::server::arbitrator::entity::attendant_t contenity;
-			if (option)
-			{
-				if (wcslen(context.uuid) > 0)
-				{
-					sirius::stringhelper::convert_wide2multibyte(context.uuid, &uuid);
-					memmove(contenity.uuid, uuid, strlen(uuid) + 1);				
-				}
-				else
-				{
-					sirius::uuid uuidgen;
-					uuidgen.create();
-					memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
-				}			
-				contenity.id = context.id;
-			}
-			else
-			{
-				sirius::uuid uuidgen;
-				uuidgen.create();
-				memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
+			
+			sirius::uuid uuidgen;
+			uuidgen.create();
+			memmove(contenity.uuid, uuidgen.c_str(), strlen(uuidgen.c_str()) + 1);
+						
+			if (option)							
+				contenity.id = context.id;			
+			else			
 				contenity.id = index;
-			}
+			
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
 			contenity.state = attendant_state_t::idle;
 			
@@ -225,15 +212,9 @@ int main()
 		
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 
-			if (option)
-			{
-				if (uuid)
-				{
-					free(uuid);
-					uuid = nullptr;
-				}
+			if (option)	
 				break;
-			}		
+				
 			::Sleep(confentity.attendant_creation_delay);
 		}		
 	}

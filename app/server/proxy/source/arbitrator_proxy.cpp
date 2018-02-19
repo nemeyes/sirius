@@ -454,7 +454,7 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 							}
 						}
 						char command_line[MAX_PATH] = { 0 };
-						sprintf_s(command_line, "sirius_arbitrator_launcher.exe --uuid=%s --id=%d", attendant[index]->uuid, attendant[index]->id);
+						sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", attendant[index]->id);
 
 						BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
 						if (result)
