@@ -1,12 +1,17 @@
 #include "arbitrator_session.h"
 
 #define UNDEFINED_UUID	"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFE"
+#define UNDEFINED_CLIENT_ID "FF:FF:FF:FF"
 
 sirius::app::server::arbitrator::session::session(int32_t id)
 	: _id(id)
+	, _pid(0)
+	, _total_bandwidth_byte(0)
+	, _state(0)
 {		
 	strncpy_s(_client_uuid, UNDEFINED_UUID, sizeof(UNDEFINED_UUID));
-	
+	strncpy_s(_attendant_uuid, UNDEFINED_UUID, sizeof(UNDEFINED_UUID));
+	strncpy_s(_client_id, UNDEFINED_CLIENT_ID, sizeof(UNDEFINED_CLIENT_ID));
 	::InitializeCriticalSection(&_lock);
 }
 

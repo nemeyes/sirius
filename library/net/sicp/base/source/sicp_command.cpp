@@ -233,6 +233,7 @@ sirius::library::net::sicp::destroy_session_noti::~destroy_session_noti(void)
 
 void sirius::library::net::sicp::destroy_session_noti::execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
+	_processor->on_destroy_session();
 	//_processor->enable_disconnect_flag(true);
 }
 #endif

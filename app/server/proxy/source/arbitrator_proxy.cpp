@@ -362,29 +362,34 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);
 
+	sirius::app::server::arbitrator::process::controller proc;
+	
 	sirius::app::server::arbitrator::session * session = nullptr;
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
-	{		
+	{
 		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 		{
 			session = iter->second;
 			if (strcmp(session->client_uuid(), uuid) == 0)
-			{
-				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);	
+			{			
+				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
 
 				_use_count = _max_attendant_instance_count - get_available_attendant_count();
 				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
 
-				Json::Value wpacket;
-				Json::StyledWriter writer;
-				wpacket["client_uuid"] = uuid;
-				std::string request = writer.write(wpacket);
-				if (request.size() > 0)
-					data_request((char*)session->attendant_uuid(), CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
+				//Json::Value wpacket;
+				//Json::StyledWriter writer;
+				//wpacket["client_uuid"] = uuid;
+				//std::string request = writer.write(wpacket);
+				//if (request.size() > 0)
+				//	data_request((char*)session->attendant_uuid(), CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
+
+				data_request((char*)session->attendant_uuid(), CMD_DESTROY_SESSION_INDICATION, NULL, 0);
+
 				break;
 			}
 		}
-	}	
+	}
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)
@@ -424,54 +429,56 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
 }
 
 void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
-{
+{	
 	sirius::app::server::arbitrator::process::controller proc;
-
-	int32_t max_attendant_instance_count = _max_attendant_instance_count;
-	int32_t current_attendant_instance_count = (get_attendant_count()) >> 1;
-
-	if (current_attendant_instance_count < max_attendant_instance_count && get_launcher_count() == 0)
+	std::map<int32_t, sirius::app::server::arbitrator::session *> sessions;
 	{
-		std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
-		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		sirius::autolock lock(&_attendant_cs);
+		sessions = _sessions;
+	}
+
+	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
+	for (iter = sessions.begin(); iter != sessions.end(); iter++)
+	{
+		sirius::app::server::arbitrator::session * session = iter->second;
+
+		if (session->pid() == 0) continue;
+		
+		if (proc.find(session->pid()) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
 		{
-			sirius::app::server::arbitrator::session * session = iter->second;
-			if (proc.find(session->pid()) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
+			STARTUPINFOA si;
+			PROCESS_INFORMATION pi;
+			memset(&si, 0x00, sizeof(si));
+			memset(&pi, 0x00, sizeof(pi));
+			si.cb = sizeof(STARTUPINFO);
+
+			char module_path[MAX_PATH] = { 0 };
+			char * module_name = module_path;
+			module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
+			if (module_name != module_path)
 			{
-				STARTUPINFOA si;
-				PROCESS_INFORMATION pi;
-				memset(&si, 0x00, sizeof(si));
-				memset(&pi, 0x00, sizeof(pi));
-				si.cb = sizeof(STARTUPINFO);
-
-				char module_path[MAX_PATH] = { 0 };
-				char * module_name = module_path;
-				module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-				if (module_name != module_path)
+				CHAR * slash = strrchr(module_path, '\\');
+				if (slash != NULL)
 				{
-					CHAR * slash = strrchr(module_path, '\\');
-					if (slash != NULL)
-					{
-						module_name = slash + 1;
-						_strset_s(module_name, strlen(module_name) + 1, 0);
-					}
-					else
-					{
-						_strset_s(module_path, strlen(module_path) + 1, 0);
-					}
+					module_name = slash + 1;
+					_strset_s(module_name, strlen(module_name) + 1, 0);
 				}
-				char command_line[MAX_PATH] = { 0 };
-				sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", session->id());
-
-				BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
-				if (result)
+				else
 				{
-					CloseHandle(pi.hProcess);
-					CloseHandle(pi.hThread);
+					_strset_s(module_path, strlen(module_path) + 1, 0);
 				}
-				::Sleep(100);
-			}			
-		}
+			}
+			char command_line[MAX_PATH] = { 0 };
+			sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", session->id());
+
+			BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
+			if (result)
+			{
+				CloseHandle(pi.hProcess);
+				CloseHandle(pi.hThread);
+			}
+			::Sleep(200);
+		}			
 	}
 }
 
@@ -641,12 +648,12 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{				
+		{	
 			if (elapsed_millisec % (onesec * 3) == 0)			
 				check_alive_attendant();
 
-			if (elapsed_millisec % (onesec * 5))
-				update_available_attendant();				
+			//if (elapsed_millisec % (onesec * 5))
+			//	update_available_attendant();				
 
 			//if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
 			//	close_unconnected_attendant();
