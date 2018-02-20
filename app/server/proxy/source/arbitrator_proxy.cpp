@@ -255,16 +255,33 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_co
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
 	sirius::autolock lock(&_attendant_cs);
+	
+	bool is_session = false;
+	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
+	{
+		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		{
+			sirius::app::server::arbitrator::session * session = iter->second;
+			if (session->id() == id)
+			{
+				is_session = true;
+				session->pid(pid);
+				session->attendant_uuid(uuid);
+				session->state(attendant_state_t::available);		
+			}
+		}
+	}
 
-	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::success;
-	
-	sirius::app::server::arbitrator::session * session(new sirius::app::server::arbitrator::session(id));
-	session->pid(pid);
-	session->attendant_uuid(uuid);
-	session->state(attendant_state_t::available);
-	_sessions.insert(std::make_pair(id, session));
-	
-	return status;
+	if (!is_session)
+	{
+		sirius::app::server::arbitrator::session * session(new sirius::app::server::arbitrator::session(id));
+		session->pid(pid);
+		session->attendant_uuid(uuid);
+		session->state(attendant_state_t::available);
+		_sessions.insert(std::make_pair(id, session));
+	}
+
+	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
 void sirius::app::server::arbitrator::proxy::core::disconnect_attendant_callback(const char * uuid)
@@ -421,8 +438,6 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 			sirius::app::server::arbitrator::session * session = iter->second;
 			if (proc.find(session->pid()) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
 			{
-				_sessions.erase(iter->first);
-
 				STARTUPINFOA si;
 				PROCESS_INFORMATION pi;
 				memset(&si, 0x00, sizeof(si));
@@ -462,54 +477,38 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 
 
 void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(void)
-{
+{	
 	sirius::app::server::arbitrator::process::controller proc;
-	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
-	sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
-	sirius::app::server::arbitrator::entity::attendant_t ** attendant = nullptr;
-	int32_t count = 0;
-	{
-		//sirius::autolock lock(&_attendant_cs);
-		status = dao.retrieve(&attendant, count);
-	}
-	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success && count > 0)
-	{
-		DWORD dwCount = 0;
-		HANDLE hSnap = NULL;
-		PROCESSENTRY32 proc32;
+	
+	DWORD dwCount = 0;
+	HANDLE hSnap = NULL;
+	PROCESSENTRY32 proc32;
 
-		if ((hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)) == INVALID_HANDLE_VALUE)
-			return;
+	if ((hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)) == INVALID_HANDLE_VALUE)
+		return;
 
-		proc32.dwSize = sizeof(PROCESSENTRY32);
-		while ((Process32Next(hSnap, &proc32)) == TRUE)
+	proc32.dwSize = sizeof(PROCESSENTRY32);
+	while ((Process32Next(hSnap, &proc32)) == TRUE)
+	{
+		if (_wcsicmp(proc32.szExeFile, L"sirius_web_attendant.exe") == 0)
 		{
-			if (_wcsicmp(proc32.szExeFile, L"sirius_web_attendant.exe") == 0)
+			bool is_vaild =false;
+			std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
+			for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 			{
-				bool is_vaild =false;
-				for (int index = 0; index < count; index++)
+				sirius::app::server::arbitrator::session * session = iter->second;
+				if (session->pid() == proc32.th32ProcessID || session->pid() == proc32.th32ParentProcessID)
 				{
-					if (attendant[index]->pid == proc32.th32ProcessID || 
-						attendant[index]->pid == proc32.th32ParentProcessID)
-					{
-						is_vaild = true;
-						break;
-					}						
-				}
+					is_vaild = true;
+					break;
+				}						
+			}
 
-				if (is_vaild == false)				
-					proc.kill(proc32.th32ProcessID);				
-			}			
-		}
-		CloseHandle(hSnap);
-		for (int32_t index = 0; index < count; index++)
-		{
-			free(attendant[index]);
-			attendant[index] = nullptr;
-		}
-		free(attendant);
-		attendant = nullptr;
-	}	
+			if (is_vaild == false)				
+				proc.kill(proc32.th32ProcessID);				
+		}			
+	}
+	CloseHandle(hSnap);	
 }
 
 void sirius::app::server::arbitrator::proxy::core::update_available_attendant(void)
