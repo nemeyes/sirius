@@ -26,7 +26,7 @@ void sirius::circular::destroy(sirius::circular::buffer_t * buffer)
 	}
 }
 
-int32_t sirius::circular::write(sirius::circular::buffer_t * buffer, const uint8_t * data, int32_t length)
+int32_t sirius::circular::write(sirius::circular::buffer_t * buffer, const char * data, int32_t length)
 {
 	if (buffer->available < length)
 		return -1;
@@ -46,7 +46,7 @@ int32_t sirius::circular::write(sirius::circular::buffer_t * buffer, const uint8
 	return length;
 }
 
-int32_t sirius::circular::read(sirius::circular::buffer_t * buffer, uint8_t * target, int32_t length)
+int32_t sirius::circular::read(sirius::circular::buffer_t * buffer, char * target, int32_t length)
 {
 	if (buffer->length - buffer->available < length)
 		return -1;
