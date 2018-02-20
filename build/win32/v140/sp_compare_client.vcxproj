@@ -94,16 +94,16 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\app\client\comparison\clients;..\..\..\app\client\comparison;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\include;..\..\..\3rdparty\xml\v2_6_2\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\app\client\comparison\clients;..\..\..\app\client\comparison;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;pthreadVCE2.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;pthreadVCE2.lib;tinyxml.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -145,16 +145,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\app\client\comparison\clients;..\..\..\app\client\comparison;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\include;..\..\..\3rdparty\xml\v2_6_2\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\app\client\comparison\clients;..\..\..\app\client\comparison;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;pthreadVCE2.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;pthreadVCE2.lib;tinyxml.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -197,7 +197,7 @@
     <Text Include="..\..\..\app\client\comparison\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_control_client.h" />
+    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_client.h" />
     <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.h" />
     <ClInclude Include="..\..\..\app\client\comparison\clients\base_client.h" />
     <ClInclude Include="..\..\..\app\client\comparison\clients\sirius_client.h" />
@@ -209,11 +209,14 @@
     <ClInclude Include="..\..\..\base\include\sirius_circular_buffer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_control_client.cpp">
+    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_client.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.cpp" />
+    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\..\app\client\comparison\clients\base_client.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

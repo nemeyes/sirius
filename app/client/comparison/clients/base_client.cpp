@@ -124,22 +124,33 @@ void base_client::process(void * self)
 	int val = connect(_address, _portnumber);
 	if (val == base_client::err_code_t::success)
 	{
+		fd_set			orset;
+		fd_set			owset;
 		fd_set			rset;
 		fd_set			wset;
 		timeval			timeout;
+
+		FD_ZERO(&orset);
+		FD_ZERO(&owset);
+		FD_SET(_fd, &orset);
+		FD_SET(_fd, &owset);
+
 		int				recv_size = 0;
 		int				send_size = 0;
 		on_connect_to_server();
 		while (_run)
 		{
-			FD_ZERO(&rset);
-			FD_ZERO(&wset);
 			timeout.tv_sec = 0;
 			timeout.tv_usec = 100000;
+			rset = orset;
+			wset = owset;
 
-			int sel = select(_fd + 1, &rset, NULL, NULL, &timeout);
+			int sel = select(_fd + 1, &rset, &wset, NULL, &timeout);
 			if (sel == -1)
+			{
+				DWORD err = ::WSAGetLastError();
 				OutputDebugStringA("error on select\n");
+			}
 
 			if (FD_ISSET(_fd, &rset))
 			{
