@@ -52,7 +52,7 @@ namespace client {
 		float GetDeviceScaleFactor() const OVERRIDE;
 		CefRefPtr<CefBrowser> GetBrowser() const OVERRIDE;
 		ClientWindowHandle GetWindowHandle() const OVERRIDE;
-
+		std::string start_url;
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);
 		void CreateRootWindow(const CefBrowserSettings& settings);
