@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(sp_comparison_client_dlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_CONNECT, &sp_comparison_client_dlg::OnBnClickedButtonConnect)
 	ON_BN_CLICKED(IDC_BUTTON_DISCONNECT, &sp_comparison_client_dlg::OnBnClickedButtonDisconnect)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -105,8 +106,23 @@ BOOL sp_comparison_client_dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	//GetDlgItem()
+	_arodnap_address.SetWindowTextW(L"10.90.180.25");
+	_arodnap_portnumber.SetWindowTextW(L"3390");
+	_arodnap_client = new arodnap_client(1024*1024*2);
+
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+void sp_comparison_client_dlg::OnDestroy()
+{
+	CDialog::OnDestroy();
+
+	// TODO: Add your message handler code here
+	if (_arodnap_client)
+		delete _arodnap_client;
+	_arodnap_client = nullptr;
 }
 
 void sp_comparison_client_dlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -163,10 +179,32 @@ HCURSOR sp_comparison_client_dlg::OnQueryDragIcon()
 void sp_comparison_client_dlg::OnBnClickedButtonConnect()
 {
 	// TODO: Add your control notification handler code here
+	char *	address = nullptr;
+	int		portnumber = 0;
+	{
+		CString arodnap_address;
+		CString arodnap_portnumber;
+		_arodnap_address.GetWindowTextW(arodnap_address);
+		_arodnap_portnumber.GetWindowTextW(arodnap_portnumber);
+
+
+		sirius::stringhelper::convert_wide2multibyte((LPWSTR)(LPCWSTR)arodnap_address, &address);
+		portnumber = _wtoi(arodnap_portnumber);
+
+		_arodnap_client->start(address, portnumber);
+
+		if (address)
+			free(address);
+		address = nullptr;
+	}
 }
 
 
 void sp_comparison_client_dlg::OnBnClickedButtonDisconnect()
 {
 	// TODO: Add your control notification handler code here
+	{
+		_arodnap_client->stop();
+	}
 }
+

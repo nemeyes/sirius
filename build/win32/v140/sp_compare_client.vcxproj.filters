@@ -57,10 +57,10 @@
     <ClInclude Include="..\..\..\base\include\sirius_circular_buffer.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_control_client.h">
+    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.h">
       <Filter>clients\arodnap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.h">
+    <ClInclude Include="..\..\..\app\client\comparison\clients\arodnap_client.h">
       <Filter>clients\arodnap</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,10 +83,10 @@
     <ClCompile Include="..\..\..\base\source\sirius_circular_buffer.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_control_client.cpp">
+    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.cpp">
       <Filter>clients\arodnap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_stream_client.cpp">
+    <ClCompile Include="..\..\..\app\client\comparison\clients\arodnap_client.cpp">
       <Filter>clients\arodnap</Filter>
     </ClCompile>
   </ItemGroup>
