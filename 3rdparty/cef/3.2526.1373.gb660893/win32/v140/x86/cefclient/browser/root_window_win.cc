@@ -160,7 +160,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
   start_rect_.bottom = bounds.y + bounds.height;
 
   CreateBrowserWindow(url);
-
+  start_url = url;
   initialized_ = true;
 
   // Create the native root window on the main thread.

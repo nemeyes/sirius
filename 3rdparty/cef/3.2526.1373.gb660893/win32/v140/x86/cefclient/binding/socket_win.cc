@@ -253,8 +253,8 @@ namespace client {
 					GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 				DCHECK(rootWin);
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
-				browser->Reload();
-				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant Reload");
+				browser->GetMainFrame()->LoadURL(rootWin->start_url);
+				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 			}
 
 			return true;
