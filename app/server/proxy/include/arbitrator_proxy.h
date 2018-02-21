@@ -1,12 +1,17 @@
 #ifndef _ARBITRATOR_PROXY_H_
 #define _ARBITRATOR_PROXY_H_
 
+#include <memory>
+#include <map>
+
 #include <sirius_uuid.h>
 #include "sirius_arbitrator_proxy.h"
 #include <sirius_sicp_server.h>
 #include "process_controller.h"
 #include <sirius_performance_monitor.h>
 #include "backend_cluster.h"
+#include "arbitrator_session.h"
+
 namespace sirius
 {
 	namespace app
@@ -45,7 +50,7 @@ namespace sirius
 
 					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching);
 
-					int32_t	connect_client(const char * uuid, const char * id);
+					int32_t	connect_client(const char * uuid, const char * client_id);
 					int32_t disconnect_client(const char * uuid);
 
 					int32_t get_available_attendant_count(void);
@@ -53,7 +58,7 @@ namespace sirius
 					int32_t	connect_attendant_callback(const char * uuid, int32_t id, int32_t pid);
 					void	disconnect_attendant_callback(const char * uuid);
 
-					void	start_attendant_callback(const char * uuid, const char * id, const char * client_id, const char * client_uuid, int32_t code);
+					void	start_attendant_callback(const char * uuid, int32_t id, const char * client_id, const char * client_uuid, int32_t code);
 					void	stop_attendant_callback(const char * uuid, int32_t code);
 
 					static void	retrieve_db_path(char * path);
@@ -79,7 +84,9 @@ namespace sirius
 					sirius::app::server::arbitrator::proxy * _front;
 					sirius::app::server::arbitrator::proxy::context_t * _context;
 					sirius::library::net::backend::cluster * _cluster;
-
+					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
+					int32_t _last_alloc_session_id;
+					
 					HANDLE _thread;
 					bool _run;
 					int32_t _use_count;
@@ -88,7 +95,7 @@ namespace sirius
 					HANDLE _system_monitor_thread;
 					bool _system_monitor_run;
 					int32_t _max_attendant_instance_count;
-
+					
 					CRITICAL_SECTION _attendant_cs;
 				};
 			};
