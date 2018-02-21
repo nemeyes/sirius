@@ -247,9 +247,12 @@ bool ClientHandler::OnContextMenuCommand(
       ShowDevTools(browser, CefPoint());
       return true;
     case CLIENT_ID_CLOSE_DEVTOOLS:
-		//CloseDevTools(browser);
+#ifdef WITH_RESTART
 		hwnd = binding::global::get_instance().get_window_handle();
 		::SendMessage(hwnd, WM_CLOSE, NULL, NULL);
+#else
+		CloseDevTools(browser);
+#endif
       return true;
     case CLIENT_ID_INSPECT_ELEMENT:
       ShowDevTools(browser, CefPoint(params->GetXCoord(), params->GetYCoord()));

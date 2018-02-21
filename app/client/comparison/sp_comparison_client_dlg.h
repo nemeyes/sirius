@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <sirius_stringhelper.h>
 #include "arodnap_client.h"
 #include "afxwin.h"
 
@@ -24,7 +25,12 @@ public:
 
 
 private:
-	arodnap_client * _arodnap_client;
+	arodnap_client *	_arodnap_client;
+
+	CEdit				_arodnap_address;
+	CEdit				_arodnap_portnumber;
+	CEdit				_sirius_address;
+	CEdit				_sirius_portnumber;
 
 // Implementation
 protected:
@@ -32,15 +38,12 @@ protected:
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	afx_msg void OnDestroy();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnBnClickedButtonConnect();
 	afx_msg void OnBnClickedButtonDisconnect();
 	DECLARE_MESSAGE_MAP()
-private:
-	CEdit _arodnap_address;
-	CEdit _arodnap_portnumber;
-	CEdit _sirius_address;
-	CEdit _sirius_portnumber;
+
 };
