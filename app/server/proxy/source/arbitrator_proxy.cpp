@@ -18,6 +18,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _system_monitor_thread(INVALID_HANDLE_VALUE)
 	, _use_count(NULL)
 	, _max_attendant_instance_count(0)
+	, _last_alloc_session_id(-1)
 {
 	::InitializeCriticalSection(&_attendant_cs);
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
@@ -180,42 +181,67 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	return status;
 }
 
-int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * id)
+int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * client_id)
 {	
 	sirius::autolock lock(&_attendant_cs);
 
 	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);
 	
-	std::string attendant_uuid;
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
-		
-	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
+	bool alloc_session = false;
+	std::string attendant_uuid;	
+			
+	for (int32_t id = _last_alloc_session_id + 1; id < _sessions.size(); id++)
 	{
-		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
+		if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::available)
 		{
-			sirius::app::server::arbitrator::session * session = iter->second;
+			alloc_session = true;
+			_last_alloc_session_id = id;
+
+			session->client_id(client_id);
+			session->client_uuid(uuid);
+			session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting);
+
+			attendant_uuid = session->attendant_uuid();
+			status = sirius::app::server::arbitrator::proxy::err_code_t::success;
+			
+			_use_count = _sessions.size() - get_available_attendant_count();
+			_cluster->backend_client_connect((char*)session->client_id(), _use_count, session->id());		
+			break;
+		}
+	}
+	
+	if (!alloc_session)
+	{
+		for (int32_t id = 0; id < _last_alloc_session_id; id++)
+		{
+			sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
 			if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::available)
 			{
-				session->client_id(id);
+				session->client_id(client_id);
 				session->client_uuid(uuid);
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting);
-				
+
 				attendant_uuid = session->attendant_uuid();
 				status = sirius::app::server::arbitrator::proxy::err_code_t::success;
 
+				_last_alloc_session_id = id;
+
 				_use_count = _sessions.size() - get_available_attendant_count();
 				_cluster->backend_client_connect((char*)session->client_id(), _use_count, session->id());
+				alloc_session = true;;
 				break;
 			}
-		}	
-	}
+		}
+	}	
 
-	if (attendant_uuid.size() > 0)
+	if (alloc_session)
 	{
 		Json::Value wpacket;
 		Json::StyledWriter writer;
 		wpacket["client_uuid"] = uuid;
-		wpacket["client_id"] = id;
+		wpacket["client_id"] = client_id;
 		std::string request = writer.write(wpacket);
 		if (request.size() > 0)
 		{
@@ -308,8 +334,9 @@ void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(cons
 void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const char * uuid, int32_t code)
 {
 	LOGGER::make_info_log(SAA, "%s, %d, [CMD_STOP_ATTENDANT_RES] attendant_uuid=%s,code=%d", __FUNCTION__, __LINE__, uuid, code);
-
-	/*sirius::app::server::arbitrator::session * session = nullptr;
+#ifdef WITH_RESTART
+#else
+	sirius::app::server::arbitrator::session * session = nullptr;
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
 		sirius::autolock lock(&_attendant_cs);
@@ -319,13 +346,11 @@ void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const
 			if (strcmp(session->attendant_uuid(), uuid) == 0)
 			{
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);
-				_use_count = _max_attendant_instance_count - get_available_attendant_count();
-				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
-
 				break;
 			}
 		}
-	}*/
+	}
+#endif
 }
 
 void sirius::app::server::arbitrator::proxy::core::retrieve_db_path(char * path)
@@ -376,16 +401,16 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 				_use_count = _max_attendant_instance_count - get_available_attendant_count();
 				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
-
-				//Json::Value wpacket;
-				//Json::StyledWriter writer;
-				//wpacket["client_uuid"] = uuid;
-				//std::string request = writer.write(wpacket);
-				//if (request.size() > 0)
-				//	data_request((char*)session->attendant_uuid(), CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
-
-				data_request((char*)session->attendant_uuid(), CMD_DESTROY_SESSION_INDICATION, NULL, 0);
-
+#ifdef WITH_RESTART
+				data_request((char*)session->attendant_uuid(), CMD_DESTROY_SESSION_INDICATION, NULL, 0);				
+#else
+				Json::Value wpacket;
+				Json::StyledWriter writer;
+				wpacket["client_uuid"] = uuid;
+				std::string request = writer.write(wpacket);
+				if (request.size() > 0)
+					data_request((char*)session->attendant_uuid(), CMD_STOP_ATTENDANT_REQ, (char*)request.c_str(), request.size() + 1);
+#endif
 				break;
 			}
 		}
@@ -480,6 +505,7 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 			::Sleep(200);
 		}			
 	}
+	sessions.clear();
 }
 
 
@@ -520,17 +546,26 @@ void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(v
 
 void sirius::app::server::arbitrator::proxy::core::update_available_attendant(void)
 {
+	std::map<int32_t, sirius::app::server::arbitrator::session *> sessions;
+	{
+		sirius::autolock lock(&_attendant_cs);
+		sessions = _sessions;
+	}
+
 	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
 	{
-		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		for (iter = sessions.begin(); iter != sessions.end(); iter++)
 		{
 			sirius::app::server::arbitrator::session * session = iter->second;
-			if (session->state() > sirius::app::server::arbitrator::proxy::core::attendant_state_t::available && is_valid(session->client_uuid()) == false)
+			if (session->state() > sirius::app::server::arbitrator::proxy::core::attendant_state_t::available && 
+				is_valid(session->client_uuid()) == false &&
+				is_valid(session->attendant_uuid() ) == true)
 			{
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);
 			}
 		}
 	}
+	sessions.clear();
 }
 
 unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
@@ -649,11 +684,11 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		}
 		else
 		{	
-			if (elapsed_millisec % (onesec * 3) == 0)			
+			//if (elapsed_millisec % (onesec * 1) == 0)			
 				check_alive_attendant();
 
-			//if (elapsed_millisec % (onesec * 5))
-			//	update_available_attendant();				
+			if (elapsed_millisec % (onesec * 10) == 0)
+				update_available_attendant();				
 
 			//if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
 			//	close_unconnected_attendant();

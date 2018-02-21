@@ -50,7 +50,7 @@ namespace sirius
 
 					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching);
 
-					int32_t	connect_client(const char * uuid, const char * id);
+					int32_t	connect_client(const char * uuid, const char * client_id);
 					int32_t disconnect_client(const char * uuid);
 
 					int32_t get_available_attendant_count(void);
@@ -85,6 +85,7 @@ namespace sirius
 					sirius::app::server::arbitrator::proxy::context_t * _context;
 					sirius::library::net::backend::cluster * _cluster;
 					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
+					int32_t _last_alloc_session_id;
 					
 					HANDLE _thread;
 					bool _run;
