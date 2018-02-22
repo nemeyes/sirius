@@ -192,7 +192,10 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 	bool alloc_session = false;
 	std::string attendant_uuid;	
-			
+
+	if (_sessions.size() == 1)
+		_last_alloc_session_id = -1;
+				
 	for (int32_t id = _last_alloc_session_id + 1; id < _sessions.size(); id++)
 	{
 		sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
@@ -467,29 +470,22 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
 
 void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 {	
-	sirius::app::server::arbitrator::process::controller proc;
-	std::map<int32_t, sirius::app::server::arbitrator::session *> sessions;
-	{
-		sirius::autolock lock(&_attendant_cs);
-		sessions = _sessions;
-	}
+	sirius::autolock lock(&_attendant_cs);
 
+	sirius::app::server::arbitrator::process::controller proc;
 	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
-	for (iter = sessions.begin(); iter != sessions.end(); iter++)
+	for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 	{
 		sirius::app::server::arbitrator::session * session = iter->second;
 		if(is_valid(session->attendant_uuid()) == false)
 		{
-			session->attendant_uuid(UNDEFINED_UUID);
-			create_attendant(session->id());
-			::Sleep(200);
+			sirius::autolock lock(&_closed_attendant_cs);
+			_closed_sessions.push_back(session);
 		}			
-	}
-	sessions.clear();
+	}	
 }
 
-
-void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(void)
+void sirius::app::server::arbitrator::proxy::core::close_diconnected_attendant(void)
 {	
 	sirius::app::server::arbitrator::process::controller proc;
 	
@@ -689,7 +685,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				if (percent < 100)
 				{
 					if (_context && _context->handler)
-						_context->handler->on_attendant_create(percent);
+						_context->handler->on_attendant_create(percent);			
 				}
 				else
 				{
@@ -697,7 +693,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 					if (count == 0)
 					{
 						if (_context && _context->handler)
-							_context->handler->on_attendant_create(percent);
+							_context->handler->on_attendant_create(100);
 
 						attendant_created = true;
 						_cluster->ssm_service_info("START", _max_attendant_instance_count);
@@ -713,18 +709,17 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		else
 		{				
 			restart_attendant();
-			//if (elapsed_millisec % (onesec * 3) == 0)			
-			//	check_alive_attendant();
+			if (elapsed_millisec % (onesec * 3) == 0)			
+				check_alive_attendant();
 
 			//if (elapsed_millisec % (onesec * 10) == 0)
 			//	update_available_attendant();				
 
 			//if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
-			//	close_unconnected_attendant();
-						
-			::Sleep(msleep);
-			elapsed_millisec += msleep;					
-		}		
+			//	close_unconnected_attendant();			
+		}	
+		::Sleep(msleep);
+		elapsed_millisec += msleep;
 	}
 
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;

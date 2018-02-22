@@ -71,7 +71,7 @@ namespace sirius
 					int32_t get_launcher_count(void);
 
 					void check_alive_attendant(void);
-					void close_unconnected_attendant(void);
+					void close_diconnected_attendant(void);
 					void update_available_attendant(void);
 					
 					void restart_attendant(void);
