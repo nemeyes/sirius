@@ -24,8 +24,8 @@ namespace sirius
 					: public sirius::library::net::sicp::server
 				{
 					static const int32_t BASE_PORTNUMBER = 7000;
-					static const int32_t IO_THREAD_POOL_COUNT = 0;
-					static const int32_t COMMAND_THREAD_POOL_COUNT = 0;
+					static const int32_t IO_THREAD_POOL_COUNT = 500;
+					static const int32_t COMMAND_THREAD_POOL_COUNT = 500;
 					static const int32_t MTU_SIZE = 1500;
 					static const int32_t ARGUMENT_SIZE = 1024;
 					static const int32_t MAX_GPU_COUNT = 20;
@@ -73,6 +73,9 @@ namespace sirius
 					void check_alive_attendant(void);
 					void close_unconnected_attendant(void);
 					void update_available_attendant(void);
+					
+					void restart_attendant(void);
+					void create_attendant(int32_t id);				
 
 					static unsigned __stdcall process_cb(void * param);
 					void process(void);
@@ -85,6 +88,7 @@ namespace sirius
 					sirius::app::server::arbitrator::proxy::context_t * _context;
 					sirius::library::net::backend::cluster * _cluster;
 					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
+					std::vector<sirius::app::server::arbitrator::session *> _closed_sessions;
 					int32_t _last_alloc_session_id;
 					
 					HANDLE _thread;
@@ -97,6 +101,7 @@ namespace sirius
 					int32_t _max_attendant_instance_count;
 					
 					CRITICAL_SECTION _attendant_cs;
+					CRITICAL_SECTION _closed_attendant_cs;
 				};
 			};
 		};

@@ -21,6 +21,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _last_alloc_session_id(-1)
 {
 	::InitializeCriticalSection(&_attendant_cs);
+	::InitializeCriticalSection(&_closed_attendant_cs);
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
 	LOGGER::make_info_log(SAA, "%s, ======================= ", __FUNCTION__);
 	LOGGER::make_info_log(SAA, "%s, %d Sirius Start", __FUNCTION__, __LINE__);
@@ -64,6 +65,7 @@ sirius::app::server::arbitrator::proxy::core::~core(void)
 	sirius::library::log::log4cplus::logger::destroy();
 
 	::DeleteCriticalSection(&_attendant_cs);
+	::DeleteCriticalSection(&_closed_attendant_cs);	
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::server::arbitrator::proxy::context_t * context)
@@ -194,6 +196,9 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 	for (int32_t id = _last_alloc_session_id + 1; id < _sessions.size(); id++)
 	{
 		sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
+
+		if (!session) continue;
+
 		if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::available)
 		{
 			alloc_session = true;
@@ -217,20 +222,24 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 		for (int32_t id = 0; id < _last_alloc_session_id; id++)
 		{
 			sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
+
+			if (!session) continue;
+
 			if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::available)
 			{
+				alloc_session = true;
+				_last_alloc_session_id = id;
+
 				session->client_id(client_id);
 				session->client_uuid(uuid);
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting);
 
 				attendant_uuid = session->attendant_uuid();
-				status = sirius::app::server::arbitrator::proxy::err_code_t::success;
-
-				_last_alloc_session_id = id;
+				status = sirius::app::server::arbitrator::proxy::err_code_t::success;			
 
 				_use_count = _sessions.size() - get_available_attendant_count();
 				_cluster->backend_client_connect((char*)session->client_id(), _use_count, session->id());
-				alloc_session = true;;
+				
 				break;
 			}
 		}
@@ -281,32 +290,28 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_co
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
 	sirius::autolock lock(&_attendant_cs);
+		
+	sirius::app::server::arbitrator::session * session = nullptr;
 	
-	bool is_session = false;
-	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
+	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
+	iter = _sessions.find(id);
+	if (iter != _sessions.end())
+		session = iter->second;
+		
+	if (session)
 	{
-		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
-		{
-			sirius::app::server::arbitrator::session * session = iter->second;
-			if (session->id() == id)
-			{
-				is_session = true;
-				session->pid(pid);
-				session->attendant_uuid(uuid);
-				session->state(attendant_state_t::available);		
-			}
-		}
-	}
-
-	if (!is_session)
-	{
-		sirius::app::server::arbitrator::session * session(new sirius::app::server::arbitrator::session(id));
 		session->pid(pid);
 		session->attendant_uuid(uuid);
 		session->state(attendant_state_t::available);
-		_sessions.insert(std::make_pair(id, session));
 	}
-
+	else
+	{
+		sirius::app::server::arbitrator::session * new_session(new sirius::app::server::arbitrator::session(id));
+		new_session->pid(pid);
+		new_session->attendant_uuid(uuid);
+		new_session->state(attendant_state_t::available);
+		_sessions.insert(std::make_pair(id, new_session));
+	}	
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
@@ -413,6 +418,13 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 #endif
 				break;
 			}
+
+			if (strcmp(session->attendant_uuid(), uuid) == 0)
+			{
+				sirius::autolock lock(&_closed_attendant_cs);
+				_closed_sessions.push_back(session);		
+				break;
+			}
 		}
 	}
 }
@@ -466,42 +478,10 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 	for (iter = sessions.begin(); iter != sessions.end(); iter++)
 	{
 		sirius::app::server::arbitrator::session * session = iter->second;
-
-		if (session->pid() == 0) continue;
-		
-		if (proc.find(session->pid()) == sirius::app::server::arbitrator::process::controller::err_code_t::fail)
+		if(is_valid(session->attendant_uuid()) == false)
 		{
-			STARTUPINFOA si;
-			PROCESS_INFORMATION pi;
-			memset(&si, 0x00, sizeof(si));
-			memset(&pi, 0x00, sizeof(pi));
-			si.cb = sizeof(STARTUPINFO);
-
-			char module_path[MAX_PATH] = { 0 };
-			char * module_name = module_path;
-			module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
-			if (module_name != module_path)
-			{
-				CHAR * slash = strrchr(module_path, '\\');
-				if (slash != NULL)
-				{
-					module_name = slash + 1;
-					_strset_s(module_name, strlen(module_name) + 1, 0);
-				}
-				else
-				{
-					_strset_s(module_path, strlen(module_path) + 1, 0);
-				}
-			}
-			char command_line[MAX_PATH] = { 0 };
-			sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", session->id());
-
-			BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
-			if (result)
-			{
-				CloseHandle(pi.hProcess);
-				CloseHandle(pi.hThread);
-			}
+			session->attendant_uuid(UNDEFINED_UUID);
+			create_attendant(session->id());
 			::Sleep(200);
 		}			
 	}
@@ -546,15 +526,9 @@ void sirius::app::server::arbitrator::proxy::core::close_unconnected_attendant(v
 
 void sirius::app::server::arbitrator::proxy::core::update_available_attendant(void)
 {
-	std::map<int32_t, sirius::app::server::arbitrator::session *> sessions;
-	{
-		sirius::autolock lock(&_attendant_cs);
-		sessions = _sessions;
-	}
-
 	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
 	{
-		for (iter = sessions.begin(); iter != sessions.end(); iter++)
+		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 		{
 			sirius::app::server::arbitrator::session * session = iter->second;
 			if (session->state() > sirius::app::server::arbitrator::proxy::core::attendant_state_t::available && 
@@ -565,8 +539,62 @@ void sirius::app::server::arbitrator::proxy::core::update_available_attendant(vo
 			}
 		}
 	}
-	sessions.clear();
 }
+
+void sirius::app::server::arbitrator::proxy::core::restart_attendant(void)
+{
+	std::vector<sirius::app::server::arbitrator::session *> closed_sessions;
+	{
+		sirius::autolock lock(&_closed_attendant_cs);
+		closed_sessions = _closed_sessions;
+		_closed_sessions.clear();
+	}
+
+	std::vector<sirius::app::server::arbitrator::session *>::iterator piter = closed_sessions.begin();
+	while (piter != closed_sessions.end())
+	{
+		sirius::app::server::arbitrator::session * session = *piter;
+		create_attendant(session->id());
+		piter = closed_sessions.erase(piter);
+		::Sleep(100);
+	}
+}
+
+void sirius::app::server::arbitrator::proxy::core::create_attendant(int32_t id)
+{
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+	memset(&si, 0x00, sizeof(si));
+	memset(&pi, 0x00, sizeof(pi));
+	si.cb = sizeof(STARTUPINFO);
+
+	char module_path[MAX_PATH] = { 0 };
+	char * module_name = module_path;
+	module_name += GetModuleFileNameA(NULL, module_name, (sizeof(module_path) / sizeof(*module_path)) - (module_name - module_path));
+	if (module_name != module_path)
+	{
+		CHAR * slash = strrchr(module_path, '\\');
+		if (slash != NULL)
+		{
+			module_name = slash + 1;
+			_strset_s(module_name, strlen(module_name) + 1, 0);
+		}
+		else
+		{
+			_strset_s(module_path, strlen(module_path) + 1, 0);
+		}
+	}
+	char command_line[MAX_PATH] = { 0 };
+	sprintf_s(command_line, "sirius_arbitrator_launcher.exe --id=%d", id);
+
+	BOOL result = ::CreateProcessA(NULL, command_line, NULL, NULL, FALSE, CREATE_NEW_PROCESS_GROUP, NULL, module_path, &si, &pi);
+	if (result)
+	{
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+}
+
 
 unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
 {
@@ -683,12 +711,13 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{	
-			//if (elapsed_millisec % (onesec * 1) == 0)			
-				check_alive_attendant();
+		{				
+			restart_attendant();
+			//if (elapsed_millisec % (onesec * 3) == 0)			
+			//	check_alive_attendant();
 
-			if (elapsed_millisec % (onesec * 10) == 0)
-				update_available_attendant();				
+			//if (elapsed_millisec % (onesec * 10) == 0)
+			//	update_available_attendant();				
 
 			//if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
 			//	close_unconnected_attendant();
