@@ -1,19 +1,27 @@
 #include <winsock2.h>
 #include <windows.h>
+#include "arodnap_client.h"
 #include "arodnap_stream_client.h"
 #include <tinyxml.h>
 
-arodnap_stream_client::arodnap_stream_client(int recv_buffer_size)
+arodnap_stream_client::arodnap_stream_client(arodnap_client * front, int recv_buffer_size)
 	: base_client(recv_buffer_size)
+	, _front(front)
 	, _bstreaming(false)
 	, _recv_buffer_index(0)
 {
-
+	_send_buffer = (char*)malloc(1024 * 1024 * 2);
+	_recv_buffer = (char*)malloc(recv_buffer_size);
 }
 
 arodnap_stream_client::~arodnap_stream_client(void)
 {
-
+	if (_recv_buffer)
+		free(_recv_buffer);
+	if (_send_buffer)
+		free(_send_buffer);
+	_recv_buffer = nullptr;
+	_send_buffer = nullptr;
 }
 
 void arodnap_stream_client::on_connect_to_server(void)
@@ -163,10 +171,10 @@ void arodnap_stream_client::on_recv(const char * packet, int packet_size)
 
 			header_t header;
 			memmove(&header, _recv_buffer, sizeof(header_t));
-			header.packet_seq			= ntohs(header.packet_seq);
-			header.packet_length		= ntohs(header.packet_length);
-			header.adaptive_timestamp	= ntohll(header.adaptive_timestamp);
-			if (header.packet_length > _recv_buffer_index)
+			//header.packet_seq			= ntohs(header.packet_seq);
+			//header.packet_length		= ntohs(header.packet_length);
+			//header.adaptive_timestamp	= ntohll(header.adaptive_timestamp);
+			if ((header.packet_length + sizeof(header_t)) > _recv_buffer_index)
 				return;
 
 			char * body = _recv_buffer + sizeof(header_t);
@@ -176,14 +184,13 @@ void arodnap_stream_client::on_recv(const char * packet, int packet_size)
 				{
 					payload_t payload;
 					memmove(&payload, body, sizeof(payload_t));
-					payload.timestamp = ntohll(payload.timestamp);
-					payload.contents_length = ntohl(payload.contents_length);
-					body += sizeof(payload_t);
+					//payload.timestamp = ntohll(payload.timestamp);
+					//payload.contents_length = ntohl(payload.contents_length);
 
 					char * contents = body + sizeof(payload_t);
 
 					{
-						//parse info
+						//parse data info
 						unsigned int info_length = *(unsigned int*)(contents);
 						info_length = ntohl(info_length);
 						contents += sizeof(int);
@@ -192,19 +199,30 @@ void arodnap_stream_client::on_recv(const char * packet, int packet_size)
 						memmove(xml, contents, info_length);
 						payload_info_t info;
 						parse_payload_info(xml, &info);
+						OutputDebugStringA(xml);
 						contents += info_length;
 
 
 
-						//data info
+						//data
 						unsigned int data_length = *(unsigned int*)(contents);
 						data_length = ntohl(data_length);
 						contents += sizeof(int);
 
+						char debug[500] = { 0 };
+						_snprintf_s(debug, 500, "info_length=%d, data_length=%d, x=%d, y=%d, width=%d, height=%d command=%s\n", info_length, data_length, info.x, info.y, info.w, info.h, info.cmd);
+						OutputDebugStringA(debug);
 
+						_front->on_recv_video(contents, data_length, info.x, info.y, info.w, info.h);
+						contents += data_length;
 					}
+
+					body += (sizeof(payload_t)+payload.contents_length);
 				}
 			}
+
+			memmove(_recv_buffer, _recv_buffer + header.packet_length, _recv_buffer_index - header.packet_length);
+			_recv_buffer_index = _recv_buffer_index - header.packet_length;
 		}
 	}
 	else

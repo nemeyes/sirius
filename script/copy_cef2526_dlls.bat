@@ -40,10 +40,6 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_ca
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_capturer.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_capturer.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_compressor.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_compressor.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_compressor.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
