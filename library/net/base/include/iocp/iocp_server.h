@@ -32,8 +32,11 @@ namespace sirius
 					int32_t		start(char * address, int32_t port_number, int32_t io_thread_pool_count = 0);
 					int32_t		stop(void);
 
-					void		accept_session(std::shared_ptr<sirius::library::net::iocp::session> session);
-					std::shared_ptr<sirius::library::net::iocp::session> accept_session(void);
+
+					void		add_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session);
+					void		remove_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session);
+					//void		accept_session(std::shared_ptr<sirius::library::net::iocp::session> session);
+					//std::shared_ptr<sirius::library::net::iocp::session> accept_session(void);
 
 					BOOL		active(void) const;
 					BOOL		associate(SOCKET socket, ULONG_PTR key, int32_t * err_code);
@@ -80,7 +83,9 @@ namespace sirius
 					int32_t													_io_thread_pool_count;
 					HANDLE													_thread;
 					BOOL													_run;
-					std::shared_ptr<sirius::library::net::iocp::session>	_accept_session;
+					//std::shared_ptr<sirius::library::net::iocp::session>	_accept_session;
+					std::vector<std::shared_ptr<sirius::library::net::iocp::session>> _accept_waiting_sessions;
+					CRITICAL_SECTION										_accept_waiting_slock;
 
 					BOOL													_tls;
 					static int32_t											_nssl_locks;
