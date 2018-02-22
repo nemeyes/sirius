@@ -35,8 +35,13 @@ namespace sirius
 					void			disconnect(BOOL enable);
 					void			close_waiting_flag(BOOL enable);
 
+
+					void			add_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session) {};
+					void			remove_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session) {};
+					/*
 					void		accept_session(std::shared_ptr<sirius::library::net::iocp::session> session) {};
 					std::shared_ptr<sirius::library::net::iocp::session> accept_session(void) { return nullptr; };
+					*/
 
 					BOOL			active(void) const;
 					BOOL			associate(SOCKET socket, ULONG_PTR key, int32_t * err_code);

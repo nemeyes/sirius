@@ -138,6 +138,7 @@ sirius::library::net::iocp::server::server(int32_t so_recv_buffer_size, int32_t 
 	, _thread(INVALID_HANDLE_VALUE)
 	, _tls(tls)
 {
+	::InitializeCriticalSection(&_accept_waiting_slock);
 	_iocp = new handler(this);
 	memset(_address, 0x00, sizeof(_address));
 }
@@ -147,6 +148,7 @@ sirius::library::net::iocp::server::~server(void)
 	if (_iocp)
 		delete _iocp;
 	_iocp = nullptr;
+	::DeleteCriticalSection(&_accept_waiting_slock);
 }
 
 int32_t sirius::library::net::iocp::server::initialize(void)
@@ -191,6 +193,23 @@ int32_t sirius::library::net::iocp::server::stop(void)
 	return sirius::library::net::iocp::server::err_code_t::success;
 }
 
+void sirius::library::net::iocp::server::add_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock mutex(&_accept_waiting_slock);
+	_accept_waiting_sessions.push_back(session);
+}
+
+void sirius::library::net::iocp::server::remove_accept_waiting_session(std::shared_ptr<sirius::library::net::iocp::session> session)
+{
+	sirius::autolock mutex(&_accept_waiting_slock);
+	std::vector<std::shared_ptr<sirius::library::net::iocp::session>>::iterator iter;
+	iter = std::find(_accept_waiting_sessions.begin(), _accept_waiting_sessions.end(), session);
+	if (iter != _accept_waiting_sessions.end())
+	{
+		_accept_waiting_sessions.erase(iter);
+	}
+}
+/*
 void sirius::library::net::iocp::server::accept_session(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	_accept_session = session;
@@ -200,6 +219,7 @@ std::shared_ptr<sirius::library::net::iocp::session> sirius::library::net::iocp:
 {
 	return _accept_session;
 }
+*/
 
 BOOL sirius::library::net::iocp::server::active(void) const
 {
@@ -442,9 +462,10 @@ void sirius::library::net::iocp::server::process(void)
 	}
 
 	SOCKET s = create_listen_socket(_portnumber);
-	_accept_session = create_session(_so_recv_buffer_size, _so_send_buffer_size, _recv_buffer_size, _send_buffer_size, _tls, _ssl_ctx);
-	_accept_session->listen_socket(s);
-	_accept_session->accept();
+	std::shared_ptr<sirius::library::net::iocp::session> accept_session = create_session(_so_recv_buffer_size, _so_send_buffer_size, _recv_buffer_size, _send_buffer_size, _tls, _ssl_ctx);
+	add_accept_waiting_session(accept_session);
+	accept_session->listen_socket(s);
+	accept_session->accept();
 
 	on_running();
 
