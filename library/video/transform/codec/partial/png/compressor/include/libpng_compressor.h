@@ -93,7 +93,7 @@ namespace sirius
 								uint32_t width;
 								uint32_t height;
 								size_t maximum_file_size;
-								size_t metadata_size;
+								//size_t metadata_size;
 								double gamma;
 								unsigned char ** row_pointers;
 								unsigned char * indexed_data;

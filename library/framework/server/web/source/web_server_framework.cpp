@@ -21,6 +21,12 @@ sirius::library::framework::server::web::core::core(void)
 
 sirius::library::framework::server::web::core::~core()
 {
+	if (_unified_server && _unified_server_ctx)
+	{
+		if (_unified_server->is_video_compressor_initialized())
+			_unified_server->release_video_compressor();
+	}
+
 	if (_unified_server_ctx)
 	{
 		delete _unified_server_ctx;
