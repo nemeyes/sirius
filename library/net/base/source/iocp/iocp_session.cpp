@@ -516,14 +516,16 @@ void sirius::library::net::iocp::session::on_accept(std::shared_ptr<sirius::libr
 			::ResumeThread(_secure_recv_thread);
 			::ResumeThread(_secure_send_thread);
 
+			_processor->remove_accept_waiting_session(shared_from_this());
 			_processor->on_session_handshaking(shared_from_this());
 		}
 		else
 		{
+			_processor->remove_accept_waiting_session(shared_from_this());
 			_processor->on_session_connect(shared_from_this());
 		}
 
-		_processor->accept_session(new_session);
+		_processor->add_accept_waiting_session(new_session);
 	}
 }
 
