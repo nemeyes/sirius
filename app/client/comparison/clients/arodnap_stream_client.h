@@ -3,6 +3,7 @@
 
 #include "base_client.h"
 
+class arodnap_client;
 class arodnap_stream_client
 	: public base_client
 {
@@ -36,7 +37,7 @@ public:
 		char	cmd[100];
 	} payload_info_t;
 
-	arodnap_stream_client(int recv_buffer_size);
+	arodnap_stream_client(arodnap_client * front, int recv_buffer_size);
 	virtual ~arodnap_stream_client(void);
 
 	void	on_connect_to_server(void);
@@ -53,10 +54,11 @@ private:
 	int				parse_payload_info(const char * xml, payload_info_t * pinfo);
 
 private:
-	char	_send_buffer[1024 * 1024 * 2];
-	char	_recv_buffer[1024 * 1024 * 4];
-	int		_recv_buffer_index;
-	bool	_bstreaming;
+	arodnap_client *	_front;
+	char *				_send_buffer;
+	char *				_recv_buffer;
+	int					_recv_buffer_index;
+	bool				_bstreaming;
 };
 
 

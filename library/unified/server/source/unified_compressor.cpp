@@ -58,11 +58,11 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->block_height = _external_venc_ctx->block_height;
 			venc_ctx->compression_level = _external_venc_ctx->compression_level;
 			venc_ctx->gamma = 1 / 2.2f;
-			venc_ctx->floyd = 0.f; //0.5f
-			venc_ctx->speed = 10;
+			venc_ctx->floyd = 0.5f; //0.5f
+			venc_ctx->speed = 7;
 			venc_ctx->max_colors = _external_venc_ctx->quantization_colors;
-			venc_ctx->min_quality = 50;
-			venc_ctx->max_quality = 80;
+			venc_ctx->min_quality = 0;
+			venc_ctx->max_quality = 100;
 			venc->initialize(venc_ctx);
 			if (_external_venc_ctx->play_after_init)
 			{

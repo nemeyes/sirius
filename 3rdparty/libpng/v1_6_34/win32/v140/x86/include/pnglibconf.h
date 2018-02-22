@@ -1,8 +1,8 @@
-/* libpng 1.6.34 STANDARD API DEFINITION */
+/* libpng 1.6.35beta01 STANDARD API DEFINITION */
 
 /* pnglibconf.h - library build configuration */
 
-/* Libpng version 1.6.34 - September 29, 2017 */
+/* Libpng version 1.6.35beta01 - September 29, 2017 */
 
 /* Copyright (c) 1998-2017 Glenn Randers-Pehrson */
 
@@ -34,8 +34,8 @@
 /*#undef PNG_ERROR_NUMBERS_SUPPORTED*/
 #define PNG_ERROR_TEXT_SUPPORTED
 #define PNG_FIXED_POINT_SUPPORTED
-//#define PNG_FLOATING_ARITHMETIC_SUPPORTED
-//#define PNG_FLOATING_POINT_SUPPORTED
+#define PNG_FLOATING_ARITHMETIC_SUPPORTED
+#define PNG_FLOATING_POINT_SUPPORTED
 #define PNG_FORMAT_AFIRST_SUPPORTED
 #define PNG_FORMAT_BGR_SUPPORTED
 #define PNG_GAMMA_SUPPORTED
