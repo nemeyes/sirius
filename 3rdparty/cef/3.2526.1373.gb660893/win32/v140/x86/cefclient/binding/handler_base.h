@@ -5,10 +5,13 @@
 #include "include/cef_v8.h"
 
 namespace client {
-		class message_handler_base : virtual public CefBase {
+		class message_handler_base /*: public CefBase*/ {
 		public:
 			message_handler_base() {};
-			virtual ~message_handler_base() {};
+			virtual ~message_handler_base() 
+			{
+				::OutputDebugStringA("~message_handler_base()\n");
+			};
 
 			void set_list_Value(CefRefPtr<CefListValue> list, int index,
 				CefRefPtr<CefV8Value> value) {
@@ -51,17 +54,24 @@ namespace client {
 					new_value = CefV8Value::CreateInt(value->GetInt(index));
 					break;
 				case VTYPE_STRING:
+				{
+					std::string str = "";
+					str = value->GetString(index);
+					::OutputDebugStringA(str.c_str());
 					new_value = CefV8Value::CreateString(value->GetString(index));
 					break;
+				}
 				default:
 					break;
 				}
 
 				if (new_value.get()) {
-					list->SetValue(index, new_value);
+					if(list.get()!=nullptr)
+						list->SetValue(index, new_value);
 				}
 				else {
-					list->SetValue(index, CefV8Value::CreateNull());
+					if (list.get() != nullptr)
+						list->SetValue(index, CefV8Value::CreateNull());
 				}
 			}
 			void set_list(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target) {
@@ -80,7 +90,7 @@ namespace client {
 					set_list_Value(target, i, source);
 			}
 		private:
-			IMPLEMENT_REFCOUNTING(message_handler_base);
+			//IMPLEMENT_REFCOUNTING(message_handler_base);
 			DISALLOW_COPY_AND_ASSIGN(message_handler_base);
 		};
 }

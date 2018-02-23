@@ -14,6 +14,11 @@ ClientAppRenderer::ClientAppRenderer() {
   CreateDelegates(delegates_);
 }
 
+ClientAppRenderer::~ClientAppRenderer()
+{
+	OutputDebugStringA("ClientAppRenderer::~ClientAppRenderer()\n");
+}
+
 void ClientAppRenderer::OnRenderThreadCreated(
     CefRefPtr<CefListValue> extra_info) {
   DelegateSet::iterator it = delegates_.begin();
@@ -116,13 +121,14 @@ bool ClientAppRenderer::OnProcessMessageReceived(
   }
 
 #if defined(WITH_EXTERNAL_INTERFACE)
-  if (message->GetName() == binding::msg_attendant_to_app) {
-	  binding::message_handler::
-		  getInstance().external_interface_message_received(browser, source_process, message);
-  }
-  else if (message->GetName() == binding::kRequestPID) {
-	  return client::binding::message_handler::
-		  getInstance().external_interface_message_received(browser, source_process, message);
+  if (!handled)
+  {
+	  if (message->GetName() == binding::msg_attendant_to_app) {
+		  binding::message_handler::
+			  getInstance().external_interface_message_received(browser, source_process, message);
+	  }
+	  
+	  handled = true;
   }
 #endif
   return handled;

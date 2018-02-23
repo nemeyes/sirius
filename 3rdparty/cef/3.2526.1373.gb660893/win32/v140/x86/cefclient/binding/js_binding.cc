@@ -6,29 +6,37 @@
 namespace client {
 	namespace binding {
 
-		class CSBV8Handler : public CefV8Handler, message_handler_base {
+		class CSBV8Handler : public CefV8Handler {
 		public:
-			CSBV8Handler() {
+			CSBV8Handler() 
+			{
+				::OutputDebugStringA("CSBV8Handler()");
 			}
-			virtual bool Execute(const CefString& name,
-				CefRefPtr<CefV8Value> object,
-				const CefV8ValueList& arguments,
-				CefRefPtr<CefV8Value>& retval,
-				CefString& exception) {
-				if (name == "sendMessage") {
+
+			~CSBV8Handler() {
+				::OutputDebugStringA("~CSBV8Handler()");
+			}
+			virtual bool Execute(const CefString& name, CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments, CefRefPtr<CefV8Value>& retval, CefString& exception) 
+			{
+				if (name == "sendMessage") 
+				{
 					ExecuteSendMessage(arguments);
 				}
-				else if (name == "setMessageCallback") {
+				else if (name == "setMessageCallback") 
+				{
 					ExecuteSetMessageCallBack(arguments);
 				}
-				else if (name == "removeMessageCallback") {
+				else if (name == "removeMessageCallback") 
+				{
 					retval = CefV8Value::CreateBool(ExecuteRemoveMessageCallBack(arguments));
 				}
 				return true;
 			}
 
-			bool ExecuteRemoveMessageCallBack(const CefV8ValueList& arguments) {
-				if (arguments.size() == 1 && arguments[0]->IsString()) {
+			bool ExecuteRemoveMessageCallBack(const CefV8ValueList& arguments) 
+			{
+				if (arguments.size() == 1 && arguments[0]->IsString()) 
+				{
 					std::string name = arguments[0]->GetStringValue();
 					CefRefPtr<CefV8Context> context = CefV8Context::GetCurrentContext();
 					int browser_id = context->GetBrowser()->GetIdentifier();
@@ -37,32 +45,33 @@ namespace client {
 				return false;
 			}
 
-			bool ExecuteSetMessageCallBack(const CefV8ValueList& arguments) {
-				if (arguments.size() == 2 && arguments[0]->IsString() &&
-					arguments[1]->IsFunction()) {
+			bool ExecuteSetMessageCallBack(const CefV8ValueList& arguments) 
+			{
+				if (arguments.size() == 2 && arguments[0]->IsString() && arguments[1]->IsFunction())
+				{
 					std::string name = arguments[0]->GetStringValue();
 					CefRefPtr<CefV8Context> context = CefV8Context::GetCurrentContext();
 					int browser_id = context->GetBrowser()->GetIdentifier();
-					message_handler::getInstance().setMessageCallback(name,
-						browser_id, context, arguments[1]);
+					
+					message_handler::getInstance().removeMessageCallback(name, browser_id);
+					message_handler::getInstance().setMessageCallback(name, browser_id, context, arguments[1]);
 				}
 				return true;
 			}
 
-			bool ExecuteSendMessage(const CefV8ValueList& arguments) {
-				if ((arguments.size() == 1 || arguments.size() == 2) &&
-					arguments[0]->IsString()) {
-					CefRefPtr<CefBrowser> cef_browser =
-						CefV8Context::GetCurrentContext()->GetBrowser();
-
+			bool ExecuteSendMessage(const CefV8ValueList& arguments) 
+			{
+				if ((arguments.size() == 1 || arguments.size() == 2) && arguments[0]->IsString()) 
+				{
+					CefRefPtr<CefBrowser> cef_browser = CefV8Context::GetCurrentContext()->GetBrowser();
 					CefString name = arguments[0]->GetStringValue();
-					if (!name.empty()) {
-						CefRefPtr<CefProcessMessage> msg =
-							CefProcessMessage::Create(name);
+					if (!name.empty()) 
+					{
+						CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(name);
 
 						// Translate the arguments, if any.
 						if (arguments.size() == 2 && arguments[1]->IsArray())
-							set_list(arguments[1], msg->GetArgumentList());
+							message_handler::getInstance().set_list(arguments[1], msg->GetArgumentList());
 
 						cef_browser->SendProcessMessage(PID_BROWSER, msg);
 					}
@@ -79,6 +88,11 @@ namespace client {
 			render_delegate() {
 			}
 			virtual void OnWebKitInitialized(CefRefPtr<ClientAppRenderer> app) {
+				DWORD threadid = GetCurrentThreadId();
+				char debug[MAX_PATH] = { 0 };
+				_snprintf(debug, MAX_PATH, "OnWebKitInitialized : threadid is %ld\n", threadid);
+				OutputDebugStringA(debug);
+
 				CefString code =
 					"var __SIRIUS_APP__;"
 					"if (!__SIRIUS_APP__)"

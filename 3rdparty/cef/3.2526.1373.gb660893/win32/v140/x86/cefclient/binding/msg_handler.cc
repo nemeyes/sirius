@@ -9,35 +9,38 @@
 
 namespace client {
 	namespace binding {
-		message_handler* message_handler::_instance = nullptr;
 		message_handler::message_handler() {
 		}
-		message_handler& message_handler::getInstance() {
-			if (_instance == nullptr)
-				_instance = new message_handler;
-
-			return *_instance;
+		message_handler& message_handler::getInstance() 
+		{
+			static message_handler  _instance;
+			return _instance;
 		}
 
-		void message_handler::release() {
-			if (_instance) {
-				_instance->deleteCallbackMap();
-				//_instance->Release();
-			}
+		message_handler::~message_handler() 
+		{
+			deleteCallbackMap();
 		}
 
-		void message_handler::deleteCallbackMap() {
-			if (!callback_map_.empty()) {
+		void message_handler::release() 
+		{
+			
+		}
+
+		void message_handler::deleteCallbackMap() 
+		{
+			if (!callback_map_.empty()) 
+			{
 				CallbackMap::iterator it = callback_map_.begin();
-				for (; it != callback_map_.end();) {
+				for (; it != callback_map_.end();) 
+				{
 					callback_map_.erase(it++);
 				}
 			}
 		}
 		void message_handler::send_to_javascript(const CefString & data)
 		{
-			RootWindowWin* rootWin =
-				GetUserDataPtr<RootWindowWin*>(binding::global::get_instance().get_window_handle());
+			RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(binding::global::get_instance().get_window_handle());
 			DCHECK(rootWin);
 			CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
@@ -47,23 +50,25 @@ namespace client {
 			browser->SendProcessMessage(PID_RENDERER, msg);
 		}
 
-		bool message_handler::external_interface_message_received(CefRefPtr<CefBrowser> browser,
-			CefProcessId source_process,
-			CefRefPtr<CefProcessMessage> message) {
+		bool message_handler::external_interface_message_received(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message) 
+		{
 			CefRefPtr<CefListValue> args = message->GetArgumentList();
 			CefString message_name = message->GetName();
 			bool ret = false;
 
-			if (message_name == msg_app_to_attendant) {
+			if (message_name == msg_app_to_attendant) 
+			{
 				msg_from_app_to_attendant(message);
 			}
-			else if (message_name == msg_attendant_to_app) {
+			else if (message_name == msg_attendant_to_app) 
+			{
 				msg_from_attendant_to_app(browser, message);
 			}
 			return ret;
 		}
 
-		bool message_handler::msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message) {
+		bool message_handler::msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message) 
+		{
 			CefRefPtr<CefListValue> args = message->GetArgumentList();
 			bool ret = false;
 			CefString result = args->GetString(0);
@@ -71,50 +76,49 @@ namespace client {
 			return ret;
 		}
 
-		bool message_handler::setMessageCallback(const CefString& message_name,
-			int browser_id,
-			CefRefPtr<CefV8Context> context,
-			CefRefPtr<CefV8Value> function) {
-			callback_map_.insert(
-				std::make_pair(std::make_pair(message_name, browser_id),
-					std::make_pair(context, function)));
+		bool message_handler::setMessageCallback(const CefString& message_name, int browser_id, CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> function) 
+		{
+			callback_map_.insert( std::make_pair(std::make_pair(message_name, browser_id), std::make_pair(context, function)));
 			return true;
 		}
 
-		bool message_handler::removeMessageCallback(const CefString& message_name,
-			int browser_id) {
-			CallbackMap::iterator it =
-				callback_map_.find(std::make_pair(message_name, browser_id));
-			if (it != callback_map_.end()) {
+		bool message_handler::removeMessageCallback(const CefString& message_name, int browser_id) {
+			CallbackMap::iterator it = callback_map_.find(std::make_pair(message_name, browser_id));
+			if (it != callback_map_.end()) 
+			{
 				callback_map_.erase(it);
 				return true;
 			}
 			return false;
 		}
 
-		void message_handler::msg_from_attendant_to_app(CefRefPtr<CefBrowser> browser,
-			CefRefPtr<CefProcessMessage> message) {
-			if (!callback_map_.empty()) {
+		void message_handler::msg_from_attendant_to_app(CefRefPtr<CefBrowser> browser, CefRefPtr<CefProcessMessage> message) 
+		{
+			if (!callback_map_.empty()) 
+			{
 				CefString message_name = message->GetName();
 
-				CallbackMap::const_iterator it = callback_map_.find(
-					std::make_pair(message_name.ToString(),
-						browser->GetIdentifier()));
+				CallbackMap::const_iterator it = callback_map_.find(std::make_pair(message_name.ToString(), browser->GetIdentifier()));
 
 				if (it != callback_map_.end()) {
 					CefRefPtr<CefV8Context> context = it->second.first;
 					CefRefPtr<CefV8Value> callback = it->second.second;
-					context->Enter();
-					CefV8ValueList arguments;
-					arguments.push_back(CefV8Value::CreateString(message_name));
-					CefRefPtr<CefListValue> list = message->GetArgumentList();
-					CefRefPtr<CefV8Value> args =
-						CefV8Value::CreateArray(static_cast<int>(list->GetSize()));
-					set_list(list, args);
-					arguments.push_back(args);
+					context->InContext();
+					GetCurrentThreadId();
+					bool success = context->Enter();
+					if(success)
+					{ 
+						CefV8ValueList arguments;
+						arguments.push_back(CefV8Value::CreateString(message_name));
+						CefRefPtr<CefListValue> list = message->GetArgumentList();
+						CefRefPtr<CefV8Value> args = CefV8Value::CreateArray(static_cast<int>(list->GetSize()));
+						//args.get();
+						set_list(list, args);
+						arguments.push_back(args);
 
-					CefRefPtr<CefV8Value> retval = callback->ExecuteFunction(NULL, arguments);
-					context->Exit();
+						CefRefPtr<CefV8Value> retval = callback->ExecuteFunction(NULL, arguments);
+						success = context->Exit();
+					}
 				}
 			}
 		}
