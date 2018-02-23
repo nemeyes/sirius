@@ -394,9 +394,8 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 	sirius::autolock lock(&_attendant_cs);
 
 	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);
-
-	sirius::app::server::arbitrator::process::controller proc;
 	
+	sirius::app::server::arbitrator::process::controller proc;
 	sirius::app::server::arbitrator::session * session = nullptr;
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
@@ -404,7 +403,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 		{
 			session = iter->second;
 			if (strcmp(session->client_uuid(), uuid) == 0)
-			{			
+			{				
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
 
 				_use_count = _max_attendant_instance_count - get_available_attendant_count();
@@ -479,14 +478,15 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 		sirius::app::server::arbitrator::session * session = iter->second;
 		if(is_valid(session->attendant_uuid()) == false)
 		{
-			sirius::autolock lock(&_closed_attendant_cs);
-			_closed_sessions.push_back(session);
+			sirius::autolock lock(&_closed_attendant_cs);			
 		}			
 	}	
 }
 
-void sirius::app::server::arbitrator::proxy::core::close_diconnected_attendant(void)
+void sirius::app::server::arbitrator::proxy::core::close_disconnected_attendant(void)
 {	
+	sirius::autolock lock(&_attendant_cs);
+
 	sirius::app::server::arbitrator::process::controller proc;
 	
 	DWORD dwCount = 0;
@@ -552,7 +552,6 @@ void sirius::app::server::arbitrator::proxy::core::restart_attendant(void)
 		sirius::app::server::arbitrator::session * session = *piter;
 		create_attendant(session->id());
 		piter = closed_sessions.erase(piter);
-		::Sleep(100);
 	}
 }
 
@@ -709,14 +708,14 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		else
 		{				
 			restart_attendant();
-			if (elapsed_millisec % (onesec * 3) == 0)			
-				check_alive_attendant();
+			//if (elapsed_millisec % (onesec * 3) == 0)			
+			//	check_alive_attendant();
 
 			//if (elapsed_millisec % (onesec * 10) == 0)
 			//	update_available_attendant();				
 
-			//if(elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
-			//	close_unconnected_attendant();			
+			//if (elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
+			//	close_disconnected_attendant();
 		}	
 		::Sleep(msleep);
 		elapsed_millisec += msleep;

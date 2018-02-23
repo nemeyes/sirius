@@ -156,7 +156,7 @@ int main()
 			memmove(contenity.client_uuid, UNDEFINED_UUID, strlen(UNDEFINED_UUID) + 1);				
 			contenity.state = attendant_state_t::idle;
 			
-			proc_ctrl.set_cmdline(arguments, "--reconnect=false");
+			proc_ctrl.set_cmdline(arguments, "--reconnect=true");
 			proc_ctrl.set_cmdline(arguments, "--uuid=\"%s\"", contenity.uuid);
 			proc_ctrl.set_cmdline(arguments, "--attendant_type=\"web\"");
 			proc_ctrl.set_cmdline(arguments, "--url=\"%s\"", confentity.url);
