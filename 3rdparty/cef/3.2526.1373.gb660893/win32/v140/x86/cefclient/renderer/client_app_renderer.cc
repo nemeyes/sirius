@@ -114,6 +114,7 @@ bool ClientAppRenderer::OnProcessMessageReceived(
     handled = (*it)->OnProcessMessageReceived(this, browser, source_process,
                                               message);
   }
+
 #if defined(WITH_EXTERNAL_INTERFACE)
   if (message->GetName() == binding::msg_attendant_to_app) {
 	  binding::message_handler::
