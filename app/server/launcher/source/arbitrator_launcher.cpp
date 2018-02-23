@@ -209,10 +209,6 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
 			proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
 			proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
-
-#if defined(_DEBUG)
-			proc_ctrl.set_cmdline(arguments, "--single-process");
-#endif
 		
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 
