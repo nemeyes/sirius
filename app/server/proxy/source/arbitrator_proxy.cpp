@@ -552,6 +552,7 @@ void sirius::app::server::arbitrator::proxy::core::restart_attendant(void)
 		sirius::app::server::arbitrator::session * session = *piter;
 		create_attendant(session->id());
 		piter = closed_sessions.erase(piter);
+		::Sleep(50);
 	}
 }
 
