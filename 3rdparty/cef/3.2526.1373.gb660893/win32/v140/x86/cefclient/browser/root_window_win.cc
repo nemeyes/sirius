@@ -169,7 +169,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
 
 #if defined(WITH_EXTERNAL_INTERFACE)
 	binding::global::get_instance().set_window_handle(GetWindowHandle());
-	binding::browser::getInstance();
+	//binding::browser::getInstance();
 #endif
   } else {
     MAIN_POST_CLOSURE(
