@@ -301,7 +301,7 @@ void CSiriusStressorDlg::connect_proc()
 	{
 		int index = client_count + i;
 		stressor_controller* client = new stressor_controller(this, index, true, false);
-		client->connect(server_address, server_port, false);
+		client->connect(server_address, server_port, true);
 		_vec_client.push_back(client);
 
 		if (connect_count > 1)
@@ -347,8 +347,9 @@ void CSiriusStressorDlg::disconnect_proc()
 		{	
 			stressor_controller * client = _vec_client[i];
 			if (client)
-			{
-				vec_disconnect_inner_thread.push_back(std::thread(&CSiriusStressorDlg::disconnect_proc_inner, client));	
+			{			
+				vec_disconnect_inner_thread.push_back(std::thread(&CSiriusStressorDlg::disconnect_proc_inner, client));
+				::Sleep(20);
 			}
 			else
 			{
@@ -393,10 +394,7 @@ void CSiriusStressorDlg::disconnect_proc()
 unsigned CSiriusStressorDlg::disconnect_proc_inner(void* param)
 {
 	stressor_controller * client = static_cast<stressor_controller*>(param);	
-	if (client->state() != sirius::app::client::proxy::state_t::disconnected)
-	{
-		client->disconnect();
-	}
+	client->disconnect();	
 	delete client;
 	client = nullptr;
 	return 0;
