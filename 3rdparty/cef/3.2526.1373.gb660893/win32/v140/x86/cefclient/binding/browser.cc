@@ -1,4 +1,5 @@
 #if defined(WITH_EXTERNAL_INTERFACE)
+/*
 #include <sstream>
 #include "cefclient/browser/root_window_win.h"
 #include "cefclient/browser/util_win.h"
@@ -41,4 +42,7 @@ namespace client {
 		}
 	}  // namespace binding
 }  // namespace client
+
+*/
+
 #endif
