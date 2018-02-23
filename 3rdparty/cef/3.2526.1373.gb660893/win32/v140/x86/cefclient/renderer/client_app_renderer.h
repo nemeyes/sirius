@@ -49,19 +49,24 @@ class ClientAppRenderer : public ClientApp,
     virtual void OnContextCreated(CefRefPtr<ClientAppRenderer> app,
                                   CefRefPtr<CefBrowser> browser,
                                   CefRefPtr<CefFrame> frame,
-                                  CefRefPtr<CefV8Context> context) {}
+		CefRefPtr<CefV8Context> context) {
+	}
 
     virtual void OnContextReleased(CefRefPtr<ClientAppRenderer> app,
                                    CefRefPtr<CefBrowser> browser,
                                    CefRefPtr<CefFrame> frame,
-                                   CefRefPtr<CefV8Context> context) {}
+                                   CefRefPtr<CefV8Context> context) {
+		OutputDebugStringA("OnContextReleased");
+	}
 
     virtual void OnUncaughtException(CefRefPtr<ClientAppRenderer> app,
                                      CefRefPtr<CefBrowser> browser,
                                      CefRefPtr<CefFrame> frame,
                                      CefRefPtr<CefV8Context> context,
                                      CefRefPtr<CefV8Exception> exception,
-                                     CefRefPtr<CefV8StackTrace> stackTrace) {}
+                                     CefRefPtr<CefV8StackTrace> stackTrace) {
+		OutputDebugStringA("OnUncaughtException");
+	}
 
     virtual void OnFocusedNodeChanged(CefRefPtr<ClientAppRenderer> app,
                                       CefRefPtr<CefBrowser> browser,
@@ -84,6 +89,7 @@ class ClientAppRenderer : public ClientApp,
   typedef std::set<CefRefPtr<Delegate> > DelegateSet;
 
   ClientAppRenderer();
+  virtual ~ClientAppRenderer();
 
  private:
   // Creates all of the Delegate objects. Implemented by cefclient in

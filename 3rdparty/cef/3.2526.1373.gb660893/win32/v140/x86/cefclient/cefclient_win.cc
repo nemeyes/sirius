@@ -63,13 +63,11 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   CefRefPtr<CefApp> app;
   ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
   if (process_type == ClientApp::BrowserProcess)
-  {
     app = new ClientAppBrowser();
-  }
   else if (process_type == ClientApp::RendererProcess)
-    app = new ClientAppRenderer();
+	  app = new ClientAppRenderer();
   else if (process_type == ClientApp::OtherProcess)
-    app = new ClientAppOther();
+	  app = new ClientAppOther();
 
 #ifdef WITH_ATTENDANT_PROXY
   OutputDebugStringA("++++++++++++++++++++++++++++++++cefclient+++++++++++++++++++");
