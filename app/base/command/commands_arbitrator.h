@@ -51,7 +51,7 @@ namespace sirius
 						reader.parse(msg, rpacket);
 
 						std::string id = rpacket.get("id", "").asString();
-						int32_t status = _proxy->connect_client(src, id.c_str());
+						int32_t status = _proxy->connect_client(session->uuid(), id.c_str());
 
 						Json::Value wpacket;
 						Json::StyledWriter writer;
@@ -73,7 +73,7 @@ namespace sirius
 
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
-						int32_t status = _proxy->disconnect_client(src);
+						int32_t status = _proxy->disconnect_client(session->uuid());
 
 						Json::Value wpacket;
 						Json::StyledWriter writer;
@@ -112,7 +112,7 @@ namespace sirius
 						if (rpacket["pid"].isInt())
 							pid = rpacket.get("pid", -1).asInt();
 						
-						int32_t status = _proxy->connect_attendant_callback(src, id, pid);
+						int32_t status = _proxy->connect_attendant_callback(session->uuid(), id, pid);
 
 						Json::Value wpacket;
 						Json::StyledWriter writer;
@@ -134,7 +134,7 @@ namespace sirius
 
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
-						_proxy->disconnect_attendant_callback(src);
+						_proxy->disconnect_attendant_callback(session->uuid());
 					}
 				};
 
@@ -158,7 +158,7 @@ namespace sirius
 						std::string client_id = rpacket.get("client_id", "").asString();
 						std::string client_uuid = rpacket.get("client_uuid", "").asString();
 						int32_t rcode = rpacket.get("rcode", -1).asInt();
-						_proxy->start_attendant_callback(src, id, client_id.c_str(),client_uuid.c_str(), rcode);
+						_proxy->start_attendant_callback(session->uuid(), id, client_id.c_str(),client_uuid.c_str(), rcode);
 					}
 				};
 
@@ -178,7 +178,7 @@ namespace sirius
 						reader.parse(msg, rpacket);
 
 						int32_t rcode = rpacket.get("rcode", -1).asInt();
-						_proxy->stop_attendant_callback(src, rcode);
+						_proxy->stop_attendant_callback(session->uuid(), rcode);
 					}
 				};
 				//end attendant <-> arbitrator
