@@ -50,7 +50,7 @@ namespace sirius
 
 				void	app_to_attendant(uint8_t * packet, int32_t len);
 				void	attendant_to_app_callback(uint8_t * packet, int32_t len);
-				void	set_attendant_cb(FuncPtrCallback fncallback) { _callback = fncallback; }
+				void	set_attendant_cb(FuncPtrCallback fncallback); //{ _callback = fncallback; }
 
 				FuncPtrCallback _callback;
 

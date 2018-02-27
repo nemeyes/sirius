@@ -33,7 +33,7 @@ namespace client {
 		}
 
 		void browser::release() {
-			message_handler::release();
+			//message_handler::release();
 			socket_win::release();
 
 			if (_ptr_this) {
