@@ -96,6 +96,7 @@
     <Compile Include="AttendantsSettingsViewModel.cs" />
     <Compile Include="BingImage.cs" />
     <Compile Include="ChartClass.cs" />
+    <Compile Include="LogSettingsViewModel.cs" />
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="Controls\PortableHyperLinkButton.cs" />
     <Compile Include="Controls\PortablePopup.cs" />
@@ -112,6 +113,9 @@
     <Compile Include="NetworkSettingsViewModel.cs" />
     <Compile Include="Settings\AttendantsSettings.xaml.cs">
       <DependentUpon>AttendantsSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\LogSettings.xaml.cs">
+      <DependentUpon>LogSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\MediaSettings.xaml.cs">
       <DependentUpon>MediaSettings.xaml</DependentUpon>
@@ -249,6 +253,10 @@
     <Page Include="Settings\AttendantsSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\LogSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\MediaSettings.xaml">
       <Generator>MSBuild:Compile</Generator>

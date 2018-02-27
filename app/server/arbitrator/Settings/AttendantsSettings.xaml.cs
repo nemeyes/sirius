@@ -45,10 +45,13 @@ namespace sirius.app.server.arbitrator.Settings
             TextAttendantUrl.Text = setting_value.url;
             TextAttendantInstanceCount.Text = setting_value.max_attendant_instance.ToString();
             TextAttendantCreationDelay.Text = setting_value.attendant_creation_delay.ToString();
-            //QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
+            TextAttendantFrameRate.Text = setting_value.video_fps.ToString();
+            TextAttendantIdleTime.Text = setting_value.idle_time.ToString();
+            TextAppSessionApp.Text = setting_value.app_session_app.ToString();
+            QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
             setting_value.video_compression_level = 1;
-            setting_value.video_quantization_colors = 16;
+            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
             if (setting_value.enable_present)
             {
                 DisaplyAttendantOn.IsChecked = true;
@@ -111,10 +114,13 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.url = TextAttendantUrl.Text.Trim();
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
+            setting_value.video_fps = Convert.ToInt32(TextAttendantFrameRate.Text);
             //setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
             setting_value.video_compression_level = 1;
-            setting_value.video_quantization_colors = 16;
-            
+            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
+            setting_value.app_session_app = TextAppSessionApp.Text;
+            setting_value.idle_time = Convert.ToInt32(TextAttendantIdleTime.Text);
+
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
             else
@@ -151,6 +157,32 @@ namespace sirius.app.server.arbitrator.Settings
             }
         }
         private void TextAttendantCreationDelay_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextAttendantFrameRate_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextAttendantIdleTime_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //only number type
             foreach (char c in e.Text)
