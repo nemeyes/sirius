@@ -46,7 +46,15 @@
                 <StackPanel>
                     <TextBox x:Name="TextAttendantUrl" Width="221" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
                 </StackPanel>
-                
+
+                <StackPanel>
+                    <Label Content="AppSessionApp" Target="{Binding ElementName=TextAppSessionApp}" Width="150"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBox x:Name="TextAppSessionApp" Width="221" Text="{Binding AppSessionApp, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
+                </StackPanel>
+
                 <StackPanel>
                     <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="150"/>
                     <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" TextChanged="TextAttendantInstanceCount_TextChanged" PreviewTextInput="TextAttendantInstanceCount_PreviewTextInput" />
@@ -57,10 +65,20 @@
                     <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantCreationDelay_PreviewTextInput" /> 
                     <Label Content="ms"/>
                 </StackPanel>
-                
-                <!--StackPanel>
-                    <Label Content="QuantizationColors" Target="{Binding ElementName=QuantizationColors}" Width="150"/>
-                    <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Left" MinWidth="70">
+
+                <StackPanel>
+                    <Label Content="Frame Rate" Target="{Binding ElementName=TextAttendantFrameRate}" Width="150"/>
+                    <TextBox x:Name="TextAttendantFrameRate" Width="70" Text="{Binding AttendantFrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantFrameRate_PreviewTextInput"/>                    
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Idle Time" Target="{Binding ElementName=TextAttendantIdleTime}" Width="150"/>
+                    <TextBox x:Name="TextAttendantIdleTime" Width="70" Text="{Binding AttendantIdleTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantIdleTime_PreviewTextInput"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
+                    <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" IsSelected="true" />
                         <ComboBoxItem Content="16" />
                         <ComboBoxItem Content="32" />
@@ -68,7 +86,7 @@
                         <ComboBoxItem Content="128" />
                         <ComboBoxItem Content="256" />
                     </ComboBox>
-                </-->
+                </StackPanel>
 
 
                 <!--StackPanel>

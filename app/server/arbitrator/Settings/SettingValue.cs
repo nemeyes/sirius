@@ -30,6 +30,11 @@ namespace sirius.app.server.arbitrator.Settings
         public bool enable_caching { get; set; }
         public string cpu { get; set; }
         public string memory { get; set; }
+        public int log_level { get; set; }
+        public int idle_time { get; set; }
+        public string log_root_path { get; set; }
+        public string app_session_app { get; set; }
+
 
         private static SettingValue _instance;
         protected SettingValue()
@@ -47,6 +52,8 @@ namespace sirius.app.server.arbitrator.Settings
         {
             IntPtr puuid = Marshal.StringToHGlobalAnsi(uuid);
             IntPtr purl = Marshal.StringToHGlobalAnsi(url);
+            IntPtr plog_root_path = Marshal.StringToHGlobalAnsi(log_root_path);
+            IntPtr papp_sesion_app = Marshal.StringToHGlobalAnsi(app_session_app);
 
             sirius_arbitrator.controller.update(
                 (sbyte*)puuid, 
@@ -67,7 +74,11 @@ namespace sirius.app.server.arbitrator.Settings
                 enable_keepalive, 
                 enable_present, 
                 enable_auto_start, 
-                enable_caching);
+                enable_caching,
+                log_level,
+                idle_time,
+                (sbyte*)plog_root_path,
+                (sbyte*)papp_sesion_app);
         }
     }
 }

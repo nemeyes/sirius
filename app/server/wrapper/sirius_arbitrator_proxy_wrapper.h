@@ -6,14 +6,14 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-typedef void(__stdcall *initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *);
+typedef void(__stdcall *initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *, int32_t, int32_t, const char *, const char *);
 typedef void(__stdcall *system_monitor_info_callback)(double, double);
 typedef void(__stdcall *attendant_create_callback)(double);
 typedef void(__stdcall *start_callback)(void);
 typedef void(__stdcall *stop_callback)(void);
 typedef void(__stdcall *release_callback)(void);
 
-public delegate void delegate_initialize_callback(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *);
+public delegate void delegate_initialize_callback(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, bool, bool, char *, char *, int32_t, int32_t, const char *, const char *);
 public delegate void delegate_system_monitor_info_callback(double, double);
 public delegate void delegate_attendant_create_callback(double);
 public delegate void delegate_start_callback(void);
@@ -40,10 +40,10 @@ namespace sirius
 						void release();
 						int start();
 						int stop();
-						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching);
+						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app);
 						int get_available_attendant_count();
 
-						void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory);
+						void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory , int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app);
 						void on_system_monitor_info(double cpu_usage, double memory_usage);
 						void on_attendant_create(double percent);
 						void on_start(void);
@@ -80,7 +80,7 @@ namespace sirius
 						void release();
 						int start();
 						int stop();
-						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching);
+						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app);
 						int get_available_attendant_count();
 
 						void set_initialize_callback(delegate_initialize_callback^  cbf);
