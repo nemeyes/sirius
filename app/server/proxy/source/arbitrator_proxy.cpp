@@ -423,8 +423,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 			if (strcmp(session->attendant_uuid(), uuid) == 0)
 			{
-				sirius::autolock lock(&_closed_attendant_cs);
-				_closed_sessions.push_back(session);		
+				create_attendant(session->id());
 				break;
 			}
 		}
@@ -534,24 +533,6 @@ void sirius::app::server::arbitrator::proxy::core::update_available_attendant(vo
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::available);
 			}
 		}
-	}
-}
-
-void sirius::app::server::arbitrator::proxy::core::restart_attendant(void)
-{
-	std::vector<sirius::app::server::arbitrator::session *> closed_sessions;
-	{
-		sirius::autolock lock(&_closed_attendant_cs);
-		closed_sessions = _closed_sessions;
-		_closed_sessions.clear();
-	}
-
-	std::vector<sirius::app::server::arbitrator::session *>::iterator piter = closed_sessions.begin();
-	while (piter != closed_sessions.end())
-	{
-		sirius::app::server::arbitrator::session * session = *piter;
-		create_attendant(session->id());
-		piter = closed_sessions.erase(piter);		
 	}
 }
 
@@ -706,8 +687,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{				
-			restart_attendant();
+		{		
 			//if (elapsed_millisec % (onesec * 3) == 0)			
 			//	check_alive_attendant();
 
