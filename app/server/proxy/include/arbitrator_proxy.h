@@ -74,7 +74,6 @@ namespace sirius
 					void close_disconnected_attendant(void);
 					void update_available_attendant(void);
 					
-					void restart_attendant(void);
 					void create_attendant(int32_t id);				
 
 					static unsigned __stdcall process_cb(void * param);
@@ -88,7 +87,6 @@ namespace sirius
 					sirius::app::server::arbitrator::proxy::context_t * _context;
 					sirius::library::net::backend::cluster * _cluster;
 					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
-					std::vector<sirius::app::server::arbitrator::session *> _closed_sessions;
 					int32_t _last_alloc_session_id;
 					
 					HANDLE _thread;
