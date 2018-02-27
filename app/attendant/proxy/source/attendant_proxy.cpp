@@ -515,6 +515,11 @@ void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * pa
 	}
 }
 
+void sirius::app::attendant::proxy::core::set_attendant_cb(FuncPtrCallback fncallback) 
+{ 
+	_callback = fncallback;
+}
+
 void sirius::app::attendant::proxy::core::on_recv_notification(int32_t type, char * msg, int32_t size)
 {
 	if (_context->play_after_connect == false)

@@ -16,7 +16,7 @@ namespace client {
 			{
 		public:
 			static message_handler& getInstance();
-			static void release();
+			//static void release();
 			bool external_interface_message_received(CefRefPtr<CefBrowser> browser,
 				CefProcessId source_process,
 				CefRefPtr<CefProcessMessage> message);
@@ -30,7 +30,7 @@ namespace client {
 			void msg_from_attendant_to_app(CefRefPtr<CefBrowser> browser,
 				CefRefPtr<CefProcessMessage> message);
 		private:
-			static message_handler* _instance;
+			//static message_handler _instance;
 			typedef enum _RETURN {
 				FAIL = -1,
 				TO_APP,
@@ -45,6 +45,7 @@ namespace client {
 			void deleteCallbackMap();
 			void send_to_javascript(const CefString& data);
 			message_handler();
+			~message_handler();
 			IMPLEMENT_REFCOUNTING(message_handler);
 			DISALLOW_COPY_AND_ASSIGN(message_handler);
 		};

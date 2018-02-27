@@ -1,7 +1,6 @@
 #ifndef BROWSER_H_
 #define BROWSER_H_
 
-/*
 #include "include/base/cef_macros.h"
 #include "include/base/cef_scoped_ptr.h"
 #include "include/cef_command_line.h"
@@ -13,7 +12,7 @@ namespace client {
 		class browser : public virtual CefBase {
 		public:
 			static CefRefPtr<browser> getInstance();
-			//static void release();
+			static void release();
 
 		protected:
 			browser();
@@ -28,6 +27,5 @@ namespace client {
 
 	}  // namespace binding
 }  // namespace client
-*/
 
 #endif  // browser_H_

@@ -1,5 +1,5 @@
 #if defined(WITH_EXTERNAL_INTERFACE)
-/*
+
 #include <sstream>
 #include "cefclient/browser/root_window_win.h"
 #include "cefclient/browser/util_win.h"
@@ -33,7 +33,7 @@ namespace client {
 		}
 
 		void browser::release() {
-			message_handler::release();
+			//message_handler::release();
 			socket_win::release();
 
 			if (_ptr_this) {
@@ -42,7 +42,5 @@ namespace client {
 		}
 	}  // namespace binding
 }  // namespace client
-
-*/
 
 #endif

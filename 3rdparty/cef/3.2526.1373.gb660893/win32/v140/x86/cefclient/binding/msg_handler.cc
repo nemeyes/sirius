@@ -9,22 +9,31 @@
 
 namespace client {
 	namespace binding {
-		message_handler* message_handler::_instance = nullptr;
-		message_handler::message_handler() {
-		}
-		message_handler& message_handler::getInstance() {
-			if (_instance == nullptr)
-				_instance = new message_handler;
-
-			return *_instance;
+		message_handler::message_handler() 
+		{
+		
 		}
 
-		void message_handler::release() {
+		message_handler::~message_handler()
+		{
+			deleteCallbackMap();
+		}
+
+		message_handler& message_handler::getInstance() 
+		{
+			static message_handler _instance;
+			return _instance;
+		}
+
+		/*
+		void message_handler::release() 
+		{
 			if (_instance) {
 				_instance->deleteCallbackMap();
 				//_instance->Release();
 			}
 		}
+		*/
 
 		void message_handler::deleteCallbackMap() {
 			if (!callback_map_.empty()) {
