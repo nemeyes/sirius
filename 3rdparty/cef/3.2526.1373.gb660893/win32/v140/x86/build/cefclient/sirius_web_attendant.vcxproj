@@ -238,7 +238,9 @@ del $(outputpath)$(assemblyname).ilk
     <ClInclude Include="..\..\cefclient\browser\temp_window_win.h" />
     <ClInclude Include="..\..\cefclient\browser\util_win.h" />
     <ClCompile Include="..\..\cefclient\binding\attendant_proxy_wrapper.cpp" />
-    <ClCompile Include="..\..\cefclient\binding\browser.cc" />
+    <ClCompile Include="..\..\cefclient\binding\browser.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\cefclient\binding\global.cc" />
     <ClCompile Include="..\..\cefclient\binding\js_binding.cc" />
     <ClCompile Include="..\..\cefclient\binding\msg_handler.cc" />

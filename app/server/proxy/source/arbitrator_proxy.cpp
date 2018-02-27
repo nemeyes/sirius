@@ -478,7 +478,7 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 		sirius::app::server::arbitrator::session * session = iter->second;
 		if(is_valid(session->attendant_uuid()) == false)
 		{
-			sirius::autolock lock(&_closed_attendant_cs);			
+			sirius::autolock lock(&_closed_attendant_cs);
 		}			
 	}	
 }
@@ -551,8 +551,7 @@ void sirius::app::server::arbitrator::proxy::core::restart_attendant(void)
 	{
 		sirius::app::server::arbitrator::session * session = *piter;
 		create_attendant(session->id());
-		piter = closed_sessions.erase(piter);
-		::Sleep(50);
+		piter = closed_sessions.erase(piter);		
 	}
 }
 

@@ -5,51 +5,45 @@
 #include "include/cef_v8.h"
 
 namespace client {
-		class message_handler_base
-		{
+		class message_handler_base /*: public CefBase*/ {
 		public:
 			message_handler_base() {};
-			virtual ~message_handler_base() {};
-
-			void set_list_Value(CefRefPtr<CefListValue> list, int index, CefRefPtr<CefV8Value> value) 
+			virtual ~message_handler_base() 
 			{
-				if (value->IsArray()) 
-				{
+				::OutputDebugStringA("~message_handler_base()\n");
+			};
+
+			void set_list_Value(CefRefPtr<CefListValue> list, int index,
+				CefRefPtr<CefV8Value> value) {
+				if (value->IsArray()) {
 					CefRefPtr<CefListValue> new_list = CefListValue::Create();
 					set_list(value, new_list);
 					list->SetList(index, new_list);
 				}
-				else if (value->IsString()) 
-				{
+				else if (value->IsString()) {
 					list->SetString(index, value->GetStringValue());
 				}
-				else if (value->IsBool()) 
-				{
+				else if (value->IsBool()) {
 					list->SetBool(index, value->GetBoolValue());
 				}
-				else if (value->IsInt()) 
-				{
+				else if (value->IsInt()) {
 					list->SetInt(index, value->GetIntValue());
 				}
-				else if (value->IsDouble()) 
-				{
+				else if (value->IsDouble()) {
 					list->SetDouble(index, value->GetDoubleValue());
 				}
 			}
 
-			void set_list_Value(CefRefPtr<CefV8Value> list, int index, CefRefPtr<CefListValue> value) 
-			{
+			void set_list_Value(CefRefPtr<CefV8Value> list, int index,
+				CefRefPtr<CefListValue> value) {
 				CefRefPtr<CefV8Value> new_value;
 				CefValueType type = value->GetType(index);
-				switch (type) 
-				{
-				case VTYPE_LIST: 
-				{
+				switch (type) {
+				case VTYPE_LIST: {
 					CefRefPtr<CefListValue> listTemp = value->GetList(index);
 					new_value = CefV8Value::CreateArray(static_cast<int>(listTemp->GetSize()));
 					set_list(listTemp, new_value);
-					break;
-				} 
+				} break;
 				case VTYPE_BOOL:
 					new_value = CefV8Value::CreateBool(value->GetBool(index));
 					break;
@@ -60,23 +54,27 @@ namespace client {
 					new_value = CefV8Value::CreateInt(value->GetInt(index));
 					break;
 				case VTYPE_STRING:
+				{
+					std::string str = "";
+					str = value->GetString(index);
+					::OutputDebugStringA(str.c_str());
 					new_value = CefV8Value::CreateString(value->GetString(index));
 					break;
+				}
 				default:
 					break;
 				}
 
-				if (new_value.get()) 
-				{
-					list->SetValue(index, new_value);
+				if (new_value.get()) {
+					if(list.get()!=nullptr)
+						list->SetValue(index, new_value);
 				}
-				else 
-				{
-					list->SetValue(index, CefV8Value::CreateNull());
+				else {
+					if (list.get() != nullptr)
+						list->SetValue(index, CefV8Value::CreateNull());
 				}
 			}
-			void set_list(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target) 
-			{
+			void set_list(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target) {
 				int arg_length = source->GetArrayLength();
 				if (arg_length == 0)
 					return;
@@ -87,14 +85,12 @@ namespace client {
 				for (int i = 0; i < arg_length; ++i)
 					set_list_Value(target, i, source->GetValue(i));
 			}
-
-			void set_list(CefRefPtr<CefListValue> source, CefRefPtr<CefV8Value> target) 
-			{
+			void set_list(CefRefPtr<CefListValue> source, CefRefPtr<CefV8Value> target) {
 				for (int i = 0; i < static_cast<int>(source->GetSize()); ++i)
 					set_list_Value(target, i, source);
 			}
-
 		private:
+			//IMPLEMENT_REFCOUNTING(message_handler_base);
 			DISALLOW_COPY_AND_ASSIGN(message_handler_base);
 		};
 }

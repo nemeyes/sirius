@@ -1,5 +1,6 @@
 #ifndef BROWSER_H_
 #define BROWSER_H_
+#pragma once
 
 #include "include/base/cef_macros.h"
 #include "include/base/cef_scoped_ptr.h"
