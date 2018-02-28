@@ -11,8 +11,7 @@
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="Network" Source="/Settings/NetworkSettings.xaml" />
                 <!--mui:Link DisplayName="Media" Source="/Settings/MediaSettings.xaml" //-->
-                <mui:Link DisplayName="Attendants" Source="/Settings/AttendantsSettings.xaml" />
-                <!--mui:Link DisplayName="Log" Source="/Settings/LogSettings.xaml" /-->
+                <mui:Link DisplayName="Attendants" Source="/Settings/AttendantsSettings.xaml" />                
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

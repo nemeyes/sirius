@@ -31,7 +31,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, ";
 	sql += "video_block_width=?, video_block_height=?, video_compression_level=?, video_quantization_colors=?, ";
 	sql += "enable_tls=?, enable_keepalive=?, enable_present=?, enable_auto_start=?, enable_caching=?, ";
-	sql += "log_level=?, idle_time=?, log_root_path=?, app_session_app=?";
+	sql += "app_session_app=?";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -55,9 +55,6 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->enable_present?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->log_level);
-		sqlite3_bind_int(stmt, ++index, entity->idle_time);
-		sqlite3_bind_text(stmt, ++index, entity->log_root_path, -1, 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
 
 		int32_t result = sqlite3_step(stmt);
@@ -115,9 +112,6 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.enable_present = false;
 		c_entity.enable_auto_start = false;
 		c_entity.enable_caching = false;
-		c_entity.log_level = 3;
-		c_entity.idle_time = 7200;
-		strncpy_s(c_entity.log_root_path, "d:\log", sizeof(c_entity.log_root_path));
 		strncpy_s(c_entity.app_session_app, "", sizeof(c_entity.app_session_app));
 
 		status = create(&c_entity, conn);
@@ -129,7 +123,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 	sql += "video_codec, video_width, video_height, video_fps, ";
 	sql += "video_block_width, video_block_height, video_compression_level, video_quantization_colors, ";
 	sql += "enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, ";
-	sql += "log_level, idle_time, log_root_path, app_session_app ";
+	sql += "app_session_app ";
 	sql += "FROM tb_configuration";
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -161,10 +155,6 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				entity->enable_present = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_auto_start = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_caching = sqlite3_column_int(stmt, index++) ? true : false;
-				entity->log_level = sqlite3_column_int(stmt, index++);
-				entity->idle_time = sqlite3_column_int(stmt, index++);
-				char * log_root_path = (char*)sqlite3_column_text(stmt, index++);
-				strncpy_s(entity->log_root_path, log_root_path, sizeof(entity->log_root_path));
 				char * app_session_app = (char*)sqlite3_column_text(stmt, index++);
 				strncpy_s(entity->app_session_app, app_session_app, sizeof(entity->app_session_app));
 
@@ -195,7 +185,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, log_level, idle_time, log_root_path, app_session_app) ";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app) ";
 	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
@@ -220,9 +210,6 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->enable_present ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->log_level);
-		sqlite3_bind_int(stmt, ++index, entity->idle_time);
-		sqlite3_bind_text(stmt, ++index, entity->log_root_path, -1, 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
 
 		int32_t result = SQLITE_ERROR;

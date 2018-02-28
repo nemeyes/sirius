@@ -56,9 +56,9 @@ int sirius::app::server::arbitrator::wrapper::core::stop()
 	return _proxy->stop();
 }
 
-int sirius::app::server::arbitrator::wrapper::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app)
+int sirius::app::server::arbitrator::wrapper::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
-	return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, log_level, idle_time, log_root_path, app_session_app);
+	return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
 }
 
 int sirius::app::server::arbitrator::wrapper::core::get_available_attendant_count()
@@ -66,9 +66,9 @@ int sirius::app::server::arbitrator::wrapper::core::get_available_attendant_coun
 	return _proxy->get_available_attendant_count();
 }
 
-void sirius::app::server::arbitrator::wrapper::core::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app)
+void sirius::app::server::arbitrator::wrapper::core::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
 {
-	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, cpu, memory, log_level, idle_time, log_root_path, app_session_app);
+	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, cpu, memory, app_session_app);
 }
 
 void sirius::app::server::arbitrator::wrapper::core::on_system_monitor_info(double cpu_usage, double memory_usage)
@@ -130,9 +130,9 @@ int sirius::app::server::arbitrator::wrapper::handler::stop()
 	return _core->stop();
 }
 
-int sirius::app::server::arbitrator::wrapper::handler::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app)
+int sirius::app::server::arbitrator::wrapper::handler::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
-	return _core->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, log_level, idle_time, log_root_path, app_session_app);
+	return _core->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
 }
 
 int sirius::app::server::arbitrator::wrapper::handler::get_available_attendant_count()

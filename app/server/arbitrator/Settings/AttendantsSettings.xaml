@@ -6,7 +6,7 @@
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:app="clr-namespace:sirius.app.server.arbitrator"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="378" d:DesignWidth="300">
     <ScrollViewer>
         <StackPanel MinWidth="200">
 
@@ -67,16 +67,6 @@
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Frame Rate" Target="{Binding ElementName=TextAttendantFrameRate}" Width="150"/>
-                    <TextBox x:Name="TextAttendantFrameRate" Width="70" Text="{Binding AttendantFrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantFrameRate_PreviewTextInput"/>                    
-                </StackPanel>
-
-                <StackPanel>
-                    <Label Content="Idle Time" Target="{Binding ElementName=TextAttendantIdleTime}" Width="150"/>
-                    <TextBox x:Name="TextAttendantIdleTime" Width="70" Text="{Binding AttendantIdleTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantIdleTime_PreviewTextInput"/>
-                </StackPanel>
-
-                <StackPanel>
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
                     <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" IsSelected="true" />
@@ -95,7 +85,7 @@
                 <!--Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" /-->
                
                 <StackPanel>
-                    <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150"/>
+                    <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150" />
                     <RadioButton x:Name="DisaplyAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>

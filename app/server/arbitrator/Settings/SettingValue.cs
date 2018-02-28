@@ -75,9 +75,6 @@ namespace sirius.app.server.arbitrator.Settings
                 enable_present, 
                 enable_auto_start, 
                 enable_caching,
-                log_level,
-                idle_time,
-                (sbyte*)plog_root_path,
                 (sbyte*)papp_sesion_app);
         }
     }

@@ -17,10 +17,7 @@ namespace sirius
 					{
 						char	uuid[MAX_PATH];
 						char	url[MAX_PATH];
-						char	log_root_path[MAX_PATH];
-						char	app_session_app[MAX_PATH * 10];
-						int32_t log_level;
-						int32_t idle_time;
+						char	app_session_app[MAX_PATH * 5];		
 						int32_t	max_attendant_instance;
 						int32_t attendant_creation_delay;
 						int32_t controller_portnumber;
@@ -39,9 +36,7 @@ namespace sirius
 						bool	enable_auto_start;
 						bool	enable_caching;
 						_configuration_t(void)
-							: log_level(3)
-							, idle_time(7200)
-							, max_attendant_instance(100)
+							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
 							, controller_portnumber(5000)
 							, streamer_portnumber(7000)
@@ -61,7 +56,6 @@ namespace sirius
 						{
 							memset(uuid, 0x00, sizeof(uuid));
 							memset(url, 0x00, sizeof(url));
-							memset(log_root_path, 0x00, sizeof(log_root_path));
 							memset(app_session_app, 0x00, sizeof(app_session_app));
 						}
 					} configuration_t;
