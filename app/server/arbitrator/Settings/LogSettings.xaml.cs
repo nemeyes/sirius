@@ -68,8 +68,7 @@ namespace sirius.app.server.arbitrator.Settings
                     break ;
             }   
         }
-
-        private void log_set_apply_click(object sender, RoutedEventArgs e)
+        private void log_apply_button_Click(object sender, RoutedEventArgs e)
         {
             SettingValue setting_value = SettingValue.Instance();
             setting_value.log_root_path = TextLogRootPath.Text;
