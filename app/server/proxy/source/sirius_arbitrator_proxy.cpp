@@ -95,6 +95,14 @@ int32_t sirius::app::server::arbitrator::proxy::get_available_attendant_count(vo
 		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
+int32_t sirius::app::server::arbitrator::proxy::get_running_attendant_count(void)
+{
+	if (_core)
+		return _core->get_running_attendant_count();
+	else
+		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
+}
+
 int32_t	sirius::app::server::arbitrator::proxy::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
 	if (_core)

@@ -54,6 +54,7 @@ namespace sirius
 					int32_t disconnect_client(const char * uuid);
 
 					int32_t get_available_attendant_count(void);
+					int32_t get_running_attendant_count(void);
 
 					int32_t	connect_attendant_callback(const char * uuid, int32_t id, int32_t pid);
 					void	disconnect_attendant_callback(const char * uuid);
@@ -68,6 +69,7 @@ namespace sirius
 					void	on_destroy_session(const char * uuid);
 
 					int32_t get_attendant_count(void);
+					int32_t get_running_count(void);
 					int32_t get_launcher_count(void);
 
 					void check_alive_attendant(void);

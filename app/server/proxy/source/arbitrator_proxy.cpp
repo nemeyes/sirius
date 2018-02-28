@@ -406,7 +406,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
 				session->client_uuid(UNDEFINED_UUID);
 
-				_use_count = _max_attendant_instance_count - get_available_attendant_count();
+				_use_count = get_running_attendant_count();
 				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
 #ifdef WITH_RESTART
 				data_request((char*)session->attendant_uuid(), CMD_DESTROY_SESSION_INDICATION, NULL, 0);				
@@ -448,6 +448,23 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)
 
 	CloseHandle(hSnap);
 	return dwCount;
+}
+
+int32_t sirius::app::server::arbitrator::proxy::core::get_running_attendant_count(void)
+{
+	int32_t running_count = 0;
+	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
+	{
+		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		{
+			sirius::app::server::arbitrator::session * session = iter->second;
+			if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::running)
+			{
+				running_count++;
+			}
+		}
+	}
+	return running_count;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
