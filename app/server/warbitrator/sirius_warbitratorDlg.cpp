@@ -353,7 +353,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_present = true;
 	if (_enable_auto_start.GetCheck())
 		enable_auto_start = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, 128, 72, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, false, 3, 7200,"d:\log", "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, 128, 72, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, false, "");
 
 	if (uuid)
 		free(uuid);
@@ -364,7 +364,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;

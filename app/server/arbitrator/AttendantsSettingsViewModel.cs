@@ -13,7 +13,9 @@ namespace sirius.app.server.arbitrator
     {
         private string attendant_instance_count = "500";
         private string attendant_url = "https://www.youtube.com/tv";
+        private string app_session_app = "";
         private string attendant_creation_delay = "1000";
+
         
         public string AttendantInstanceCount
         {
@@ -32,6 +34,16 @@ namespace sirius.app.server.arbitrator
             {
                 this.attendant_url = value;
                 OnPropertyChanged("AttendantUrl");               
+            }
+        }
+
+        public string AppSessionApp
+        {
+            get { return this.app_session_app; }
+            set
+            {
+                this.app_session_app = value;
+                OnPropertyChanged("AppSessionApp");
             }
         }
 
