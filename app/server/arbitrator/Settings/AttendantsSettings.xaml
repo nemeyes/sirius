@@ -67,6 +67,11 @@
                 </StackPanel>
 
                 <StackPanel>
+                    <Label Content="Frame Rate" Target="{Binding ElementName=TextFrameRate}" Width="150"/>
+                    <TextBox x:Name="TextFrameRate" Width="70" Text="{Binding FrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextFraemRate_PreviewTextInput" />                    
+                </StackPanel>
+
+                <StackPanel>
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
                     <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" IsSelected="true" />

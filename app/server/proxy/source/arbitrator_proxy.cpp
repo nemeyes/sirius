@@ -340,6 +340,7 @@ void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(cons
 
 void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const char * uuid, int32_t code)
 {
+	sirius::autolock lock(&_attendant_cs);
 	LOGGER::make_info_log(SAA, "%s, %d, [CMD_STOP_ATTENDANT_RES] attendant_uuid=%s,code=%d", __FUNCTION__, __LINE__, uuid, code);
 #ifdef WITH_RESTART
 #else
