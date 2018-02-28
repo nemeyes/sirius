@@ -404,6 +404,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 			if (strcmp(session->client_uuid(), uuid) == 0)
 			{				
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
+				session->client_uuid(UNDEFINED_UUID);
 
 				_use_count = _max_attendant_instance_count - get_available_attendant_count();
 				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
@@ -422,6 +423,8 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 			if (strcmp(session->attendant_uuid(), uuid) == 0)
 			{
+				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle);
+				session->attendant_uuid(UNDEFINED_UUID);
 				create_attendant(session->id());
 				break;
 			}
