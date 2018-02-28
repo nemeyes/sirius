@@ -199,7 +199,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
 			proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
-			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=6");
+			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", confentity.video_fps);
 
 			if (strlen(confentity.app_session_app) > 0)
 			{
