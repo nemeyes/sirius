@@ -201,15 +201,22 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=6");
 
-			proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
-			proc_ctrl.set_cmdline(arguments, "--disable-extensions");
-			proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
-			proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
-			proc_ctrl.set_cmdline(arguments, "--disable-web-security");
-			proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
-			proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
-			proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
-		
+			if (strlen(confentity.app_session_app) > 0)
+			{
+				proc_ctrl.set_cmdline(arguments, confentity.app_session_app);
+			}
+			else
+			{
+				proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
+				proc_ctrl.set_cmdline(arguments, "--disable-extensions");
+				proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
+				proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
+				proc_ctrl.set_cmdline(arguments, "--disable-web-security");
+				proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
+				proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
+				proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
+			}
+
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 
 			if (option)	

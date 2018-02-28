@@ -74,7 +74,7 @@ namespace sirius.app.server.arbitrator
             controller.initailize();
             status = status_t.initialized;
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, int log_level, int idle_time, sbyte* log_root_path, sbyte* app_session_app)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -97,9 +97,6 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().enable_caching = enable_caching;
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
-            SettingValue.Instance().log_level = log_level;
-            SettingValue.Instance().idle_time = idle_time;
-            SettingValue.Instance().log_root_path = new string(log_root_path);
             SettingValue.Instance().app_session_app = new string(app_session_app);
 
             //if (enable_auto_start)

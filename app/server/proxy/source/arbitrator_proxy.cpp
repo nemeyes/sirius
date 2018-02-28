@@ -21,7 +21,6 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _last_alloc_session_id(-1)
 {
 	::InitializeCriticalSection(&_attendant_cs);
-	::InitializeCriticalSection(&_closed_attendant_cs);
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
 	LOGGER::make_info_log(SAA, "%s, ======================= ", __FUNCTION__);
 	LOGGER::make_info_log(SAA, "%s, %d Sirius Start", __FUNCTION__, __LINE__);
@@ -64,8 +63,7 @@ sirius::app::server::arbitrator::proxy::core::~core(void)
 
 	sirius::library::log::log4cplus::logger::destroy();
 
-	::DeleteCriticalSection(&_attendant_cs);
-	::DeleteCriticalSection(&_closed_attendant_cs);	
+	::DeleteCriticalSection(&_attendant_cs);	
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::server::arbitrator::proxy::context_t * context)
@@ -88,7 +86,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info(), confentity.log_level, confentity.idle_time, confentity.log_root_path, confentity.app_session_app);
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -152,7 +150,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app)
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -178,9 +176,6 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.enable_present = enable_present;
 	configuration.enable_auto_start = enable_auto_start;
 	configuration.enable_caching = enable_caching;
-	configuration.log_level = log_level;
-	configuration.idle_time = idle_time;
-	strncpy_s(configuration.log_root_path, log_root_path, sizeof(configuration.log_root_path) - 1);
 	strncpy_s(configuration.app_session_app, app_session_app, sizeof(configuration.app_session_app) - 1);	
 
 	status = dao.update(&configuration);
@@ -409,8 +404,9 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 			if (strcmp(session->client_uuid(), uuid) == 0)
 			{				
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
+				session->client_uuid(UNDEFINED_UUID);
 
-				_use_count = _max_attendant_instance_count - get_available_attendant_count();
+				_use_count = get_running_attendant_count();
 				_cluster->backend_client_disconnect((char*)session->client_id(), _use_count, session->id());
 #ifdef WITH_RESTART
 				data_request((char*)session->attendant_uuid(), CMD_DESTROY_SESSION_INDICATION, NULL, 0);				
@@ -427,6 +423,8 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 			if (strcmp(session->attendant_uuid(), uuid) == 0)
 			{
+				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle);
+				session->attendant_uuid(UNDEFINED_UUID);
 				create_attendant(session->id());
 				break;
 			}
@@ -450,6 +448,23 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_attendant_count(void)
 
 	CloseHandle(hSnap);
 	return dwCount;
+}
+
+int32_t sirius::app::server::arbitrator::proxy::core::get_running_attendant_count(void)
+{
+	int32_t running_count = 0;
+	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
+	{
+		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		{
+			sirius::app::server::arbitrator::session * session = iter->second;
+			if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::running)
+			{
+				running_count++;
+			}
+		}
+	}
+	return running_count;
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
@@ -481,7 +496,7 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 		sirius::app::server::arbitrator::session * session = iter->second;
 		if(is_valid(session->attendant_uuid()) == false)
 		{
-			sirius::autolock lock(&_closed_attendant_cs);
+			
 		}			
 	}	
 }

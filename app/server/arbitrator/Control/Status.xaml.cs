@@ -37,7 +37,7 @@ namespace sirius.app.server.arbitrator.Control
 
             start_button.IsEnabled = true;
             stop_button.IsEnabled = false;
-
+                        
             //if (SettingValue.Instance().enable_auto_start)
             //{
             //   start_button.IsEnabled = false;
@@ -98,7 +98,7 @@ namespace sirius.app.server.arbitrator.Control
                 {
                     start_button.IsEnabled = false;
                     stop_button.IsEnabled = false;
-                    start_time.Content = System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    start_button.ToolTip = "last start time : " + System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 }
             ));
             sirius_arbitrator.controller.start();
@@ -113,7 +113,7 @@ namespace sirius.app.server.arbitrator.Control
                 {                    
                     start_button.IsEnabled = true;
                     stop_button.IsEnabled = false;
-                    start_time.Content = "";
+                    stop_button.ToolTip = "last stop time : " + System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 }
             ));
             sirius_arbitrator.controller.stop();

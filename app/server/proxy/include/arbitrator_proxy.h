@@ -48,12 +48,13 @@ namespace sirius
 					int32_t start(void);
 					int32_t stop(void);
 
-					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, int32_t log_level, int32_t idle_time, const char * log_root_path, const char * app_session_app);
+					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app);
 
 					int32_t	connect_client(const char * uuid, const char * client_id);
 					int32_t disconnect_client(const char * uuid);
 
 					int32_t get_available_attendant_count(void);
+					int32_t get_running_attendant_count(void);
 
 					int32_t	connect_attendant_callback(const char * uuid, int32_t id, int32_t pid);
 					void	disconnect_attendant_callback(const char * uuid);
@@ -68,6 +69,7 @@ namespace sirius
 					void	on_destroy_session(const char * uuid);
 
 					int32_t get_attendant_count(void);
+					int32_t get_running_count(void);
 					int32_t get_launcher_count(void);
 
 					void check_alive_attendant(void);
@@ -98,8 +100,7 @@ namespace sirius
 					bool _system_monitor_run;
 					int32_t _max_attendant_instance_count;
 					
-					CRITICAL_SECTION _attendant_cs;
-					CRITICAL_SECTION _closed_attendant_cs;
+					CRITICAL_SECTION _attendant_cs;					
 				};
 			};
 		};
