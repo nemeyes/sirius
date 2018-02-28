@@ -254,8 +254,8 @@ void sirius::library::net::iocp::server::on_session_connect(std::shared_ptr<siri
 void sirius::library::net::iocp::server::on_session_close(std::shared_ptr<sirius::library::net::iocp::session> session)
 {
 	on_app_session_close(session);
-	if(!session->is_session_destroy())
-		destroy_session(session);
+	//if(!session->is_session_destroy())
+	destroy_session(session);
 }
 
 void sirius::library::net::iocp::server::execute(void)
