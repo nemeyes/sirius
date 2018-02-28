@@ -240,8 +240,10 @@ bool ClientHandler::OnContextMenuCommand(
     int command_id,
     EventFlags event_flags) {
   CEF_REQUIRE_UI_THREAD();
-  HWND hwnd = NULL;
 
+#ifdef WITH_RESTART
+  HWND hwnd = NULL;
+#endif
   switch (command_id) {
     case CLIENT_ID_SHOW_DEVTOOLS:
       ShowDevTools(browser, CefPoint());

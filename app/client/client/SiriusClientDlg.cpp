@@ -241,6 +241,9 @@ BOOL CSiriusClientDlg::OnInitDialog()
 	_ctrl_url.SetWindowTextW(Config.get_url().c_str());
 	_ctrl_port.SetWindowTextW(Config.get_port().c_str());
 
+
+	_ctrl_end2end_data.SetWindowTextW(L"{\"name\":\"onMove\",\"data\":{\"name\":\"MAIN\",\"history\":\"\",\"vodInfo\":{}}}");
+
 	if(_auto_start)
 		SendDlgItemMessage(IDC_BUTTON_CONNECT, BM_CLICK);
 
@@ -280,6 +283,7 @@ BOOL CSiriusClientDlg::DestroyWindow()
 	_ctrl_device_id.GetWindowText(attendant_device_id);
 	_ctrl_url.GetWindowText(url);
 	_ctrl_port.GetWindowText(port);
+
 
 	Config.set_server_address(sirius::string(server_address));
 	Config.set_server_port(sirius::string(server_port));

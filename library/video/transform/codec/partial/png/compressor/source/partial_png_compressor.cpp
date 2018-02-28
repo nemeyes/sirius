@@ -299,7 +299,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 							for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + block_width)
 							{
 #if defined(WITH_AVX2_SIMD)
-								bool bdiff = avx2_is_different(true, me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height);
+								bool bdiff = avx2_is_different(false, me_buffer + (h2*context_width + w2), context_width, prev_me_buffer + (h2*context_width + w2), context_width, block_width, block_height);
 								if (bdiff)
 #else
 								uint64_t sum = 0;
