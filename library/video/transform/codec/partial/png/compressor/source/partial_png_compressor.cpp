@@ -349,12 +349,20 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										}
 									}
 								}
+								else
+								{
+#if defined(WITH_PARTIAL_SENDING_MODE)
+									_front->after_process_callback(cached_index[index], cached_compressed[index], cached_length[index], before_encode_timestamp, after_encode_timestamp);
+#endif
+								}
 								index++;
 							}
 						}
 						if (_invalidate)
 						{
+#if !defined(WITH_PARTIAL_SENDING_MODE)
 							_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+#endif
 							_invalidate = false;
 						}
 #if !defined(WITH_PARTIAL_SENDING_MODE)
