@@ -1,9 +1,5 @@
 #include <sirius_string.h>
-#if defined(WITH_CASP)
-#include <sirius_casp_server.h>
-#else
 #include <sirius_scsp_server.h>
-#endif
 #include <sirius_log4cplus_logger.h>
 #include <sirius_stringhelper.h>
 #include <sirius_locks.h>
@@ -32,10 +28,7 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 	_context = context;
 
 	sirius::string uuid = _context->uuid;
-#if defined(WITH_CASP)
-	sirius::library::net::casp::server * streamer = new sirius::library::net::casp::server();
-	code = streamer->publish_begin(_context->video_codec, 0, nullptr, _context->portnumber, uuid.wtoa().c_str(), this);
-#else
+
 	sirius::library::net::scsp::server * streamer = new sirius::library::net::scsp::server();
 	sirius::library::net::scsp::server::context_t * streamer_context = new sirius::library::net::scsp::server::context_t();
 
@@ -50,7 +43,6 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 	streamer_context->controller = this;
 	code = streamer->start(streamer_context);
 	_streamer_context = streamer_context;
-#endif
 
 	if (code != sirius::library::unified::server::err_code_t::success)
 		return code;
@@ -70,22 +62,13 @@ int32_t sirius::library::unified::server::core::release(void)
 
 	if (_streamer)
 	{
-#if defined(WITH_CASP)
-		sirius::library::net::casp::server * streamer = static_cast<sirius::library::net::casp::server*>(_streamer);
-		code = streamer->publish_end();
-#else
 		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
 		sirius::library::net::scsp::server::context_t * streamer_context = static_cast<sirius::library::net::scsp::server::context_t*>(_streamer_context);
 		code = streamer->stop();
-#endif
 		delete streamer;
 		streamer = nullptr;
 		_streamer = nullptr;
-#ifndef WITH_CASP
-		delete streamer_context;
-		streamer_context = nullptr;
-		_streamer_context = nullptr;
-#endif
+
 		if (code != sirius::library::unified::server::err_code_t::success)
 			return code;
 	}
@@ -140,11 +123,7 @@ sirius::library::unified::server::network_usage_t & sirius::library::unified::se
 {
 	if (_streamer)
 	{
-#if defined(WITH_CASP)
-		sirius::library::net::casp::server * streamer = static_cast<sirius::library::net::casp::server*>(_streamer);
-#else
 		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
-#endif
 		_network_usage.video_transferred_bytes = streamer->get_network_usage().video_transferred_bytes;
 	}
 	return _network_usage;
@@ -171,6 +150,7 @@ int32_t sirius::library::unified::server::core::invalidate(void)
 	return _unified_compressor->invalidate();
 }
 
+/*
 int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, int32_t nbytes, long long before_encode_timestamp, long long after_encode_timestamp)
 {
 	if (!_context)
@@ -179,18 +159,14 @@ int32_t sirius::library::unified::server::core::publish_video(uint8_t * bytes, i
 	int32_t code = sirius::library::unified::server::err_code_t::fail;
 	if (_streamer)
 	{
-#if defined(WITH_CASP)
-		sirius::library::net::casp::server * streamer = static_cast<sirius::library::net::casp::server*>(_streamer);
-		code = streamer->publish_video(nullptr, 0, nullptr, 0, nullptr, 0, bytes, nbytes, before_encode_timestamp);
-#else
 		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
 		code = streamer->post_video(bytes, nbytes, before_encode_timestamp);
-#endif
 		if (code != sirius::library::unified::server::err_code_t::success)
 			return code;
 	}
 	return code;
 }
+*/
 
 int32_t sirius::library::unified::server::core::publish_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
@@ -200,25 +176,43 @@ int32_t sirius::library::unified::server::core::publish_video(int32_t count, int
 	int32_t code = sirius::library::unified::server::err_code_t::fail;
 	if (_streamer)
 	{
-#if defined(WITH_CASP)
-		sirius::library::net::casp::server * streamer = static_cast<sirius::library::net::casp::server*>(_streamer);
-		code = streamer->publish_video(count, index, compressed, size, before_compress_timestamp);
-#else
 		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
 		code = streamer->post_video(count, index, compressed, size, before_compress_timestamp);
-#endif
 		if (code != sirius::library::unified::server::err_code_t::success)
 			return code;
 	}
 	return code;
 }
 
+int32_t sirius::library::unified::server::core::publish_video(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	if (!_context)
+		return sirius::library::unified::server::err_code_t::success;
+
+	int32_t code = sirius::library::unified::server::err_code_t::fail;
+	if (_streamer)
+	{
+		sirius::library::net::scsp::server * streamer = static_cast<sirius::library::net::scsp::server*>(_streamer);
+		code = streamer->post_video(index, compressed, size, before_compress_timestamp);
+		if (code != sirius::library::unified::server::err_code_t::success)
+			return code;
+	}
+	return code;
+}
+
+/*
 void sirius::library::unified::server::core::after_video_compressing_callback(uint8_t * data, size_t size, long long before_encode_timestamp, long long after_encode_timestamp)
 {
 	publish_video(data, size, before_encode_timestamp, after_encode_timestamp);
 }
+*/
 
 void sirius::library::unified::server::core::after_video_compressing_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	publish_video(count, index, compressed, size, before_compress_timestamp, after_compress_timestamp);
+}
+
+void sirius::library::unified::server::core::after_video_compressing_callback(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	publish_video(index, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }

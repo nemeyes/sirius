@@ -164,7 +164,7 @@ void sirius::library::net::scsp::client::core::push_video_packet(int32_t count, 
 	}
 
 	uint8_t * packet = data;
-	if (count == 1)
+	if (count == -1)
 	{
 		sirius::library::net::scsp::header_t single_packet_header;
 		memmove(&single_packet_header, packet, sizeof(single_packet_header));

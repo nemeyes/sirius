@@ -18,8 +18,9 @@ namespace sirius
 				public:
 					compressor(sirius::library::unified::compressor * compressor);
 					virtual ~compressor(void);
-					virtual void after_process_callback(uint8_t * compressed, int32_t size, long long before_encode_timestamp, long long after_encode_timestamp);
+					//virtual void after_process_callback(uint8_t * compressed, int32_t size, long long before_encode_timestamp, long long after_encode_timestamp);
 					virtual void after_process_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
+					virtual void after_process_callback(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 
 				private:
 					sirius::library::unified::compressor * _compressor;
