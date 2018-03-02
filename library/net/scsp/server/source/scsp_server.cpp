@@ -233,16 +233,13 @@ int32_t sirius::library::net::scsp::server::core::play_callback(const char * cli
 	Json::StyledWriter writer;
 	if (type == sirius::library::net::scsp::server::media_type_t::video)
 	{
-		if (type == sirius::library::net::scsp::server::media_type_t::video)
-		{
-			wpacket["type"] = type;
-			wpacket["codec"] = _context->video_codec;
-			wpacket["video_width"] = _context->video_width;
-			wpacket["video_height"] = _context->video_height;
-			wpacket["video_fps"] = _context->video_fps;
-			wpacket["video_block_width"] = _context->video_block_width;
-			wpacket["video_block_height"] = _context->video_block_height;
-		}
+		wpacket["type"] = type;
+		wpacket["codec"] = _context->video_codec;
+		wpacket["video_width"] = _context->video_width;
+		wpacket["video_height"] = _context->video_height;
+		wpacket["video_fps"] = _context->video_fps;
+		wpacket["video_block_width"] = _context->video_block_width;
+		wpacket["video_block_height"] = _context->video_block_height;
 		status = sirius::library::net::scsp::server::err_code_t::success;
 	}
 	else
