@@ -201,7 +201,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		{
 			int32_t hblock_cnt = rctx->height / dctx->height;
 			int32_t wblock_cnt = rctx->width / dctx->width;
-			int32_t h = index[x] / hblock_cnt;
+			int32_t h = index[x] / wblock_cnt;
 			int32_t w = index[x] % wblock_cnt;
 
 			h = h * dctx->height;
