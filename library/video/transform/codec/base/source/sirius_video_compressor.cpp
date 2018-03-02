@@ -80,12 +80,19 @@ int32_t sirius::library::video::transform::codec::compressor::compress(sirius::l
 	return sirius::library::video::transform::codec::compressor::err_code_t::not_implemented;
 }
 
+/*
 void sirius::library::video::transform::codec::compressor::after_process_callback(uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 
 }
+*/
 
 void sirius::library::video::transform::codec::compressor::after_process_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+
+}
+
+void sirius::library::video::transform::codec::compressor::after_process_callback(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 
 }

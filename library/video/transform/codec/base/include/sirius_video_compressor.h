@@ -60,9 +60,9 @@ namespace sirius
 
 						virtual int32_t compress(sirius::library::video::transform::codec::compressor::entity_t * input, sirius::library::video::transform::codec::compressor::entity_t * bitstream);
 						virtual int32_t compress(sirius::library::video::transform::codec::compressor::entity_t * input);
-						virtual void	after_process_callback(uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
+						//virtual void	after_process_callback(uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 						virtual void	after_process_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
-
+						virtual void	after_process_callback(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 					};
 				};
 			};
