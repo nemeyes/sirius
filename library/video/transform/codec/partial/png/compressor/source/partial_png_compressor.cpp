@@ -352,7 +352,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 								else
 								{
 #if defined(WITH_PARTIAL_SENDING_MODE)
-									_front->after_process_callback(cached_index[index], cached_compressed[index], cached_length[index], before_encode_timestamp, after_encode_timestamp);
+									if (_invalidate)
+										_front->after_process_callback(cached_index[index], cached_compressed[index], cached_length[index], before_encode_timestamp, after_encode_timestamp);
 #endif
 								}
 								index++;
