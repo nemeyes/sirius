@@ -3,8 +3,6 @@
 #include <sirius_image_creator.h>
 #include <sirius_stringhelper.h>
 
-#include <Simd/SimdLib.h>
-
 #include <emmintrin.h>
 
 #ifdef WITH_SAVE_BMP
@@ -155,8 +153,8 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		qntpng.width = liq_image_get_width(rgba);
 		qntpng.height = liq_image_get_height(rgba);
 		qntpng.gamma = liq_get_output_gamma(_remap);
-		//qntpng.output_color = RWPNG_SRGB;
-		qntpng.output_color = RWPNG_NONE;
+		qntpng.output_color = RWPNG_SRGB;
+		//qntpng.output_color = RWPNG_NONE;
 		qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
 		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
 
@@ -188,7 +186,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 			qntpng.palette[i].b = px.r;
 			qntpng.palette[i].a = px.a;
 		}
-		//liq_result_destroy(_remap);
+		liq_result_destroy(_remap);
 	}
 	else if (liqerr == LIQ_QUALITY_TOO_LOW)
 	{

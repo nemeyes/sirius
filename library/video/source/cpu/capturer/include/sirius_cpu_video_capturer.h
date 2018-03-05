@@ -44,7 +44,7 @@ namespace sirius
 						virtual int32_t stop(void);
 						virtual int32_t pause(void);
 
-						int32_t post(int32_t smt, uint8_t * video, int32_t width, int32_t height);
+						int32_t post(int32_t smt, int32_t video_width, int32_t video_height, uint8_t * video, int32_t x, int32_t y, int32_t width, int32_t height);
 
 					private:
 						capturer(void);

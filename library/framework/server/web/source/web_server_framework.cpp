@@ -260,6 +260,10 @@ void sirius::library::framework::server::web::core::on_video_receive(sirius::lib
 		input.data = captured->data;
 		input.data_size = captured->data_size;
 		input.data_capacity = captured->data_size;
+		input.x = captured->x;
+		input.y = captured->y;
+		input.width = captured->width;
+		input.height = captured->height;
 		_unified_server->compress(&input);
 	}
 }
