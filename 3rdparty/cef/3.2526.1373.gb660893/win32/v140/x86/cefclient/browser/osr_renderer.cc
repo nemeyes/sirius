@@ -255,11 +255,11 @@ void OsrRenderer::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::Paint
 		for (; i != dirtyRects.end(); ++i)
 		{
 			const CefRect & rect = *i;
-
+/*
 			char debug[MAX_PATH] = { 0 };
 			_snprintf_s(debug, sizeof(debug), "x=%d, y=%d, width=%d, height=%d \n", rect.x, rect.y, rect.width, rect.height);
 			OutputDebugStringA(debug);
-
+*/
 			sirius::library::video::source::cpu::capturer::instance().post(sirius::library::video::source::cpu::capturer::video_submedia_type_t::rgb32, width, height, (uint8_t*)buffer, rect.x, rect.y, rect.width, rect.height);
 		}
 

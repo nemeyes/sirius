@@ -288,10 +288,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										plength[count] = bitstream.data_size;
 										real_compressed_buffer += bitstream.data_size;
 
-#if defined(WITH_PARTIAL_SENDING_MODE)
-										_front->after_process_callback(pindex[count], pcompressed[count], plength[count], before_encode_timestamp, after_encode_timestamp);
-#endif
-
 										cached_index[index] = index;
 										cached_length[index] = plength[count];
 										memmove(cached_compressed[index], pcompressed[count], cached_length[index]);
@@ -302,9 +298,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 								index++;
 							}
 						}
-#if !defined(WITH_PARTIAL_SENDING_MODE)
 						_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
-#endif
 					}
 					else
 					{
@@ -370,10 +364,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										plength[count] = bitstream.data_size;
 										real_compressed_buffer += bitstream.data_size;
 
-#if defined(WITH_PARTIAL_SENDING_MODE)
-										_front->after_process_callback(pindex[count], pcompressed[count], plength[count], before_encode_timestamp, after_encode_timestamp);
-#endif
-
 										cached_index[index] = index;
 										cached_length[index] = bitstream.data_size;
 										memmove(cached_compressed[index], pcompressed[count], cached_length[index]);
@@ -389,18 +379,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 						if (_invalidate)
 						{
-#if !defined(WITH_PARTIAL_SENDING_MODE)
 							_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
-#endif
 							_invalidate = false;
 						}
-#if !defined(WITH_PARTIAL_SENDING_MODE)
 						else
 						{
 							if (count>0)
 								_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
 						}
-#endif
 					}
 
 					{
