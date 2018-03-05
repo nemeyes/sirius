@@ -246,13 +246,27 @@ void OsrRenderer::ClearPopupRects() {
   original_popup_rect_.Set(0, 0, 0, 0);
 }
 
-void OsrRenderer::OnPaint(CefRefPtr<CefBrowser> browser,
-                          CefRenderHandler::PaintElementType type,
-                          const CefRenderHandler::RectList& dirtyRects,
-                          const void* buffer, int width, int height) {
-
+void OsrRenderer::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::PaintElementType type, const CefRenderHandler::RectList & dirtyRects, const void* buffer, int width, int height) 
+{
 #if defined(WITH_ATTENDANT_PROXY)
-	sirius::library::video::source::cpu::capturer::instance().post(sirius::library::video::source::cpu::capturer::video_submedia_type_t::rgb32, (uint8_t*)buffer, width, height);
+	{
+		//OutputDebugStringA("#####################################begin frame\n");
+		CefRenderHandler::RectList::const_iterator i = dirtyRects.begin();
+		for (; i != dirtyRects.end(); ++i)
+		{
+			const CefRect & rect = *i;
+
+			char debug[MAX_PATH] = { 0 };
+			_snprintf_s(debug, sizeof(debug), "x=%d, y=%d, width=%d, height=%d \n", rect.x, rect.y, rect.width, rect.height);
+			OutputDebugStringA(debug);
+
+			sirius::library::video::source::cpu::capturer::instance().post(sirius::library::video::source::cpu::capturer::video_submedia_type_t::rgb32, width, height, (uint8_t*)buffer, rect.x, rect.y, rect.width, rect.height);
+		}
+
+		//OutputDebugStringA("#####################################end frame\n");
+	}
+
+	//sirius::library::video::source::cpu::capturer::instance().post(sirius::library::video::source::cpu::capturer::video_submedia_type_t::rgb32, (uint8_t*)buffer, width, height);
 #endif
 
   if (!initialized_)

@@ -33,6 +33,7 @@ namespace sirius
 					{
 						namespace png
 						{
+#if defined(WITH_FULLSCAN)
 #if defined(WITH_AVX2_SIMD)
 							template <class T> __forceinline char to_char(T value, size_t index)
 							{
@@ -128,13 +129,15 @@ namespace sirius
 #define ASIGN_MM256_SETR_EPI64(a0, a1, a2, a3) \
     {FORCE_TO_8CHARS(a0), FORCE_TO_8CHARS(a1), FORCE_TO_8CHARS(a2), FORCE_TO_8CHARS(a3)}
 #endif
+#endif
 
 							class compressor::core
 								: public sirius::library::video::transform::codec::processor
 							{
 							public:
-								static const int32_t	MAX_IO_BUFFERS = 15;
+								static const int32_t	MAX_IO_BUFFERS = 60;
 								static const int32_t	MAX_PNG_SIZE = 1024 * 1024 * 1;
+#if defined(WITH_FULLSCAN)
 #if defined(WITH_AVX2_SIMD)
 								const __m256i	K16_00FF = ASIGN_MM256_SET1_EPI16(0x00FF);
 								const int32_t	BGR_TO_GRAY_AVERAGING_SHIFT = 14;
@@ -148,11 +151,16 @@ namespace sirius
 								const __m256i	K32_ROUND_TERM = ASIGN_MM256_SET1_EPI32(BGR_TO_GRAY_ROUND_TERM);
 								static const size_t	AVX2_ALIGN_SIZE = sizeof(__m256i);
 #endif
+#endif
 								typedef struct _ibuffer_t
 								{
 									void *		data;
 									int32_t		data_size;
 									int32_t		data_capacity;
+									int32_t		x;
+									int32_t		y;
+									int32_t		width;
+									int32_t		height;
 									long long	timestamp;
 									_ibuffer_t(void)
 										: data(nullptr)
@@ -210,6 +218,7 @@ namespace sirius
 
 
 							private:
+#if defined(WITH_FULLSCAN)
 #if defined(WITH_AVX2_SIMD)
 								__forceinline size_t	avx2_aligned_high(size_t size, size_t align);
 								__forceinline void *	avx2_align_high(const void * ptr, size_t align);
@@ -231,7 +240,7 @@ namespace sirius
 								__forceinline uint64_t	avx2_extract(bool aligned, __m256i value);
 								bool					avx2_is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
 #endif
-
+#endif
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;
 								sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;

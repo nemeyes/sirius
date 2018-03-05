@@ -27,6 +27,8 @@ namespace sirius
 					void *		data;
 					int32_t		data_size;
 					int32_t		data_capacity;
+					int32_t		x;
+					int32_t		y;
 					int32_t		width;
 					int32_t		height;
 					_entity_t(void)
@@ -35,6 +37,8 @@ namespace sirius
 						, data(nullptr)
 						, data_size(0)
 						, data_capacity(0)
+						, x(0)
+						, y(0)
 						, width(0)
 						, height(0)
 					{}
@@ -46,6 +50,8 @@ namespace sirius
 						data = clone.data;
 						data_size = clone.data_size;
 						data_capacity = clone.data_capacity;
+						x = clone.x;
+						y = clone.y;
 						width = clone.width;
 						height = clone.height;
 					}
@@ -57,6 +63,8 @@ namespace sirius
 						data = clone.data;
 						data_size = clone.data_size;
 						data_capacity = clone.data_capacity;
+						x = clone.x;
+						y = clone.y;
 						width = clone.width;
 						height = clone.height;
 						return (*this);

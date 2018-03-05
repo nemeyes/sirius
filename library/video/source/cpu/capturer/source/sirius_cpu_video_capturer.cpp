@@ -56,7 +56,7 @@ int32_t sirius::library::video::source::cpu::capturer::pause(void)
 	return _core->pause();
 }
 
-int32_t sirius::library::video::source::cpu::capturer::post(int32_t smt, uint8_t * video, int32_t width, int32_t height)
+int32_t sirius::library::video::source::cpu::capturer::post(int32_t smt, int32_t video_width, int32_t video_height, uint8_t * video, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-	return _core->post(smt, video, width, height);
+	return _core->post(smt, video_width, video_height, video, x, y, width, height);
 }
