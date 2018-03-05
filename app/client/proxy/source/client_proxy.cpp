@@ -8,7 +8,7 @@
 #include <sirius_stringhelper.h>
 #include <sirius_client_framework.h>
 
-#define MTU_SIZE					1500
+#define MTU_SIZE					1024 * 1024 * 2
 #define IO_THREAD_POOL_COUNT		2
 #define COMMAND_THREAD_POOL_COUNT	2
 
