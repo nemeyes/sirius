@@ -70,7 +70,10 @@ namespace sirius
 							//, working(FALSE)
 							//, bytes_transfered(0)
 						{
-							packet = static_cast<char*>(malloc(packet_capacity));
+							do
+							{
+								packet = static_cast<char*>(malloc(packet_capacity));
+							} while (!packet);
 							::memset(packet, 0x00, packet_capacity);
 
 							if (tls)
@@ -110,7 +113,10 @@ namespace sirius
 
 							if (packet)
 							{
-								packet = static_cast<char*>(realloc(packet, size));
+								do
+								{
+									packet = static_cast<char*>(realloc(packet, size));
+								} while (!packet);
 								::memset(packet + packet_capacity, 0x00, size - packet_capacity);
 							}
 							packet_capacity = size;
