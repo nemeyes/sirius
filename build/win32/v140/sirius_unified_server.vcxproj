@@ -137,9 +137,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
