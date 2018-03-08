@@ -136,10 +136,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>shlwapi.lib;log4cplusSU.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ForceSymbolReferences>
-      </ForceSymbolReferences>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;shlwapi.lib;log4cplusSU.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
