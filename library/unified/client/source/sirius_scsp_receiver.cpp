@@ -48,6 +48,15 @@ void sirius::library::unified::scsp::receiver::on_recv_video(int32_t codec, int3
 		_front->on_recv_video(codec, count, index, data, length, dts, cts);
 }
 
+void sirius::library::unified::scsp::receiver::on_recv_video(int32_t codec, int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** data, int32_t * length, long long dts, long long cts)
+{
+	if (!_recv_video)
+		return;
+
+	if (_front)
+		_front->on_recv_video(codec, count, x, y, width, height, data, length, dts, cts);
+}
+
 void sirius::library::unified::scsp::receiver::on_end_video(void)
 {
 	_recv_video = false;

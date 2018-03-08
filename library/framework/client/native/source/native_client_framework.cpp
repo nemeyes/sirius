@@ -226,6 +226,66 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	}
 }
 
+void sirius::library::framework::client::native::core::on_recv_video(int32_t codec, int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** data, int32_t * length, long long dts, long long cts)
+{
+	sirius::autolock mutex(&_vcs);
+
+	if (!_render_buffer)
+		return;
+
+	if (!_decoder_buffer)
+		return;
+
+	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+
+	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
+	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
+
+
+	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
+	encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
+	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
+	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
+
+	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
+	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+
+	for (int32_t i = 0; i < count; i++)
+	{
+		encoded.data = data[i];
+		encoded.data_size = length[i];
+
+		decoded.data = _decoder_buffer;
+		decoded.data_capacity = VIDEO_BUFFER_SIZE;
+
+		int32_t decode_err = decompressor->decompress(&encoded, &decoded);
+		if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
+		{
+			int16_t video_x = x[i];
+			int16_t video_y = y[i];
+			int16_t video_width = width[i];
+			int16_t video_height = height[i];
+
+			for (int32_t bh = 0; bh < video_height; bh++)
+			{
+				int32_t src_index = bh * (video_width << 2);
+				int32_t dst_index = (video_y + bh) * (rctx->width << 2) + (video_x << 2);
+				memmove(_render_buffer + dst_index, _decoder_buffer + src_index, (video_width << 2));
+			}
+		}
+
+		if (i == (count - 1))
+		{
+			sirius::library::video::sink::ddraw::renderer::entity_t render;
+			render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
+			render.data = _render_buffer;
+			render.data_size = rctx->height * (rctx->width << 2);
+			renderer->render(&render);
+		}
+	}
+}
+
 void sirius::library::framework::client::native::core::on_end_video(void)
 {
 	sirius::autolock mutex(&_vcs);

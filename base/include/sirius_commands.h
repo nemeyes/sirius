@@ -30,7 +30,8 @@
 
 #define CMD_PLAY_REQ									4001 
 #define CMD_PLAY_RES									4002
-#define CMD_VIDEO_STREAM_DATA							4003
+#define CMD_VIDEO_INDEXED_STREAM_DATA					4003
+#define CMD_VIDEO_COORDINATES_STREAM_DATA				4004
 
 #define CMD_KEY_DOWN_IND								2301
 #define CMD_KEY_UP_IND									2302

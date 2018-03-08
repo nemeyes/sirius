@@ -22,6 +22,9 @@
     <Filter Include="compressor">
       <UniqueIdentifier>{15557c90-f874-4499-9aba-4f3c27e6768b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="processing">
+      <UniqueIdentifier>{92032063-ef02-46b5-b2ed-0e0757c82b90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\partial_png_compressor.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.h">
       <Filter>libimgqnt</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.h">
+      <Filter>processing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\partial_png_compressor.cpp">
@@ -106,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.c">
       <Filter>libimgqnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.cpp">
+      <Filter>processing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

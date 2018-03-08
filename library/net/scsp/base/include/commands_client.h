@@ -41,15 +41,15 @@ namespace sirius
 					};
 				};
 
-				class video_stream_data_cmd : public client_cmd
+				class video_indexed_stream_data_cmd : public client_cmd
 				{
 				public:
-					video_stream_data_cmd(sirius::library::net::scsp::client::core * processor)
-						: sirius::library::net::scsp::client_cmd(processor, CMD_VIDEO_STREAM_DATA)
+					video_indexed_stream_data_cmd(sirius::library::net::scsp::client::core * processor)
+						: sirius::library::net::scsp::client_cmd(processor, CMD_VIDEO_INDEXED_STREAM_DATA)
 					{
 						::InitializeSRWLock(&_lock);
 					}
-					virtual ~video_stream_data_cmd(void) {};
+					virtual ~video_indexed_stream_data_cmd(void) {};
 
 					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 					{
@@ -61,7 +61,34 @@ namespace sirius
 						count = ntohl(count);
 						packet += sizeof(count);
 
-						_processor->push_video_packet(count, packet, length);
+						_processor->push_indexed_video_packet(count, packet, length);
+					};
+
+				private:
+					SRWLOCK _lock;
+				};
+
+				class video_coordinates_stream_data_cmd : public client_cmd
+				{
+				public:
+					video_coordinates_stream_data_cmd(sirius::library::net::scsp::client::core * processor)
+						: sirius::library::net::scsp::client_cmd(processor, CMD_VIDEO_COORDINATES_STREAM_DATA)
+					{
+						::InitializeSRWLock(&_lock);
+					}
+					virtual ~video_coordinates_stream_data_cmd(void) {};
+
+					void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+					{
+						sirius::exclusive_scopedlock mutex(&_lock);
+
+						uint8_t * packet = (uint8_t*)msg;
+						int32_t count = 0;
+						memmove(&count, packet, sizeof(count));
+						count = ntohl(count);
+						packet += sizeof(count);
+
+						_processor->push_indexed_video_packet(count, packet, length);
 					};
 
 				private:

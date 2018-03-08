@@ -40,7 +40,8 @@ namespace sirius
 
 					void av_stream_callback(const char * msg, int32_t length);
 
-					void push_video_packet(int32_t count, uint8_t * data, int32_t length);
+					void push_indexed_video_packet(int32_t count, uint8_t * data, int32_t length);
+					void push_coordinates_video_packet(int32_t count, uint8_t * data, int32_t length);
 
 				private:
 					sirius::library::net::scsp::client * _front;
@@ -55,9 +56,6 @@ namespace sirius
 					int32_t _receive_option;
 					bool _play;
 					bool _rcv_first_video;
-
-					clock_t _s_video_interval;
-					clock_t _e_video_interval;
 
 					uint8_t * _video_frame_data;// [VIDEO_DATA_SIZE];
 					size_t _video_frame_size;

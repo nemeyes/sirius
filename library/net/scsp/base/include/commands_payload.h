@@ -12,11 +12,20 @@ namespace sirius
 		{
 			namespace scsp
 			{
-				typedef struct _header_t
+				typedef struct _index_header_t
 				{
 					int32_t		index;
 					int32_t		length;
-				} header_t;
+				} index_header_t;
+
+				typedef struct _coordinates_header_t
+				{
+					int16_t		x;
+					int16_t		y;
+					int16_t		width;
+					int16_t		height;
+					int32_t		length;
+				} coordinates_header_t;
 			};
 		};
 	};

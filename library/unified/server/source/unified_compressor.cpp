@@ -109,14 +109,6 @@ int32_t sirius::library::unified::compressor::compress(sirius::library::video::t
 	return status;
 }
 
-/*
-void sirius::library::unified::compressor::after_video_compressing_callback(uint8_t * data, size_t size, long long before_encode_timestamp, long long after_encode_timestamp)
-{
-	if (_front)
-		_front->after_video_compressing_callback(data, size, before_encode_timestamp, after_encode_timestamp);
-}
-*/
-
 void sirius::library::unified::compressor::after_video_compressing_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	if (_front)
@@ -127,6 +119,18 @@ void sirius::library::unified::compressor::after_video_compressing_callback(int3
 {
 	if (_front)
 		_front->after_video_compressing_callback(index, compressed, size, before_compress_timestamp, after_compress_timestamp);
+}
+
+void sirius::library::unified::compressor::after_video_compressing_callback(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	if (_front)
+		_front->after_video_compressing_callback(count, x, y, width, height, compressed, size, before_compress_timestamp, after_compress_timestamp);
+}
+
+void sirius::library::unified::compressor::after_video_compressing_callback(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
+{
+	if (_front)
+		_front->after_video_compressing_callback(x, y, width, height, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }
 
 int32_t sirius::library::unified::compressor::play(int32_t flag)

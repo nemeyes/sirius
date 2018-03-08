@@ -48,7 +48,7 @@ int32_t sirius::library::net::scsp::server::core::stop(void)
 	return sirius::library::net::sicp::server::stop();
 }
 
-int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, size_t nbytes, long long timestamp)
+int32_t sirius::library::net::scsp::server::core::post_indexed_video(uint8_t * bytes, size_t nbytes, long long timestamp)
 {
 	int32_t status = sirius::library::net::scsp::server::err_code_t::success;
 
@@ -66,7 +66,40 @@ int32_t sirius::library::net::scsp::server::core::post_video(uint8_t * bytes, si
 			for (dst_uuid_iter = _video_conf.peers.begin(); dst_uuid_iter != _video_conf.peers.end(); dst_uuid_iter++)
 			{
 				std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t> peer = *dst_uuid_iter;
-				data_request((char*)peer->uuid, CMD_VIDEO_STREAM_DATA, reinterpret_cast<char*>(bytes), nbytes);
+				data_request((char*)peer->uuid, CMD_VIDEO_INDEXED_STREAM_DATA, reinterpret_cast<char*>(bytes), nbytes);
+			}
+		}
+		else
+		{
+			_video_conf.state = sirius::library::net::scsp::server::state_t::stopped;
+		}
+	}
+	else
+	{
+		status = sirius::library::net::scsp::server::err_code_t::not_implemented;
+	}
+	return status;
+}
+
+int32_t sirius::library::net::scsp::server::core::post_coordinates_video(uint8_t * bytes, size_t nbytes, long long timestamp)
+{
+	int32_t status = sirius::library::net::scsp::server::err_code_t::success;
+
+	if (state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped)
+	{
+		if (state(sirius::library::net::scsp::server::media_type_t::video) == sirius::library::net::scsp::server::state_t::begin_publishing)
+			_video_conf.state = sirius::library::net::scsp::server::state_t::publishing;
+
+
+		if (_video_conf.peers.size() > 0)
+		{
+			sirius::autolock mutex(&_video_conf.cs);
+
+			std::vector<std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t>>::iterator dst_uuid_iter;
+			for (dst_uuid_iter = _video_conf.peers.begin(); dst_uuid_iter != _video_conf.peers.end(); dst_uuid_iter++)
+			{
+				std::shared_ptr<sirius::library::net::scsp::server::core::stream_session_info_t> peer = *dst_uuid_iter;
+				data_request((char*)peer->uuid, CMD_VIDEO_COORDINATES_STREAM_DATA, reinterpret_cast<char*>(bytes), nbytes);
 			}
 		}
 		else

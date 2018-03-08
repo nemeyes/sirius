@@ -26,6 +26,7 @@ namespace sirius
 					void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height);
 					void on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts);
 					void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts);
+					void on_recv_video(int32_t codec, int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** data, int32_t * length, long long dts, long long cts);
 					void on_end_video(void);
 
 				private:
