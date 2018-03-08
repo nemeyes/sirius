@@ -76,7 +76,8 @@ namespace sirius
 					int32_t start(sirius::library::net::scsp::server::context_t * context);
 					int32_t stop(void);
 
-					int32_t post_video(uint8_t * bytes, size_t nbytes, long long timestamp);
+					int32_t post_indexed_video(uint8_t * bytes, size_t nbytes, long long timestamp);
+					int32_t post_coordinates_video(uint8_t * bytes, size_t nbytes, long long timestamp);
 
 					int32_t play(int32_t flags);
 					int32_t pause(int32_t flags);

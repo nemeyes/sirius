@@ -27,7 +27,8 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, bool 
 	add_command(new sirius::app::client::error_noti(this));
 
 	add_command(CMD_PLAY_RES);
-	add_command(CMD_VIDEO_STREAM_DATA);
+	add_command(CMD_VIDEO_INDEXED_STREAM_DATA);
+	add_command(CMD_VIDEO_COORDINATES_STREAM_DATA);
 
 	add_command(CMD_KEY_DOWN_IND);
 	add_command(CMD_KEY_UP_IND);

@@ -29,10 +29,8 @@ sirius::library::net::scsp::client::core::core(sirius::library::net::scsp::clien
 	::InitializeCriticalSection(&_state_cs);
 
 	add_command(new sirius::library::net::scsp::play_res_cmd(this));
-	add_command(new sirius::library::net::scsp::video_stream_data_cmd(this));
-
-	_s_video_interval = 0;
-	_e_video_interval = 0;
+	add_command(new sirius::library::net::scsp::video_indexed_stream_data_cmd(this));
+	add_command(new sirius::library::net::scsp::video_coordinates_stream_data_cmd(this));
 }
 
 sirius::library::net::scsp::client::core::~core(void)
@@ -145,7 +143,7 @@ void sirius::library::net::scsp::client::core::request_play_video(void)
 	data_request(SERVER_UUID, CMD_PLAY_REQ, (char*)req_msg.c_str(), req_msg.size() + 1);
 }
 
-void sirius::library::net::scsp::client::core::push_video_packet(int32_t count, uint8_t * data, int32_t length)
+void sirius::library::net::scsp::client::core::push_indexed_video_packet(int32_t count, uint8_t * data, int32_t length)
 {
 	{
 		sirius::autolock mutex(&_state_cs);
@@ -153,38 +151,8 @@ void sirius::library::net::scsp::client::core::push_video_packet(int32_t count, 
 			return;
 	}
 
-	if (_s_video_interval == 0)
-	{
-		_s_video_interval = clock();
-	}
-	else
-	{
-		_e_video_interval = clock();
-		_s_video_interval = _e_video_interval;
-	}
-
 	uint8_t * packet = data;
-	if (count == -1)
-	{
-		sirius::library::net::scsp::header_t single_packet_header;
-		memmove(&single_packet_header, packet, sizeof(single_packet_header));
-
-		int32_t index = ntohl(single_packet_header.index);
-		int32_t legnth = ntohl(single_packet_header.length);
-		packet += sizeof(single_packet_header);
-
-		if (_video_codec == sirius::library::net::scsp::client::video_submedia_type_t::png)
-		{
-			if (!_rcv_first_video)
-			{
-				_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
-				_rcv_first_video = true;
-			}
-			_front->on_recv_video(_video_codec, packet, legnth, 0, 0);
-			packet += legnth;
-		}
-	}
-	else
+	if (count > 0)
 	{
 		int32_t * mindex = new int32_t[count];
 		uint8_t ** mdata = new uint8_t*[count];
@@ -192,12 +160,12 @@ void sirius::library::net::scsp::client::core::push_video_packet(int32_t count, 
 
 		for (int32_t x = 0; x < count; x++)
 		{
-			sirius::library::net::scsp::header_t single_packet_header;
-			memmove(&single_packet_header, packet, sizeof(single_packet_header));
+			sirius::library::net::scsp::index_header_t header;
+			memmove(&header, packet, sizeof(header));
 
-			int32_t sindex = ntohl(single_packet_header.index);
-			int32_t slength = ntohl(single_packet_header.length);
-			packet += sizeof(single_packet_header);
+			int32_t sindex = ntohl(header.index);
+			int32_t slength = ntohl(header.length);
+			packet += sizeof(header);
 
 			mindex[x] = sindex;
 			mdata[x] = packet;
@@ -219,6 +187,73 @@ void sirius::library::net::scsp::client::core::push_video_packet(int32_t count, 
 
 		if (mindex)
 			delete mindex;
+		if (mdata)
+			delete mdata;
+		if (mlength)
+			delete mlength;
+	}
+}
+
+void sirius::library::net::scsp::client::core::push_coordinates_video_packet(int32_t count, uint8_t * data, int32_t length)
+{
+	{
+		sirius::autolock mutex(&_state_cs);
+		if (_state != sirius::library::net::scsp::client::state_t::streaming)
+			return;
+	}
+
+
+	uint8_t * packet = data;
+	if (count > 0)
+	{
+		int16_t * mx = new int16_t[count];
+		int16_t * my = new int16_t[count];
+		int16_t * mwidth = new int16_t[count];
+		int16_t * mheight = new int16_t[count];
+		uint8_t ** mdata = new uint8_t*[count];
+		int32_t * mlength = new int32_t[count];
+
+		for (int32_t x = 0; x < count; x++)
+		{
+			sirius::library::net::scsp::coordinates_header_t header;
+			memmove(&header, packet, sizeof(header));
+
+			int16_t sx = ntohs(header.x);
+			int16_t sy = ntohs(header.y);
+			int16_t swidth = ntohs(header.width);
+			int16_t sheight = ntohs(header.height);
+			int32_t slength = ntohl(header.length);
+			packet += sizeof(header);
+
+			mx[x] = sx;
+			my[x] = sy;
+			mwidth[x] = swidth;
+			mheight[x] = sheight;
+			mdata[x] = packet;
+			mlength[x] = slength;
+
+			packet += slength;
+		};
+
+		if (_video_codec == sirius::library::net::scsp::client::video_submedia_type_t::png)
+		{
+			if (!_rcv_first_video)
+			{
+				_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
+				_rcv_first_video = true;
+			}
+
+			_front->on_recv_video(_video_codec, count, mx, my, mwidth, mheight, mdata, mlength, 0, 0);
+		}
+
+		if (mx)
+			delete mx;
+		if (my)
+			delete my;
+		if (mwidth)
+			delete mwidth;
+		if (mheight)
+			delete mheight;
 		if (mdata)
 			delete mdata;
 		if (mlength)
