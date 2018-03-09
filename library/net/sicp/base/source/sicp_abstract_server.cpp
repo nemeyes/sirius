@@ -403,6 +403,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 			for (iter = final_sessions.begin(); iter != final_sessions.end(); iter++)
 				_closing_sessions.push_back(*iter);
 		}
+		_closing_sessions.clear();
+		final_sessions.clear();
+		closing_sessions.clear();
 	}
 
 	return _activated_sessions.size();
