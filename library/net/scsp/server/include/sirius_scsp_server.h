@@ -45,8 +45,8 @@ namespace sirius
 					int32_t post_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long timestamp);
 					int32_t post_video(int32_t index, uint8_t * compressed, int32_t size, long long timestamp);
 
-					int32_t post_video(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long timestamp);
-					int32_t post_video(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long timestamp);
+					int32_t post_video(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long timestamp);
+					int32_t post_video(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long timestamp);
 
 				private:
 					sirius::library::net::scsp::server::context_t * _context;

@@ -23,17 +23,15 @@ namespace sirius
 				typedef struct _entity_t
 				{
 					long long	timestamp;
-					int32_t		memtype;
 					void *		data;
 					int32_t		data_size;
 					int32_t		data_capacity;
-					int32_t		x;
-					int32_t		y;
-					int32_t		width;
-					int32_t		height;
+					int16_t		x;
+					int16_t		y;
+					int16_t		width;
+					int16_t		height;
 					_entity_t(void)
 						: timestamp(0)
-						, memtype(sirius::library::video::base::video_memory_type_t::host)
 						, data(nullptr)
 						, data_size(0)
 						, data_capacity(0)
@@ -46,7 +44,6 @@ namespace sirius
 					_entity_t(const _entity_t & clone)
 					{
 						timestamp = clone.timestamp;
-						memtype = clone.memtype;
 						data = clone.data;
 						data_size = clone.data_size;
 						data_capacity = clone.data_capacity;
@@ -59,7 +56,6 @@ namespace sirius
 					_entity_t operator=(const _entity_t & clone)
 					{
 						timestamp = clone.timestamp;
-						memtype = clone.memtype;
 						data = clone.data;
 						data_size = clone.data_size;
 						data_capacity = clone.data_capacity;

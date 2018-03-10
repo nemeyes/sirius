@@ -256,7 +256,6 @@ void sirius::library::framework::server::web::core::on_video_receive(sirius::lib
 	if (_unified_server->is_video_compressor_initialized())
 	{
 		sirius::library::video::transform::codec::compressor::entity_t input;
-		input.memtype = captured->memtype;
 		input.data = captured->data;
 		input.data_size = captured->data_size;
 		input.data_capacity = captured->data_size;

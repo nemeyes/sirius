@@ -28,30 +28,24 @@ int32_t sirius::library::video::transform::codec::png::decompressor::core::relea
 
 int32_t sirius::library::video::transform::codec::png::decompressor::core::decompress(sirius::library::video::transform::codec::png::decompressor::entity_t * input, sirius::library::video::transform::codec::png::decompressor::entity_t * output)
 {
-	if (input->memtype == sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host)
-	{
-		sirius::autolock lock(&_cs);
+	sirius::autolock lock(&_cs);
 		
-		uint8_t * data = static_cast<uint8_t*>(input->data);
-		_recvd_size = input->data_size;
-		memcpy(_recvd, data, _recvd_size);
+	uint8_t * data = static_cast<uint8_t*>(input->data);
+	_recvd_size = input->data_size;
+	memcpy(_recvd, data, _recvd_size);
 
-		_decoding = true;
+	_decoding = true;
 
-		png24_image_t img = { 0 };
-		read_png_image24(&img, input->timestamp);
+	png24_image_t img = { 0 };
+	read_png_image24(&img, input->timestamp);
 
-		while (_decoding)
-			::Sleep(10);
+	while (_decoding)
+		::Sleep(10);
 
-		if (output->memtype == sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host)
-		{
-			output->data_size = img.width * img.height * 4;
-			memcpy(output->data, img.rgba_data, output->data_size);
-		}
+	output->data_size = img.width * img.height * 4;
+	memcpy(output->data, img.rgba_data, output->data_size);
 
-		free_png_image24(&img);
-	}
+	free_png_image24(&img);
 	return sirius::library::video::transform::codec::png::decompressor::err_code_t::success;
 }
 

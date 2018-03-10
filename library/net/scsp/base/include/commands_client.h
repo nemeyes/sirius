@@ -88,7 +88,7 @@ namespace sirius
 						count = ntohl(count);
 						packet += sizeof(count);
 
-						_processor->push_indexed_video_packet(count, packet, length);
+						_processor->push_coordinates_video_packet(count, packet, length);
 					};
 
 				private:

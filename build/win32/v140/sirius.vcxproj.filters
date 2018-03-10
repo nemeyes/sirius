@@ -51,6 +51,9 @@
     <ClInclude Include="..\..\..\base\include\sirius_image_creator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\base\include\sirius_io.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\base\source\sirius_ff_initializer.cpp">

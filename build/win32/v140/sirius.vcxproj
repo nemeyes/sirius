@@ -147,6 +147,7 @@
     <ClInclude Include="..\..\..\base\include\sirius.h" />
     <ClInclude Include="..\..\..\base\include\sirius_ff_initializer.h" />
     <ClInclude Include="..\..\..\base\include\sirius_image_creator.h" />
+    <ClInclude Include="..\..\..\base\include\sirius_io.h" />
     <ClInclude Include="..\..\..\base\include\sirius_locks.h" />
     <ClInclude Include="..\..\..\base\include\sirius_commands.h" />
     <ClInclude Include="..\..\..\base\include\sirius_string.h" />
