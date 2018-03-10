@@ -16,10 +16,6 @@ sirius::library::video::transform::codec::libpng::compressor::compressor(sirius:
 	: _front(front)
 	, _context(nullptr)
 	, _state(sirius::library::video::transform::codec::partial::png::compressor::state_t::none)
-#if defined(WITH_ONETIME_CREATION)
-	, _liq(nullptr)
-	, _remap(nullptr)
-#endif
 {
 
 }
@@ -40,24 +36,10 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::initialize
 		return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::fail;
 
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::initializing;
+
 	_context = context;
 
-#if defined(WITH_ONETIME_CREATION)
-	_liq = liq_attr_create();
-	liq_set_speed(_liq, _context->speed);
-	if (_context->max_colors == 0)
-		liq_set_quality(_liq, _context->min_quality, _context->max_quality);
-	else
-		liq_set_max_colors(_liq, _context->max_colors);
-	liq_set_min_posterization(_liq, 0);
-#endif
-
-	//_rgba_buffer = static_cast<uint8_t*>(malloc((_context->block_width*_context->block_height) << 2));
-	//memset(_rgba_buffer, 0x00, (_context->block_width*_context->block_height) << 2);
-
-	allocate_io_buffers();
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::initialized;
-
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
@@ -70,28 +52,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::release(vo
 
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::releasing;
 
-	/*
-	if (_rgba_buffer)
-	{
-		free(_rgba_buffer);
-		_rgba_buffer = nullptr;
-	}
-	*/
 
-	release_io_buffers();
-
-#if defined(WITH_ONETIME_CREATION)
-	if (_remap)
-	{
-		liq_result_destroy(_remap);
-		_remap = nullptr;
-	}
-	if (_liq)
-	{
-		liq_attr_destroy(_liq);
-		_liq = nullptr;
-	}
-#endif
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::released;
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -115,46 +76,35 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 {
 	int32_t status = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 
-	sirius::library::video::transform::codec::libpng::compressor::buffer_t * iobuffer = nullptr;
 	if (_state == sirius::library::video::transform::codec::partial::png::compressor::state_t::compressing)
 		return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressing;
 
-	{
-		iobuffer = _iobuffer_queue.get_available();
-		if (!iobuffer)
-			return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::fail;
-
-		iobuffer->input.timestamp = input->timestamp;
-		iobuffer->input.data_size = input->data_size;
-		memmove((uint8_t*)iobuffer->input.data, input->data, iobuffer->input.data_size);
-	}
-
-#if defined(WITH_ONETIME_CREATION)
-	iobuffer = _iobuffer_queue.get_pending();
-	uint8_t * pixels = (uint8_t*)iobuffer->input.data;
+	liq_attr * liq = liq_attr_create();
+	liq_set_speed(liq, _context->speed);
+	if (_context->max_colors == 0)
+		liq_set_quality(liq, _context->min_quality, _context->max_quality);
+	else
+		liq_set_max_colors(liq, _context->max_colors);
+	liq_set_min_posterization(liq, 0);
 
 	int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
 	png8_image_t qntpng = { 0 };
-	liq_image * rgba = liq_image_create_rgba(_liq, pixels, _context->block_width, _context->block_height, _context->gamma);
-	liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
+	liq_image * rgba = liq_image_create_rgba_rows(liq, (void**)input->data, input->width, input->height, _context->gamma);
+	//liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
 
-
-	liq_error liqerr = LIQ_OK;
-	//liq_error liqerr = liq_image_quantize(rgba, _liq, &_remap);
-	_remap = liq_quantize_image(_liq, rgba);
-	//if (liqerr == LIQ_OK)
-	if(_remap)
+	liq_result * remap = nullptr;
+	liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
+	if (remap)
 	{
-		liq_set_output_gamma(_remap, _context->gamma);
-		liq_set_dithering_level(_remap, _context->floyd);
+		liq_set_output_gamma(remap, _context->gamma);
+		liq_set_dithering_level(remap, _context->floyd);
 
 		qntpng.width = liq_image_get_width(rgba);
 		qntpng.height = liq_image_get_height(rgba);
-		qntpng.gamma = liq_get_output_gamma(_remap);
+		qntpng.gamma = liq_get_output_gamma(remap);
 		qntpng.output_color = RWPNG_SRGB;
-		//qntpng.output_color = RWPNG_NONE;
 		qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
 		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
 
@@ -162,21 +112,25 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		{
 			if (rgba)
 				liq_image_destroy(rgba);
+
 			free_png_image8(&qntpng);
+
+			liq_attr_destroy(liq);
+
 			return sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
 		}
 
 		for (size_t row = 0; row < qntpng.height; row++)
 			qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
 
-		const liq_palette *palette = liq_get_palette(_remap);
+		const liq_palette *palette = liq_get_palette(remap);
 		qntpng.num_palette = palette->count;
 
-		liqerr = liq_write_remapped_image_rows(_remap, rgba, qntpng.row_pointers);
+		liqerr = liq_write_remapped_image_rows(remap, rgba, qntpng.row_pointers);
 		if (liqerr != LIQ_OK)
 			status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
 
-		palette = liq_get_palette(_remap);
+		palette = liq_get_palette(remap);
 		qntpng.num_palette = palette->count;
 		for (unsigned int i = 0; i < palette->count; i++)
 		{
@@ -186,7 +140,11 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 			qntpng.palette[i].b = px.r;
 			qntpng.palette[i].a = px.a;
 		}
-		liq_result_destroy(_remap);
+
+		double palette_error = liq_get_quantization_error(remap);
+		if (palette_error >= 0)
+			quality_percent = liq_get_quantization_quality(remap);
+		liq_result_destroy(remap);
 	}
 	else if (liqerr == LIQ_QUALITY_TOO_LOW)
 	{
@@ -200,199 +158,15 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 	if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
 	{
 		qntpng.compression_level = _context->compression_level;
-		status = write_png_image8(&qntpng, &iobuffer->output);
+		status = write_png_image8(&qntpng, bitstream);
 	}
 
 	if (rgba)
 		liq_image_destroy(rgba);
 	free_png_image8(&qntpng);
-
-	bitstream->memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-	if (iobuffer->output.data_size > bitstream->data_capacity)
-	{
-		bitstream->data_size = bitstream->data_capacity;
-		memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-	}
-	else
-	{
-		bitstream->data_size = iobuffer->output.data_size;
-		memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-	}
-
-	iobuffer->output.data_size = 0;
-#else
-	if(_context->quantization)
-	{
-		iobuffer = _iobuffer_queue.get_pending();
-		uint8_t * pixels = (uint8_t*)iobuffer->input.data;
-		liq_attr * liq = liq_attr_create();
-		liq_set_speed(liq, _context->speed);
-		if (_context->max_colors == 0)
-			liq_set_quality(liq, _context->min_quality, _context->max_quality);
-		else
-			liq_set_max_colors(liq, _context->max_colors);
-		liq_set_min_posterization(liq, 0);
-
-		int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
-		png8_image_t qntpng = { 0 };
-		liq_image * rgba = liq_image_create_rgba(liq, pixels, _context->block_width, _context->block_height, _context->gamma);
-		//liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
-
-		liq_result * remap = nullptr;
-		liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
-		if (remap)
-		{
-			liq_set_output_gamma(remap, _context->gamma);
-			liq_set_dithering_level(remap, _context->floyd);
-
-			qntpng.width = liq_image_get_width(rgba);
-			qntpng.height = liq_image_get_height(rgba);
-			qntpng.gamma = liq_get_output_gamma(remap);
-			qntpng.output_color = RWPNG_SRGB;
-			qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
-			qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
-
-			if (!qntpng.indexed_data || !qntpng.row_pointers)
-			{
-				if (rgba)
-					liq_image_destroy(rgba);
-
-				free_png_image8(&qntpng);
-
-				liq_attr_destroy(liq);
-
-				return sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
-			}
-
-			for (size_t row = 0; row < qntpng.height; row++)
-				qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
-
-			const liq_palette *palette = liq_get_palette(remap);
-			qntpng.num_palette = palette->count;
-
-			liqerr = liq_write_remapped_image_rows(remap, rgba, qntpng.row_pointers);
-			if (liqerr != LIQ_OK)
-				status = sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
-
-			palette = liq_get_palette(remap);
-			qntpng.num_palette = palette->count;
-			for (unsigned int i = 0; i < palette->count; i++)
-			{
-				const liq_color px = palette->entries[i];
-				qntpng.palette[i].r = px.b;
-				qntpng.palette[i].g = px.g;
-				qntpng.palette[i].b = px.r;
-				qntpng.palette[i].a = px.a;
-			}
-
-			double palette_error = liq_get_quantization_error(remap);
-			if (palette_error >= 0)
-				quality_percent = liq_get_quantization_quality(remap);
-			liq_result_destroy(remap);
-		}
-		else if (liqerr == LIQ_QUALITY_TOO_LOW)
-		{
-			status = sirius::library::video::transform::codec::compressor::err_code_t::too_low_quality;
-		}
-		else
-		{
-			status = sirius::library::video::transform::codec::compressor::err_code_t::invalid_argument;
-		}
-
-		if (status == sirius::library::video::transform::codec::compressor::err_code_t::success)
-		{
-			qntpng.compression_level = _context->compression_level;
-			status = write_png_image8(&qntpng, &iobuffer->output);
-		}
-
-		if (rgba)
-			liq_image_destroy(rgba);
-		free_png_image8(&qntpng);
-		liq_attr_destroy(liq);
-
-		bitstream->memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-		if (iobuffer->output.data_size > bitstream->data_capacity)
-		{
-			bitstream->data_size = bitstream->data_capacity;
-			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-		}
-		else
-		{
-			bitstream->data_size = iobuffer->output.data_size;
-			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-		}
-
-		iobuffer->output.data_size = 0;
-	}
-	else
-	{
-		iobuffer = _iobuffer_queue.get_pending();
-
-		uint8_t * pixels = (uint8_t*)iobuffer->input.data;
-
-		png24_image_t qntpng = { 0 };
-		qntpng.width = _context->block_width;
-		qntpng.height = _context->block_height;
-		qntpng.output_color = RWPNG_SRGB;
-		qntpng.rgba_data = static_cast<uint8_t*>(malloc((_context->block_width * _context->block_height) << 2));
-		memmove(qntpng.rgba_data, pixels, (_context->block_width * _context->block_height) << 2);
-		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
-		status = write_png_image24(&qntpng, &iobuffer->output);
-		free_png_image24(&qntpng);
-
-		bitstream->memtype = sirius::library::video::transform::codec::partial::png::compressor::video_memory_type_t::host;
-		if (iobuffer->output.data_size > bitstream->data_capacity)
-		{
-			bitstream->data_size = bitstream->data_capacity;
-			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-		}
-		else
-		{
-			bitstream->data_size = iobuffer->output.data_size;
-			memmove(bitstream->data, iobuffer->output.data, bitstream->data_size);
-		}
-
-		iobuffer->output.data_size = 0;
-	}
-#endif
+	liq_attr_destroy(liq);
 
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
-	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
-}
-
-int32_t sirius::library::video::transform::codec::libpng::compressor::allocate_io_buffers(void)
-{
-	int32_t status = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
-	_iobuffer_queue.initialize(_iobuffer, _context->nbuffer);
-
-	for (int32_t i = 0; i < _context->nbuffer; i++)
-	{
-		_iobuffer[i].input.data_capacity = _context->block_width * _context->block_height * 4;
-		_iobuffer[i].input.data_size = 0;
-		_iobuffer[i].input.data = static_cast<uint8_t*>(malloc(_iobuffer[i].input.data_capacity));
-
-		_iobuffer[i].output.data_capacity = sirius::library::video::transform::codec::libpng::compressor::MAX_PNG_SIZE;
-		_iobuffer[i].output.data_size = 0;
-		_iobuffer[i].output.data = static_cast<uint8_t*>(malloc(_iobuffer[i].output.data_capacity));
-	}
-
-	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
-}
-
-int32_t sirius::library::video::transform::codec::libpng::compressor::release_io_buffers(void)
-{
-	for (int32_t i = 0; i < _context->nbuffer; i++)
-	{
-		if (_iobuffer[i].input.data)
-			free(_iobuffer[i].input.data);
-		_iobuffer[i].input.data = nullptr;
-
-		if (_iobuffer[i].output.data)
-			free(_iobuffer[i].output.data);
-		_iobuffer[i].output.data = nullptr;
-	}
-
-	_iobuffer_queue.release();
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
 
@@ -407,10 +181,10 @@ void sirius::library::video::transform::codec::libpng::compressor::png_write_cal
 	if (write_state->retval != sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
 		return;
 
-	sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed = write_state->compressed;
+	sirius::library::video::transform::codec::partial::png::compressor::entity_t * compressed = write_state->compressed;
 	if (compressed) //sending png per image
 	{
-		memcpy(compressed->data + compressed->data_size, data, length);
+		memcpy((uint8_t*)compressed->data + compressed->data_size, data, length);
 		compressed->data_size += length;
 	}
 }
@@ -501,46 +275,7 @@ png_bytepp sirius::library::video::transform::codec::libpng::compressor::png_cre
 	return row_pointers;
 }
 
-int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_image24(png24_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed)
-{
-	png_structp png_ptr;
-	png_infop info_ptr;
-	int32_t retval = write_png_begin((png_image_t*)out, &png_ptr, &info_ptr, 0);
-	if (retval)
-		return retval;
-
-	png_write_state_t write_state;
-	//write_state.maximum_file_size = out->maximum_file_size;
-	write_state.retval = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
-	write_state.compressed = compressed;
-	png_set_write_fn(png_ptr, &write_state, png_write_callback, png_flush_callback);
-
-	png_set_compression_strategy(png_ptr, Z_RLE);
-	//png_set_gamma(info_ptr, png_ptr, out->gamma, out->output_color);
-
-	png_set_IHDR(png_ptr, info_ptr, out->width, out->height, 8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
-
-
-	png_bytepp row_pointers = png_create_row_pointers(info_ptr, png_ptr, out->rgba_data, out->height, 0);
-	write_png_end(&info_ptr, &png_ptr, row_pointers);
-	free(row_pointers);
-
-	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
-}
-
-void sirius::library::video::transform::codec::libpng::compressor::free_png_image24(png24_image_t * image)
-{
-	free(image->row_pointers);
-	image->row_pointers = NULL;
-
-	free(image->rgba_data);
-	image->rgba_data = NULL;
-
-	png_free_chunks(image->chunks);
-	image->chunks = NULL;
-}
-
-int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed)
+int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::partial::png::compressor::entity_t * compressed)
 {
 	png_structp png_ptr;
 	png_infop info_ptr;

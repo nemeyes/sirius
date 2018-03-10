@@ -132,7 +132,7 @@ int32_t sirius::library::net::scsp::server::post_video(int32_t index, uint8_t * 
 	return sirius::library::net::scsp::server::err_code_t::success;
 }
 
-int32_t sirius::library::net::scsp::server::post_video(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long timestamp)
+int32_t sirius::library::net::scsp::server::post_video(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long timestamp)
 {
 	if ((_video_data != nullptr) && (_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
 	{
@@ -167,7 +167,7 @@ int32_t sirius::library::net::scsp::server::post_video(int32_t count, int32_t * 
 	return sirius::library::net::scsp::server::err_code_t::success;
 }
 
-int32_t sirius::library::net::scsp::server::post_video(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long timestamp)
+int32_t sirius::library::net::scsp::server::post_video(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long timestamp)
 {
 	if ((_video_data != nullptr) && (_core->state(sirius::library::net::scsp::server::media_type_t::video) != sirius::library::net::scsp::server::state_t::stopped))
 	{

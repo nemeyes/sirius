@@ -182,7 +182,7 @@ int32_t sirius::library::unified::server::core::publish_video(int32_t index, uin
 	return code;
 }
 
-int32_t sirius::library::unified::server::core::publish_video(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+int32_t sirius::library::unified::server::core::publish_video(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	if (!_context)
 		return sirius::library::unified::server::err_code_t::success;
@@ -198,7 +198,7 @@ int32_t sirius::library::unified::server::core::publish_video(int32_t count, int
 	return code;
 }
 
-int32_t sirius::library::unified::server::core::publish_video(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
+int32_t sirius::library::unified::server::core::publish_video(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	if (!_context)
 		return sirius::library::unified::server::err_code_t::success;
@@ -224,12 +224,12 @@ void sirius::library::unified::server::core::after_video_compressing_callback(in
 	publish_video(index, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }
 
-void sirius::library::unified::server::core::after_video_compressing_callback(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
+void sirius::library::unified::server::core::after_video_compressing_callback(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	publish_video(count, x, y, width, height, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }
 
-void sirius::library::unified::server::core::after_video_compressing_callback(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
+void sirius::library::unified::server::core::after_video_compressing_callback(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp)
 {
 	publish_video(x, y, width, height, compressed, size, before_compress_timestamp, after_compress_timestamp);
 }

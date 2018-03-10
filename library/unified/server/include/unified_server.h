@@ -38,15 +38,15 @@ namespace sirius
 				int32_t publish_video(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
 				int32_t publish_video(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 
-				int32_t publish_video(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
-				int32_t publish_video(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
+				int32_t publish_video(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
+				int32_t publish_video(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 
 
 				void after_video_compressing_callback(int32_t count, int32_t * index, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
 				void after_video_compressing_callback(int32_t index, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 				
-				void after_video_compressing_callback(int32_t count, int32_t * x, int32_t * y, int32_t * width, int32_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
-				void after_video_compressing_callback(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
+				void after_video_compressing_callback(int32_t count, int16_t * x, int16_t * y, int16_t * width, int16_t * height, uint8_t ** compressed, int32_t * size, long long before_compress_timestamp, long long after_compress_timestamp);
+				void after_video_compressing_callback(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t * compressed, int32_t size, long long before_compress_timestamp, long long after_compress_timestamp);
 
 
 			private:

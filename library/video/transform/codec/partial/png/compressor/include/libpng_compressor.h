@@ -33,8 +33,6 @@ namespace sirius
 							: public sirius::library::video::transform::codec::processor
 						{
 						public:
-							static const int32_t MAX_IO_BUFFERS = 30;
-
 							//compression level
 							static const int32_t Z_BEST_COMPRESSION = 9;
 							static const int32_t Z_BEST_SPEED = 1;
@@ -45,8 +43,6 @@ namespace sirius
 							static const int32_t Z_FILTERED = 1;
 							static const int32_t Z_HUFFMAN_ONLY = 2;
 							static const int32_t Z_RLE = 3;
-
-							static const int32_t MAX_PNG_SIZE = 1024 * 1024 * 8;
 
 							typedef enum
 							{
@@ -146,7 +142,7 @@ namespace sirius
 
 							typedef struct _png_write_state_t
 							{
-								sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed;
+								sirius::library::video::transform::codec::partial::png::compressor::entity_t * compressed;
 								png_size_t maximum_file_size;
 								png_size_t bytes_written;
 								int32_t retval;
@@ -168,9 +164,6 @@ namespace sirius
 							int32_t compress(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::entity_t * bitstream);
 
 						private:
-							int32_t				allocate_io_buffers(void);
-							int32_t				release_io_buffers(void);
-
 							static void			png_error_handler(png_structp png_ptr, png_const_charp msg);
 							static void			png_write_callback(png_structp  png_ptr, png_bytep data, png_size_t length);
 							static void			png_flush_callback(png_structp png_ptr);
@@ -180,30 +173,13 @@ namespace sirius
 							static void			write_png_end(png_infopp info_ptr_p, png_structpp png_ptr_p, png_bytepp row_pointers);
 							static png_bytepp	png_create_row_pointers(png_infop info_ptr, png_structp png_ptr, unsigned char *base, unsigned int height, png_size_t rowbytes);
 
-							int32_t				write_png_image24(png24_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed);
-							void				free_png_image24(png24_image_t * image);
-							int32_t				write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::libpng::compressor::obuffer_t * compressed);
+							int32_t				write_png_image8(png8_image_t * out, sirius::library::video::transform::codec::partial::png::compressor::entity_t * compressed);
 							void				free_png_image8(png8_image_t * image);
 
 						private:
 							sirius::library::video::transform::codec::partial::png::compressor * _front;
 							sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;
 							int32_t _state;
-
-							sirius::library::video::transform::codec::libpng::compressor::buffer_t _iobuffer[MAX_IO_BUFFERS];
-							sirius::queue<sirius::library::video::transform::codec::libpng::compressor::buffer_t> _iobuffer_queue;
-
-
-							//uint8_t * _rgba_buffer;
-#if defined(WITH_ONETIME_CREATION)
-							liq_attr * _liq;
-							liq_result * _remap;
-							int32_t _remap_count;
-							int32_t _ncompress;
-#endif
-							ATL::CComPtr<ID3D11Device> _device;
-							ATL::CComPtr<ID3D11DeviceContext> _device_ctx;
-							ATL::CComPtr<ID3D11Texture2D> _intermediate_tex;
 						};
 					};
 				};

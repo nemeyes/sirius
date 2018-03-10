@@ -142,9 +142,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 
 
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
-	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 
 	encoded.data = (uint8_t*)data;
 	encoded.data_size = length;
@@ -156,7 +154,6 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
 	{
 		sirius::library::video::sink::ddraw::renderer::entity_t render;
-		render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
 		render.data = decoded.data;
 		render.data_size = decoded.data_size;
 		renderer->render(&render);
@@ -181,9 +178,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 
 
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
-	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 
 	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
 	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
@@ -218,7 +213,6 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		if (x == (count - 1))
 		{
 			sirius::library::video::sink::ddraw::renderer::entity_t render;
-			render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
 			render.data = _render_buffer;
 			render.data_size = rctx->height * (rctx->width << 2);
 			renderer->render(&render);
@@ -244,9 +238,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 
 
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	encoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
-	decoded.memtype = sirius::library::video::transform::codec::png::decompressor::video_memory_type_t::host;
 
 	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
 	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
@@ -278,7 +270,6 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		if (i == (count - 1))
 		{
 			sirius::library::video::sink::ddraw::renderer::entity_t render;
-			render.memtype = sirius::library::video::sink::ddraw::renderer::video_memory_type_t::host;
 			render.data = _render_buffer;
 			render.data_size = rctx->height * (rctx->width << 2);
 			renderer->render(&render);

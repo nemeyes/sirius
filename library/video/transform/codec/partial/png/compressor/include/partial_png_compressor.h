@@ -82,12 +82,12 @@ namespace sirius
 
 								typedef struct _bounding_box_t
 								{
-									int16_t				sx;
-									int16_t				sy;
-									int16_t				ex;
-									int16_t				ey;
+									unsigned char *		mb;
+									int16_t				bindex;
+									int16_t				eindex;
+									int16_t				hcnt;
+									int16_t				vcnt;
 									int16_t				cnt;
-									macro_block_t *		mb;
 								} bounding_box_t;
 
 
@@ -121,6 +121,9 @@ namespace sirius
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
+								bounding_box_t * create_bounding_box(int16_t macro_block_index);
+								void			 destroy_bounding_box(bounding_box_t * bb);
+
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;
 								sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;
@@ -137,7 +140,7 @@ namespace sirius
 								sirius::library::video::transform::codec::libpng::compressor *															_real_compressor;								
 								std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*>	_indexed_cache_image;
 								
-								std::vector<sirius::library::video::transform::codec::partial::png::compressor::core::bounding_box_t*>					_bounding_boxes;
+								//std::vector<sirius::library::video::transform::codec::partial::png::compressor::core::bounding_box_t*>					_bounding_boxes;
 								
 							};
 						};

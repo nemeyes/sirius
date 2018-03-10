@@ -120,7 +120,7 @@ namespace sirius
 							const size_t	OA			= 8 * A;
 							const size_t	HA			= A / 2;
 
-
+							const __m256i	K_ZERO						= ASIGN_MM256_SET1_EPI8(0);
 							const __m256i	K16_00FF					= ASIGN_MM256_SET1_EPI16(0x00FF);
 							const int32_t	BGR_TO_GRAY_AVERAGING_SHIFT = 14;
 							const int32_t	BGR_TO_GRAY_ROUND_TERM		= 1 << (BGR_TO_GRAY_AVERAGING_SHIFT - 1);
@@ -140,6 +140,7 @@ namespace sirius
 							const double	FRACTION_ROUND_TERM			= 0.5 / FRACTION_RANGE;
 
 							const __m256i	K8_SHUFFLE_X4				= ASIGN_MM256_SETR_EPI8(0x0, 0x4, 0x1, 0x5, 0x2, 0x6, 0x3, 0x7, 0x8, 0xC, 0x9, 0xD, 0xA, 0xE, 0xB, 0xF, 0x0, 0x4, 0x1, 0x5, 0x2, 0x6, 0x3, 0x7, 0x8, 0xC, 0x9, 0xD, 0xA, 0xE, 0xB, 0xF);
+							const __m256i	K8_01_FF					= ASIGN_MM256_SET2_EPI8(0x01, 0xFF);
 
 							template <class T> __forceinline void swap(T & a, T & b);
 
@@ -150,12 +151,24 @@ namespace sirius
 							__forceinline bool		aligned(size_t size, size_t align);
 							__forceinline bool		aligned(const void * ptr, size_t align);
 
-							__forceinline __m256i	pack_u16_to_u8(__m256i lo, __m256i hi);
-
 							void estimate_alpha_index(size_t ssize, size_t dsize, int32_t * indexes, int32_t * alphas, size_t channels);
 
 							namespace avx2
 							{
+								__forceinline __m256i	load(bool aligned, const __m256i * p);
+								__forceinline void		store(bool aligned, __m256i * p, __m256i a);
+
+								__forceinline __m256i	pack_u16_to_u8(__m256i lo, __m256i hi);
+								__forceinline __m256i	pack_i32_to_i16(__m256i lo, __m256i hi);
+
+								__forceinline __m256i	set_mask(bool aligned, uint8_t first, size_t position, uint8_t second);
+								__forceinline uint64_t	extract(bool aligned, __m256i value);
+
+								__forceinline __m256i	unpack_u8(int32_t part, __m256i a, __m256i b);
+								__forceinline __m256i	sub_unpacked_u8(int32_t part, __m256i a, __m256i b);
+
+								__forceinline __m256i	horizontal_sum32(__m256i a);
+
 								namespace resizer
 								{
 									static const int32_t CHANNELS = 4;
@@ -220,7 +233,7 @@ namespace sirius
 										void *_p;
 									} buffer_g_t;
 
-									__forceinline void		resize_bilinear(const uint8_t * src, size_t swidth, size_t sheight, size_t sstride, uint8_t *dst, size_t dwidth, size_t dheight, size_t dstride);
+									void					resize_bilinear(const uint8_t * src, size_t swidth, size_t sheight, size_t sstride, uint8_t *dst, size_t dwidth, size_t dheight, size_t dstride);
 									__forceinline void		estimate_alpha_index_x(size_t src_size, size_t dst_size, int32_t * indexes, uint8_t * alphas);
 									__forceinline void		interpolate_x(const __m256i * alpha, __m256i * buffer);
 									__forceinline void		interpolate_inner_x(const __m256i * alpha, __m256i * buffer);
@@ -231,17 +244,6 @@ namespace sirius
 								namespace converter
 								{
 									/*
-									__forceinline size_t	avx2_aligned_high(size_t size, size_t align);
-									__forceinline void *	avx2_align_high(const void * ptr, size_t align);
-									__forceinline size_t	avx2_align_low(size_t size, size_t align);
-									__forceinline void *	avx2_align_low(const void * ptr, size_t align);
-									__forceinline bool		avx2_is_aligned(size_t size, size_t align);
-									__forceinline bool		avx2_is_aligned(const void * ptr, size_t align);
-									__forceinline __m256i	avx2_load(bool aligned, const __m256i * p);
-									__forceinline void		avx2_store(bool aligned, __m256i * p, __m256i a);
-									__forceinline __m256i	avx2_pack_u16tou8(__m256i lo, __m256i hi);
-									__forceinline __m256i	avx2_packi32toi16(__m256i lo, __m256i hi);
-
 									__forceinline __m256i	avx2_bgra2gray32(__m256i bgra);
 									__forceinline __m256i	avx2_bgra2gray(__m256i bgra[4]);
 									//__forceinline void		avx2_bgra_load(bool aligned, const uint8_t * p, __m256i a[4]);
@@ -251,6 +253,19 @@ namespace sirius
 									__forceinline uint64_t	avx2_extract(bool aligned, __m256i value);
 									bool					avx2_is_different(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
 									*/
+								};
+
+								namespace evaluator
+								{
+									bool		abs_eval(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
+									bool		squared_eval(bool aligned, const uint8_t * a, size_t a_stride, const uint8_t * b, size_t b_stride, size_t width, size_t height);
+
+									__forceinline __m256i squared_difference(__m256i a, __m256i b);
+								};
+
+								namespace connected_component
+								{
+									bool		find(const uint8_t * img, int16_t width, int16_t height);
 								};
 							};
 						};
