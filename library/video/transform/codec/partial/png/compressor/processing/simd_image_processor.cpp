@@ -160,7 +160,9 @@ void sirius::library::video::transform::codec::partial::simd::avx2::resizer::res
 	const size_t step	= A * CHANNELS;
 
 	sirius::library::video::transform::codec::partial::simd::avx2::resizer::buffer_t buffer(buffer_size, dwidth, dheight);
+
 	sirius::library::video::transform::codec::partial::simd::estimate_alpha_index(sheight, dheight, buffer.iy, buffer.ay, 1);
+	
 	sirius::library::video::transform::codec::partial::simd::avx2::resizer::estimate_alpha_index_x(swidth, dwidth, buffer.ix, buffer.ax);
 
 	ptrdiff_t previous = -2;
@@ -342,7 +344,7 @@ bool sirius::library::video::transform::codec::partial::simd::avx2::evaluator::s
 			const __m256i a_ = sirius::library::video::transform::codec::partial::simd::avx2::load(align, (__m256i*)(a + col));
 			const __m256i b_ = sirius::library::video::transform::codec::partial::simd::avx2::load(align, (__m256i*)(b + col));
 			row_sum = _mm256_add_epi32(row_sum, sirius::library::video::transform::codec::partial::simd::avx2::evaluator::squared_difference(a_, b_));
-			if (sirius::library::video::transform::codec::partial::simd::avx2::extract(false, row_sum) > 0)
+			if (sirius::library::video::transform::codec::partial::simd::avx2::extract(align, row_sum) > 0)
 				return true;
 		}
 		if (width - body_width)
