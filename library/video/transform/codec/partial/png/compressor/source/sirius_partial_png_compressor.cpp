@@ -11,8 +11,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, max_colors(128)
 	, min_quality(0)
 	, max_quality(100)
-	, quantization(true)
-	//, fast_compression(true)
+	, binvalidate(false)
+	, indexed_video(true)
+	, partial_post(false)
 {
 
 }
@@ -28,8 +29,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
-	quantization = clone.quantization;
-	//fast_compression = clone.fast_compression;
+	binvalidate = clone.binvalidate;
+	indexed_video = clone.indexed_video;
+	partial_post = clone.partial_post;
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t & sirius::library::video::transform::codec::partial::png::compressor::_context_t::operator=(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
@@ -43,8 +45,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
-	quantization = clone.quantization;
-	//fast_compression = clone.fast_compression;
+	binvalidate = clone.binvalidate;
+	indexed_video = clone.indexed_video;
+	partial_post = clone.partial_post;
 	return (*this);
 }
 

@@ -35,7 +35,7 @@ namespace sirius
 								: public sirius::library::video::transform::codec::processor
 							{
 							public:
-								static const int32_t	MAX_IO_BUFFERS		= 15;
+								static const int32_t	MAX_IO_BUFFERS		= 60;
 								static const int32_t	MAX_PNG_SIZE		= 1024 * 1024 * 1;
 								static const int32_t	MACRO_BLOCK_WIDTH	= 4;
 								static const int32_t	MACRO_BLOCK_HEIGHT	= 4;
@@ -117,7 +117,8 @@ namespace sirius
 
 							private:
 								static unsigned __stdcall process_callback(void * param);
-								void	process(void);
+								void	process_indexed(void);
+								void	process_coordinates(void);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
