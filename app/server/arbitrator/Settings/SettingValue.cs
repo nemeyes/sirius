@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 namespace sirius.app.server.arbitrator.Settings
-{  
+{
     class SettingValue
     {
         public string uuid { get; set; }
@@ -19,10 +19,14 @@ namespace sirius.app.server.arbitrator.Settings
         public int video_width { get; set; }
         public int video_height { get; set; }
         public int video_fps { get; set; }
+        public int video_buffer_count { get; set; }
         public int video_block_width { get; set; }
         public int video_block_height { get; set; }
         public int video_compression_level { get; set; }
         public int video_quantization_colors { get; set; }
+        public bool invalidate4client { get; set; }
+        public bool indexed_mode { get; set; }
+        public bool partial_send { get; set; }
         public bool enable_tls { get; set; }
         public bool enable_keepalive { get; set; }
         public bool enable_present { get; set; }
@@ -34,7 +38,7 @@ namespace sirius.app.server.arbitrator.Settings
         public int idle_time { get; set; }
         public string log_root_path { get; set; }
         public string app_session_app { get; set; }
-
+        
 
         private static SettingValue _instance;
         protected SettingValue()
@@ -65,11 +69,15 @@ namespace sirius.app.server.arbitrator.Settings
                 video_codec, 
                 video_width, 
                 video_height, 
-                video_fps, 
+                video_fps,
+                video_buffer_count,
                 video_block_width, 
                 video_block_height, 
                 video_compression_level, 
-                video_quantization_colors, 
+                video_quantization_colors,
+                invalidate4client,
+                indexed_mode,
+                partial_send,
                 enable_tls, 
                 enable_keepalive, 
                 enable_present, 
