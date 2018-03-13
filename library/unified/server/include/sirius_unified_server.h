@@ -61,6 +61,9 @@ namespace sirius
 					int32_t block_height;
 					int32_t compression_level;
 					int32_t quantization_colors;
+					bool	invalidate4client;
+					bool	indexed_mode;
+					bool	partial_send;
 					bool	play_after_init;
 					_video_compressor_context_t(void)
 						: gpuindex(0)
@@ -78,6 +81,9 @@ namespace sirius
 						, compression_level(-1)
 						, quantization_colors(128)
 						, play_after_init(false)
+						, invalidate4client(false)
+						, indexed_mode(false)
+						, partial_send(false)
 					{
 					
 					}

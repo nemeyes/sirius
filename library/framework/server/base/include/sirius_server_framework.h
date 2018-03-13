@@ -44,6 +44,9 @@ namespace sirius
 						int32_t video_block_height;
 						int32_t video_compression_level;
 						int32_t video_qauntization_colors;
+						bool	invalidate4client;
+						bool	indexed_mode;
+						bool	partial_send;
 						bool	present;
 						bool	keepalive;
 						bool	tls;
@@ -63,6 +66,9 @@ namespace sirius
 							, video_block_height(0)
 							, video_compression_level(-1)
 							, video_qauntization_colors(128)
+							, invalidate4client(false)
+							, indexed_mode(false)
+							, partial_send(false)
 							, present(false)
 							, portnumber(7000)
 							, hwnd(NULL)

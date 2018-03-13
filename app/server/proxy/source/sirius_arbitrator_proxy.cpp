@@ -63,10 +63,10 @@ int32_t sirius::app::server::arbitrator::proxy::stop(void)
 		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::update(const char * uuid, const char * url, int32_t max_containter_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
+int32_t sirius::app::server::arbitrator::proxy::update(const char * uuid, const char * url, int32_t max_containter_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
 	if (_core)
-		return _core->update(uuid, url, max_containter_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
+		return _core->update(uuid, url, max_containter_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
 	else
 		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }
