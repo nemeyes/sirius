@@ -996,9 +996,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					before_encode_timestamp = process_timestamp;
 
-					SimdBgraToGray(process_data, _context->width, _context->height, _context->width << 2, gray_buffer, _context->width);
-					SimdResizeBilinear(gray_buffer, _context->width, _context->height, _context->width, resized_buffer, _context->width >> 2, _context->height >> 2, _context->width >> 2, 1);
-
 					int32_t		count = 0;
 					int32_t		index = 0;
 					uint8_t *	real_compressed_buffer = compressed_buffer;
@@ -1027,6 +1024,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						if (((process_x + process_width) % _context->block_width) > 0)
 							end_width += _context->block_width;
 					}
+
+					int32_t process_index = (begin_height) * (_context->width << 2) + (begin_width << 2);
+					int32_t gray_index = (begin_height) * (_context->width) + (begin_width);
+					int32_t resize_index = (begin_height >> 2) * (_context->width >> 2) + (begin_width >> 2);
+					SimdBgraToGray(process_data + process_index, end_width - begin_width, end_height - begin_height, _context->width << 2, gray_buffer + gray_index, end_width - begin_width);
+					SimdResizeBilinear(gray_buffer + gray_index, end_width - begin_width, end_height - begin_height, _context->width, resized_buffer + resize_index, (end_width - begin_width) >> 2, (end_height - begin_height) >> 2, _context->width >> 2, 1);
 
 					for (int32_t h = 0, h2 = 0; h < _context->height; h = h + _context->block_height, h2 = h2 + (_context->block_height >> 2))
 					{
