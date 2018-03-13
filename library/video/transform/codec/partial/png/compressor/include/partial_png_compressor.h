@@ -49,9 +49,17 @@ namespace sirius
 									int32_t		width;
 									int32_t		height;
 									long long	timestamp;
+									bool		force_fullmode;
 									_ibuffer_t(void)
 										: data(nullptr)
+										, data_size(0)
+										, data_capacity(0)
+										, x(0)
+										, y(0)
+										, width(0)
+										, height(0)
 										, timestamp(0)
+										, force_fullmode(false)
 									{}
 								} ibuffer_t;
 
@@ -117,13 +125,16 @@ namespace sirius
 
 							private:
 								static unsigned __stdcall process_callback(void * param);
-								void	process_indexed(void);
+								void	process_psend_indexed(void);
+								void	process_bsend_indexed(void);
 								void	process_coordinates(void);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
 								bounding_box_t * create_bounding_box(int16_t macro_block_index);
 								void			 destroy_bounding_box(bounding_box_t * bb);
+
+								void			copy(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer);
 
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;
@@ -143,6 +154,10 @@ namespace sirius
 								
 								//std::vector<sirius::library::video::transform::codec::partial::png::compressor::core::bounding_box_t*>					_bounding_boxes;
 								
+								int32_t				_prev_x;
+								int32_t				_prev_y;
+								int32_t				_prev_width;
+								int32_t				_prev_height;
 							};
 						};
 					};
