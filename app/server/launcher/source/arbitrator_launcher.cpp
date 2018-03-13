@@ -168,7 +168,6 @@ int main()
 			}
 			proc_ctrl.set_cmdline(arguments, "--video_width=%d", confentity.video_width);
 			proc_ctrl.set_cmdline(arguments, "--video_height=%d", confentity.video_height);
-			proc_ctrl.set_cmdline(arguments, "--video_fps=%d", confentity.video_fps);
 			proc_ctrl.set_cmdline(arguments, "--video_buffer_count=%d", confentity.video_buffer_count);
 			proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);

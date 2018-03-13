@@ -166,7 +166,6 @@ namespace sirius.app.server.arbitrator.Settings
                 }
             }
         }
-
         private void TextFraemRate_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             foreach (char c in e.Text)
@@ -175,6 +174,16 @@ namespace sirius.app.server.arbitrator.Settings
                 {
                     e.Handled = true;
                     break;
+                }
+            }
+        }
+        private void TextFrameRate_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TextFrameRate.Text.Length > 0)
+            {
+                if (Convert.ToInt32(TextFrameRate.Text) > 15)
+                {
+                    TextFrameRate.Text = "15";
                 }
             }
         }
