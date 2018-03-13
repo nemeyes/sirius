@@ -28,8 +28,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 
 	std::string sql = "UPDATE tb_configuration SET ";
 	sql += "uuid=?, url=?, max_attendant_instance=?, attendant_creation_delay=?, controller_portnumber=?, streamer_portnumber=?, ";
-	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, ";
+	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, video_buffer_count=?, ";
 	sql += "video_block_width=?, video_block_height=?, video_compression_level=?, video_quantization_colors=?, ";
+	sql += "enable_invalidate4client=?, enable_indexed_mode=?, enable_partial_send=?, ";
 	sql += "enable_tls=?, enable_keepalive=?, enable_present=?, enable_auto_start=?, enable_caching=?, ";
 	sql += "app_session_app=?";
 
@@ -46,10 +47,14 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->video_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_height);
 		sqlite3_bind_int(stmt, ++index, entity->video_fps);
+		sqlite3_bind_int(stmt, ++index, entity->video_buffer_count);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_height);
 		sqlite3_bind_int(stmt, ++index, entity->video_compression_level);
 		sqlite3_bind_int(stmt, ++index, entity->video_quantization_colors);
+		sqlite3_bind_int(stmt, ++index, entity->invalidate4client ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->indexed_mode ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->partial_send ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_tls?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_keepalive ?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_present?1:0);
@@ -103,10 +108,14 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.video_width = 1280;
 		c_entity.video_height = 720;
 		c_entity.video_fps = 30;
+		c_entity.video_buffer_count = 3;
 		c_entity.video_block_width = 128;
 		c_entity.video_block_height = 72;
 		c_entity.video_compression_level = 5;
 		c_entity.video_quantization_colors = 36;
+		c_entity.invalidate4client = true;
+		c_entity.indexed_mode = true;
+		c_entity.partial_send = false;
 		c_entity.enable_tls = false;
 		c_entity.enable_keepalive = false;
 		c_entity.enable_present = false;
@@ -120,8 +129,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 	}
 
 	std::string sql = "SELECT uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, ";
-	sql += "video_codec, video_width, video_height, video_fps, ";
+	sql += "video_codec, video_width, video_height, video_fps, video_buffer_count, ";
 	sql += "video_block_width, video_block_height, video_compression_level, video_quantization_colors, ";
+	sql += "enable_invalidate4client, enable_indexed_mode, enable_partial_send, ";
 	sql += "enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, ";
 	sql += "app_session_app ";
 	sql += "FROM tb_configuration";
@@ -146,10 +156,16 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				entity->video_width = sqlite3_column_int(stmt, index++);
 				entity->video_height = sqlite3_column_int(stmt, index++);
 				entity->video_fps = sqlite3_column_int(stmt, index++);
+				entity->video_buffer_count = sqlite3_column_int(stmt, index++);
 				entity->video_block_width = sqlite3_column_int(stmt, index++);
 				entity->video_block_height = sqlite3_column_int(stmt, index++);
 				entity->video_compression_level = sqlite3_column_int(stmt, index++);
 				entity->video_quantization_colors = sqlite3_column_int(stmt, index++);
+
+				entity->invalidate4client = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->indexed_mode = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->partial_send = sqlite3_column_int(stmt, index++) ? true : false;
+
 				entity->enable_tls = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_keepalive = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_present = sqlite3_column_int(stmt, index++) ? true : false;
@@ -185,8 +201,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app) ";
-	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_invalidate4client, enable_indexed_mode, enable_partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app) ";
+	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -201,10 +217,16 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->video_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_height);
 		sqlite3_bind_int(stmt, ++index, entity->video_fps);
+		sqlite3_bind_int(stmt, ++index, entity->video_buffer_count);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_height);
 		sqlite3_bind_int(stmt, ++index, entity->video_compression_level);
 		sqlite3_bind_int(stmt, ++index, entity->video_quantization_colors);
+
+		sqlite3_bind_int(stmt, ++index, entity->invalidate4client ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->indexed_mode ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->partial_send ? 1 : 0);
+
 		sqlite3_bind_int(stmt, ++index, entity->enable_tls ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_keepalive ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_present ? 1 : 0);

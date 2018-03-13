@@ -26,10 +26,14 @@ namespace sirius
 						int32_t video_width;
 						int32_t video_height;
 						int32_t video_fps;
+						int32_t video_buffer_count;
 						int32_t video_block_width;
 						int32_t video_block_height;
 						int32_t video_compression_level;
 						int32_t video_quantization_colors;
+						bool	invalidate4client;
+						bool	indexed_mode;
+						bool	partial_send;
 						bool	enable_tls;
 						bool	enable_keepalive;
 						bool	enable_present;
@@ -44,10 +48,14 @@ namespace sirius
 							, video_width(1280)
 							, video_height(720)
 							, video_fps(30)
+							, video_buffer_count(1)
 							, video_block_width(128)
 							, video_block_height(72)
 							, video_compression_level(1)
 							, video_quantization_colors(128)
+							, invalidate4client(false)
+							, indexed_mode(false)
+							, partial_send(false)
 							, enable_tls(false)
 							, enable_keepalive(false)
 							, enable_present(false)

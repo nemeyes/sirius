@@ -693,12 +693,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				}
 			}
 
-			//if (_invalidate && _context->binvalidate && (process_data_size == 0))
-			//{
-			//	_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
-			//	_invalidate = false;
-			//}
-			//else
+			if (_invalidate && _context->binvalidate && (process_data_size == 0))
+			{
+				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+				_invalidate = false;
+			}
+			else
 			{
 				while (process_data_size>0)
 				{
@@ -985,12 +985,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				}
 			}
 
-			//if (_invalidate && _context->binvalidate && (process_data_size == 0))
-			//{
-			//	_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
-			//	_invalidate = false;
-			//}
-			//else
+			if (_invalidate && _context->binvalidate && (process_data_size == 0))
+			{
+				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+				_invalidate = false;
+			}
+			else
 			{
 				while (process_data_size>0)
 				{

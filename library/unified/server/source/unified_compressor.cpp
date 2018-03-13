@@ -56,6 +56,9 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->nbuffer = _external_venc_ctx->nbuffer;
 			venc_ctx->block_width = _external_venc_ctx->block_width;
 			venc_ctx->block_height = _external_venc_ctx->block_height;
+			venc_ctx->binvalidate = _external_venc_ctx->invalidate4client;
+			venc_ctx->indexed_video = _external_venc_ctx->indexed_mode;
+			venc_ctx->partial_post = _external_venc_ctx->partial_send;
 			venc_ctx->compression_level = _external_venc_ctx->compression_level;
 			venc_ctx->gamma = 1 / 2.2f;
 			venc_ctx->floyd = 0.f; //0.5f

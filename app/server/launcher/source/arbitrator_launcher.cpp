@@ -169,7 +169,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_width=%d", confentity.video_width);
 			proc_ctrl.set_cmdline(arguments, "--video_height=%d", confentity.video_height);
 			proc_ctrl.set_cmdline(arguments, "--video_fps=%d", confentity.video_fps);
-			proc_ctrl.set_cmdline(arguments, "--video_buffer_count=6");
+			proc_ctrl.set_cmdline(arguments, "--video_buffer_count=%d", confentity.video_buffer_count);
 			proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
@@ -178,6 +178,22 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--streaming_server_portnumber=%d", confentity.streamer_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
+
+			if(confentity.invalidate4client)
+				proc_ctrl.set_cmdline(arguments, "--enable_invalidate4client=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_invalidate4client=false");
+
+			if (confentity.indexed_mode)
+				proc_ctrl.set_cmdline(arguments, "--enable_indexed_mode=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_indexed_mode=false");
+
+			if (confentity.partial_send)
+				proc_ctrl.set_cmdline(arguments, "--enable_partial_send=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_partial_send=false");
+
 
 			if (confentity.enable_keepalive)
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
@@ -211,7 +227,7 @@ int main()
 				//proc_ctrl.set_cmdline(arguments, "--disable-extensions");
 				//proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
 				proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
-				proc_ctrl.set_cmdline(arguments, "--show-update-rect");
+				//proc_ctrl.set_cmdline(arguments, "--show-update-rect");
 				//proc_ctrl.set_cmdline(arguments, "--disable-web-security");
 				//proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
 				//proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");

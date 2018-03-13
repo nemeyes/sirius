@@ -134,6 +134,30 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_quantization_colors = _wtoi(value.c_str());
 	}
+	if (param.end() != (iter = param.find(L"enable_invalidate4client")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->invalidate4client = true;
+		else
+			context->invalidate4client = false;
+	}
+	if (param.end() != (iter = param.find(L"enable_indexed_mode")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->indexed_mode = true;
+		else
+			context->indexed_mode = false;
+	}
+	if (param.end() != (iter = param.find(L"enable_partial_send")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->partial_send = true;
+		else
+			context->partial_send = false;
+	}
 	if (param.end() != (iter = param.find(L"enable_present")))
 	{
 		value = iter->second;

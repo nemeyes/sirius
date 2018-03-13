@@ -12,7 +12,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, min_quality(0)
 	, max_quality(100)
 	, binvalidate(false)
-	, indexed_video(true)
+	, indexed_video(false)
 	, partial_post(false)
 {
 

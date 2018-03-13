@@ -81,6 +81,12 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_ATTENDANTS, _attendants);
 	DDX_Control(pDX, IDC_CHECK_KEEPALIVE, _enable_keepalive);
 	DDX_Control(pDX, IDC_EDIT_STREAMER_PORTNUMBER, _streamer_portnumber);
+	DDX_Control(pDX, IDC_EDIT_VIDEO_BUFFER_COUNT, _video_buffer_count);
+	DDX_Control(pDX, IDC_EDIT_VIDEO_BLOCK_WIDTH, _video_block_width);
+	DDX_Control(pDX, IDC_EDIT_VIDEO_BLOCK_HEIGHT, _video_block_height);
+	DDX_Control(pDX, IDC_CHECK_INVALIDATE4CLIENT, _enable_invalidate4client);
+	DDX_Control(pDX, IDC_CHECK_INDEXED_MODE, _use_indexed_mode);
+	DDX_Control(pDX, IDC_CHECK_PARTIAL_SEND, _use_partial_send);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -297,6 +303,9 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wstreamer_portnumber;
 
 	CString wvideo_fps;
+	CString wvideo_buffer_count;
+	CString wvideo_block_width;
+	CString wvideo_block_height;
 	CString wvideo_quantization_colors;
 
 	char * uuid = nullptr;
@@ -306,9 +315,15 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t controller_portnumber;
 	int32_t streamer_portnumber;
 	int32_t video_fps = 0;
+	int32_t video_buffer_count = 3;
+	int32_t video_block_width = 128;
+	int32_t video_block_height = 72;
 	int32_t video_compression_level = 5;
 	int32_t video_quantization_colors = 128;
 
+	bool invalidate4client = false;
+	bool indexed_mode = false;
+	bool partial_send = false;
 	bool enable_keepalive = false;
 	bool enable_tls = false;
 	bool enable_present = false;
@@ -322,6 +337,10 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_streamer_portnumber.GetWindowTextW(wstreamer_portnumber);
 
 	_video_fps.GetWindowTextW(wvideo_fps);
+	_video_buffer_count.GetWindowTextW(wvideo_buffer_count);
+	_video_block_width.GetWindowTextW(wvideo_block_width);
+	_video_block_height.GetWindowTextW(wvideo_block_height);
+
 	video_compression_level = _video_compression_level.GetCurSel() + 1;
 	if (_video_quantization_colors.GetCurSel() == 0)
 		video_quantization_colors = 8;
@@ -344,7 +363,16 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	controller_portnumber = _wtoi(wcontroller_portnumber);
 	streamer_portnumber = _wtoi(wstreamer_portnumber);
 	video_fps = _wtoi(wvideo_fps);
+	video_buffer_count = _wtoi(wvideo_buffer_count);
+	video_block_width = _wtoi(wvideo_block_width);
+	video_block_height = _wtoi(wvideo_block_height);
 
+	if (_enable_invalidate4client.GetCheck())
+		invalidate4client = true;
+	if (_use_indexed_mode.GetCheck())
+		indexed_mode = true;
+	if (_use_partial_send.GetCheck())
+		partial_send = true;
 	if (_enable_keepalive.GetCheck())
 		enable_keepalive = true;
 	if (_use_tls.GetCheck())
@@ -353,7 +381,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_present = true;
 	if (_enable_auto_start.GetCheck())
 		enable_auto_start = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, 128, 72, video_compression_level, video_quantization_colors, enable_tls, enable_keepalive, enable_present, enable_auto_start, false, "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, false, "");
 
 	if (uuid)
 		free(uuid);
@@ -364,7 +392,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -373,6 +401,9 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wattendant_instance[MAX_PATH] = { 0 };
 	wchar_t wattendant_creation_delay[MAX_PATH] = { 0 };
 	wchar_t wvideo_fps[MAX_PATH] = { 0 };
+	wchar_t wvideo_buffer_count[MAX_PATH] = { 0 };
+	wchar_t wvideo_block_width[MAX_PATH] = { 0 };
+	wchar_t wvideo_block_height[MAX_PATH] = { 0 };
 	wchar_t * wcpu = nullptr;
 	wchar_t * wmemory = nullptr;
 
@@ -383,6 +414,9 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_itow_s(controller_portnumber, wcontroler_portnumber, 10);
 	_itow_s(streamer_portnumber, wstreamer_portnumber, 10);
 	_itow_s(video_fps, wvideo_fps, 10);
+	_itow_s(video_buffer_count, wvideo_buffer_count, 10);
+	_itow_s(video_block_width, wvideo_block_width, 10);
+	_itow_s(video_block_height, wvideo_block_height, 10);
 
 	_label_arbitrator_uuid.SetWindowText(wuuid);
 	_label_arbitrator_portnumber.SetWindowTextW(wcontroler_portnumber);
@@ -404,6 +438,9 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_streamer_portnumber.SetWindowTextW(wstreamer_portnumber);
 
 	_video_fps.SetWindowTextW(wvideo_fps);
+	_video_buffer_count.SetWindowTextW(wvideo_buffer_count);
+	_video_block_width.SetWindowTextW(wvideo_block_width);
+	_video_block_height.SetWindowTextW(wvideo_block_height);
 	_video_compression_level.SetCurSel(video_compression_level - 1);
 
 	if (video_quantization_colors == 8)
@@ -419,6 +456,9 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	else if (video_quantization_colors == 256)
 		_video_quantization_colors.SetCurSel(5);
 
+	_enable_invalidate4client.SetCheck(invalidate4client ? 1 : 0);
+	_use_indexed_mode.SetCheck(indexed_mode ? 1 : 0);
+	_use_partial_send.SetCheck(partial_send ? 1 : 0);
 	_enable_keepalive.SetCheck(enable_keepalive ? 1 : 0);
 	_use_tls.SetCheck(enable_tls ? 1 : 0);
 	_enable_present.SetCheck(enable_present ? 1 : 0);

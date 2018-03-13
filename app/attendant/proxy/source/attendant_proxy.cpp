@@ -161,6 +161,9 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->video_compression_level = _context->video_compression_level;
 	_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
+	_framework_context->invalidate4client = _context->invalidate4client;
+	_framework_context->indexed_mode = _context->indexed_mode;
+	_framework_context->partial_send = _context->partial_send;
 	_framework_context->present = _context->present;
 	_framework_context->keepalive = _context->keepalive;
 	_framework_context->tls = _context->tls;
@@ -216,6 +219,9 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->video_compression_level = _context->video_compression_level;
 		_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
+		_framework_context->invalidate4client = _context->invalidate4client;
+		_framework_context->indexed_mode = _context->indexed_mode;
+		_framework_context->partial_send = _context->partial_send;
 		_framework_context->present = _context->present;
 		_framework_context->keepalive = _context->keepalive;
 		_framework_context->tls = _context->tls;
