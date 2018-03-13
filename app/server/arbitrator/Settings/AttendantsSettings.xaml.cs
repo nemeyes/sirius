@@ -24,6 +24,7 @@ namespace sirius.app.server.arbitrator.Settings
     public static class attendatns_setting
     {
         public static AttendantsSettings handle;
+        public static bool init_load = false;
     }
     public partial class AttendantsSettings : UserControl
     {
@@ -37,6 +38,10 @@ namespace sirius.app.server.arbitrator.Settings
 
         void OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (attendatns_setting.init_load)
+                return;
+
+            attendatns_setting.init_load = true;
             // select first control on the form
             Keyboard.Focus(this.TextAttendantInstanceCount);
 
@@ -114,10 +119,18 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
             //setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
-            setting_value.video_compression_level = 1;
-            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
+            setting_value.video_compression_level = 1;       
             setting_value.app_session_app = TextAppSessionApp.Text.Trim();
-            setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
+
+            if (Convert.ToInt32(QuantizationColors.Text) > 128)
+                setting_value.video_quantization_colors = 128;
+            else
+                setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
+
+            if (Convert.ToInt32(TextFrameRate.Text) > 15)
+                setting_value.video_fps = 15;
+            else
+                setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
@@ -181,9 +194,9 @@ namespace sirius.app.server.arbitrator.Settings
         {
             if (TextFrameRate.Text.Length > 0)
             {
-                if (Convert.ToInt32(TextFrameRate.Text) > 15)
+                if (Convert.ToInt32(TextFrameRate.Text) > 30)
                 {
-                    TextFrameRate.Text = "15";
+                    TextFrameRate.Text = "30";
                 }
             }
         }
