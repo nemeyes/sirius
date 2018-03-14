@@ -62,7 +62,7 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->compression_level = _external_venc_ctx->compression_level;
 			venc_ctx->gamma = 1 / 2.2f;
 			venc_ctx->floyd = 0.f; //0.5f
-			venc_ctx->speed = 7;
+			venc_ctx->speed = 10;
 			venc_ctx->max_colors = _external_venc_ctx->quantization_colors;
 			venc_ctx->min_quality = 0;
 			venc_ctx->max_quality = 100;
