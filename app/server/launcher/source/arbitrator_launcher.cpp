@@ -209,10 +209,10 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
-			//proc_ctrl.set_cmdline(arguments, "--disable-gpu");
-			//proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
-			//proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
-			//proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
+			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
+			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
+			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
+			proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", confentity.video_fps);
 
@@ -222,15 +222,15 @@ int main()
 			}
 			else
 			{
-				//proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
-				//proc_ctrl.set_cmdline(arguments, "--disable-extensions");
-				//proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
+				proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
+				proc_ctrl.set_cmdline(arguments, "--disable-extensions");
+				proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
 				proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
 				//proc_ctrl.set_cmdline(arguments, "--show-update-rect");
-				//proc_ctrl.set_cmdline(arguments, "--disable-web-security");
-				//proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
+				proc_ctrl.set_cmdline(arguments, "--disable-web-security");
+				proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
 				proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
-				//proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
+				proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
 			}
 
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
