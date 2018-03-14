@@ -104,7 +104,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		qntpng.width = liq_image_get_width(rgba);
 		qntpng.height = liq_image_get_height(rgba);
 		qntpng.gamma = liq_get_output_gamma(remap);
-		qntpng.output_color = RWPNG_SRGB;
+		qntpng.output_color = RWPNG_NONE;
 		qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
 		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
 
@@ -240,7 +240,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	}
 
 	png_set_compression_level(*png_ptr_p, (compression_level <= 0) ? Z_BEST_SPEED : compression_level);
-	//png_set_compression_mem_level(*png_ptr_p, 9); // judging by optipng results, smaller mem makes libpng compress slightly better
+	png_set_compression_mem_level(*png_ptr_p, 8); // Smaller values use less memory but are slower, while higher values use more memory to gain compression speed.
 
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -293,7 +293,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	write_state.compressed = compressed;
 	png_set_write_fn(png_ptr, &write_state, png_write_callback, png_flush_callback);
 
-	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
+	png_set_compression_strategy(png_ptr, Z_RLE);
 	
 	// Palette images generally don't gain anything from filtering
 	png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
