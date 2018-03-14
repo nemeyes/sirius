@@ -24,7 +24,6 @@ namespace sirius.app.server.arbitrator.Settings
     public static class attendatns_setting
     {
         public static AttendantsSettings handle;
-        public static bool init_load = false;
     }
     public partial class AttendantsSettings : UserControl
     {
@@ -38,10 +37,6 @@ namespace sirius.app.server.arbitrator.Settings
 
         void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (attendatns_setting.init_load)
-                return;
-
-            attendatns_setting.init_load = true;
             // select first control on the form
             Keyboard.Focus(this.TextAttendantInstanceCount);
 
@@ -50,9 +45,15 @@ namespace sirius.app.server.arbitrator.Settings
             TextAttendantUrl.Text = setting_value.url;
             TextAttendantInstanceCount.Text = setting_value.max_attendant_instance.ToString();
             TextAttendantCreationDelay.Text = setting_value.attendant_creation_delay.ToString();
-            TextFrameRate.Text = setting_value.video_fps.ToString();
+
+            if (TextFrameRate.Text.Length < 1)
+                TextFrameRate.Text = setting_value.video_fps.ToString();
+
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
-            QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
+
+            if (QuantizationColors.Text.Length < 1)
+                QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
+
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
             setting_value.video_compression_level = 1;
             setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);

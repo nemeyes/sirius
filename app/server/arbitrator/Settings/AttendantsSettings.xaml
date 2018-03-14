@@ -74,7 +74,7 @@
                 <StackPanel>
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
                     <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
-                        <ComboBoxItem Content="8" IsSelected="true" />
+                        <ComboBoxItem Content="8" />
                         <ComboBoxItem Content="16" />
                         <ComboBoxItem Content="32" />
                         <ComboBoxItem Content="64" />
