@@ -704,7 +704,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				}
 			}
 
-			/*
 			if (!process_compress_first_time)
 			{
 				before_encode_timestamp = process_timestamp;
@@ -765,16 +764,13 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				process_compress_first_time = false;
 				continue;
 			}
-			*/
 
-			/*
 			if (_invalidate && _context->binvalidate && (process_data_size == 0))
 			{
 				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
 				_invalidate = false;
 			}
 			else
-			*/
 			{
 				while (process_data_size>0)
 				{
@@ -853,8 +849,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									for (int32_t bw = 0; bw < (_context->block_width >> 2); bw++)
 									{
 										int32_t ci = (h2 + bh) * (_context->width) + (w2 << 2) + (bw << 2);
-
-#if 1
 										int32_t bi = ci + 0;
 										int32_t gi = ci + 1;
 										int32_t ri = ci + 2;
@@ -868,14 +862,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											diff = true;
 											break;
 										}
-#else
-										int32_t rgbadiff = abs((int32_t*)(resized_buffer + ci) - (int32_t*)(reference_buffer + ci));
-										if (rgbadiff > 0)
-										{
-											diff = true;
-											break;
-										}
-#endif
 									}
 								}
 
@@ -1179,7 +1165,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				}
 			}
 
-			/*
 			if (!process_compress_first_time)
 			{
 				before_encode_timestamp = process_timestamp;
@@ -1240,7 +1225,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				process_compress_first_time = false;
 				continue;
 			}
-			*/
 
 			if (_invalidate && _context->binvalidate && (process_data_size == 0))
 			{
@@ -1321,7 +1305,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									for (int32_t bw = 0; bw < (_context->block_width >> 2); bw++)
 									{
 										int32_t ci = (h2 + bh) * (_context->width) + (w2 << 2) + (bw << 2);
-										/*
 										int32_t bi = ci + 0;
 										int32_t gi = ci + 1;
 										int32_t ri = ci + 2;
@@ -1331,13 +1314,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										int32_t rdiff = labs(*(resized_buffer + ri) - *(reference_buffer + ri));
 										int32_t adiff = labs(*(resized_buffer + ai) - *(reference_buffer + ai));
 										if ((bdiff + gdiff + rdiff + adiff) > 0)
-										{
-											diff = true;
-											break;
-										}
-										*/
-										uint32_t rgbadiff = labs((int32_t*)(resized_buffer + ci) - (int32_t*)(reference_buffer + ci));
-										if (rgbadiff > 0)
 										{
 											diff = true;
 											break;
