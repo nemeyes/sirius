@@ -8,7 +8,7 @@
 #define CONFIG_FILE "\\configuration\\backend_cluster.ini"
 #define QUEUE_MAX_SIZE							500
 #define MAX_BACKOFFICE_DATA_BUFFER			300
-static void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD dw_user, DWORD dw1, DWORD dw2);
+static void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2);
 
 using namespace std;
 namespace sirius
