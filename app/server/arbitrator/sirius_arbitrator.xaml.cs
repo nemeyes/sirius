@@ -74,7 +74,7 @@ namespace sirius.app.server.arbitrator
             controller.initailize();
             status = status_t.initialized;
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -86,10 +86,14 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().video_width = video_width;
             SettingValue.Instance().video_height = video_height;
             SettingValue.Instance().video_fps = video_fps;
+            SettingValue.Instance().video_buffer_count = video_buffer_count;
             SettingValue.Instance().video_block_width = video_block_width;
             SettingValue.Instance().video_block_height = video_block_height;
             SettingValue.Instance().video_compression_level = video_compression_level;
             SettingValue.Instance().video_quantization_colors = video_quantization_colors;
+            SettingValue.Instance().invalidate4client = invalidate4client;
+            SettingValue.Instance().indexed_mode = indexed_mode;
+            SettingValue.Instance().partial_send = partial_send;
             SettingValue.Instance().enable_tls = enable_tls;
             SettingValue.Instance().enable_keepalive = enable_keepalive;
             SettingValue.Instance().enable_present = enable_present;

@@ -68,7 +68,7 @@
 
                 <StackPanel>
                     <Label Content="Frame Rate" Target="{Binding ElementName=TextFrameRate}" Width="150"/>
-                    <TextBox x:Name="TextFrameRate" Width="70" Text="{Binding FrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextFraemRate_PreviewTextInput" />                    
+                    <TextBox x:Name="TextFrameRate" Width="70" Text="{Binding FrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextFraemRate_PreviewTextInput" TextChanged="TextFrameRate_TextChanged" />                    
                 </StackPanel>
 
                 <StackPanel>
