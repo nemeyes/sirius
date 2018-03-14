@@ -630,12 +630,21 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	memset(reference_buffer, 0x00, resized_buffer_size);
 #else
 #if defined(WITH_AVX2_BILINEAR_RESIZE)
+#if defined(WITH_DOUBLE_DOWN_SIZE)
 	int32_t		resized_buffer_size = ((_context->width >> 2) * (_context->height >> 2)) << 2;
 	uint8_t *	resized_buffer = static_cast<uint8_t*>(malloc(resized_buffer_size));
 	memset(resized_buffer, 0x00, resized_buffer_size);
 
 	uint8_t *	reference_buffer = static_cast<uint8_t*>(malloc(resized_buffer_size));
 	memset(reference_buffer, 0x00, resized_buffer_size);
+#else
+	int32_t		resized_buffer_size = ((_context->width >> 3) * (_context->height >> 3)) << 2;
+	uint8_t *	resized_buffer = static_cast<uint8_t*>(malloc(resized_buffer_size));
+	memset(resized_buffer, 0x00, resized_buffer_size);
+
+	uint8_t *	reference_buffer = static_cast<uint8_t*>(malloc(resized_buffer_size));
+	memset(reference_buffer, 0x00, resized_buffer_size);
+#endif
 #else
 	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;
 	uint8_t *	reference_buffer = static_cast<uint8_t*>(malloc(reference_buffer_size));
@@ -816,17 +825,25 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 #else
 #if defined(WITH_AVX2_BILINEAR_RESIZE)
-#if 1
+#if defined(WITH_DOUBLE_DOWN_SIZE)
 					int32_t process_index = (begin_height) * (_context->width << 2) + (begin_width << 2);
 					int32_t resize_index = (begin_height >> 2) * (_context->width) + begin_width;
 					SIMD_RESIZER::resize_bilinear(process_data + process_index, end_width - begin_width, end_height - begin_height, _context->width << 2, resized_buffer, (end_width - begin_width) >> 2, (end_height - begin_height) >> 2, _context->width);
-#else
-					SIMD_RESIZER::resize_bilinear(process_data, _context->width, _context->height, _context->width << 2, resized_buffer, _context->width >> 2, _context->height >> 2, _context->width);
-#endif
+
 					for (int32_t h = begin_height, h2 = (begin_height >> 2); h < end_height; h = h + _context->block_height, h2 = h2 + (_context->block_height >> 2))
 					{
 						for (int32_t w = begin_width, w2 = (begin_width >> 2); w < end_width; w = w + _context->block_width, w2 = w2 + (_context->block_width >> 2))
 						{
+#else
+					int32_t process_index = (begin_height) * (_context->width << 2) + (begin_width << 2);
+					int32_t resize_index = (begin_height >> 3) * ((_context->width >> 3) << 2) + ((begin_width >> 3) << 2);
+					SIMD_RESIZER::resize_bilinear(process_data + process_index, end_width - begin_width, end_height - begin_height, _context->width << 2, resized_buffer, (end_width - begin_width) >> 3, (end_height - begin_height) >> 3, (_context->width >> 3) << 2);
+
+					for (int32_t h = begin_height, h2 = (begin_height >> 3); h < end_height; h = h + _context->block_height, h2 = h2 + (_context->block_height >> 3))
+					{
+						for (int32_t w = begin_width, w2 = (begin_width >> 3); w < end_width; w = w + _context->block_width, w2 = w2 + (_context->block_width >> 3))
+						{
+#endif
 #else
 					for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
 					{
@@ -844,11 +861,19 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 #else
 #if defined(WITH_AVX2_BILINEAR_RESIZE)
 								bool diff = false;
+#if defined(WITH_DOUBLE_DOWN_SIZE)
 								for (int32_t bh = 0; bh < (_context->block_height >> 2); bh++)
 								{
 									for (int32_t bw = 0; bw < (_context->block_width >> 2); bw++)
 									{
 										int32_t ci = (h2 + bh) * (_context->width) + (w2 << 2) + (bw << 2);
+#else
+								for (int32_t bh = 0; bh < (_context->block_height >> 3); bh++)
+								{
+									for (int32_t bw = 0; bw < (_context->block_width >> 3); bw++)
+									{
+										int32_t ci = (h2 + bh) * ((_context->width >> 3) << 2) + (w2 << 2) + (bw << 2);
+#endif
 										int32_t bi = ci + 0;
 										int32_t gi = ci + 1;
 										int32_t ri = ci + 2;
