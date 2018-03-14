@@ -180,8 +180,8 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
 
-	SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
-	SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
+	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
 	//memset(_render_buffer, 0x00, rctx->width * rctx->height * 4);
 
 	for (int32_t x = 0; x < count; x++)
