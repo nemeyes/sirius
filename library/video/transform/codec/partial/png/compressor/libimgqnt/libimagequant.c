@@ -348,9 +348,9 @@ LIQ_EXPORT LIQ_NONNULL liq_error liq_set_speed(liq_attr* attr, int speed)
     attr->feedback_loop_trials = MAX(56-9*speed, 0);
 
     attr->max_histogram_entries = (1<<17) + (1<<18)*(10-speed);
-    attr->min_posterization_input = (speed >= 8) ? 1 : 0;
-    attr->use_dither_map = (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
-    attr->use_contrast_maps = (speed <= 7) || attr->use_dither_map;
+	attr->min_posterization_input = 0;// (speed >= 8) ? 1 : 0;
+	attr->use_dither_map = false;// (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
+	attr->use_contrast_maps = false;// (speed <= 7) || attr->use_dither_map;
     attr->speed = speed;
 
     attr->progress_stage1 = attr->use_contrast_maps ? 20 : 8;
