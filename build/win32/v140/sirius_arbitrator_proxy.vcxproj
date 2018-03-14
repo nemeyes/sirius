@@ -76,6 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -84,6 +86,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,12 +116,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;SIRIUS_ARBITRATOR_PROXY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;_USRDLL;EXPORT_ARBITRATOR_PROXY;SQLITE_THREADSAFE=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\misc\performance\monitor\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\backend\cluster\include;..\..\..\library\net\backend\cluster\base;..\..\..\library\net\curl\client\include;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;..\..\..\app\base\command;..\..\..\app\server\proxy\entity;..\..\..\app\server\proxy\db;..\..\..\app\server\proxy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>rpcrt4.lib;winmm.lib;ws2_32.lib;mswsock.lib;libeay64MTd.lib;ssleay64MTd.lib;tinyxml.lib;lib_json_mdd.lib;sirius_log4cplus_logger.lib;sirius_performance_monitor.lib;sirius_sicp_server.lib;sirius_backend_cluster.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,15 +163,24 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;SIRIUS_ARBITRATOR_PROXY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;EXPORT_ARBITRATOR_PROXY;SQLITE_THREADSAFE=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\misc\performance\monitor\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\backend\cluster\include;..\..\..\library\net\backend\cluster\base;..\..\..\library\net\curl\client\include;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;..\..\..\app\base\command;..\..\..\app\server\proxy\entity;..\..\..\app\server\proxy\db;..\..\..\app\server\proxy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;winmm.lib;ws2_32.lib;mswsock.lib;libeay64MT.lib;ssleay64MT.lib;tinyxml.lib;lib_json_md.lib;sirius_log4cplus_logger.lib;sirius_performance_monitor.lib;sirius_sicp_server.lib;sirius_backend_cluster.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\script\copy_arbitrator_dlls_x64.bat ..\..\..\ release</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\base\command\commands_arbitrator.h" />

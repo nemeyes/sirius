@@ -116,9 +116,9 @@ LOG4CPLUS_EXPORT std::wstring towstring(char const *);
 
 #ifdef UNICODE
 
-#define LOG4CPLUS_C_STR_TO_TSTRING(STRING) log4cplus::helpers::towstring(STRING)
-#define LOG4CPLUS_STRING_TO_TSTRING(STRING) log4cplus::helpers::towstring(STRING)
-#define LOG4CPLUS_TSTRING_TO_STRING(STRING) log4cplus::helpers::tostring(STRING)
+#define LOG4CPLUS_C_STR_TO_TSTRING(STRING) ::log4cplus::helpers::towstring(STRING)
+#define LOG4CPLUS_STRING_TO_TSTRING(STRING) ::log4cplus::helpers::towstring(STRING)
+#define LOG4CPLUS_TSTRING_TO_STRING(STRING) ::log4cplus::helpers::tostring(STRING)
 
 #else // UNICODE
 

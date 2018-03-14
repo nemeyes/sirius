@@ -128,13 +128,13 @@ macros_get_logger (tchar const * logger)
 LOG4CPLUS_EXPORT void clear_tostringstream (tostringstream &);
 
 
-LOG4CPLUS_EXPORT log4cplus::tostringstream & get_macro_body_oss ();
-LOG4CPLUS_EXPORT log4cplus::helpers::snprintf_buf & get_macro_body_snprintf_buf ();
-LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
-    log4cplus::LogLevel, log4cplus::tstring const &, char const *, int,
+LOG4CPLUS_EXPORT ::log4cplus::tostringstream & get_macro_body_oss ();
+LOG4CPLUS_EXPORT ::log4cplus::helpers::snprintf_buf & get_macro_body_snprintf_buf ();
+LOG4CPLUS_EXPORT void macro_forced_log (::log4cplus::Logger const &,
+    ::log4cplus::LogLevel, ::log4cplus::tstring const &, char const *, int,
     char const *);
-LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
-    log4cplus::LogLevel, log4cplus::tchar const *, char const *, int,
+LOG4CPLUS_EXPORT void macro_forced_log (::log4cplus::Logger const &,
+    ::log4cplus::LogLevel, ::log4cplus::tchar const *, char const *, int,
     char const *);
 
 
@@ -188,19 +188,19 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
 // and snprintf_buf, or use thread-local instances.
 #if defined (LOG4CPLUS_MACRO_DISABLE_TLS)
 #  define LOG4CPLUS_MACRO_INSTANTIATE_OSTRINGSTREAM(var)    \
-    log4cplus::tostringstream var
+    ::log4cplus::tostringstream var
 
 #  define LOG4CPLUS_MACRO_INSTANTIATE_SNPRINTF_BUF(var)     \
-    log4cplus::helpers::snprintf_buf var
+    ::log4cplus::helpers::snprintf_buf var
 
 #else
 #  define LOG4CPLUS_MACRO_INSTANTIATE_OSTRINGSTREAM(var)    \
-    log4cplus::tostringstream & var                         \
-        = log4cplus::detail::get_macro_body_oss ()
+    ::log4cplus::tostringstream & var                         \
+        = ::log4cplus::detail::get_macro_body_oss ()
 
 #  define LOG4CPLUS_MACRO_INSTANTIATE_SNPRINTF_BUF(var)     \
-    log4cplus::helpers::snprintf_buf & var                  \
-        = log4cplus::detail::get_macro_body_snprintf_buf ()
+    ::log4cplus::helpers::snprintf_buf & var                  \
+        = ::log4cplus::detail::get_macro_body_snprintf_buf ()
 
 #endif
 
@@ -208,14 +208,14 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
 #define LOG4CPLUS_MACRO_BODY(logger, logEvent, logLevel)                \
     LOG4CPLUS_SUPPRESS_DOWHILE_WARNING()                                \
     do {                                                                \
-        log4cplus::Logger const & _l                                    \
-            = log4cplus::detail::macros_get_logger (logger);            \
+        ::log4cplus::Logger const & _l                                    \
+            = ::log4cplus::detail::macros_get_logger (logger);            \
         if (LOG4CPLUS_MACRO_LOGLEVEL_PRED (                             \
-                _l.isEnabledFor (log4cplus::logLevel), logLevel)) {     \
+                _l.isEnabledFor (::log4cplus::logLevel), logLevel)) {     \
             LOG4CPLUS_MACRO_INSTANTIATE_OSTRINGSTREAM (_log4cplus_buf); \
             _log4cplus_buf << logEvent;                                 \
-            log4cplus::detail::macro_forced_log (_l,                    \
-                log4cplus::logLevel, _log4cplus_buf.str(),              \
+            ::log4cplus::detail::macro_forced_log (_l,                    \
+                ::log4cplus::logLevel, _log4cplus_buf.str(),              \
                 __FILE__, __LINE__, LOG4CPLUS_MACRO_FUNCTION ());       \
         }                                                               \
     } while (0)                                                         \
@@ -225,12 +225,12 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
 #define LOG4CPLUS_MACRO_STR_BODY(logger, logEvent, logLevel)            \
     LOG4CPLUS_SUPPRESS_DOWHILE_WARNING()                                \
     do {                                                                \
-        log4cplus::Logger const & _l                                    \
-            = log4cplus::detail::macros_get_logger (logger);            \
+        ::log4cplus::Logger const & _l                                    \
+            = ::log4cplus::detail::macros_get_logger (logger);            \
         if (LOG4CPLUS_MACRO_LOGLEVEL_PRED (                             \
-                _l.isEnabledFor (log4cplus::logLevel), logLevel)) {     \
-            log4cplus::detail::macro_forced_log (_l,                    \
-                log4cplus::logLevel, logEvent,                          \
+                _l.isEnabledFor (::log4cplus::logLevel), logLevel)) {     \
+            ::log4cplus::detail::macro_forced_log (_l,                    \
+                ::log4cplus::logLevel, logEvent,                          \
                 __FILE__, __LINE__, LOG4CPLUS_MACRO_FUNCTION ());       \
         }                                                               \
     } while(0)                                                          \
@@ -240,15 +240,15 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
 #define LOG4CPLUS_MACRO_FMT_BODY(logger, logLevel, ...)                 \
     LOG4CPLUS_SUPPRESS_DOWHILE_WARNING()                                \
     do {                                                                \
-        log4cplus::Logger const & _l                                    \
-            = log4cplus::detail::macros_get_logger (logger);            \
+        ::log4cplus::Logger const & _l                                    \
+            = ::log4cplus::detail::macros_get_logger (logger);            \
         if (LOG4CPLUS_MACRO_LOGLEVEL_PRED (                             \
-                _l.isEnabledFor (log4cplus::logLevel), logLevel)) {     \
+                _l.isEnabledFor (::log4cplus::logLevel), logLevel)) {     \
             LOG4CPLUS_MACRO_INSTANTIATE_SNPRINTF_BUF (_snpbuf);         \
-            log4cplus::tchar const * _logEvent                          \
+            ::log4cplus::tchar const * _logEvent                          \
                 = _snpbuf.print (__VA_ARGS__);                          \
-            log4cplus::detail::macro_forced_log (_l,                    \
-                log4cplus::logLevel, _logEvent,                         \
+            ::log4cplus::detail::macro_forced_log (_l,                    \
+                ::log4cplus::logLevel, _logEvent,                         \
                 __FILE__, __LINE__, LOG4CPLUS_MACRO_FUNCTION ());       \
         }                                                               \
     } while(0)                                                          \
@@ -258,15 +258,15 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
 #define LOG4CPLUS_MACRO_FMT_BODY(logger, logLevel, logArgs...)          \
     LOG4CPLUS_SUPPRESS_DOWHILE_WARNING()                                \
     do {                                                                \
-        log4cplus::Logger const & _l                                    \
-            = log4cplus::detail::macros_get_logger (logger);            \
+        ::log4cplus::Logger const & _l                                    \
+            = ::log4cplus::detail::macros_get_logger (logger);            \
         if (LOG4CPLUS_MACRO_LOGLEVEL_PRED (                             \
-                _l.isEnabledFor (log4cplus::logLevel), logLevel)) {     \
+                _l.isEnabledFor (::log4cplus::logLevel), logLevel)) {     \
             LOG4CPLUS_MACRO_INSTANTIATE_SNPRINTF_BUF (_snpbuf);         \
-            log4cplus::tchar const * _logEvent                          \
+            ::log4cplus::tchar const * _logEvent                          \
                 = _snpbuf.print (logArgs);                              \
-            log4cplus::detail::macro_forced_log (_l,                    \
-                log4cplus::logLevel, _logEvent,                         \
+            ::log4cplus::detail::macro_forced_log (_l,                    \
+                ::log4cplus::logLevel, _logEvent,                         \
                 __FILE__, __LINE__, LOG4CPLUS_MACRO_FUNCTION ());       \
         }                                                               \
     } while(0)                                                          \
@@ -283,7 +283,7 @@ LOG4CPLUS_EXPORT void macro_forced_log (log4cplus::Logger const &,
  */
 #if !defined(LOG4CPLUS_DISABLE_TRACE)
 #define LOG4CPLUS_TRACE_METHOD(logger, logEvent)                        \
-    log4cplus::TraceLogger _log4cplus_trace_logger(logger, logEvent,    \
+    ::log4cplus::TraceLogger _log4cplus_trace_logger(logger, logEvent,    \
         __FILE__, __LINE__, LOG4CPLUS_MACRO_FUNCTION ());
 #define LOG4CPLUS_TRACE(logger, logEvent)                               \
     LOG4CPLUS_MACRO_BODY (logger, logEvent, TRACE_LOG_LEVEL)

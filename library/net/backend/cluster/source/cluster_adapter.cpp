@@ -333,7 +333,7 @@ unsigned sirius::library::net::backend::cluster_adapter::ssp_queue_thread(void *
 	return 0;
 }
 
-void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD dw_user, DWORD dw1, DWORD dw2)
+void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2)
 {
 	char ssm_data[MAX_PATH] = { 0, };
 	_snprintf(ssm_data, MAX_PATH, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=ALIVE",
