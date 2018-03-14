@@ -229,7 +229,7 @@ int main()
 				//proc_ctrl.set_cmdline(arguments, "--show-update-rect");
 				//proc_ctrl.set_cmdline(arguments, "--disable-web-security");
 				//proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
-				//proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
+				proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
 				//proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
 			}
 
