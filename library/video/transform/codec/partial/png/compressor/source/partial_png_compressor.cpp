@@ -767,12 +767,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 			}
 			*/
 
+			/*
 			if (_invalidate && _context->binvalidate && (process_data_size == 0))
 			{
 				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
 				_invalidate = false;
 			}
 			else
+			*/
 			{
 				while (process_data_size>0)
 				{
@@ -818,10 +820,16 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 #else
 #if defined(WITH_AVX2_BILINEAR_RESIZE)
+#if 1
+					int32_t process_index = (begin_height) * (_context->width << 2) + (begin_width << 2);
+					int32_t resize_index = (begin_height >> 2) * (_context->width) + begin_width;
+					SIMD_RESIZER::resize_bilinear(process_data + process_index, end_width - begin_width, end_height - begin_height, _context->width << 2, resized_buffer, (end_width - begin_width) >> 2, (end_height - begin_height) >> 2, _context->width);
+#else
 					SIMD_RESIZER::resize_bilinear(process_data, _context->width, _context->height, _context->width << 2, resized_buffer, _context->width >> 2, _context->height >> 2, _context->width);
-					for (int32_t h = 0, h2 = 0; h < _context->height; h = h + _context->block_height, h2 = h2 + (_context->block_height >> 2))
+#endif
+					for (int32_t h = begin_height, h2 = (begin_height >> 2); h < end_height; h = h + _context->block_height, h2 = h2 + (_context->block_height >> 2))
 					{
-						for (int32_t w = 0, w2 = 0; w < _context->width; w = w + _context->block_width, w2 = w2 + (_context->block_width >> 2))
+						for (int32_t w = begin_width, w2 = (begin_width >> 2); w < end_width; w = w + _context->block_width, w2 = w2 + (_context->block_width >> 2))
 						{
 #else
 					for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
@@ -831,7 +839,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 #endif
 #endif
-							if (h >= begin_height && h < end_height && w >= begin_width && w < end_width)
+							//if (h >= begin_height && h < end_height && w >= begin_width && w < end_width)
 							{
 #if defined(WITH_AVX2_SIMD)
 								uint64_t sum = 0;
@@ -845,21 +853,29 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									for (int32_t bw = 0; bw < (_context->block_width >> 2); bw++)
 									{
 										int32_t ci = (h2 + bh) * (_context->width) + (w2 << 2) + (bw << 2);
+
+#if 1
 										int32_t bi = ci + 0;
 										int32_t gi = ci + 1;
 										int32_t ri = ci + 2;
 										int32_t ai = ci + 3;
-
 										int32_t bdiff = labs(*(resized_buffer + bi) - *(reference_buffer + bi));
 										int32_t gdiff = labs(*(resized_buffer + gi) - *(reference_buffer + gi));
 										int32_t rdiff = labs(*(resized_buffer + ri) - *(reference_buffer + ri));
 										int32_t adiff = labs(*(resized_buffer + ai) - *(reference_buffer + ai));
-
 										if ((bdiff + gdiff + rdiff + adiff) > 0)
 										{
 											diff = true;
 											break;
 										}
+#else
+										int32_t rgbadiff = abs((int32_t*)(resized_buffer + ci) - (int32_t*)(reference_buffer + ci));
+										if (rgbadiff > 0)
+										{
+											diff = true;
+											break;
+										}
+#endif
 									}
 								}
 
@@ -1305,17 +1321,23 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									for (int32_t bw = 0; bw < (_context->block_width >> 2); bw++)
 									{
 										int32_t ci = (h2 + bh) * (_context->width) + (w2 << 2) + (bw << 2);
+										/*
 										int32_t bi = ci + 0;
 										int32_t gi = ci + 1;
 										int32_t ri = ci + 2;
 										int32_t ai = ci + 3;
-
 										int32_t bdiff = labs(*(resized_buffer + bi) - *(reference_buffer + bi));
 										int32_t gdiff = labs(*(resized_buffer + gi) - *(reference_buffer + gi));
 										int32_t rdiff = labs(*(resized_buffer + ri) - *(reference_buffer + ri));
 										int32_t adiff = labs(*(resized_buffer + ai) - *(reference_buffer + ai));
-
 										if ((bdiff + gdiff + rdiff + adiff) > 0)
+										{
+											diff = true;
+											break;
+										}
+										*/
+										uint32_t rgbadiff = labs((int32_t*)(resized_buffer + ci) - (int32_t*)(reference_buffer + ci));
+										if (rgbadiff > 0)
 										{
 											diff = true;
 											break;
