@@ -11,8 +11,8 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, max_colors(128)
 	, min_quality(0)
 	, max_quality(100)
-	, binvalidate(false)
-	, indexed_video(false)
+	, binvalidate(true)
+	, indexed_video(true)
 	, partial_post(false)
 {
 
