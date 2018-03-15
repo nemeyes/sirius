@@ -254,7 +254,7 @@ namespace client {
 				DCHECK(rootWin);
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);
-				Sleep(2);
+				Sleep(3);
 				browser->ReloadIgnoreCache();
 				
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
