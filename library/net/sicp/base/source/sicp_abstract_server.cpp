@@ -2,7 +2,9 @@
 #include <sirius_locks.h>
 #include <sicp_command.h>
 #include <sirius_log4cplus_logger.h>
+#ifdef NDEBUG
 #include "malloc_extension.h"
+#endif
 
 sirius::library::net::sicp::abstract_server::abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
 	: sirius::library::net::iocp::server(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
@@ -407,7 +409,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 		//_closing_sessions.clear();
 		//final_sessions.clear();
 		//closing_sessions.clear();
+#ifdef NDEBUG
 		MallocExtension::instance()->ReleaseFreeMemory();
+#endif
 	}
 
 	return _activated_sessions.size();
