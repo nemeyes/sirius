@@ -8,6 +8,7 @@
 #include <Simd\SimdLib.h>
 
 sirius::library::framework::client::native::core::core(void)
+	: _debug_level(sirius::library::framework::client::native::debug_level_t::none)
 {
 	::InitializeCriticalSection(&_vcs);
 	_decoder_buffer = static_cast<uint8_t*>(malloc(VIDEO_BUFFER_SIZE));
@@ -51,6 +52,13 @@ int32_t sirius::library::framework::client::native::core::play(HWND hwnd)
 int32_t sirius::library::framework::client::native::core::stop(void)
 {
 	return sirius::library::unified::client::stop();
+}
+
+int32_t sirius::library::framework::client::native::core::change_debug_level(int32_t level)
+{
+	_debug_level = level;
+
+	return sirius::library::framework::client::native::err_code_t::success;
 }
 
 void sirius::library::framework::client::native::core::on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height)
@@ -180,9 +188,15 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
 
-	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
-	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
-	//memset(_render_buffer, 0x00, rctx->width * rctx->height * 4);
+	if (_debug_level == sirius::library::framework::client::native::_debug_level_t::gray)
+	{
+		SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
+		SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+	}
+	else if (_debug_level == sirius::library::framework::client::native::_debug_level_t::frame)
+	{
+		memset(_render_buffer, 0x00, rctx->width * rctx->height * 4);
+	}
 
 	for (int32_t x = 0; x < count; x++)
 	{
@@ -241,8 +255,15 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
 	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
 
-	//SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
-	//SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+	if (_debug_level == sirius::library::framework::client::native::_debug_level_t::gray)
+	{
+		SimdBgraToGray(_render_buffer, rctx->width, rctx->height, rctx->width << 2, _processing_buffer, rctx->width);
+		SimdGrayToBgra(_processing_buffer, rctx->width, rctx->height, rctx->width, _render_buffer, rctx->width << 2, 0);
+	}
+	else if (_debug_level == sirius::library::framework::client::native::_debug_level_t::frame)
+	{
+		memset(_render_buffer, 0x00, rctx->width * rctx->height * 4);
+	}
 
 	for (int32_t i = 0; i < count; i++)
 	{

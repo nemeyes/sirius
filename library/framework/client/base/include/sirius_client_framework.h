@@ -23,10 +23,18 @@ namespace sirius
 						static const int32_t stopped = 3;
 					} state_t;
 
+					typedef struct _debug_level_t
+					{
+						static const int32_t none = 0;
+						static const int32_t gray = 1;
+						static const int32_t frame = 2;
+					} debug_level_t;
+
 					virtual int32_t state(void) = 0;
 					virtual int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat) = 0;
 					virtual int32_t play(HWND hwnd) = 0;
 					virtual int32_t stop(void) = 0;
+					virtual int32_t change_debug_level(int32_t level) = 0;
 				};
 			};
 		};

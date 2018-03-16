@@ -93,6 +93,8 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
 	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
+	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL1, _debug_level1);
+	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL2, _debug_level2);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
@@ -123,6 +125,8 @@ BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
 	ON_WM_HSCROLL()
 	ON_WM_WINDOWPOSCHANGED()
 	ON_BN_CLICKED(IDC_FIND_FILE_BUTTON, &CSiriusClientDlg::OnBnClickedFindFileButton)
+	ON_BN_CLICKED(IDC_CHECK_DEBUG_LEVEL1, &CSiriusClientDlg::OnBnClickedCheckDebugLevel1)
+	ON_BN_CLICKED(IDC_CHECK_DEBUG_LEVEL2, &CSiriusClientDlg::OnBnClickedCheckDebugLevel2)
 END_MESSAGE_MAP()
 
 
@@ -817,4 +821,44 @@ BOOL CSiriusClientDlg::PreTranslateMessage(MSG* pMsg)
 			_client->key_up(pMsg->wParam);
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CSiriusClientDlg::OnBnClickedCheckDebugLevel1()
+{
+	// TODO: Add your control notification handler code here
+	int32_t debug_level = 0;
+	if (_debug_level1.GetCheck())
+	{
+		debug_level = 1;
+		_debug_level2.SetCheck(1);
+	}
+	else
+	{
+		if (_debug_level2.GetCheck())
+			debug_level = 2;
+		else
+			debug_level = 0;
+	}
+	_client->change_debug_level(debug_level);
+}
+
+
+void CSiriusClientDlg::OnBnClickedCheckDebugLevel2()
+{
+	// TODO: Add your control notification handler code here
+	int32_t debug_level = 0;
+	if (_debug_level2.GetCheck())
+	{
+		debug_level = 2;
+		_debug_level1.SetCheck(1);
+	}
+	else
+	{
+		if (_debug_level1.GetCheck())
+			debug_level = 1;
+		else
+			debug_level = 0;
+	}
+	_client->change_debug_level(debug_level);
 }

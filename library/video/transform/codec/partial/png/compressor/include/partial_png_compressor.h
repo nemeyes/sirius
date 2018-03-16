@@ -152,12 +152,11 @@ namespace sirius
 								sirius::library::video::transform::codec::libpng::compressor *															_real_compressor;								
 								std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*>	_indexed_cache_image;
 								
-								//std::vector<sirius::library::video::transform::codec::partial::png::compressor::core::bounding_box_t*>					_bounding_boxes;
-								
 								int32_t				_prev_x;
 								int32_t				_prev_y;
 								int32_t				_prev_width;
 								int32_t				_prev_height;
+								bool				_prev_force_fullmode;
 							};
 						};
 					};
