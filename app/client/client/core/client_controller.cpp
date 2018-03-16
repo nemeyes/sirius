@@ -31,6 +31,11 @@ client_controller::~client_controller(void)
 	}
 }
 
+void client_controller::change_debug_level(int32_t level)
+{
+	_framework->change_debug_level(level);
+}
+
 void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
 {
 	HWND hwnd = _front->GetSafeHwnd();

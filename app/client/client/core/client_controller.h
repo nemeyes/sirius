@@ -12,6 +12,8 @@ public:
 	client_controller(CSiriusClientDlg * front, bool keepalive, bool tls);
 	virtual ~client_controller(void);
 
+	void change_debug_level(int32_t level);
+
 	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection);
 	void on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection);
 	void on_pre_disconnect(void);

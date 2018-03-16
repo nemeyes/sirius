@@ -32,6 +32,8 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
+					int32_t change_debug_level(int32_t level) { return err_code_t::success; }
+
 					void on_connect_stream(void);
 					void on_disconnect_stream(void);
 					void on_recv_stream(void);

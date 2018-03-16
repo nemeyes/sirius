@@ -35,6 +35,11 @@ int32_t sirius::library::framework::client::native::stop(void)
 	return _core->stop();
 }
 
+int32_t sirius::library::framework::client::native::change_debug_level(int32_t level)
+{
+	return _core->change_debug_level(level);
+}
+
 sirius::library::framework::client::base * create_client_framework(void)
 {
 	return new sirius::library::framework::client::native();

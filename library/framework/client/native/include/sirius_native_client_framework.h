@@ -30,6 +30,8 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
+					int32_t change_debug_level(int32_t level);
+
 				private:
 					sirius::library::framework::client::native::core * _core;
 
