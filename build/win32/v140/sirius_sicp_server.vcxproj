@@ -176,7 +176,7 @@
       <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;WITH_STATEFUL;WITH_LEAVE_CMD;WITH_NEW_PROTOCOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include\;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include\;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\net\sicp\base\include;..\..\..\library\net\sicp\server\include;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
