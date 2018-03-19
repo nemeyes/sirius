@@ -240,7 +240,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	}
 
 	png_set_compression_level(*png_ptr_p, (compression_level <= 0) ? Z_BEST_SPEED : compression_level);
-	png_set_compression_mem_level(*png_ptr_p, 8); // Smaller values use less memory but are slower, while higher values use more memory to gain compression speed.
+	png_set_compression_mem_level(*png_ptr_p, 9); // Smaller values use less memory but are slower, while higher values use more memory to gain compression speed.
 
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 }
@@ -293,10 +293,10 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	write_state.compressed = compressed;
 	png_set_write_fn(png_ptr, &write_state, png_write_callback, png_flush_callback);
 
-	png_set_compression_strategy(png_ptr, Z_RLE);
+	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
 	
 	// Palette images generally don't gain anything from filtering
-	png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
+	//png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
 
 	png_set_gamma(info_ptr, png_ptr, out->gamma, out->output_color);
 

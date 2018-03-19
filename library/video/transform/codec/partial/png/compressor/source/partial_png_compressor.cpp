@@ -1026,19 +1026,13 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										__asm
 										{
 											pushad
-
 											mov			eax, p
 											mov			ebx, r
-											//mov			ecx, simd_result
 											mov			esi, 0
 											movdqa		xmm0, [eax + esi]
 											movdqa		xmm1, [ebx + esi]
-											//psubusb		xmm0, xmm1
 											pcmpeqb		xmm0, xmm1
-											//pmovmskb	ecx, xmm0
-											//mov			diff, ecx
 											movdqu		simd_result, xmm0
-
 											popad
 										}
 										for (int32_t index = 0; index < simd_align; index++)
