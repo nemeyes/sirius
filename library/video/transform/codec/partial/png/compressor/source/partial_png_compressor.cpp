@@ -648,7 +648,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 #endif
 #else
 	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;
-	uint8_t *	reference_buffer = static_cast<uint8_t*>(malloc(reference_buffer_size));
+	uint8_t *	reference_buffer = static_cast<uint8_t*>(_aligned_malloc(reference_buffer_size, 16));
 	memset(reference_buffer, 0x00, reference_buffer_size);
 #endif
 #endif
@@ -674,7 +674,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 	int32_t		process_data_capacity = (_context->width * _context->height) << 2;
 	int32_t		process_data_size = 0;
-	uint8_t *	process_data = static_cast<uint8_t*>(malloc(process_data_capacity));
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_capacity, 16));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -930,33 +930,118 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 								if (diff)
 #else
-								
 								int32_t simd_align = 16;
-								int32_t diff = 0;
+								bool	diff = false;
+								uint8_t simd_result[16] = { 0 };
 								for (int32_t bh = 0; bh < _context->block_height; bh++)
 								{
-									for (int32_t bw = 0; bw < _context->block_width; bw = bw + simd_align)
+									for (int32_t bw = 0; bw < _context->block_width; bw = bw + (simd_align >> 2))
 									{
 										int32_t ci = (h + bh) * (_context->width << 2) + (w << 2) + (bw << 2);
 										uint8_t * p = process_data + ci;
 										uint8_t * r = reference_buffer + ci;
+
+#if 0
+										int32_t bi0 = ci + 0;
+										int32_t gi0 = ci + 1;
+										int32_t ri0 = ci + 2;
+										int32_t ai0 = ci + 3;
+
+										int32_t bi1 = ci + 4;
+										int32_t gi1 = ci + 5;
+										int32_t ri1 = ci + 6;
+										int32_t ai1 = ci + 7;
+
+										int32_t bi2 = ci + 8;
+										int32_t gi2 = ci + 9;
+										int32_t ri2 = ci + 10;
+										int32_t ai2 = ci + 11;
+
+										int32_t bi3 = ci + 12;
+										int32_t gi3 = ci + 13;
+										int32_t ri3 = ci + 14;
+										int32_t ai3 = ci + 15;
+
+										int32_t bdiff0 = labs(*(process_data + bi0) - *(reference_buffer + bi0));
+										int32_t gdiff0 = labs(*(process_data + gi0) - *(reference_buffer + gi0));
+										int32_t rdiff0 = labs(*(process_data + ri0) - *(reference_buffer + ri0));
+										int32_t adiff0 = labs(*(process_data + ai0) - *(reference_buffer + ai0));
+
+										int32_t bdiff1 = labs(*(process_data + bi1) - *(reference_buffer + bi1));
+										int32_t gdiff1 = labs(*(process_data + gi1) - *(reference_buffer + gi1));
+										int32_t rdiff1 = labs(*(process_data + ri1) - *(reference_buffer + ri1));
+										int32_t adiff1 = labs(*(process_data + ai1) - *(reference_buffer + ai1));
+
+										int32_t bdiff2 = labs(*(process_data + bi2) - *(reference_buffer + bi2));
+										int32_t gdiff2 = labs(*(process_data + gi2) - *(reference_buffer + gi2));
+										int32_t rdiff2 = labs(*(process_data + ri2) - *(reference_buffer + ri2));
+										int32_t adiff2 = labs(*(process_data + ai2) - *(reference_buffer + ai2));
+
+										int32_t bdiff3 = labs(*(process_data + bi3) - *(reference_buffer + bi3));
+										int32_t gdiff3 = labs(*(process_data + gi3) - *(reference_buffer + gi3));
+										int32_t rdiff3 = labs(*(process_data + ri3) - *(reference_buffer + ri3));
+										int32_t adiff3 = labs(*(process_data + ai3) - *(reference_buffer + ai3));
+
+
+										int32_t diff0 = bdiff0 + gdiff0 + rdiff0 + adiff0;
+										int32_t diff1 = bdiff1 + gdiff1 + rdiff1 + adiff1;
+										int32_t diff2 = bdiff2 + gdiff2 + rdiff2 + adiff2;
+										int32_t diff3 = bdiff3 + gdiff3 + rdiff3 + adiff3;
+
+										if ((diff0 + diff1 + diff2 + diff3) > 0)
+										{
+											diff = true;
+											break;
+										}
+#else
+										/*
 										__asm
 										{
 											pushad
 
 											mov			eax, p
 											mov			ebx, r
-											mov			ecx, 0
+											//mov			ecx, simd_result
 											mov			esi, 0
-											movdqu		xmm0, [eax + esi]
-											movdqu		xmm1, [ebx + esi]
-											psubusb		xmm0, xmm1
+											movdqu		ymm0, [eax + esi]
+											movdqu		ymm1, [ebx + esi]
+											psubusb		ymm0, ymm1
 											//pcmpeqb		xmm0, xmm1
-											pmovmskb	ecx, xmm0
-
-											mov			diff, ecx
+											//pmovmskb	ecx, xmm0
+											//mov			diff, ecx
+											movdqu		simd_result, ymm0
 
 											popad
+										}
+										*/
+										
+										__asm
+										{
+											pushad
+
+											mov			eax, p
+											mov			ebx, r
+											//mov			ecx, simd_result
+											mov			esi, 0
+											movdqa		xmm0, [eax + esi]
+											movdqa		xmm1, [ebx + esi]
+											psubusb		xmm0, xmm1
+											//pcmpeqb		xmm0, xmm1
+											//pmovmskb	ecx, xmm0
+											//mov			diff, ecx
+											movdqu		simd_result, xmm0
+
+											popad
+										}
+										
+#endif
+										for (int32_t index = 0; index < simd_align; index++)
+										{
+											if (simd_result[index])
+											{
+												diff = true;
+												break;
+											}
 										}
 
 										if (diff)
@@ -965,9 +1050,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									if (diff)
 										break;
 								}
-								
+
 								/*
-								
 								//16byte
 								int32_t nloop		= (((_context->block_height * _context->block_width) << 2) / simd_align) * simd_align;
 								int32_t remain		= ((_context->block_height * _context->block_width) << 2) - nloop;
@@ -1041,6 +1125,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										//if (_context->block_height == (bh + 1))
 										//	memset(process_data + src_index, 0x00, _context->block_width << 2);
 										rows[row_index] = process_data + src_index;
+
+#if !defined(WITH_AVX2_BILINEAR_RESIZE) && !defined(WITH_AVX2_SIMD)
+										memmove(reference_buffer + +src_index, process_data + src_index, _context->block_width << 2);
+#endif
 									}
 
 									if (_front)
@@ -1104,7 +1192,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 #if defined(WITH_AVX2_BILINEAR_RESIZE)
 					memmove(reference_buffer, resized_buffer, resized_buffer_size);
 #else
-					memmove(reference_buffer, process_data, process_data_size);
+					//memmove(reference_buffer, process_data, process_data_size);
 #endif
 #endif
 					{
@@ -1135,7 +1223,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	}
 
 	if (process_data)
-		free(process_data);
+		_aligned_free(process_data);
 	process_data = nullptr;
 
 	if (pindex)
@@ -1190,7 +1278,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	reference_buffer = nullptr;
 #else
 	if (reference_buffer)
-		free(reference_buffer);
+		_aligned_free(reference_buffer);
 	reference_buffer = nullptr;
 	reference_buffer_size = 0;
 #endif
