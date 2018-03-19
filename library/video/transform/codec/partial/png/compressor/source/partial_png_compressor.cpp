@@ -147,7 +147,13 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 		iobuffer = _iobuffer_queue.get_available();
 		while (!iobuffer)
 		{
-			iobuffer = _iobuffer_queue.get_pending();
+			while (true)
+			{
+				iobuffer = _iobuffer_queue.get_pending();
+				if (!iobuffer)
+					break;
+			}
+			
 			iobuffer = _iobuffer_queue.get_available();
 			if (iobuffer)
 			{
@@ -805,10 +811,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						begin_width = 0;
 						end_width = _context->width;
 
+#if defined(WITH_AVX2_BILINEAR_RESIZE)
 						resized_begin_height = begin_height >> 2;
 						resized_end_height = end_height >> 2;
 						resized_begin_width = begin_width >> 2;
 						resized_end_width = end_width >> 2;
+#endif
 					}
 					else
 					{
@@ -1025,19 +1033,17 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											mov			esi, 0
 											movdqa		xmm0, [eax + esi]
 											movdqa		xmm1, [ebx + esi]
-											psubusb		xmm0, xmm1
-											//pcmpeqb		xmm0, xmm1
+											//psubusb		xmm0, xmm1
+											pcmpeqb		xmm0, xmm1
 											//pmovmskb	ecx, xmm0
 											//mov			diff, ecx
 											movdqu		simd_result, xmm0
 
 											popad
 										}
-										
-#endif
 										for (int32_t index = 0; index < simd_align; index++)
 										{
-											if (simd_result[index])
+											if (!simd_result[index])
 											{
 												diff = true;
 												break;
@@ -1046,6 +1052,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 										if (diff)
 											break;
+										
+#endif
 									}
 									if (diff)
 										break;
@@ -1155,7 +1163,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										status = _real_compressor->compress(&input, &bitstream);
 										if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
 										{
-											index = (h / _context->block_height) * (_context->height / _context->block_height) + w / _context->block_width;
+											index = (h / _context->block_height) * (_context->width / _context->block_width) + w / _context->block_width;
 											pindex[count] = index;
 											pcompressed[count] = (uint8_t*)bitstream.data;
 											plength[count] = bitstream.data_size;
