@@ -4,7 +4,6 @@
 
 #include "cefclient/renderer/client_app_renderer.h"
 #include "cefclient/renderer/client_renderer.h"
-#include "cefclient/renderer/performance_test.h"
 #if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/js_binding.h"
 #else

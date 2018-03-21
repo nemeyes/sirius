@@ -13,17 +13,10 @@
 #include "include/cef_web_plugin.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
-#include "cefclient/browser/binding_test.h"
-#include "cefclient/browser/dialog_test.h"
 #include "cefclient/browser/main_context.h"
-#include "cefclient/browser/preferences_test.h"
 #include "cefclient/browser/resource.h"
 #include "cefclient/browser/resource_util.h"
-#include "cefclient/browser/response_filter_test.h"
 #include "cefclient/browser/root_window_manager.h"
-#include "cefclient/browser/scheme_test.h"
-#include "cefclient/browser/urlrequest_test.h"
-#include "cefclient/browser/window_test.h"
 
 namespace client {
 namespace test_runner {
@@ -710,7 +703,7 @@ void Alert(CefRefPtr<CefBrowser> browser, const std::string& message) {
 
 void CreateMessageHandlers(MessageHandlerSet& handlers) {
   handlers.insert(new PromptHandler);
-
+/*
   // Create the binding test handlers.
   binding_test::CreateMessageHandlers(handlers);
 
@@ -725,11 +718,12 @@ void CreateMessageHandlers(MessageHandlerSet& handlers) {
 
   // Create the window test handlers.
   window_test::CreateMessageHandlers(handlers);
+  */
 }
 
 void RegisterSchemeHandlers() {
   // Register the scheme handler.
-  scheme_test::RegisterSchemeHandlers();
+ // scheme_test::RegisterSchemeHandlers();
 }
 
 CefRefPtr<CefResponseFilter> GetResourceResponseFilter(
@@ -738,8 +732,9 @@ CefRefPtr<CefResponseFilter> GetResourceResponseFilter(
     CefRefPtr<CefRequest> request,
     CefRefPtr<CefResponse> response) {
   // Create the response filter.
-  return response_filter_test::GetResourceResponseFilter(browser, frame,
-                                                         request, response);
+ /* return response_filter_test::GetResourceResponseFilter(browser, frame,
+                                                         request, response);*/
+	return 0;
 }
 
 }  // namespace test_runner

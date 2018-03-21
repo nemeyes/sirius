@@ -124,7 +124,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   context->Initialize(main_args, settings, app, sandbox_info);
   
   // Register scheme handlers.
-  test_runner::RegisterSchemeHandlers();
+//  test_runner::RegisterSchemeHandlers();
 
 #ifdef WITH_ATTENDANT_PROXY
   bool present = true;

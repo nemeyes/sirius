@@ -3,7 +3,6 @@
 // can be found in the LICENSE file.
 
 #include "cefclient/common/client_app.h"
-#include "cefclient/common/scheme_test_common.h"
 
 namespace client {
 
@@ -11,7 +10,7 @@ namespace client {
 void ClientApp::RegisterCustomSchemes(
     CefRefPtr<CefSchemeRegistrar> registrar,
     std::vector<CefString>& cookiable_schemes) {
-  scheme_test::RegisterCustomSchemes(registrar, cookiable_schemes);
+  //scheme_test::RegisterCustomSchemes(registrar, cookiable_schemes);
 }
 
 }  // namespace client
