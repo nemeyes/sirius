@@ -182,7 +182,7 @@ CefRefPtr<CefRequestContext> RootWindowManager::GetRequestContext(
 void RootWindowManager::OnTest(RootWindow* root_window, int test_id) {
   REQUIRE_MAIN_THREAD();
 
-  test_runner::RunTest(root_window->GetBrowser(), test_id);
+  //test_runner::RunTest(root_window->GetBrowser(), test_id);
 }
 
 void RootWindowManager::OnExit(RootWindow* root_window) {
