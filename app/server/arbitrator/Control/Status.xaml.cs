@@ -90,17 +90,6 @@ namespace sirius.app.server.arbitrator.Control
                     return;
                 }
             }
-
-            Dispatcher.Invoke(DispatcherPriority.Normal,
-            new Action
-            (
-                delegate ()
-                {
-                    start_button.IsEnabled = false;
-                    stop_button.IsEnabled = false;
-                    start_button.ToolTip = "last start time : " + System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-                }
-            ));
             sirius_arbitrator.controller.start();
         }
 

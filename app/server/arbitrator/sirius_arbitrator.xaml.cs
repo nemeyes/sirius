@@ -128,11 +128,27 @@ namespace sirius.app.server.arbitrator
                 else
                 {
                     Status.handle.update_connect_count(0, 0);
-                }
+                }                
             }
         }
         public unsafe void on_attendant_create(double percent)
         {
+            if(Status.handle != null)
+            {
+                if(status == status_t.starting)
+                {
+                    Dispatcher.Invoke(DispatcherPriority.Normal,
+                    new Action
+                    (
+                        delegate ()
+                        {
+                            Status.handle.start_button.IsEnabled = false;
+                            Status.handle.stop_button.IsEnabled = false;
+                        }
+                    ));
+                }
+            }
+
             if (Splash.handle != null)
             {
                 Splash.handle.update_progress_bar(percent);
@@ -147,12 +163,12 @@ namespace sirius.app.server.arbitrator
                         {
                             popup_progressbar.IsOpen = false;
                             Status.handle.stop_button.IsEnabled = true;
-                            front.IsEnabled = true;                           
+                            front.IsEnabled = true;
+                            Status.handle.start_button.ToolTip = "last start time : " + System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                         }
-                    ));
-
+                    ));                    
                     status = status_t.started;
-                }
+                }                
             }
         }
         public unsafe void on_start()
