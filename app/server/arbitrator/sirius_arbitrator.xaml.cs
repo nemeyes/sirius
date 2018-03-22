@@ -102,6 +102,13 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
             SettingValue.Instance().app_session_app = new string(app_session_app);
+            
+            string[] arg = Environment.GetCommandLineArgs();
+            if (arg.Length > 1)
+            {               
+                if (arg[1].CompareTo("--manager") == 0)
+                    controller.start();
+            }
 
             //if (enable_auto_start)
             //    controller.start();
