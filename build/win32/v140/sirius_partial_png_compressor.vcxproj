@@ -131,6 +131,7 @@
       <AdditionalIncludeDirectories>..\..\..\3rdparty\simd\v4_0_58_1229\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\misc\timestamp\generator\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt;..\..\..\library\video\transform\codec\partial\png\compressor\processing;..\..\..\library\video\transform\codec\partial\png\compressor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <OpenMPSupport>false</OpenMPSupport>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
