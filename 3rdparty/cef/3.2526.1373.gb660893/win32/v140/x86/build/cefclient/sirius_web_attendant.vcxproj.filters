@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\cefclient\browser\binding_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\browser\browser_window.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
@@ -25,9 +22,6 @@
     <ClCompile Include="..\..\cefclient\browser\client_handler_std.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\dialog_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\browser\geometry_util.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
@@ -46,28 +40,13 @@
     <ClCompile Include="..\..\cefclient\browser\osr_renderer.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\preferences_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\response_filter_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\browser\root_window.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cefclient\browser\root_window_manager.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\scheme_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\browser\test_runner.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\urlrequest_test.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\window_test.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cefclient\common\client_app.cc">
@@ -82,9 +61,6 @@
     <ClCompile Include="..\..\cefclient\common\client_switches.cc">
       <Filter>cefclient\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\common\scheme_test_common.cc">
-      <Filter>cefclient\common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\renderer\client_app_delegates_renderer.cc">
       <Filter>cefclient\renderer</Filter>
     </ClCompile>
@@ -92,12 +68,6 @@
       <Filter>cefclient\renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cefclient\renderer\client_renderer.cc">
-      <Filter>cefclient\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\renderer\performance_test.cc">
-      <Filter>cefclient\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cefclient\renderer\performance_test_tests.cc">
       <Filter>cefclient\renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cefclient\cefclient_win.cc">
@@ -133,9 +103,6 @@
     <ClCompile Include="..\..\cefclient\browser\util_win.cc">
       <Filter>cefclient\browser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cefclient\browser\window_test_win.cc">
-      <Filter>cefclient\browser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cefclient\binding\js_binding.cc">
       <Filter>cefclient\binding</Filter>
     </ClCompile>
@@ -162,9 +129,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\cefclient\browser\binding_test.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\browser_window.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
@@ -184,9 +148,6 @@
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\client_types.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\dialog_test.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\geometry_util.h">
@@ -210,16 +171,10 @@
     <ClInclude Include="..\..\cefclient\browser\osr_renderer.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\preferences_test.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\resource.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\resource_util.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\response_filter_test.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\root_window.h">
@@ -228,19 +183,10 @@
     <ClInclude Include="..\..\cefclient\browser\root_window_manager.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\scheme_test.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\temp_window.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\test_runner.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\urlrequest_test.h">
-      <Filter>cefclient\browser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\browser\window_test.h">
       <Filter>cefclient\browser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\common\client_app.h">
@@ -252,19 +198,10 @@
     <ClInclude Include="..\..\cefclient\common\client_switches.h">
       <Filter>cefclient\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cefclient\common\scheme_test_common.h">
-      <Filter>cefclient\common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\cefclient\renderer\client_app_renderer.h">
       <Filter>cefclient\renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\renderer\client_renderer.h">
-      <Filter>cefclient\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\renderer\performance_test.h">
-      <Filter>cefclient\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cefclient\renderer\performance_test_setup.h">
       <Filter>cefclient\renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cefclient\browser\browser_window_osr_win.h">

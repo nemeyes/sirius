@@ -16,7 +16,6 @@
 #include "cefclient/browser/resource.h"
 #include "cefclient/browser/temp_window.h"
 #include "cefclient/browser/util_win.h"
-#include "cefclient/browser/window_test.h"
 #include "cefclient/common/client_switches.h"
 
 #if defined(WITH_EXTERNAL_INTERFACE)
@@ -1158,12 +1157,12 @@ void RootWindowWin::OnSetFullscreen(bool fullscreen) {
   REQUIRE_MAIN_THREAD();
 
   CefRefPtr<CefBrowser> browser = GetBrowser();
-  if (browser) {
+ /* if (browser) {
     if (fullscreen)
       window_test::Maximize(browser);
     else
       window_test::Restore(browser);
-  }
+  }*/
 }
 
 void RootWindowWin::OnSetLoadingState(bool isLoading,
