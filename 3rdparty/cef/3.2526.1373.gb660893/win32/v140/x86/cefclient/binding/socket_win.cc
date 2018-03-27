@@ -16,7 +16,6 @@ namespace client {
 
 		socket_win::socket_win() {
 			create();
-			OutputDebugStringA("socket_win!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11\n");
 		}
 
 		socket_win::~socket_win() {
@@ -47,7 +46,6 @@ namespace client {
 
 			if (!recvData(buffer))
 				return;
-			OutputDebugStringA("Socket Recevied\n");
 
 			if (!recvHeader(buffer, header))
 				return;
@@ -118,7 +116,6 @@ namespace client {
 			index += recvBody_getDataLen(buffer, sizeof(header), dataLen);
 
 			getBody(dataLen, index, buffer, body);
-			OutputDebugStringA("[sirius->attendant]\n");
 			switch (header.commandType) {
 			case COMMAND_TYPE::RESPONSE:
 				recvBody_cmdType_response(header);
@@ -206,7 +203,6 @@ namespace client {
 			int bufSize = utf8_data.length() + 12;
 			char* send_packet = new char[bufSize];
 			memset(send_packet, 0x00, bufSize);
-			OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!send_bypass_packet");
 			int size = 0;
 
 			if (!make_json_packet(send_packet, size, contentsType, utf8_data)) {
@@ -254,9 +250,11 @@ namespace client {
 				DCHECK(rootWin);
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);
+				//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
 				Sleep(3);
-				browser->ReloadIgnoreCache();
 				
+				browser->ReloadIgnoreCache();
+				rootWin->reload_JavaScript_stat = true;
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 			}
 

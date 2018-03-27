@@ -52,7 +52,9 @@ namespace client {
 		float GetDeviceScaleFactor() const OVERRIDE;
 		CefRefPtr<CefBrowser> GetBrowser() const OVERRIDE;
 		ClientWindowHandle GetWindowHandle() const OVERRIDE;
+		const CefString& get_java_script_injection() const { return javascript_injection_; }
 		std::string start_url;
+		bool reload_JavaScript_stat;
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);
 		void CreateRootWindow(const CefBrowserSettings& settings);
@@ -93,6 +95,7 @@ namespace client {
 		void OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
 		void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame);
+
 #endif
 
 		// BrowserWindow::Delegate methods.
@@ -167,7 +170,6 @@ namespace client {
 		int last_click_count_;
 		double last_click_time_;
 		bool last_mouse_down_on_view_;
-		
 		CefString javascript_injection_;
 
 #endif
