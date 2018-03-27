@@ -111,6 +111,7 @@ RootWindowWin::RootWindowWin()
       find_next_(false),
       find_match_case_last_(false),
       window_destroyed_(false),
+	  reload_JavaScript_stat(false),
       browser_destroyed_(false) {
   find_buff_[0] = 0;
 
@@ -486,8 +487,8 @@ void RootWindowWin::read_injection_js()
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	javascript_injection_ = buffer.str();
-	OutputDebugStringA(injection_path.c_str());
-	OutputDebugStringA(javascript_injection_.ToString().c_str());
+	//OutputDebugStringA(injection_path.c_str());
+	//OutputDebugStringA(javascript_injection_.ToString().c_str());
 	OutputDebugStringA("read_injection_js OK\n");
 
 }
@@ -1101,8 +1102,13 @@ void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
 {
 	OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
 
-
-	frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
+	if (reload_JavaScript_stat)
+	{
+		if (!javascript_injection_.empty())
+		{
+			frame->ExecuteJavaScript(javascript_injection_, "", 0);
+		}
+	}
 }
 #endif
 
@@ -1119,8 +1125,8 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
   }
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
+  browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "", 0);
 #endif
-  OutputDebugStringA("========================RootWindowWin::OnBrowserCreated========================\n");
 }
 
 void RootWindowWin::OnBrowserWindowDestroyed() {

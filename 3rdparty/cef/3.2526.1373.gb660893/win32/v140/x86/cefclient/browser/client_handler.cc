@@ -858,11 +858,13 @@ void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
 	if (delegate_)
 			delegate_->OnLoadStart(browser, frame);
-#if defined(WITH_EXTERNAL_INTERFACE)
-	if (!binding::global::get_instance().get_java_script_injection().empty()) {
-		frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
-	}
-#endif
+//#if defined(WITH_EXTERNAL_INTERFACE)
+//	if (!binding::global::get_instance().get_java_script_injection().empty()) {
+//		frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
+//	}
+//	else
+//		OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//#endif
 }
 
 void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,

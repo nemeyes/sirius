@@ -16,7 +16,6 @@ ClientAppRenderer::ClientAppRenderer() {
 
 ClientAppRenderer::~ClientAppRenderer()
 {
-	OutputDebugStringA("ClientAppRenderer::~ClientAppRenderer()\n");
 }
 
 void ClientAppRenderer::OnRenderThreadCreated(

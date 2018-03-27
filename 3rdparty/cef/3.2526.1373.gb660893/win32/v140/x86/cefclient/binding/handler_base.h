@@ -10,7 +10,6 @@ namespace client {
 			message_handler_base() {};
 			virtual ~message_handler_base() 
 			{
-				::OutputDebugStringA("~message_handler_base()\n");
 			};
 
 			void set_list_Value(CefRefPtr<CefListValue> list, int index,
