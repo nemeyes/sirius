@@ -303,6 +303,19 @@ void sirius::library::framework::client::native::core::on_end_video(void)
 {
 	sirius::autolock mutex(&_vcs);
 
+	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
+	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
+
+	if (renderer && rctx)
+	{
+		memset(_render_buffer, 0x00, rctx->width * (rctx->height << 2));
+
+		sirius::library::video::sink::ddraw::renderer::entity_t render;
+		render.data = _render_buffer;
+		render.data_size = rctx->height * (rctx->width << 2);
+		renderer->render(&render);
+	}
+
 	if (_video_decompressor)
 	{
 		_video_decompressor->release();
