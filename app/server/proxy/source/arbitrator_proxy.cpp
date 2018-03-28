@@ -19,6 +19,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _use_count(NULL)
 	, _max_attendant_instance_count(0)
 	, _last_alloc_session_id(-1)
+	, _state(sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop)
 {
 	::InitializeCriticalSection(&_attendant_cs);
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
@@ -672,6 +673,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 	}
 
 	bool attendant_created = false;
+	_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::starting;
 
 	const unsigned long msleep = 100;
 	const unsigned long onesec = 1000;
@@ -699,8 +701,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 						if (_context && _context->handler)
 							_context->handler->on_attendant_create(100);
 
-						attendant_created = true;
-						_cluster->ssm_service_info("START", _max_attendant_instance_count);
+						attendant_created = true;						
 					}
 				}
 			}
@@ -711,7 +712,18 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 		else
-		{		
+		{	
+			if (_state == sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::starting)
+			{
+				double cpu_usage = _monitor->total_cpu_usage();
+				LOGGER::make_info_log(SAA, "%s, %d, [WAIT_FOR_SSM_SERVICE_START] cpu usage = %0.2f", __FUNCTION__, __LINE__, cpu_usage);
+				if (cpu_usage < 80)
+				{
+					_cluster->ssm_service_info("START", _max_attendant_instance_count);
+					_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start;
+					LOGGER::make_info_log(SAA, "%s, %d, [SSM_SERVICE_START]", __FUNCTION__, __LINE__);
+				}
+			}
 			//if (elapsed_millisec % (onesec * 3) == 0)			
 			//	check_alive_attendant();
 
@@ -735,6 +747,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 	_sessions.clear();
 			
 	_cluster->ssm_service_info("STOP", _max_attendant_instance_count);
+	_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop;
 	if (_context && _context->handler)
 		_context->handler->on_stop();
 	sirius::library::net::sicp::server::stop();
