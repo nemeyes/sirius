@@ -653,8 +653,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	memset(reference_buffer, 0x00, resized_buffer_size);
 #endif
 #else
+#if defined(WITH_AVX2)
+	int32_t		simd_align = 32;
+#else
+	int32_t		simd_align = 16;
+#endif
+
 	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;
-	uint8_t *	reference_buffer = static_cast<uint8_t*>(_aligned_malloc(reference_buffer_size, 16));
+	uint8_t *	reference_buffer = static_cast<uint8_t*>(_aligned_malloc(reference_buffer_size, simd_align));
 	memset(reference_buffer, 0x00, reference_buffer_size);
 #endif
 #endif
@@ -680,7 +686,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 	int32_t		process_data_capacity = (_context->width * _context->height) << 2;
 	int32_t		process_data_size = 0;
-	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_capacity, 16));
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_capacity, simd_align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -938,9 +944,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 								if (diff)
 #else
-								int32_t simd_align = 16;
 								bool	diff = false;
-								uint8_t simd_result[16] = { 0 };
+#if defined(WITH_AVX2)
+								__declspec(align(32)) uint8_t simd_result[32] = { 0 };
+#else
+								__declspec(align(16)) uint8_t simd_result[16] = { 0 };
+#endif
 								for (int32_t bh = 0; bh < _context->block_height; bh++)
 								{
 									for (int32_t bw = 0; bw < _context->block_width; bw = bw + (simd_align >> 2))
@@ -948,7 +957,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										int32_t ci = (h + bh) * (_context->width << 2) + (w << 2) + (bw << 2);
 										uint8_t * p = process_data + ci;
 										uint8_t * r = reference_buffer + ci;
-
 #if 0
 										int32_t bi0 = ci + 0;
 										int32_t gi0 = ci + 1;
@@ -1002,27 +1010,12 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											break;
 										}
 #else
-										/*
-										__asm
-										{
-											pushad
-
-											mov			eax, p
-											mov			ebx, r
-											//mov			ecx, simd_result
-											mov			esi, 0
-											movdqu		ymm0, [eax + esi]
-											movdqu		ymm1, [ebx + esi]
-											psubusb		ymm0, ymm1
-											//pcmpeqb		xmm0, xmm1
-											//pmovmskb	ecx, xmm0
-											//mov			diff, ecx
-											movdqu		simd_result, ymm0
-
-											popad
-										}
-										*/
-										
+#if defined(WITH_AVX2)
+										const __m256i current	= _mm256_load_si256((__m256i*)p);
+										const __m256i reference = _mm256_load_si256((__m256i*)r);
+										const __m256i cmpeq		= _mm256_cmpeq_epi8(current, reference);
+										_mm256_store_si256((__m256i*)simd_result, cmpeq);
+#else
 										__asm
 										{
 											pushad
@@ -1032,9 +1025,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											movdqa		xmm0, [eax + esi]
 											movdqa		xmm1, [ebx + esi]
 											pcmpeqb		xmm0, xmm1
-											movdqu		simd_result, xmm0
+											movdqa		simd_result, xmm0
 											popad
 										}
+#endif
 										for (int32_t index = 0; index < simd_align; index++)
 										{
 											if (!simd_result[index])
