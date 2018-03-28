@@ -776,6 +776,6 @@ void sirius::app::server::arbitrator::proxy::core::system_monitor_process(void)
 				_context->handler->on_system_monitor_info(cpu_usage, memory_usage);
 			}
 		}
-		::Sleep(10);
+		::Sleep(1000);
 	}
 }
