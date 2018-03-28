@@ -39,6 +39,13 @@ namespace sirius
 						static const int32_t stopping = 4;
 					} attendant_state_t;
 
+					typedef struct _arbitrator_state_t
+					{
+						static const int32_t stop = 0;
+						static const int32_t starting = 1;
+						static const int32_t start = 2;
+					} arbitrator_state_t;
+
 					core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, bool use_tls);
 					virtual ~core(void);
 
@@ -90,6 +97,7 @@ namespace sirius
 					sirius::library::net::backend::cluster * _cluster;
 					std::map<int32_t, sirius::app::server::arbitrator::session *> _sessions;
 					int32_t _last_alloc_session_id;
+					int32_t _state;
 					
 					HANDLE _thread;
 					bool _run;
