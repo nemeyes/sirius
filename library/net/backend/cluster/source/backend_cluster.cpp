@@ -93,7 +93,7 @@ void sirius::library::net::backend::cluster::core::ssm_service_info(char* status
 			_snprintf(ssm_data, BUF_SIZE, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=%s",
 				SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip, status);
 		}
-		sirius::library::net::curl::client curl_ssm(5000);
+		sirius::library::net::curl::client curl_ssm(30000);
 		char url[100] = { 0, };
 		curl_ssm.set_get_data(ssm_data, 0);
 		bool res = curl_ssm.send();
