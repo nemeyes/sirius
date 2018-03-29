@@ -36,6 +36,7 @@ namespace sirius
 					void	set_cluster_init(sirius::library::net::backend::cluster *client);
 					void set_sending_timeout(uint32_t timeout);
 					void ssp_status_info(char * ssp_data);
+					void alive_start();
 					char _gpu_name[MAX_PATH];
 					char _cluster_buf[CLUSTER_BUF_SIZE];
 					char _ssp_url[MAX_PATH];

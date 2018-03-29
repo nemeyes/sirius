@@ -4,7 +4,9 @@
 #include "WinSock2.h"
 #include <stdint.h>
 #include <string>
-#define SENDING_TIME 100
+#define SSP_SENDING_TIME 100
+#define SSM_SERV_INFO_SENDING_TIME 30000
+#define SSM_ALIVE_SENDING_TIME 3000
 #if defined(EXPORTS_BACKEND_CLUSTER_LIB)
 #define EXP_BACKEND_CLUSTER_CLASS __declspec(dllexport)
 #else
@@ -36,6 +38,7 @@ namespace sirius
 					void set_sending_timeout(uint32_t timeout);
 					void ssp_status_info(char * ssp_data);
 					void get_local_time(char * reg_time_date, char * reg_time_time);
+					void alive_start();
 				private:
 					sirius::library::net::backend::cluster::core * _core;
 				};

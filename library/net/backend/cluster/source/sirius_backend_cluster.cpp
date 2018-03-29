@@ -60,3 +60,8 @@ void sirius::library::net::backend::cluster::get_local_time(char * reg_time_date
 {
 	_core->get_local_time(reg_time_date, reg_time_time);
 }
+
+void sirius::library::net::backend::cluster::alive_start()
+{
+	_core->alive_start();
+}
