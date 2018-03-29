@@ -44,6 +44,7 @@ namespace sirius
 						return TRUE;
 					}
 					int32_t start(std::string version);
+					int32_t alive_start();
 					void stop();
 					void backend_deinit();
 					int32_t client_connect(char* client_id, int32_t use_count, int32_t attendant_num);
