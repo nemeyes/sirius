@@ -156,7 +156,8 @@ void sirius::library::net::backend::cluster::core::ssp_status_info(char * ssp_da
 
 void sirius::library::net::backend::cluster::core::alive_start()
 {
-	SSP_ADT.alive_start();
+	if (SSP_ADT.is_cluster_use())
+		SSP_ADT.alive_start();
 }
 
 DWORD sirius::library::net::backend::cluster::core::get_local_time(char * reg_time_date, char * reg_time_time)
