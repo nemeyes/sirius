@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "sirius_version.h"
 #include "sirius_arbitrator_proxy.h"
 
 using namespace System;
@@ -42,7 +43,8 @@ namespace sirius
 						int stop();
 						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invlidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app);
 						int get_available_attendant_count();
-
+						char* get_version();
+						
 						void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invlidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory , const char * app_session_app);
 						void on_system_monitor_info(double cpu_usage, double memory_usage);
 						void on_attendant_create(double percent);
@@ -82,6 +84,7 @@ namespace sirius
 						int stop();
 						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app);
 						int get_available_attendant_count();
+						char* get_version();
 
 						void set_initialize_callback(delegate_initialize_callback^  cbf);
 						void set_system_monitor_info_callback(delegate_system_monitor_info_callback^ cbf);

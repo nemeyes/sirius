@@ -53,6 +53,9 @@ namespace sirius.app.server.arbitrator
             controller = new sirius.app.server.arbitrator.wrapper.handler();
             unsafe
             {
+                string version = new string(controller.get_version());
+                front.TitleBar.Title = "SIRIUS"+"_v" + version;
+
                 on_initalize_callback = new delegate_initialize_callback(on_initalize);
                 controller.set_initialize_callback(on_initalize_callback);
 

@@ -1,6 +1,6 @@
 //GIT-VS-VERSION-GEN.bat generated resource header.
-#define GEN_VER_VERSION_STRING   "0.1.16.0\0" 
-#define GEN_VER_DIGITAL_VERSION  0,1,16,0 
+#define GEN_VER_VERSION_STRING   "0.1.17.0\0" 
+#define GEN_VER_DIGITAL_VERSION  0,1,17,0 
 #define GEN_VER_VERSION_HEX      0x0001000000000000 
 #define GEN_VER_COMMENT_STRING   "Release Candidate 0\0" 
 #define GEN_VER_PRIVATE_FLAG     0 
