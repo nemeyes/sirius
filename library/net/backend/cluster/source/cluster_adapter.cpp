@@ -66,22 +66,6 @@ int32_t sirius::library::net::backend::cluster_adapter::start(std::string versio
 			if (_ssp_bufpos++ == QUEUE_MAX_SIZE - 1)
 				_ssp_bufpos = 0;
 		}*/
-		if (_stat_timer == NULL)
-		{
-			TIMECAPS _timecaps;
-			if (timeGetDevCaps(&_timecaps, sizeof(TIMECAPS)) != TIMERR_NOERROR)
-				return -1;
-
-			uint32_t _timer_res = min(max(_timecaps.wPeriodMin, TARGET_RESOLUTION), _timecaps.wPeriodMax);
-
-			if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
-				return -1;
-
-			std::string::size_type sz;
-			_keepalive_delay_time = std::stoi(get_alive_interval(), &sz) * 1000;
-			_keepalive_timeset_event = timeSetEvent(_keepalive_delay_time, _timer_res, &timer_keepalive, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
-			_stat_timer = true;
-		}
 	}
 	return 0;
 }
@@ -143,6 +127,26 @@ void sirius::library::net::backend::cluster_adapter::backend_deinit()
 		_client->stop();
 		delete _client;
 		_client = nullptr;
+	}
+}
+
+int32_t sirius::library::net::backend::cluster_adapter::alive_start()
+{
+	if (_stat_timer == NULL)
+	{
+		TIMECAPS _timecaps;
+		if (timeGetDevCaps(&_timecaps, sizeof(TIMECAPS)) != TIMERR_NOERROR)
+			return -1;
+
+		uint32_t _timer_res = min(max(_timecaps.wPeriodMin, TARGET_RESOLUTION), _timecaps.wPeriodMax);
+
+		if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
+			return -1;
+
+		std::string::size_type sz;
+		_keepalive_delay_time = std::stoi(get_alive_interval(), &sz) * 1000;
+		_keepalive_timeset_event = timeSetEvent(_keepalive_delay_time, _timer_res, &timer_keepalive, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+		_stat_timer = true;
 	}
 }
 
@@ -338,7 +342,7 @@ void CALLBACK timer_keepalive(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user
 	char ssm_data[MAX_PATH] = { 0, };
 	_snprintf(ssm_data, MAX_PATH, "http://%s:%s/SSMS/IFSSM_SERV_INFO.do?sirius_ip=%s&sirius_status=ALIVE",
 		SSP_ADT.get_ssm_ip().c_str(), SSP_ADT.get_ssm_port().c_str(), SSP_ADT._localip);
-	sirius::library::net::curl::client curl_ssm(30000);
+	sirius::library::net::curl::client curl_ssm(SSM_ALIVE_SENDING_TIME);
 	char url[100] = { 0, };
 	curl_ssm.set_get_data(ssm_data, 0);
 	bool res = curl_ssm.send();
