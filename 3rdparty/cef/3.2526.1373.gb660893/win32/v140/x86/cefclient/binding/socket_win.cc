@@ -254,7 +254,7 @@ namespace client {
 				Sleep(3);
 				
 				browser->ReloadIgnoreCache();
-				rootWin->reload_JavaScript_stat = true;
+				rootWin->JavaScript_stat = true;
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 			}
 

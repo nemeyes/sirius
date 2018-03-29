@@ -54,7 +54,7 @@ namespace client {
 		ClientWindowHandle GetWindowHandle() const OVERRIDE;
 		const CefString& get_java_script_injection() const { return javascript_injection_; }
 		std::string start_url;
-		bool reload_JavaScript_stat;
+		bool JavaScript_stat;
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);
 		void CreateRootWindow(const CefBrowserSettings& settings);
