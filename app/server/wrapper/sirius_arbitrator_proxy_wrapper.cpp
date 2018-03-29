@@ -96,6 +96,11 @@ void sirius::app::server::arbitrator::wrapper::core::on_release()
 	_front_on_release();
 }
 
+char* sirius::app::server::arbitrator::wrapper::core::get_version()
+{
+	return GEN_VER_VERSION_STRING;
+}
+
 sirius::app::server::arbitrator::wrapper::handler::handler()
 {
 	_core = new sirius::app::server::arbitrator::wrapper::core;
@@ -138,6 +143,11 @@ int sirius::app::server::arbitrator::wrapper::handler::update(const char * uuid,
 int sirius::app::server::arbitrator::wrapper::handler::get_available_attendant_count()
 {
 	return _core->get_available_attendant_count();
+}
+
+char* sirius::app::server::arbitrator::wrapper::handler::get_version()
+{
+	return _core->get_version();
 }
 
 void sirius::app::server::arbitrator::wrapper::handler::set_initialize_callback(delegate_initialize_callback^ cbf)
