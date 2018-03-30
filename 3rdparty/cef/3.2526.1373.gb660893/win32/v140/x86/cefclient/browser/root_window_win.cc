@@ -1109,6 +1109,11 @@ void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
 		frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
 	}
 }
+
+void RootWindowWin::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
+{
+
+}
 #endif
 
 void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) 

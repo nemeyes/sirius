@@ -22,8 +22,10 @@ namespace client {
 	// The methods of this class must be called on the main thread unless otherwise
 	// indicated.
 	class RootWindowWin : public RootWindow,
+
 		public BrowserWindow::Delegate {
 	public:
+		typedef cef_errorcode_t ErrorCode;
 		// Constructor may be called on any thread.
 		RootWindowWin();
 		~RootWindowWin();
@@ -95,7 +97,7 @@ namespace client {
 		void OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
 		void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame);
-
+		void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl);
 #endif
 
 		// BrowserWindow::Delegate methods.
