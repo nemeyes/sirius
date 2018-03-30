@@ -482,7 +482,7 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
                                 const CefString& errorText,
                                 const CefString& failedUrl) {
   CEF_REQUIRE_UI_THREAD();
-
+  /*
   // Don't display an error for downloaded files.
   if (errorCode == ERR_ABORTED)
     return;
@@ -497,6 +497,9 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 
   // Load the error page.
   LoadErrorPage(frame, failedUrl, errorCode, errorText);
+  */
+  if (delegate_)
+	  delegate_->OnLoadError(browser, frame, errorCode, errorText, failedUrl);
 }
 
 bool ClientHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,

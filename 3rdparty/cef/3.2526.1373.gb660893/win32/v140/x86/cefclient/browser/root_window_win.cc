@@ -1115,15 +1115,29 @@ void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame>
 	if (cnt == 0)
 	{
 		browser->GetMainFrame()->LoadURL(start_url);
-		::Sleep(10);
+		//::Sleep(1000);
 		browser->ReloadIgnoreCache();
 		cnt++;
 	}
+	else
+	{
+		if (httpStatusCode >= 400 && httpStatusCode <= 599)
+		{
+			browser->GetMainFrame()->LoadURL(start_url);
+			//::Sleep(1000);
+			browser->ReloadIgnoreCache();
+		}
+	}
 }
 
-void RootWindowWin::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
+void RootWindowWin::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString & failedUrl)
 {
-
+	if (errorCode != ERR_NONE)
+	{
+		//browser->GetMainFrame()->LoadURL(failedUrl);
+		////::Sleep(1000);
+		//browser->ReloadIgnoreCache();
+	}
 }
 #endif
 
@@ -1141,8 +1155,8 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser)
   }
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
-  //browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "about:blank", 0);
-  browser->ReloadIgnoreCache();
+  browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "about:blank", 0);
+  //browser->ReloadIgnoreCache();
 #endif
 }
 
