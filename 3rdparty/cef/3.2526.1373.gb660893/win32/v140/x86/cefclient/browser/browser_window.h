@@ -12,7 +12,7 @@
 #include "cefclient/browser/client_types.h"
 
 namespace client {
-
+	typedef cef_errorcode_t ErrorCode;
 // Represents a native child window hosting a single browser instance. The
 // methods of this class must be called on the main thread unless otherwise
 // indicated.
@@ -22,6 +22,7 @@ class BrowserWindow : public ClientHandler::Delegate {
   // methods of this class will be called on the main thread.
   class Delegate {
    public:
+	  
     // Called when the browser has been created.
     virtual void OnBrowserCreated(CefRefPtr<CefBrowser> browser) = 0;
 
@@ -29,6 +30,7 @@ class BrowserWindow : public ClientHandler::Delegate {
     virtual void OnBrowserWindowDestroyed() = 0;
 #ifdef WITH_ATTENDANT_PROXY
 	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) = 0;
+	virtual void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl) = 0;
 #endif
     // Set the window URL address.
     virtual void OnSetAddress(const std::string& url) = 0;
@@ -115,6 +117,7 @@ class BrowserWindow : public ClientHandler::Delegate {
   void OnBrowserClosed(CefRefPtr<CefBrowser> browser) OVERRIDE;
  #if defined(WITH_ATTENDANT_PROXY)
   void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) OVERRIDE;
+  void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl) OVERRIDE;
 #endif
   void OnSetAddress(const std::string& url) OVERRIDE;
   void OnSetTitle(const std::string& title) OVERRIDE;
