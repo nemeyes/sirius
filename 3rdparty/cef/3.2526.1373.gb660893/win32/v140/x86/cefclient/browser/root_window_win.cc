@@ -487,8 +487,7 @@ void RootWindowWin::read_injection_js()
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	javascript_injection_ = buffer.str();
-	//OutputDebugStringA(injection_path.c_str());
-	//OutputDebugStringA(javascript_injection_.ToString().c_str());
+
 	OutputDebugStringA("read_injection_js OK\n");
 
 }
