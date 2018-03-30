@@ -36,7 +36,6 @@ namespace sirius
 							//compression level
 							static const int32_t Z_BEST_COMPRESSION = 9;
 							static const int32_t Z_BEST_SPEED = 1;
-							static const int32_t Z_IPP_COMPRESSION = -2;
 
 							//compression strategy
 							static const int32_t Z_DEFAULT_STRATEGY = 0;

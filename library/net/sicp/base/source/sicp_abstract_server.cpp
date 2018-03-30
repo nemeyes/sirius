@@ -361,6 +361,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 
 	if (force_clean)
 	{
+		sirius::library::log::log4cplus::logger::make_debug_log(SAA, "closing session is force to be removed from memory\n");
 		sirius::autolock lock(&_closing_slock);
 		_closing_sessions.clear();
 	}
@@ -383,16 +384,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 		{
 			std::shared_ptr<sirius::library::net::sicp::session> session = *iter;
 			uint64_t interval = now - session->timestamp();
-			if (interval > MAXIUM_CLOSING_SESSION_WAITING_INTERVAL || force_clean)
+			if (interval > MAXIUM_CLOSING_SESSION_WAITING_INTERVAL)
 			{
-				if (!force_clean)
-				{
-					sirius::library::log::log4cplus::logger::make_debug_log(SAA, "closing session is removed from memory after waiting interval\n");
-				}
-				else
-				{
-					sirius::library::log::log4cplus::logger::make_debug_log(SAA, "closing session is force to be removed from memory\n");
-				}
+				sirius::library::log::log4cplus::logger::make_debug_log(SAA, "closing session is removed from memory after waiting interval\n");
 			}
 			else
 			{
@@ -414,7 +408,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 #endif
 	}
 
-	return _activated_sessions.size();
+	return _closing_sessions.size();
 }
 
 bool sirius::library::net::sicp::abstract_server::activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)

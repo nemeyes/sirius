@@ -157,6 +157,9 @@ namespace sirius
 								int32_t				_prev_width;
 								int32_t				_prev_height;
 								bool				_prev_force_fullmode;
+
+
+								LARGE_INTEGER		_frequency;
 							};
 						};
 					};

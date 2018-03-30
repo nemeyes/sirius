@@ -31,6 +31,8 @@ sirius::library::video::transform::codec::partial::png::compressor::core::core(s
 {
 	::InitializeCriticalSection(&_cs);
 	_real_compressor = new sirius::library::video::transform::codec::libpng::compressor(front);
+
+	::QueryPerformanceFrequency(&_frequency);
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::core::~core(void)
@@ -1148,7 +1150,21 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										bitstream.width = input.width;
 										bitstream.height = input.height;
 
+#if defined(DEBUG)
+
+										LARGE_INTEGER cmprs_begin;
+										LARGE_INTEGER cmprs_end;
+										::QueryPerformanceCounter(&cmprs_begin);
+#endif
 										status = _real_compressor->compress(&input, &bitstream);
+#if defined(DEBUG)
+										::QueryPerformanceCounter(&cmprs_end);
+										LONGLONG time_diff = cmprs_end.QuadPart - cmprs_begin.QuadPart;
+										double cmprs_duration = (double)time_diff * 1000.0 / (double)_frequency.QuadPart;
+										char debug[100] = { 0 };
+										_snprintf_s(debug, sizeof(debug), "png compression duration is %f\n", cmprs_duration);
+										::OutputDebugStringA(debug);
+#endif
 										if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
 										{
 											index = (h / _context->block_height) * (_context->width / _context->block_width) + w / _context->block_width;
