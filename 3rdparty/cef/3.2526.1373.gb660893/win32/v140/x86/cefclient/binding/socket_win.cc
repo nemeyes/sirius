@@ -245,8 +245,7 @@ namespace client {
 			}
 			else
 			{
-				RootWindowWin* rootWin =
-					GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
+				RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 				DCHECK(rootWin);
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);

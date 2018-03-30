@@ -66,6 +66,12 @@ void BrowserWindow::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
 	delegate_->OnLoadStart(browser, frame);
 }
 
+void BrowserWindow::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode)
+{
+	REQUIRE_MAIN_THREAD();
+	delegate_->OnLoadEnd(browser, frame, httpStatusCode);
+}
+
 void BrowserWindow::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
 {
 	REQUIRE_MAIN_THREAD();
