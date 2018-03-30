@@ -30,6 +30,7 @@ class BrowserWindow : public ClientHandler::Delegate {
     virtual void OnBrowserWindowDestroyed() = 0;
 #ifdef WITH_ATTENDANT_PROXY
 	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) = 0;
+	virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode) = 0;
 	virtual void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl) = 0;
 #endif
     // Set the window URL address.
@@ -117,6 +118,7 @@ class BrowserWindow : public ClientHandler::Delegate {
   void OnBrowserClosed(CefRefPtr<CefBrowser> browser) OVERRIDE;
  #if defined(WITH_ATTENDANT_PROXY)
   void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) OVERRIDE;
+  void OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode) OVERRIDE;
   void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl) OVERRIDE;
 #endif
   void OnSetAddress(const std::string& url) OVERRIDE;

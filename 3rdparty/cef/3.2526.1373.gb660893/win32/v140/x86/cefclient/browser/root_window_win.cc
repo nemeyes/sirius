@@ -487,8 +487,7 @@ void RootWindowWin::read_injection_js()
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	javascript_injection_ = buffer.str();
-	//OutputDebugStringA(injection_path.c_str());
-	//OutputDebugStringA(javascript_injection_.ToString().c_str());
+
 	OutputDebugStringA("read_injection_js OK\n");
 
 }
@@ -1099,15 +1098,26 @@ void RootWindowWin::OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-static int32_t cnt_load = 0;
+
 void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
 {
 	REQUIRE_MAIN_THREAD();
-	OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
-
+	//OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
 	if (!javascript_injection_.empty() && frame->IsMain())
 	{
 		frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
+	}
+}
+
+static int32_t cnt = 0;
+void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode)
+{
+	if (cnt == 0)
+	{
+		browser->GetMainFrame()->LoadURL(start_url);
+		::Sleep(10);
+		browser->ReloadIgnoreCache();
+		cnt++;
 	}
 }
 
@@ -1132,6 +1142,7 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser)
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
   //browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "about:blank", 0);
+  browser->ReloadIgnoreCache();
 #endif
 }
 
@@ -1181,6 +1192,12 @@ void RootWindowWin::OnSetLoadingState(bool isLoading,
                                       bool canGoBack,
                                       bool canGoForward) {
   REQUIRE_MAIN_THREAD();
+
+  //if (!javascript_injection_.empty() && isLoading)
+  //{
+	 // GetBrowser()->GetMainFrame()->ExecuteJavaScript(javascript_injection_, GetBrowser()->GetMainFrame()->GetURL(), 0);
+	 // //::Sleep(50);
+  //}
 
   if (with_controls_) {
     EnableWindow(back_hwnd_, canGoBack);

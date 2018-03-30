@@ -888,8 +888,8 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 </INTERFACE>");
 binding::socketbase::calback_attendant_to_app((uint8_t *)data, strlen(data));*/
 #endif
-//	if (delegate_)
-//		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
+	if (delegate_)
+		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
 	return;
 }
 
