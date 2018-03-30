@@ -865,7 +865,7 @@ void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 //	else
 //		OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //#endif
-}
+	}
 
 void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame,
