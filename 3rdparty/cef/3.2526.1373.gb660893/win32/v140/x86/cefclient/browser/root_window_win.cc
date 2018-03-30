@@ -1102,13 +1102,13 @@ void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFram
 {
 	OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
 
-	if (JavaScript_stat)
-	{
+	//if (JavaScript_stat)
+	//{
 		if (!javascript_injection_.empty())
 		{
 			frame->ExecuteJavaScript(javascript_injection_, "", 0);
 		}
-	}
+	//}
 	else
 		JavaScript_stat = true;
 }
@@ -1127,7 +1127,7 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
   }
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
-  browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "", 0);
+  //browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "", 0);
 #endif
 }
 
