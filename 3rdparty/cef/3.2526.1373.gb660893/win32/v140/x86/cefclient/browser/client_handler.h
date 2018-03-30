@@ -46,9 +46,10 @@ class ClientHandler : public CefClient,
 
     // Called when the browser has been closed.
     virtual void OnBrowserClosed(CefRefPtr<CefBrowser> browser) = 0;
+
 #ifdef WITH_ATTENDANT_PROXY
-	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser,
-		CefRefPtr<CefFrame> frame) = 0;
+	virtual void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) = 0;
+	//virtual void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame) = 0;
 #endif
     // Set the window URL address.
     virtual void OnSetAddress(const std::string& url) = 0;
@@ -189,6 +190,12 @@ class ClientHandler : public CefClient,
   void OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	  CefRefPtr<CefFrame> frame,
 	  int httpStatusCode) OVERRIDE;
+
+  void OnLoadError(CefRefPtr<CefBrowser> browser,
+	  CefRefPtr<CefFrame> frame,
+	  ErrorCode errorCode,
+	  const CefString& errorText,
+	  const CefString& failedUrl) OVERRIDE;
 
 #endif
 

@@ -4,6 +4,7 @@
 #include <sirius_stringhelper.h>
 
 #include <emmintrin.h>
+#include <omp.h>
 
 #ifdef WITH_SAVE_BMP
 #include <screengrab.h>
@@ -120,6 +121,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 			return sirius::library::video::transform::codec::compressor::err_code_t::out_of_memory_error;
 		}
 
+		#pragma omp parallel for
 		for (size_t row = 0; row < qntpng.height; row++)
 			qntpng.row_pointers[row] = qntpng.indexed_data + row * qntpng.width;
 
@@ -296,7 +298,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 	png_set_compression_strategy(png_ptr, Z_DEFAULT_STRATEGY);
 	
 	// Palette images generally don't gain anything from filtering
-	//png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
+	png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_VALUE_NONE);
 
 	png_set_gamma(info_ptr, png_ptr, out->gamma, out->output_color);
 
@@ -333,7 +335,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 		chunk_num++;
 	}
 
-	png_set_IHDR(png_ptr, info_ptr, out->width, out->height, sample_depth, PNG_COLOR_TYPE_PALETTE, 0, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
+	png_set_IHDR(png_ptr, info_ptr, out->width, out->height, sample_depth, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 	png_color palette[256];
 	png_byte trans[256];

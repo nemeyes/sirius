@@ -111,8 +111,8 @@ RootWindowWin::RootWindowWin()
       find_next_(false),
       find_match_case_last_(false),
       window_destroyed_(false),
-	  JavaScript_stat(false),
-      browser_destroyed_(false) {
+      browser_destroyed_(false) 
+{
   find_buff_[0] = 0;
 
   // Create a HRGN representing the draggable window area.
@@ -1098,23 +1098,22 @@ void RootWindowWin::OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 	} break;
 	}
 }
+
+static int32_t cnt_load = 0;
 void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
 {
+	REQUIRE_MAIN_THREAD();
 	OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
 
-	//if (JavaScript_stat)
-	//{
-		if (!javascript_injection_.empty())
-		{
-			frame->ExecuteJavaScript(javascript_injection_, "", 0);
-		}
-	//}
-	else
-		JavaScript_stat = true;
+	if (!javascript_injection_.empty() && frame->IsMain())
+	{
+		frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
+	}
 }
 #endif
 
-void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
+void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) 
+{
   REQUIRE_MAIN_THREAD();
 
   if (is_popup_) {
@@ -1127,7 +1126,7 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser) {
   }
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
-  //browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "", 0);
+  //browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "about:blank", 0);
 #endif
 }
 

@@ -893,6 +893,13 @@ binding::socketbase::calback_attendant_to_app((uint8_t *)data, strlen(data));*/
 	return;
 }
 
+void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
+{
+	CEF_REQUIRE_UI_THREAD();
+	//	if (delegate_)
+	//		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
+}
+
 #endif
 
 }  // namespace client

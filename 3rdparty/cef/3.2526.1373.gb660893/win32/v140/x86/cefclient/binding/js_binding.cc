@@ -2,6 +2,7 @@
 #include "js_Binding.h"
 #include "handler_base.h"
 #include "msg_handler.h"
+#include <fstream>
 
 namespace client {
 	namespace binding {
@@ -83,14 +84,19 @@ namespace client {
 		// Handle bindings in the render process.
 		class render_delegate : public ClientAppRenderer::Delegate {
 		public:
-			render_delegate() {
+			render_delegate() 
+			{
+
 			}
-			virtual void OnWebKitInitialized(CefRefPtr<ClientAppRenderer> app) {
+
+			virtual void OnWebKitInitialized(CefRefPtr<ClientAppRenderer> app) 
+			{
+#if defined(DEBUG)
 				DWORD threadid = GetCurrentThreadId();
 				char debug[MAX_PATH] = { 0 };
 				_snprintf(debug, MAX_PATH, "OnWebKitInitialized : threadid is %ld\n", threadid);
 				OutputDebugStringA(debug);
-
+#endif
 				CefString code =
 					"var __SIRIUS_APP__;"
 					"if (!__SIRIUS_APP__)"
@@ -109,7 +115,7 @@ namespace client {
 					"    return removeMessageCallback(name);"
 					"  };"
 					"})();";
-				CefRegisterExtension("v8/app", code, new CSBV8Handler());
+					CefRegisterExtension("v8/app", code, new CSBV8Handler());
 			}
 		private:
 			IMPLEMENT_REFCOUNTING(render_delegate);
