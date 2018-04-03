@@ -287,7 +287,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_connected_session(BOO
 
 int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOOL force_clean)
 {
-	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
+	//std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> activated_sessions;
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> removed_sessions;
 
@@ -301,11 +301,11 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 	}
 
 	uint64_t now = ::GetTickCount64();
-	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator activated_session_iter = activated_sessions.begin();
-	while (activated_session_iter != activated_sessions.end())
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = activated_sessions.begin();
+	while (iter != activated_sessions.end())
 	{
-		std::string uuid = activated_session_iter->first;
-		std::shared_ptr<sirius::library::net::sicp::session> session = activated_session_iter->second;
+		std::string uuid = iter->first;
+		std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
 		uint64_t interval = now - session->timestamp();
 		if (interval > KEEPALIVE_INTERVAL || force_clean)
 		{
@@ -340,28 +340,33 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				removed_sessions.insert(std::make_pair(session->uuid(), session));
 				sirius::library::log::log4cplus::logger::make_debug_log(SAA, "activated session is already closed and moved to closing list\n");
 			}
-			else
-			{
-				finalized_sessions.insert(std::make_pair(uuid, session));
-			}
+			//else
+			//{
+			//	finalized_sessions.insert(std::make_pair(uuid, session));
+			//}
 		}
-		++activated_session_iter;
+		++iter;
 	}
 
 	{
 		sirius::autolock lock(&_active_slock);
-		//std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator removed_session_iter = removed_sessions.begin();
-		//for (removed_session_iter = removed_sessions.begin(); removed_session_iter != removed_sessions.end(); removed_session_iter++)
-		//{
-		//	
-		//}
+		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator removed_session_iter = removed_sessions.begin();
+		for (removed_session_iter = removed_sessions.begin(); removed_session_iter != removed_sessions.end(); removed_session_iter++)
+		{
+			iter = _activated_sessions.find(removed_session_iter->first);
+			if (iter != _activated_sessions.end() && (removed_session_iter->second.get()== iter->second.get()))
+				_activated_sessions.erase(iter);
+		}
 
-
+		/*
+		for (iter = finalized_sessions.begin(); iter != finalized_sessions.end(); iter++)
+			_activated_sessions.push_back(*iter);
 		if (finalized_sessions.size() > 0)
 		{
 
 			_activated_sessions = finalized_sessions;
 		}
+		*/
 	}
 
 	return _activated_sessions.size();
