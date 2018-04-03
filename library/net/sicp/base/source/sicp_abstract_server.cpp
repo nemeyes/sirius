@@ -289,13 +289,14 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 {
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> finalized_sessions;
 	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> activated_sessions;
+	std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>> removed_sessions;
 
 	{
 		sirius::autolock lock(&_active_slock);
 		if (_activated_sessions.size() > 0)
 		{
 			activated_sessions = _activated_sessions;
-			_activated_sessions.clear();
+			//_activated_sessions.clear();
 		}
 	}
 
@@ -326,6 +327,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
+				removed_sessions.insert(std::make_pair(session->uuid(), session));
 			}
 		}
 		else
@@ -335,6 +337,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 				sirius::autolock lock(&_closing_slock);
 				session->update_timestamp();
 				_closing_sessions.push_back(session);
+				removed_sessions.insert(std::make_pair(session->uuid(), session));
 				sirius::library::log::log4cplus::logger::make_debug_log(SAA, "activated session is already closed and moved to closing list\n");
 			}
 			else
@@ -347,8 +350,16 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 
 	{
 		sirius::autolock lock(&_active_slock);
+		//std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator removed_session_iter = removed_sessions.begin();
+		//for (removed_session_iter = removed_sessions.begin(); removed_session_iter != removed_sessions.end(); removed_session_iter++)
+		//{
+		//	
+		//}
+
+
 		if (finalized_sessions.size() > 0)
 		{
+
 			_activated_sessions = finalized_sessions;
 		}
 	}
