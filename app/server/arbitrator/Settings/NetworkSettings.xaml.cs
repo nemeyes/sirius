@@ -45,7 +45,8 @@ namespace sirius.app.server.arbitrator.Settings
             UseTLS.IsChecked = setting_value.enable_tls;
             UseKeepAlive.IsChecked = setting_value.enable_keepalive;
 
-            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started)
+            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started ||
+                sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.starting)
                 network_apply_button.IsEnabled = false;
             else if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.stopped)
                 network_apply_button.IsEnabled = true;
@@ -69,6 +70,8 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.enable_keepalive = false;
             
             setting_value.update();
+            sirius_arbitrator.controller.release();
+            sirius_arbitrator.controller.initailize();
         }
 
         private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)

@@ -21,6 +21,7 @@ sirius::app::server::arbitrator::wrapper::core::~core()
 {
 	if (_proxy)
 	{
+		_proxy->release();
 		delete _proxy;
 		_proxy = nullptr;
 	}
@@ -34,6 +35,19 @@ sirius::app::server::arbitrator::wrapper::core::~core()
 
 void sirius::app::server::arbitrator::wrapper::core::initailize()
 {
+	if (_proxy)
+	{
+		_proxy->release();
+		delete _proxy;
+		_proxy = nullptr;
+	}
+
+	if (_proxy_ctx)
+	{
+		delete _proxy_ctx;
+		_proxy_ctx = nullptr;
+	}
+
 	_proxy_ctx = new sirius::app::server::arbitrator::proxy::context_t();
 	_proxy_ctx->handler = this;
 	_proxy = new sirius::app::server::arbitrator::proxy();
@@ -43,27 +57,40 @@ void sirius::app::server::arbitrator::wrapper::core::initailize()
 
 void sirius::app::server::arbitrator::wrapper::core::release()
 {
-	_proxy->release();
+	if(_proxy)
+		_proxy->release();
 }
 
 int sirius::app::server::arbitrator::wrapper::core::start()
 {
-	return _proxy->start();
+	if(_proxy)
+		return _proxy->start();
+	else
+		return -1;
 }
 
 int sirius::app::server::arbitrator::wrapper::core::stop()
 {
-	return _proxy->stop();
+	if (_proxy)
+		return _proxy->stop();
+	else
+		return -1;
 }
 
 int sirius::app::server::arbitrator::wrapper::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
-	return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
+	if(_proxy)
+		return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app);
+	else
+		return -1;
 }
 
 int sirius::app::server::arbitrator::wrapper::core::get_available_attendant_count()
 {
-	return _proxy->get_available_attendant_count();
+	if(_proxy)
+		return _proxy->get_available_attendant_count();
+	else
+		return -1;
 }
 
 void sirius::app::server::arbitrator::wrapper::core::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
