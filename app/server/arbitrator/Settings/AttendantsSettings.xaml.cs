@@ -70,9 +70,10 @@ namespace sirius.app.server.arbitrator.Settings
 
             setting_value.enable_auto_start = false;
 
-            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started)
+            if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started || 
+                sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.starting) 
                 attendants_apply_button.IsEnabled = false;
-            else if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.stopped)
+            else
                 attendants_apply_button.IsEnabled = true;
 
             //if (setting_value.enable_auto_start)
@@ -145,6 +146,8 @@ namespace sirius.app.server.arbitrator.Settings
             //    setting_value.enable_auto_start = false;
 
             setting_value.update();
+            sirius_arbitrator.controller.release();
+            sirius_arbitrator.controller.initailize();
         }
         private void TextAttendantInstanceCount_TextChanged(object sender, TextChangedEventArgs e)
         {

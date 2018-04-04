@@ -75,7 +75,6 @@ namespace sirius.app.server.arbitrator
                 controller.set_release_callback(on_release_callback);
             }
             controller.initailize();
-            status = status_t.initialized;
         }
         public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
@@ -113,6 +112,7 @@ namespace sirius.app.server.arbitrator
                     controller.start();
             }
 
+            status = status_t.initialized;
             //if (enable_auto_start)
             //    controller.start();
         }
