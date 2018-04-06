@@ -21,11 +21,20 @@
 #if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/global.h"
 #include "cefclient/binding/browser.h"
+#include "cefclient/binding/socket_win.h"
 #endif
+#include <shlwapi.h>
+#include <tchar.h>
+#include <process.h>
+#include <mmSystem.h>
+#include <wininet.h>
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "Wininet.lib")
+
 #define MAX_URL_LENGTH  255
 #define BUTTON_WIDTH    72
 #define URLBAR_HEIGHT   24
-
+#define TARGET_RESOLUTION				1
 
 #ifdef WITH_ATTENDANT_PROXY
 #define JS_INJECTION_PATH "\\js_injection\\injection.js"
@@ -38,7 +47,7 @@
 #define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 #endif
 #endif
-
+bool client::RootWindowWin::load_finish;
 namespace client {
 
 namespace {
@@ -111,10 +120,11 @@ RootWindowWin::RootWindowWin()
       find_next_(false),
       find_match_case_last_(false),
       window_destroyed_(false),
-      browser_destroyed_(false) 
+      browser_destroyed_(false),
+	  stat_timer(false)
 {
   find_buff_[0] = 0;
-
+  load_finish = false;
   // Create a HRGN representing the draggable window area.
   draggable_region_ = ::CreateRectRgn(0, 0, 0, 0);
 #ifdef WITH_ATTENDANT_PROXY
@@ -291,6 +301,26 @@ CefRefPtr<CefBrowser> RootWindowWin::GetBrowser() const {
 ClientWindowHandle RootWindowWin::GetWindowHandle() const {
   REQUIRE_MAIN_THREAD();
   return hwnd_;
+}
+
+int32_t RootWindowWin::first_reload()
+{
+	if (stat_timer == NULL)
+	{
+		OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!first_reload");
+		TIMECAPS _timecaps;
+		if (timeGetDevCaps(&_timecaps, sizeof(TIMECAPS)) != TIMERR_NOERROR)
+			return -1;
+
+		/*uint32_t _timer_res = min(max(_timecaps.wPeriodMin, TARGET_RESOLUTION), _timecaps.wPeriodMax);
+
+		if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
+			return -1;*/
+
+		timeset_event = timeSetEvent(1000, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+		stat_timer = true;
+	}
+	return int32_t();
 }
 
 void RootWindowWin::CreateBrowserWindow(const std::string& startup_url) {
@@ -487,7 +517,7 @@ void RootWindowWin::read_injection_js()
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	javascript_injection_ = buffer.str();
-
+	binding::global::get_instance().set_java_script_injection(javascript_injection_);
 	OutputDebugStringA("read_injection_js OK\n");
 
 }
@@ -1097,46 +1127,22 @@ void RootWindowWin::OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 	} break;
 	}
 }
-
-
-void RootWindowWin::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
-{
-	REQUIRE_MAIN_THREAD();
-	//OutputDebugStringA("============RootWindowWin::OnLoadStart========================\n");
-	if (!javascript_injection_.empty() && frame->IsMain())
-	{
-		frame->ExecuteJavaScript(javascript_injection_, frame->GetURL(), 0);
-	}
-}
-
 static int32_t cnt = 0;
 void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode)
 {
+	char debug[MAX_PATH] = { 0 };
+	_snprintf(debug, MAX_PATH, "httpStatusCode:%d\n", httpStatusCode);
+	OutputDebugStringA(debug);
 	if (cnt == 0)
 	{
-		browser->GetMainFrame()->LoadURL(start_url);
-		//::Sleep(1000);
-		browser->ReloadIgnoreCache();
+		first_reload();
 		cnt++;
 	}
 	else
 	{
-		if (httpStatusCode >= 400 && httpStatusCode <= 599)
-		{
-			browser->GetMainFrame()->LoadURL(start_url);
-			//::Sleep(1000);
-			browser->ReloadIgnoreCache();
-		}
-	}
-}
-
-void RootWindowWin::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString & failedUrl)
-{
-	if (errorCode != ERR_NONE)
-	{
-		//browser->GetMainFrame()->LoadURL(failedUrl);
-		////::Sleep(1000);
-		//browser->ReloadIgnoreCache();
+		load_finish = true;
+		_snprintf(debug, MAX_PATH, "RootWindowWin::OnLoadEnd->load_finish:%d\n", load_finish);
+		OutputDebugStringA(debug);
 	}
 }
 #endif
@@ -1156,7 +1162,6 @@ void RootWindowWin::OnBrowserCreated(CefRefPtr<CefBrowser> browser)
 #if defined(WITH_ATTENDANT_PROXY)
   read_injection_js();
   browser->GetMainFrame()->ExecuteJavaScript(javascript_injection_, "about:blank", 0);
-  //browser->ReloadIgnoreCache();
 #endif
 }
 
@@ -1339,3 +1344,9 @@ scoped_refptr<RootWindow> RootWindow::Create() {
 }
 
 }  // namespace client
+
+void CALLBACK timer_reload(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2)
+{
+	OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timer_reload");
+	client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
+}
