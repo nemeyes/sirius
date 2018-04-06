@@ -20,6 +20,7 @@ namespace client {
 
 		public:
 			void set_window_handle(HWND handle) { _handle = handle; }
+			void set_java_script_injection(CefString java_script_injection) { _java_script_injection = java_script_injection; }
 			HWND get_window_handle() const { return _handle; }
 			const CefString& get_java_script_injection() const { return _java_script_injection; }
 		private:

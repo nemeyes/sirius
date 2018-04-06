@@ -8,7 +8,7 @@
 #include "global.h"
 #include "socket_win.h"
 #include "cefclient/binding/attendant_interface.h"
-
+#include "mmsystem.h"
 namespace client {
 	namespace binding {
 
@@ -254,6 +254,13 @@ namespace client {
 				
 				browser->ReloadIgnoreCache();
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
+
+				if (rootWin->timeset_event)
+				{
+					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
+					timeKillEvent(rootWin->timeset_event);
+					rootWin->timeset_event = 0;
+				}
 			}
 
 			return true;
