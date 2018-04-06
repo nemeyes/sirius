@@ -60,22 +60,10 @@ void BrowserWindow::OnBrowserClosed(CefRefPtr<CefBrowser> browser) {
   delegate_->OnBrowserWindowDestroyed();
 }
 #ifdef WITH_ATTENDANT_PROXY
-void BrowserWindow::OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame)
-{
-	REQUIRE_MAIN_THREAD();
-	delegate_->OnLoadStart(browser, frame);
-}
-
 void BrowserWindow::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode)
 {
 	REQUIRE_MAIN_THREAD();
 	delegate_->OnLoadEnd(browser, frame, httpStatusCode);
-}
-
-void BrowserWindow::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
-{
-	REQUIRE_MAIN_THREAD();
-	delegate_->OnLoadError(browser, frame, errorCode, errorText, failedUrl);
 }
 #endif
 

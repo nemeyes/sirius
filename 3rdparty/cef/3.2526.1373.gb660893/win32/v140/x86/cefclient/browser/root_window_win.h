@@ -15,6 +15,7 @@
 #include "include/base/cef_scoped_ptr.h"
 #include "cefclient/browser/browser_window.h"
 #include "cefclient/browser/root_window.h"
+static void CALLBACK timer_reload(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2);
 
 namespace client {
 
@@ -55,8 +56,11 @@ namespace client {
 		CefRefPtr<CefBrowser> GetBrowser() const OVERRIDE;
 		ClientWindowHandle GetWindowHandle() const OVERRIDE;
 		const CefString& get_java_script_injection() const { return javascript_injection_; }
+		int32_t first_reload();
 		std::string start_url;
-
+		bool stat_timer;
+		uint32_t timeset_event;
+		static bool load_finish;
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);
 		void CreateRootWindow(const CefBrowserSettings& settings);
@@ -96,9 +100,7 @@ namespace client {
 		void OnKeyEvent(UINT message, WPARAM wParam, LPARAM lParam);
 		void OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
-		void OnLoadStart(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame);
 		void OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode);
-		void OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl);
 #endif
 
 		// BrowserWindow::Delegate methods.

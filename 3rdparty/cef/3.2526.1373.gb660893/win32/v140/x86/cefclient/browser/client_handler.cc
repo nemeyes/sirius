@@ -24,6 +24,7 @@
 #include "cefclient/binding/msg_handler.h"
 #include "cefclient/binding/socket_base_sirius.h"
 #include "cefclient/binding/global.h"
+#include "cefclient/binding/socket_win.h"
 #endif
 namespace client {
 
@@ -482,7 +483,10 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
                                 const CefString& errorText,
                                 const CefString& failedUrl) {
   CEF_REQUIRE_UI_THREAD();
-  /*
+
+  char debug[MAX_PATH] = { 0 };
+  _snprintf(debug, MAX_PATH, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!OnLoadError=%d, failedUrl=%s\n", errorCode, failedUrl.ToString().c_str());
+  OutputDebugStringA(debug);
   // Don't display an error for downloaded files.
   if (errorCode == ERR_ABORTED)
     return;
@@ -495,11 +499,13 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
       return;
   }
 
+  if (errorCode == ERR_CONNECTION_RESET)
+  {
+	  client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
+	  return;
+  }
   // Load the error page.
   LoadErrorPage(frame, failedUrl, errorCode, errorText);
-  */
-  if (delegate_)
-	  delegate_->OnLoadError(browser, frame, errorCode, errorText, failedUrl);
 }
 
 bool ClientHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
@@ -518,6 +524,7 @@ bool ClientHandler::OnOpenURLFromTab(
     const CefString& target_url,
     CefRequestHandler::WindowOpenDisposition target_disposition,
     bool user_gesture) {
+
   if (target_disposition == WOD_NEW_BACKGROUND_TAB ||
       target_disposition == WOD_NEW_FOREGROUND_TAB) {
     // Handle middle-click and ctrl + left-click by opening the URL in a new
@@ -678,6 +685,7 @@ void ClientHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
 
 int ClientHandler::GetBrowserCount() const {
   CEF_REQUIRE_UI_THREAD();
+
   return browser_count_;
 }
 
@@ -802,6 +810,8 @@ void ClientHandler::NotifyLoadingState(bool isLoading,
 
   if (delegate_)
     delegate_->OnSetLoadingState(isLoading, canGoBack, canGoForward);
+
+
 }
 
 void ClientHandler::NotifyDraggableRegions(
@@ -855,47 +865,66 @@ bool ClientHandler::ExecuteTestMenu(int command_id) {
 }
 
 #ifdef WITH_ATTENDANT_PROXY
+static int32_t cnt = 0;
 void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame) {
 	CEF_REQUIRE_UI_THREAD();
 	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
-	if (delegate_)
-			delegate_->OnLoadStart(browser, frame);
-//#if defined(WITH_EXTERNAL_INTERFACE)
-//	if (!binding::global::get_instance().get_java_script_injection().empty()) {
-//		frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
-//	}
-//	else
-//		OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//#endif
+
+#if defined(WITH_EXTERNAL_INTERFACE)
+	if (cnt > 0)
+	{
+		if (!binding::global::get_instance().get_java_script_injection().empty()) {
+			OutputDebugStringA("ExecuteJavaScript!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
+			/*char debug[MAX_PATH] = { 0 };
+			_snprintf(debug, MAX_PATH, "GetURL:%s\n", frame->GetURL().ToString().c_str());
+			OutputDebugStringA(debug);*/
+		}
+		else
+			OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	}
+#endif
 	}
 
 void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame,
 	int httpStatusCode) {
 	CEF_REQUIRE_UI_THREAD();
-
+	/*if (cnt == 0)
+	{
+		client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
+		cnt++;
+	}*/
+	//if (cnt == 0)
+	//{
+	//	browser->GetMainFrame()->LoadURL(startup_url());
+	//	::Sleep(100);
+	//	browser->ReloadIgnoreCache();
+	//	cnt++;
+	//}
+	//else
+	//{
+	//	if (httpStatusCode >= 400 && httpStatusCode <= 599)
+	//	{
+	//		browser->GetMainFrame()->LoadURL(startup_url());
+	//		//::Sleep(1000);
+	//		browser->ReloadIgnoreCache();
+	//	}
+	//}
 	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
-#if defined(WITH_EXTERNAL_INTERFACE)
-	/*char data[1024];
-	sprintf(data,
-		"<?xml version='1.0' ?>\
-<INTERFACE>\
-<COMMAND>request</COMMAND>\
-<GROUP>BYPASS</GROUP>\
-<GTYPE>LoadApp</GTYPE>\
-<DATA>\
- <launchInfo></launchInfo>\
-<backInfoZ</backInfo>\
-</DATA>\
-</INTERFACE>");
-binding::socketbase::calback_attendant_to_app((uint8_t *)data, strlen(data));*/
-#endif
 	if (delegate_)
 		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
+
+	if (cnt == 0)
+	{
+		cnt++;
+	}
 	return;
 }
 
 #endif
 
 }  // namespace client
+
+
