@@ -11,9 +11,9 @@ using System.Windows.Media;
 [assembly: AssemblyTitle("Sirius Arbitrator")]
 [assembly: AssemblyDescription("Sirius System Coordinating Component")]
 [assembly: AssemblyConfiguration("retail")]
-[assembly: AssemblyCompany("entxtech")]
+[assembly: AssemblyCompany("company")]
 [assembly: AssemblyProduct("Sirius")]
-[assembly: AssemblyCopyright("Copyright © entxtech 2017-")]
+[assembly: AssemblyCopyright("Copyright © company 2017-")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
