@@ -173,7 +173,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>del $(outputpath)$(assemblyname).ilk
+      <Command>del ..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)\$(ProjectName).*
 ..\..\..\script\copy_arbitrator_dlls.bat ..\..\..\ release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
