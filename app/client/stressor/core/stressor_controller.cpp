@@ -11,14 +11,14 @@
 #include <string>
 #include <fstream>
 
-stressor_controller::stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, bool tls)
+stressor_controller::stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, int32_t keepalive_timeout, bool tls)
 	: _front(front)
 	, _index(index)
 	, _hmodule(NULL)
 	, _framework(NULL)
 	, _recv_stream_count(0)
 {
-	_controller = new sirius::app::client::proxy(this, keepalive, tls, nullptr, nullptr);
+	_controller = new sirius::app::client::proxy(this, keepalive, keepalive_timeout, tls, nullptr, nullptr);
 }
 
 stressor_controller::~stressor_controller(void)

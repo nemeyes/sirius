@@ -20,13 +20,13 @@ namespace sirius
 					, public sirius::library::net::sicp::base
 				{
 				public:
-					static const int32_t KEEPALIVE_INTERVAL			= 5000;
+					static const int32_t MINIMUM_KEEPALIVE_INTERVAL	= 5000;
 					static const int32_t KEEPALIVE_INTERVAL_MARGIN	= 2000;
 
 
 				public:
-					abstract_client(int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
-					abstract_client(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
+					abstract_client(int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
+					abstract_client(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
 					virtual ~abstract_client(void);
 
 					int32_t			initialize(void);
@@ -69,6 +69,7 @@ namespace sirius
 
 				protected:
 					BOOL				_keepalive;
+					int32_t				_keepalive_timeout;
 					char				_uuid[64];
 					CRITICAL_SECTION	_slock;
 					std::map<int32_t, sirius::library::net::sicp::abstract_command*> _commands;

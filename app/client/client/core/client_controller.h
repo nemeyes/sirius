@@ -9,7 +9,7 @@ class client_controller
 	: public sirius::app::client::proxy::handler
 {
 public:
-	client_controller(CSiriusClientDlg * front, bool keepalive, bool tls);
+	client_controller(CSiriusClientDlg * front, bool keepalive, int32_t keepalive_timeout, bool tls);
 	virtual ~client_controller(void);
 
 	void change_debug_level(int32_t level);

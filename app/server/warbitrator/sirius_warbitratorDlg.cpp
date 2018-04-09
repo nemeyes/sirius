@@ -87,6 +87,7 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_INVALIDATE4CLIENT, _enable_invalidate4client);
 	DDX_Control(pDX, IDC_CHECK_INDEXED_MODE, _use_indexed_mode);
 	DDX_Control(pDX, IDC_CHECK_PARTIAL_SEND, _use_partial_send);
+	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -307,6 +308,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wvideo_block_width;
 	CString wvideo_block_height;
 	CString wvideo_quantization_colors;
+	CString wkeepalive_timeout;
 
 	char * uuid = nullptr;
 	char * url = nullptr;
@@ -320,6 +322,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t video_block_height = 72;
 	int32_t video_compression_level = 5;
 	int32_t video_quantization_colors = 128;
+	int32_t keepalive_timeout = 5000;
 
 	bool invalidate4client = false;
 	bool indexed_mode = false;
@@ -340,6 +343,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_video_buffer_count.GetWindowTextW(wvideo_buffer_count);
 	_video_block_width.GetWindowTextW(wvideo_block_width);
 	_video_block_height.GetWindowTextW(wvideo_block_height);
+
+	_keepalive_timeout.GetWindowTextW(wkeepalive_timeout);
 
 	video_compression_level = _video_compression_level.GetCurSel() + 1;
 	if (_video_quantization_colors.GetCurSel() == 0)
@@ -368,6 +373,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	video_buffer_count = _wtoi(wvideo_buffer_count);
 	video_block_width = _wtoi(wvideo_block_width);
 	video_block_height = _wtoi(wvideo_block_height);
+	keepalive_timeout = _wtoi(wkeepalive_timeout);
 
 	if (_enable_invalidate4client.GetCheck())
 		invalidate4client = true;
@@ -383,7 +389,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_present = true;
 	if (_enable_auto_start.GetCheck())
 		enable_auto_start = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, false, "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, partial_send, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, "");
 
 	if (uuid)
 		free(uuid);
@@ -394,7 +400,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -406,6 +412,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wvideo_buffer_count[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_width[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_height[MAX_PATH] = { 0 };
+	wchar_t wkeepalive_timeout[MAX_PATH] = { 0 };
 	wchar_t * wcpu = nullptr;
 	wchar_t * wmemory = nullptr;
 
@@ -419,6 +426,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_itow_s(video_buffer_count, wvideo_buffer_count, 10);
 	_itow_s(video_block_width, wvideo_block_width, 10);
 	_itow_s(video_block_height, wvideo_block_height, 10);
+	_itow_s(keepalive_timeout, wkeepalive_timeout, 10);
 
 	_label_arbitrator_uuid.SetWindowText(wuuid);
 	_label_arbitrator_portnumber.SetWindowTextW(wcontroler_portnumber);
@@ -459,6 +467,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 		_video_quantization_colors.SetCurSel(5);
 	else if (video_quantization_colors == 256)
 		_video_quantization_colors.SetCurSel(6);
+
+	_keepalive_timeout.SetWindowTextW(wkeepalive_timeout);
 
 	_enable_invalidate4client.SetCheck(invalidate4client ? 1 : 0);
 	_use_indexed_mode.SetCheck(indexed_mode ? 1 : 0);

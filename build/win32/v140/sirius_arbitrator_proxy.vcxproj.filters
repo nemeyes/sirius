@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\..\app\base\command\commands_payload.h">
       <Filter>command</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\app\server\proxy\db\attendant_dao.h">
-      <Filter>db</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\app\server\proxy\db\configuration_dao.h">
       <Filter>db</Filter>
     </ClInclude>
@@ -56,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\app\server\proxy\db\sqlite3ext.h">
       <Filter>db</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\app\server\proxy\entity\attendant_entity.h">
-      <Filter>entity</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\app\server\proxy\entity\configuration_entity.h">
       <Filter>entity</Filter>
@@ -82,9 +76,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp">
       <Filter>base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\app\server\proxy\db\attendant_dao.cpp">
-      <Filter>db</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\app\server\proxy\db\configuration_dao.cpp">
       <Filter>db</Filter>

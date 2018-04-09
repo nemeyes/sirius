@@ -185,12 +185,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\app\base\command\commands_arbitrator.h" />
     <ClInclude Include="..\..\..\app\base\command\commands_payload.h" />
-    <ClInclude Include="..\..\..\app\server\proxy\db\attendant_dao.h" />
     <ClInclude Include="..\..\..\app\server\proxy\db\configuration_dao.h" />
     <ClInclude Include="..\..\..\app\server\proxy\db\data_access_object.h" />
     <ClInclude Include="..\..\..\app\server\proxy\db\sqlite3.h" />
     <ClInclude Include="..\..\..\app\server\proxy\db\sqlite3ext.h" />
-    <ClInclude Include="..\..\..\app\server\proxy\entity\attendant_entity.h" />
     <ClInclude Include="..\..\..\app\server\proxy\entity\configuration_entity.h" />
     <ClInclude Include="..\..\..\app\server\proxy\include\arbitrator_proxy.h" />
     <ClInclude Include="..\..\..\app\server\proxy\include\process_controller.h" />
@@ -200,7 +198,6 @@
     <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\app\server\proxy\db\attendant_dao.cpp" />
     <ClCompile Include="..\..\..\app\server\proxy\db\configuration_dao.cpp" />
     <ClCompile Include="..\..\..\app\server\proxy\db\data_access_object.cpp" />
     <ClCompile Include="..\..\..\app\server\proxy\db\shell.c" />

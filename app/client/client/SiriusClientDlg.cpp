@@ -95,6 +95,7 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
 	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL1, _debug_level1);
 	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL2, _debug_level2);
+	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
@@ -488,11 +489,13 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 
 	CString server_address;
 	CString server_port_number;
+	CString keepalive_timeout;
 	_ctrl_address.GetWindowTextW(server_address);
 	_ctrl_port_number.GetWindowTextW(server_port_number);
+	_keepalive_timeout.GetWindowTextW(keepalive_timeout);
 
-	_client = new client_controller(this, keepalive?true:false, tls?true:false);
-	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection);
+	_client = new client_controller(this, keepalive?true:false, _ttoi(keepalive_timeout), tls?true:false);
+	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection?true:false);
 
 	EnableConnectButton(FALSE);
 

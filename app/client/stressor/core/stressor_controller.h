@@ -10,7 +10,7 @@ class stressor_controller
 	: public sirius::app::client::proxy::handler
 {
 public:
-	stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, bool tls);
+	stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, int32_t keepalive_timeout, bool tls);
 	virtual ~stressor_controller(void);
 
 	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection);

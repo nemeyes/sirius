@@ -16,7 +16,7 @@ namespace sirius
 			public:
 				//friend class sirius::app::client::client_cmd;
 			public:
-				core(sirius::app::client::proxy * front, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd);
+				core(sirius::app::client::proxy * front, bool keepalive, int32_t keepalive_timeout, bool tls, HINSTANCE instance, HWND hwnd);
 				virtual ~core(void);
 
 				int32_t			state(void);
