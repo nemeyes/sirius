@@ -36,6 +36,7 @@ namespace sirius
 						bool	partial_send;
 						bool	enable_tls;
 						bool	enable_keepalive;
+						int32_t keepalive_timeout;
 						bool	enable_present;
 						bool	enable_auto_start;
 						bool	enable_caching;
@@ -58,6 +59,7 @@ namespace sirius
 							, partial_send(false)
 							, enable_tls(false)
 							, enable_keepalive(false)
+							, keepalive_timeout(5000)
 							, enable_present(false)
 							, enable_auto_start(false)
 							, enable_caching(false)

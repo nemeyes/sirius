@@ -22,10 +22,10 @@ namespace sirius
 				public:
 					static const int32_t MAXIUM_CLOSING_SESSION_WAITING_INTERVAL	= 10000;
 					static const int32_t MAXIUM_REGISTING_SESSION_WAITING_INTERVAL	= 3000;
-					static const int32_t KEEPALIVE_INTERVAL							= 5000;
+					static const int32_t MINIMUM_KEEPALIVE_INTERVAL					= 5000;
 
 				public:
-					abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
+					abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls);
 					virtual ~abstract_server(void);
 
 					int32_t			initialize(void);
@@ -76,6 +76,7 @@ namespace sirius
 
 				protected:
 					BOOL																		_keepalive;
+					int32_t																		_keepalive_timeout;
 					char																		_uuid[64];
 					int32_t																		_sequence;
 

@@ -6,10 +6,11 @@
 #include "malloc_extension.h"
 #endif
 
-sirius::library::net::sicp::abstract_server::abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
+sirius::library::net::sicp::abstract_server::abstract_server(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
 	: sirius::library::net::iocp::server(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
 	, _keepalive(keepalive)
+	, _keepalive_timeout(keepalive_timeout > MINIMUM_KEEPALIVE_INTERVAL ? keepalive_timeout : MINIMUM_KEEPALIVE_INTERVAL)
 	, _sequence(0)
 {
 	::InitializeCriticalSection(&_handshaking_slock);
@@ -307,7 +308,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 		std::string uuid = iter->first;
 		std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
 		uint64_t interval = now - session->timestamp();
-		if (interval > KEEPALIVE_INTERVAL || force_clean)
+		if (interval > _keepalive_timeout || force_clean)
 		{
 			if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 			{

@@ -19,7 +19,7 @@ namespace sirius
 					: public sirius::library::net::sicp::abstract_server
 				{
 				public:
-					core(sirius::library::net::sicp::server * front, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, const char * uuid, int32_t command_thread_pool_count, BOOL keepalive = FALSE, BOOL tls = FALSE);
+					core(sirius::library::net::sicp::server * front, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, const char * uuid, int32_t command_thread_pool_count, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000, BOOL tls = FALSE);
 					virtual ~core(void);
 
 					void on_create_session(const char * uui);

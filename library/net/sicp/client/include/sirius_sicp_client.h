@@ -19,8 +19,8 @@ namespace sirius
 				public:
 					class core;
 				public:
-					client(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 1, int32_t command_thread_pool_count = 3, BOOL keepalive = FALSE, BOOL tls = FALSE);
-					client(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 1, int32_t command_thread_pool_count = 3, BOOL keepalive = FALSE, BOOL tls = FALSE);
+					client(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 1, int32_t command_thread_pool_count = 3, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000, BOOL tls = FALSE);
+					client(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 1, int32_t command_thread_pool_count = 3, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000, BOOL tls = FALSE);
 					virtual ~client(void);
 
 					int32_t connect(const char * address, int32_t portnumber, BOOL reconnection = TRUE);

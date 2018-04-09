@@ -2,10 +2,11 @@
 #include <sirius_locks.h>
 #include <sicp_command.h>
 
-sirius::library::net::sicp::abstract_client::abstract_client(int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
+sirius::library::net::sicp::abstract_client::abstract_client(int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
 	: sirius::library::net::iocp::client(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
 	, _keepalive(keepalive)
+	, _keepalive_timeout(keepalive_timeout > MINIMUM_KEEPALIVE_INTERVAL ? keepalive_timeout : MINIMUM_KEEPALIVE_INTERVAL)
 	, _session(nullptr)
 {
 	memcpy(_uuid, UNDEFINED_UUID, sizeof(_uuid));
@@ -23,10 +24,11 @@ sirius::library::net::sicp::abstract_client::abstract_client(int32_t command_thr
 	}
 }
 
-sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
+sirius::library::net::sicp::abstract_client::abstract_client(const char * uuid, int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, BOOL tls)
 	: sirius::library::net::iocp::client(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
 	, _keepalive(keepalive)
+	, _keepalive_timeout(keepalive_timeout > MINIMUM_KEEPALIVE_INTERVAL ? keepalive_timeout : MINIMUM_KEEPALIVE_INTERVAL)
 {
 	strncpy_s(_uuid, uuid, sizeof(_uuid));
 
@@ -273,7 +275,7 @@ void sirius::library::net::sicp::abstract_client::on_running(void)
 			if ((!sicp_session->register_flag()) && ((elapsed_millisec % 3000) == 0))
 				sicp_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
 
-			if (_keepalive && ((elapsed_millisec % (KEEPALIVE_INTERVAL - KEEPALIVE_INTERVAL_MARGIN)) == 0))
+			if (_keepalive && ((elapsed_millisec % (_keepalive_timeout - KEEPALIVE_INTERVAL_MARGIN)) == 0))
 			{
 				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
 			}

@@ -1,7 +1,7 @@
 #include <commands_arbitrator.h>
 #include "arbitrator_proxy.h"
 #include "configuration_dao.h"
-#include "attendant_dao.h"
+//#include "attendant_dao.h"
 #include <sirius_log4cplus_logger.h>
 #include <sirius_locks.h>
 #include <process.h>
@@ -87,7 +87,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.invalidate4client, confentity.indexed_mode, confentity.partial_send, confentity.enable_tls, confentity.enable_keepalive, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, confentity.video_compression_level, confentity.video_quantization_colors, confentity.invalidate4client, confentity.indexed_mode, confentity.partial_send, confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -151,7 +151,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, const char * app_session_app)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -178,6 +178,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.partial_send = partial_send;
 	configuration.enable_tls = enable_tls;
 	configuration.enable_keepalive = enable_keepalive;
+	configuration.keepalive_timeout = keepalive_timeout;
 	configuration.enable_present = enable_present;
 	configuration.enable_auto_start = enable_auto_start;
 	configuration.enable_caching = enable_caching;
@@ -635,8 +636,10 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 		}
 
+/*
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 		dao.remove();
+*/
 
 		sirius::app::server::arbitrator::entity::configuration_t confentity;
 		{
@@ -753,8 +756,10 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		_context->handler->on_stop();
 	sirius::library::net::sicp::server::stop();
 
+/*
 	sirius::app::server::arbitrator::db::attendant_dao contdao(_context->db_path);
 	contdao.remove();
+*/
 }
 
 unsigned sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb(void * param)
