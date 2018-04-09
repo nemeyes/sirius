@@ -6,6 +6,8 @@
 
 
 sirius::app::server::arbitrator::wrapper::core::core() :
+	_proxy(nullptr),
+	_proxy_ctx(nullptr),
 	_front_on_initalize(nullptr),
 	_front_on_system_monitor_info(nullptr),
 	_front_on_attendant_create(nullptr),

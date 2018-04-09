@@ -44,6 +44,7 @@ namespace sirius.app.server.arbitrator.Settings
             TextStreamerPortnumber.Text = setting_value.streamer_portnumber.ToString();
             UseTLS.IsChecked = setting_value.enable_tls;
             UseKeepAlive.IsChecked = setting_value.enable_keepalive;
+            TextKeepAliveTimeout.Text = setting_value.keepalive_timeout.ToString();
 
             if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started ||
                 sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.starting)
@@ -68,7 +69,12 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.enable_keepalive = true;
             else
                 setting_value.enable_keepalive = false;
-            
+                       
+            if (Convert.ToInt32(TextKeepAliveTimeout.Text) < 5000)
+                TextKeepAliveTimeout.Text = "5000";
+
+            setting_value.keepalive_timeout = Convert.ToInt32(TextKeepAliveTimeout.Text);
+
             setting_value.update();
             sirius_arbitrator.controller.release();
             sirius_arbitrator.controller.initailize();
@@ -88,6 +94,19 @@ namespace sirius.app.server.arbitrator.Settings
         }
 
         private void TextStreamerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextKeepAliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //only number type
             foreach (char c in e.Text)

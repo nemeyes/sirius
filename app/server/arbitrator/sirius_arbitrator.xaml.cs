@@ -76,7 +76,7 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool invalidate4client, bool indexed_mode, bool partial_send, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -98,6 +98,7 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().partial_send = partial_send;
             SettingValue.Instance().enable_tls = enable_tls;
             SettingValue.Instance().enable_keepalive = enable_keepalive;
+            SettingValue.Instance().keepalive_timeout = keepalive_timeout;
             SettingValue.Instance().enable_present = enable_present;
             SettingValue.Instance().enable_auto_start = enable_auto_start;
             SettingValue.Instance().enable_caching = enable_caching;
