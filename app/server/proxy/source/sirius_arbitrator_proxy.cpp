@@ -24,7 +24,7 @@ int32_t sirius::app::server::arbitrator::proxy::initialize(sirius::app::server::
 
 	if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
 	{
-		_core = new sirius::app::server::arbitrator::proxy::core(configuration.uuid, this, configuration.enable_keepalive, configuration.enable_tls);
+		_core = new sirius::app::server::arbitrator::proxy::core(configuration.uuid, this, configuration.enable_keepalive, configuration.keepalive_timeout, configuration.enable_tls);
 		status = _core->initialize(context);
 	}
 	else
