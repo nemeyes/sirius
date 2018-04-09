@@ -199,6 +199,8 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
 
+			proc_ctrl.set_cmdline(arguments, "--keepalive_timeout=%d", confentity.keepalive_timeout);
+
 			if (confentity.enable_tls)
 				proc_ctrl.set_cmdline(arguments, "--enable_tls=true");
 			else

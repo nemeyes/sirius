@@ -59,6 +59,7 @@ namespace sirius
 					bool	partial_send;
 					bool	present;
 					bool	keepalive;
+					int32_t keepalive_timeout;
 					bool	tls;
 					HWND	hwnd;
 					void *	user_data;
@@ -86,6 +87,7 @@ namespace sirius
 						, partial_send(false)
 						, present(false)
 						, keepalive(false)
+						, keepalive_timeout(5000)
 						, tls(false)
 						, hwnd(NULL)
 						, user_data(NULL)

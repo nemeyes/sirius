@@ -31,7 +31,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, video_buffer_count=?, ";
 	sql += "video_block_width=?, video_block_height=?, video_compression_level=?, video_quantization_colors=?, ";
 	sql += "enable_invalidate4client=?, enable_indexed_mode=?, enable_partial_send=?, ";
-	sql += "enable_tls=?, enable_keepalive=?, enable_present=?, enable_auto_start=?, enable_caching=?, ";
+	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_present=?, enable_auto_start=?, enable_caching=?, ";
 	sql += "app_session_app=?";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
@@ -57,6 +57,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->partial_send ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_tls?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_keepalive ?1:0);
+		sqlite3_bind_int(stmt, ++index, entity->keepalive_timeout);
 		sqlite3_bind_int(stmt, ++index, entity->enable_present?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
@@ -118,6 +119,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.partial_send = false;
 		c_entity.enable_tls = false;
 		c_entity.enable_keepalive = false;
+		c_entity.keepalive_timeout = 5000;
 		c_entity.enable_present = false;
 		c_entity.enable_auto_start = false;
 		c_entity.enable_caching = false;
@@ -132,7 +134,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 	sql += "video_codec, video_width, video_height, video_fps, video_buffer_count, ";
 	sql += "video_block_width, video_block_height, video_compression_level, video_quantization_colors, ";
 	sql += "enable_invalidate4client, enable_indexed_mode, enable_partial_send, ";
-	sql += "enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, ";
+	sql += "enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, enable_caching, ";
 	sql += "app_session_app ";
 	sql += "FROM tb_configuration";
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
@@ -168,6 +170,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 
 				entity->enable_tls = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_keepalive = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->keepalive_timeout = sqlite3_column_int(stmt, index++);
 				entity->enable_present = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_auto_start = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_caching = sqlite3_column_int(stmt, index++) ? true : false;
@@ -201,8 +204,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_invalidate4client, enable_indexed_mode, enable_partial_send, enable_tls, enable_keepalive, enable_present, enable_auto_start, enable_caching, app_session_app) ";
-	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, enable_invalidate4client, enable_indexed_mode, enable_partial_send, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, enable_caching, app_session_app) ";
+	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -229,6 +232,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 
 		sqlite3_bind_int(stmt, ++index, entity->enable_tls ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_keepalive ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->keepalive_timeout);
+		
 		sqlite3_bind_int(stmt, ++index, entity->enable_present ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);

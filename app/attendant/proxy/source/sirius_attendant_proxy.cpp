@@ -174,6 +174,11 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->keepalive = false;
 	}
+	if (param.end() != (iter = param.find(L"keepalive_timeout")))
+	{
+		value = iter->second;
+		context->keepalive_timeout = _wtoi(value.c_str());
+	}
 	if (param.end() != (iter = param.find(L"enable_tls")))
 	{
 		value = iter->second;
@@ -239,7 +244,7 @@ int32_t sirius::app::attendant::proxy::initialize(void)
 
 	if (mb_uuid && strlen(mb_uuid) > 0)
 	{
-		_core = new sirius::app::attendant::proxy::core(this, mb_uuid, context->keepalive, context->tls);
+		_core = new sirius::app::attendant::proxy::core(this, mb_uuid, context->keepalive, context->keepalive_timeout, context->tls);
 	}
 
 	if (mb_uuid)

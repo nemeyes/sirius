@@ -2,14 +2,14 @@
 #include <sicp_command.h>
 #include "sicp_client.h"
 
-sirius::library::net::sicp::client::client(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepliave, BOOL tls)
+sirius::library::net::sicp::client::client(int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepliave, int32_t keepalive_timeout, BOOL tls)
 {
-	_client = new sirius::library::net::sicp::client::core(this, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepliave, tls);
+	_client = new sirius::library::net::sicp::client::core(this, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepliave, keepalive_timeout, tls);
 }
 
-sirius::library::net::sicp::client::client(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepalive, BOOL tls)
+sirius::library::net::sicp::client::client(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count, int32_t command_thread_pool_count, BOOL keepalive, int32_t keepalive_timeout, BOOL tls)
 {
-	_client = new sirius::library::net::sicp::client::core(this, uuid, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepalive, tls);
+	_client = new sirius::library::net::sicp::client::core(this, uuid, so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, io_thread_pool_count, command_thread_pool_count, keepalive, keepalive_timeout, tls);
 }
 
 sirius::library::net::sicp::client::~client(void)

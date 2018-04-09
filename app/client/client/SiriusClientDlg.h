@@ -100,4 +100,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedCheckDebugLevel1();
 	afx_msg void OnBnClickedCheckDebugLevel2();
+private:
+	CEdit _keepalive_timeout;
 };

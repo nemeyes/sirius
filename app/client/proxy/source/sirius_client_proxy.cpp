@@ -210,10 +210,10 @@ void sirius::app::client::proxy::handler::post_end2end_data(const char * packet,
 		_proxy->post_end2end_data(packet, packet_size);
 }
 
-sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * handler, bool keepalive, bool tls, HINSTANCE instance, HWND hwnd)
+sirius::app::client::proxy::proxy(sirius::app::client::proxy::handler * handler, bool keepalive, int32_t keepalive_timeout, bool tls, HINSTANCE instance, HWND hwnd)
 	: _handler(handler)
 {
-	_core = new sirius::app::client::proxy::core(this, keepalive, tls, instance, hwnd);
+	_core = new sirius::app::client::proxy::core(this, keepalive, keepalive_timeout, tls, instance, hwnd);
 
 	if (_handler)
 		_handler->set_proxy(this);
