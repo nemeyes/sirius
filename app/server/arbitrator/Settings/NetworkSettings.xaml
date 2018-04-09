@@ -60,7 +60,11 @@
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
                     <RadioButton Content="No" Margin="8,0,0,0" IsChecked="True"/>
-                </StackPanel>                
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="KeepAlive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
+                    <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />
+                </StackPanel>
                 <!--StackPanel>
                     <Label Content="Keep Alive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
                     <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />

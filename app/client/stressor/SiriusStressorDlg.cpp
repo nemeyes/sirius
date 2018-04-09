@@ -73,6 +73,7 @@ void CSiriusStressorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_ID, _client_id);
 	DDX_Control(pDX, IDC_EDIT_CONNECT_COUNT, _connect_count);
 	DDX_Control(pDX, IDC_EDIT_CONNECT_INTERVAL, _connect_interval);
+	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEMOUT, _keepalive_timeout);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusStressorDlg, CDialogEx)
@@ -155,6 +156,7 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	CButton * pLoopCheckOn = (CButton*)GetDlgItem(IDC_RADIO_KEY_LOOP_ON);
 	pLoopCheckOn->SetCheck(true);
 	SetDlgItemText(IDC_EDIT_KEY_INTERVAL, L"5");
+	SetDlgItemText(IDC_EDIT_KEEPALIVE_TIMEMOUT, L"5000");
 	
 	_attendant_list.InsertColumn(0, _T("no."), LVCFMT_CENTER, 30);
 	_attendant_list.InsertColumn(1, _T("ip address"), LVCFMT_CENTER, 130);
@@ -267,17 +269,20 @@ void CSiriusStressorDlg::connect_proc()
 	CString str_server_port;
 	CString str_connect_count;
 	CString str_connect_interval;
+	CString str_keepalive_timeout;
 
 	_connect_count.GetWindowTextW(str_connect_count);
 	_connect_interval.GetWindowTextW(str_connect_interval);
 	_ip_address.GetWindowTextW(str_server_address);
 	_port.GetWindowTextW(str_server_port);
+	_keepalive_timeout.GetWindowTextW(str_keepalive_timeout);
 
 	wchar_t server_address[16];
 	wcsncpy_s(server_address, (LPCWSTR)str_server_address, str_server_address.GetLength() + 1);
 	int32_t connect_count = _ttoi(str_connect_count);
 	int32_t connect_interval = _ttoi(str_connect_interval);
 	int32_t server_port = _ttoi(str_server_port);
+	int32_t keepalive_timeout = _ttoi(str_keepalive_timeout);
 
 	int32_t client_count = _vec_client.size();
 	for (int32_t i = 0; i < connect_count; ++i)
@@ -300,7 +305,7 @@ void CSiriusStressorDlg::connect_proc()
 	for (int i = 0; i < connect_count; 	i++)
 	{
 		int index = client_count + i;
-		stressor_controller* client = new stressor_controller(this, index, true, false);
+		stressor_controller* client = new stressor_controller(this, index, keepalive_timeout > 0 ? true:false, keepalive_timeout, false);
 		client->connect(server_address, server_port, true);
 		_vec_client.push_back(client);
 
