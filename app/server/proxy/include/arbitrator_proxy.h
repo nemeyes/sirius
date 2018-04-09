@@ -46,7 +46,7 @@ namespace sirius
 						static const int32_t start = 2;
 					} arbitrator_state_t;
 
-					core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, bool use_tls);
+					core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, int32_t keepalive_timeout, bool use_tls);
 					virtual ~core(void);
 
 					int32_t initialize(sirius::app::server::arbitrator::proxy::context_t * context);
