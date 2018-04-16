@@ -195,6 +195,9 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);
 	
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
+	if (_state != sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start)
+		return status;
+
 	bool alloc_session = false;
 	std::string attendant_uuid;	
 
