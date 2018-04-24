@@ -248,6 +248,10 @@ namespace client {
 				RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 				DCHECK(rootWin);
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+
+				CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
+				manager->DeleteCookies("", "", NULL);
+
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);
 				//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
 				Sleep(3);
