@@ -301,9 +301,9 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_available_attendant_co
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback(const char * uuid, int32_t id, int32_t pid)
 {
 	sirius::autolock lock(&_attendant_cs);
-		
+	sirius::app::server::arbitrator::process::controller proc;
 	sirius::app::server::arbitrator::session * session = nullptr;
-	
+	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s",  __FUNCTION__, __LINE__, uuid);
 	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
 	iter = _sessions.find(id);
 	if (iter != _sessions.end())
@@ -311,6 +311,13 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback
 		
 	if (session)
 	{
+		if (strcmp(session->attendant_uuid(), UNDEFINED_UUID) != 0)
+		{
+			LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);
+			proc.kill(pid);
+			return sirius::app::server::arbitrator::proxy::err_code_t::fail;
+		}
+		LOGGER::make_info_log(SAA, "%s, %d, session->attendant_uuid()=%s, uuid=%s", __FUNCTION__, __LINE__, session->attendant_uuid(), uuid);
 		session->pid(pid);
 		session->attendant_uuid(uuid);
 		session->state(attendant_state_t::available);
@@ -322,6 +329,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_attendant_callback
 		new_session->attendant_uuid(uuid);
 		new_session->state(attendant_state_t::available);
 		_sessions.insert(std::make_pair(id, new_session));
+		LOGGER::make_info_log(SAA, "%s, %d, new_session->attendant_uuid()=%s, uuid=%s", __FUNCTION__, __LINE__, new_session->attendant_uuid(), uuid);
 	}	
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
