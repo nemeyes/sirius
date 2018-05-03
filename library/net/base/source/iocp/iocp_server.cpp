@@ -277,7 +277,12 @@ void sirius::library::net::iocp::server::execute(void)
 
 		//::OutputDebugStringA("execute\n");
 
-		if (overlapped)
+		if (!value)
+		{
+			sirius::library::log::log4cplus::logger::make_error_log(SLNS, "GetQueuedCompletionStatus Error is %d", err_code);
+		}
+
+		if (value && overlapped)
 		{
 			sirius::library::net::iocp::session::io_context_t * p = reinterpret_cast<sirius::library::net::iocp::session::io_context_t*>(overlapped);
 			std::shared_ptr<sirius::library::net::iocp::session::io_context_t> io_context = p->shared_from_this();
