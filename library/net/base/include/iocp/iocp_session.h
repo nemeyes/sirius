@@ -39,7 +39,7 @@ namespace sirius
 						static const int32_t sending		= 0x20;
 						static const int32_t closing		= 0x40;
 						static const int32_t closed			= 0x80;
-						static const int32_t operating		= accepting | connecting | handshaking | receiving | sending;
+						static const int32_t operating		= accepting | connecting | handshaking /*| receiving*/ | sending;
 					} status_t;
 
 					typedef struct _io_context_t
