@@ -317,7 +317,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 					on_destroy_session(session->uuid(), session);
 					session->register_flag(false);
 				}
-				session->close();
+				//session->close();
 				if (!force_clean)
 					sirius::library::log::log4cplus::logger::make_debug_log(SAA, "activated session doesn't recv/send any data during keepalive interval, activated session is closed and moved to closing list\n");
 				else
@@ -538,6 +538,7 @@ void sirius::library::net::sicp::abstract_server::on_create_session(const char *
 void sirius::library::net::sicp::abstract_server::on_destroy_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	session->increase_session_destroy_count();
+	session->close();
 	on_destroy_session(uuid);
 	deactivate_session(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 }
