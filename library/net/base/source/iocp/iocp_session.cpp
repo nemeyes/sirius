@@ -198,6 +198,7 @@ void sirius::library::net::iocp::session::close(void)
 		}
 	}
 
+	int32_t code = 0;
 	if ((_socket != NULL && _socket != INVALID_SOCKET) && !pending())
 	{
 		LINGER linger;
@@ -210,8 +211,7 @@ void sirius::library::net::iocp::session::close(void)
 		}
 		else
 		{
-			int32_t code = ::WSAGetLastError();
-			_socket = INVALID_SOCKET;
+			code = ::WSAGetLastError();
 		}
 	}
 

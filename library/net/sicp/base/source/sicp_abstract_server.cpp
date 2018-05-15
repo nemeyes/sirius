@@ -401,12 +401,22 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 		{
 			std::shared_ptr<sirius::library::net::sicp::session> session = *iter;
 			uint64_t interval = now - session->timestamp();
-			if (interval > MAXIUM_CLOSING_SESSION_WAITING_INTERVAL)
+			if (interval > MAXIUM_CLOSING_SESSION_WAITING_INTERVAL && 
+				((session->status() & sirius::library::net::iocp::session::status_t::closed) == sirius::library::net::iocp::session::status_t::closed) && 
+				//((session->status() & sirius::library::net::iocp::session::status_t::receiving) != sirius::library::net::iocp::session::status_t::receiving) &&
+				((session->status() & sirius::library::net::iocp::session::status_t::sending) != sirius::library::net::iocp::session::status_t::sending))
 			{
 				sirius::library::log::log4cplus::logger::make_debug_log(SAA, "closing session is removed from memory after waiting interval\n");
 			}
 			else
 			{
+				session->close();
+				if (((session->status() & sirius::library::net::iocp::session::status_t::closed) != sirius::library::net::iocp::session::status_t::closed) ||
+					//((session->status() & sirius::library::net::iocp::session::status_t::receiving) != sirius::library::net::iocp::session::status_t::receiving) ||
+					((session->status() & sirius::library::net::iocp::session::status_t::sending) == sirius::library::net::iocp::session::status_t::sending))
+				{
+					session->update_timestamp();
+				}
 				final_sessions.push_back(session);
 			}
 			++iter;
@@ -479,7 +489,6 @@ bool sirius::library::net::sicp::abstract_server::deactivate_session(std::shared
 			std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
 			_activated_sessions.erase(iter);
 			session->register_flag(false);
-			return true;
 		}
 	}
 
@@ -489,7 +498,7 @@ bool sirius::library::net::sicp::abstract_server::deactivate_session(std::shared
 		_closing_sessions.push_back(session);
 
 	}
-	return false;
+	return true;
 }
 
 bool sirius::library::net::sicp::abstract_server::check_activate_session(const char * uuid)
