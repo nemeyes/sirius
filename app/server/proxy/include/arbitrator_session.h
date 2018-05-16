@@ -21,6 +21,8 @@ namespace sirius
 					int32_t			pid(void);
 					int32_t			state(void);
 					uint32_t		total_bandwidth_byte(void);
+					uint64_t		connect_timestamp(void);
+					uint64_t		disconnect_timestamp(void);
 					const char *	attendant_uuid(void);		
 					const char *	client_uuid(void);
 					const char *	client_id(void);
@@ -28,6 +30,8 @@ namespace sirius
 					void			pid(int32_t pid);
 					void			state(int32_t state);
 					void			total_bandwidth_byte(uint32_t total_bandwidth_byte);
+					void			connect_timestamp(uint64_t connect_timestamp);
+					void			disconnect_timestamp(uint64_t disconnect_timestamp);
 					void			attendant_uuid(const char * uuid);
 					void			client_uuid(const char * uuid);					
 					void			client_id(const char * client_id);	
@@ -37,6 +41,8 @@ namespace sirius
 					int32_t		_pid;
 					int32_t		_state;
 					int32_t		_total_bandwidth_byte;
+					uint64_t	_connect_timestamp;
+					uint64_t	_disconnect_timestamp;
 					char		_attendant_uuid[64];
 					char		_client_uuid[64];
 					char		_client_id[MAX_PATH];	
