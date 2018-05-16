@@ -218,6 +218,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 			session->client_id(client_id);
 			session->client_uuid(uuid);
 			session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting);
+			session->connect_timestamp(::GetTickCount64());
 
 			attendant_uuid = session->attendant_uuid();
 			status = sirius::app::server::arbitrator::proxy::err_code_t::success;
@@ -244,6 +245,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 				session->client_id(client_id);
 				session->client_uuid(uuid);
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting);
+				session->connect_timestamp(::GetTickCount64());
 
 				attendant_uuid = session->attendant_uuid();
 				status = sirius::app::server::arbitrator::proxy::err_code_t::success;			
@@ -420,8 +422,9 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 		{
 			session = iter->second;
 			if (strcmp(session->client_uuid(), uuid) == 0)
-			{				
+			{	
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping);
+				session->disconnect_timestamp(::GetTickCount64());
 				session->client_uuid(UNDEFINED_UUID);
 
 				_use_count = get_running_attendant_count();
@@ -441,6 +444,7 @@ void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char
 
 			if (strcmp(session->attendant_uuid(), uuid) == 0)
 			{
+				LOGGER::make_info_log(SAA, "%s, %d, destroy attendant [uuid=%s, id = %d]", __FUNCTION__, __LINE__, uuid, session->id());
 				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::idle);
 				session->attendant_uuid(UNDEFINED_UUID);
 				create_attendant(session->id());
@@ -505,16 +509,19 @@ int32_t sirius::app::server::arbitrator::proxy::core::get_launcher_count(void)
 
 void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 {	
-	sirius::autolock lock(&_attendant_cs);
-
 	sirius::app::server::arbitrator::process::controller proc;
 	std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
 	for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 	{
 		sirius::app::server::arbitrator::session * session = iter->second;
-		if(is_valid(session->attendant_uuid()) == false)
+		if(session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::stopping)
 		{
-			
+			if(::GetTickCount64() - session->disconnect_timestamp() > 1000 * 10)
+			{					
+				proc.kill(session->pid());
+				session->attendant_uuid(UNDEFINED_UUID);
+				create_attendant(session->id());
+			}			
 		}			
 	}	
 }
@@ -739,14 +746,17 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 					_cluster->alive_start();
 				}
 			}
-			//if (elapsed_millisec % (onesec * 3) == 0)			
-			//	check_alive_attendant();
+			if (_state == sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start)
+			{
+				if (elapsed_millisec % (onesec * 3) == 0)			
+					check_alive_attendant();
 
-			//if (elapsed_millisec % (onesec * 10) == 0)
-			//	update_available_attendant();				
+				//if (elapsed_millisec % (onesec * 10) == 0)
+				//	update_available_attendant();				
 
-			//if (elapsed_millisec % (onesec * 30) == 0 && elapsed_millisec > 0)
-			//	close_disconnected_attendant();
+				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
+				//	close_disconnected_attendant();
+			}
 		}	
 		::Sleep(msleep);
 		elapsed_millisec += msleep;

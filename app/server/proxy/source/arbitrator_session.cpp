@@ -40,6 +40,16 @@ uint32_t sirius::app::server::arbitrator::session::total_bandwidth_byte(void)
 	return _total_bandwidth_byte;
 }
 
+uint64_t sirius::app::server::arbitrator::session::connect_timestamp(void)
+{
+	return _connect_timestamp;
+}
+
+uint64_t sirius::app::server::arbitrator::session::disconnect_timestamp(void)
+{
+	return _disconnect_timestamp;
+}
+
 const char * sirius::app::server::arbitrator::session::attendant_uuid(void)
 {
 	return _attendant_uuid;
@@ -83,6 +93,16 @@ void sirius::app::server::arbitrator::session::state(int32_t state)
 void sirius::app::server::arbitrator::session::total_bandwidth_byte(uint32_t total_bandwidth_byte)
 {
 	_total_bandwidth_byte = total_bandwidth_byte;
+}
+
+void sirius::app::server::arbitrator::session::connect_timestamp(uint64_t connect_timestamp)
+{
+	_connect_timestamp = connect_timestamp;
+}
+
+void sirius::app::server::arbitrator::session::disconnect_timestamp(uint64_t disconnect_timestamp)
+{
+	_disconnect_timestamp = disconnect_timestamp;
 }
 
 

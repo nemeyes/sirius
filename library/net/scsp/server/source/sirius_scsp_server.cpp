@@ -42,7 +42,7 @@ int32_t sirius::library::net::scsp::server::start(sirius::library::net::scsp::se
 
 	_core = new sirius::library::net::scsp::server::core(SERVER_UUID, this);
 	_core->start(context);
-	LOGGER::make_info_log(SLNSC, "%s(), %d, port_number=%d, attendant_number=%d", __FUNCTION__, __LINE__, _context->portnumber, _context->portnumber - port_number_base);
+	LOGGER::make_info_log(SLNSC, "%s(), %d, port_number=%d, attendant_number=%d attendant_uuid= %s", __FUNCTION__, __LINE__, _context->portnumber, _context->portnumber - port_number_base, _context->uuid);
 
 	return sirius::library::net::scsp::server::err_code_t::success;
 }
