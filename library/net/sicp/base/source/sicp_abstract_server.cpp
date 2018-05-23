@@ -10,7 +10,6 @@ sirius::library::net::sicp::abstract_server::abstract_server(const char * uuid, 
 	: sirius::library::net::iocp::server(so_recv_buffer_size, so_send_buffer_size, recv_buffer_size, send_buffer_size, tls)
 	, sirius::library::net::sicp::base(command_thread_pool_count)
 	, _keepalive(keepalive)
-	, _check_keepalive(FALSE)
 	, _keepalive_timeout(keepalive_timeout > MINIMUM_KEEPALIVE_INTERVAL ? keepalive_timeout : MINIMUM_KEEPALIVE_INTERVAL)
 	, _sequence(0)
 {
@@ -309,11 +308,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 		std::string uuid = iter->first;
 		std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
 		uint64_t interval = now - session->timestamp();
-		if (!_check_keepalive)
-		{
-			session->update_timestamp();
-		}
-		else if (interval > _keepalive_timeout || force_clean)
+		if ((session->keepalive_flag() && interval > _keepalive_timeout) || force_clean)
 		{
 			if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 			{
@@ -556,11 +551,6 @@ void sirius::library::net::sicp::abstract_server::on_destroy_session(const char 
 	on_destroy_session(uuid);
 	if(!_keepalive)
 		deactivate_session(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
-}
-
-void sirius::library::net::sicp::abstract_server::check_keepalive(bool enable)
-{
-	_check_keepalive = enable ? TRUE : FALSE;
 }
 
 void sirius::library::net::sicp::abstract_server::clean_command_list(void)

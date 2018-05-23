@@ -31,8 +31,6 @@ namespace sirius
 					void	add_command(sirius::library::net::sicp::abstract_command * command);
 					void	add_command(int32_t forworded_message_id);
 
-					void	check_keepalive(bool enable);
-
 					virtual void on_create_session(const char * uuid) = 0;
 					virtual void on_destroy_session(const char * uuid) = 0;
 
