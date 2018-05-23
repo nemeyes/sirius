@@ -751,6 +751,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				LOGGER::make_info_log(SAA, "%s, %d, [WAIT_FOR_SSM_SERVICE_START] cpu usage = %0.2f", __FUNCTION__, __LINE__, cpu_usage);
 				if (cpu_usage < 80)
 				{
+					sirius::library::net::sicp::server::check_keepalive(true);
 					_cluster->ssm_service_info("START", _max_attendant_instance_count);
 					_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start;
 					LOGGER::make_info_log(SAA, "%s, %d, [SSM_SERVICE_START]", __FUNCTION__, __LINE__);
