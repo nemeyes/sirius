@@ -185,6 +185,13 @@ void sirius::library::net::iocp::session::close(void)
 		::ResumeThread(_secure_send_thread);
 		::ResumeThread(_secure_recv_thread);
 	}
+#else
+	if ((_secure_send_thread != NULL) && (_secure_send_thread != INVALID_HANDLE_VALUE) && _tls &&
+		((_status & sirius::library::net::iocp::session::status_t::connecting) == sirius::library::net::iocp::session::status_t::connecting))
+	{
+		::ResumeThread(_secure_send_thread);
+		::ResumeThread(_secure_recv_thread);
+	}
 #endif
 
 	if ((_secure_send_thread != NULL) && (_secure_send_thread != INVALID_HANDLE_VALUE))
