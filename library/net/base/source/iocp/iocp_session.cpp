@@ -178,6 +178,15 @@ void sirius::library::net::iocp::session::close(void)
 
 	_status |= sirius::library::net::iocp::session::status_t::closing;
 
+#if defined(WITH_WORKING_AS_SERVER)
+	if ((_secure_send_thread != NULL) && (_secure_send_thread != INVALID_HANDLE_VALUE) && _tls && 
+		((_status & sirius::library::net::iocp::session::status_t::accepting) == sirius::library::net::iocp::session::status_t::accepting))
+	{
+		::ResumeThread(_secure_send_thread);
+		::ResumeThread(_secure_recv_thread);
+	}
+#endif
+
 	if ((_secure_send_thread != NULL) && (_secure_send_thread != INVALID_HANDLE_VALUE))
 	{
 		_secure_send_run = FALSE;
@@ -753,12 +762,13 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 			}
 		}
 
+		/*
 		if (fatal_error_occurred)
 		{
 			close();
 			break;
 		}
-
+		*/
 		::Sleep(10);
 	}
 }
@@ -817,6 +827,14 @@ void sirius::library::net::iocp::session::secure_send_process(void)
 				}
 			}
 		}
+
+		/*
+		if (fatal_error_occurred)
+		{
+			close();
+			break;
+		}
+		*/
 		::Sleep(10);
 	}
 }
@@ -841,6 +859,7 @@ int32_t	sirius::library::net::iocp::session::ssl_get_error(SSL *ssl, int32_t res
 	int32_t error = SSL_ERROR_NONE;
 	error = SSL_get_error(ssl, result);
 	
+	/*
 	if (SSL_ERROR_NONE != error)
 	{
 		char message[1024] = { 0 };
@@ -857,5 +876,6 @@ int32_t	sirius::library::net::iocp::session::ssl_get_error(SSL *ssl, int32_t res
 			error_log = ERR_get_error();
 		}
 	}
+	*/
 	return error;
 }
