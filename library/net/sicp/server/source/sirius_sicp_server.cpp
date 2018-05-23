@@ -53,8 +53,3 @@ void sirius::library::net::sicp::server::add_command(int32_t forworded_message_i
 {
 	_server->add_forarded_command(forworded_message_id);
 }
-
-void sirius::library::net::sicp::server::check_keepalive(bool enable)
-{
-	_server->check_keepalive(enable);
-}

@@ -56,8 +56,6 @@ namespace sirius
 					void			on_create_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
 					void			on_destroy_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
 
-					void			check_keepalive(bool enable);
-
 					virtual void	on_create_session(const char * uuid) = 0;
 					virtual void	on_destroy_session(const char * uuid) = 0;
 
@@ -78,7 +76,6 @@ namespace sirius
 
 				protected:
 					BOOL																		_keepalive;
-					BOOL																		_check_keepalive;
 					int32_t																		_keepalive_timeout;
 					char																		_uuid[64];
 					int32_t																		_sequence;

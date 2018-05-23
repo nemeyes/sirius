@@ -194,10 +194,13 @@ int main()
 				proc_ctrl.set_cmdline(arguments, "--enable_partial_send=false");
 
 
+			/*
 			if (confentity.enable_keepalive)
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
+			*/
+			proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
 
 			proc_ctrl.set_cmdline(arguments, "--keepalive_timeout=%d", confentity.keepalive_timeout);
 

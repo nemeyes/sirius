@@ -16,6 +16,7 @@ sirius::library::net::sicp::session::session(sirius::library::net::sicp::sicp_pr
 	, _sicp_processor(prcsr)
 	, _disconnect(FALSE)
 	, _registerd(FALSE)
+	, _keepalive(FALSE)
 	, _recv_buffer_index(0)
 {
 	::InitializeCriticalSection(&_send_lock);
@@ -190,6 +191,16 @@ BOOL sirius::library::net::sicp::session::register_flag(void) const
 void sirius::library::net::sicp::session::register_flag(BOOL flag)
 {
 	_registerd = flag;
+}
+
+BOOL sirius::library::net::sicp::session::keepalive_flag(void) const
+{
+	return _keepalive;
+}
+
+void sirius::library::net::sicp::session::keepalive_flag(BOOL flag)
+{
+	_keepalive = flag;
 }
 
 void sirius::library::net::sicp::session::on_data_indication(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * payload, int32_t payload_size, std::shared_ptr<sirius::library::net::sicp::session> session)

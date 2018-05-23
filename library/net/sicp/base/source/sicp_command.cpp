@@ -151,7 +151,7 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	{
 		sirius::uuid  gen_uuid;
 		gen_uuid.create();
-
+		session->keepalive_flag(TRUE);
 		code = _processor->activate_session(gen_uuid.c_str(), session);
 		if (code)
 		{
@@ -165,6 +165,7 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	{
 		if (strlen(src)>0)
 		{
+			session->keepalive_flag(FALSE);
 			code = _processor->activate_session(src, session);
 			if (code)
 			{

@@ -45,6 +45,9 @@ namespace sirius
 					BOOL			register_flag(void) const;
 					void			register_flag(BOOL flag);
 
+					void			keepalive_flag(BOOL flag);
+					BOOL			keepalive_flag(void) const;
+
 				protected:
 					void			on_data_indication(const char * dst, const char * src,  int32_t command_id, uint8_t version, 
 													   const char * payload, int32_t payload_size,  std::shared_ptr<sirius::library::net::sicp::session> session);
@@ -53,9 +56,9 @@ namespace sirius
 				protected:
 					sirius::library::net::sicp::sicp_processor * _sicp_processor;
 
-
 					BOOL		_disconnect;
 					BOOL		_registerd;
+					BOOL		_keepalive;
 
 					char		_ip[MAX_PATH];
 					char		_uuid[MAX_PATH];
