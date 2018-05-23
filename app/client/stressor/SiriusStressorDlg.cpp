@@ -305,8 +305,8 @@ void CSiriusStressorDlg::connect_proc()
 	for (int i = 0; i < connect_count; 	i++)
 	{
 		int index = client_count + i;
-		stressor_controller* client = new stressor_controller(this, index, keepalive_timeout > 0 ? true:false, keepalive_timeout, false);
-		client->connect(server_address, server_port, true);
+		stressor_controller* client = new stressor_controller(this, index, keepalive_timeout > 0 ? true:false, keepalive_timeout, IsDlgButtonChecked(IDC_CHECK_USE_TLS));
+		client->connect(server_address, server_port, IsDlgButtonChecked(IDC_CHECK_RECONNECTION));
 		_vec_client.push_back(client);
 
 		if (connect_count > 1)
