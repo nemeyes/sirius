@@ -830,6 +830,7 @@ BOOL sirius::library::net::iocp::session::ssl_is_fatal_error(int32_t error)
 	case SSL_ERROR_WANT_WRITE:
 	case SSL_ERROR_WANT_CONNECT:
 	case SSL_ERROR_WANT_ACCEPT:
+	case SSL_ERROR_SYSCALL:
 		return FALSE;
 	}
 	return TRUE;
@@ -842,7 +843,7 @@ int32_t	sirius::library::net::iocp::session::ssl_get_error(SSL *ssl, int32_t res
 	
 	if (SSL_ERROR_NONE != error)
 	{
-		char message[512] = { 0 };
+		char message[1024] = { 0 };
 		int error_log = error;
 		while (SSL_ERROR_NONE != error_log)
 		{
