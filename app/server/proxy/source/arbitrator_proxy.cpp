@@ -522,7 +522,18 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 				session->attendant_uuid(UNDEFINED_UUID);
 				create_attendant(session->id());
 			}			
-		}			
+		}
+
+		if (session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting)
+		{
+			if (::GetTickCount64() - session->connect_timestamp() > 1000 * 10)
+			{
+				proc.kill(session->pid());
+				session->attendant_uuid(UNDEFINED_UUID);
+				create_attendant(session->id());
+			}
+		}
+
 	}	
 }
 
@@ -748,7 +759,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 			if (_state == sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start)
 			{
-				if (elapsed_millisec % (onesec * 3) == 0)			
+				if (elapsed_millisec % (onesec * 10) == 0)			
 					check_alive_attendant();
 
 				//if (elapsed_millisec % (onesec * 10) == 0)
