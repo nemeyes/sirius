@@ -90,6 +90,10 @@ int32_t sirius::library::net::scsp::server::post_video(int32_t count, int32_t * 
 			memmove(video_data, &header, sizeof(header));
 			video_data += sizeof(header);
 			memmove(video_data, compressed[x], size[x]);
+
+			char debug[MAX_PATH] = { 0 };
+			_snprintf_s(debug, MAX_PATH, "post_video : size[%d]=%d \n", x, size[x]);
+
 			video_data += size[x];
 		}
 

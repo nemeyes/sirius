@@ -120,7 +120,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
     message_loop.reset(new MainMessageLoopStd);
 
   // Initialize CEF.
-  settings.ignore_certificate_errors = true;
+  //settings.ignore_certificate_errors = false;
   context->Initialize(main_args, settings, app, sandbox_info);
   
   // Register scheme handlers.
