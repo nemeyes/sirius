@@ -69,6 +69,8 @@ namespace sirius
 					void	start_attendant_callback(const char * uuid, int32_t id, const char * client_id, const char * client_uuid, int32_t code);
 					void	stop_attendant_callback(const char * uuid, int32_t code);
 
+					//int32_t register_certificate(const wchar_t * url, const wchar_t * certificate_path, const wchar_t * certificate_password);
+
 					static void	retrieve_db_path(char * path);
 
 				private:
@@ -76,7 +78,7 @@ namespace sirius
 					void	on_destroy_session(const char * uuid);
 
 					int32_t get_attendant_count(void);
-					int32_t get_running_count(void);
+					//int32_t get_running_count(void);
 					int32_t get_launcher_count(void);
 
 					void check_alive_attendant(void);

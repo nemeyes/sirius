@@ -6,6 +6,7 @@
 #include <sirius_locks.h>
 #include <process.h>
 #include <tlhelp32.h>
+#include <wincrypt.h>
 #include "sirius_version.h"
 
 sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, int32_t keepalive_timeout, bool use_tls)
@@ -379,6 +380,140 @@ void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const
 	}
 #endif
 }
+
+/*
+int32_t sirius::app::server::arbitrator::proxy::core::register_certificate(const wchar_t * url, const wchar_t * certificate_path, const wchar_t * certificate_password)
+{
+	HANDLE hfile = INVALID_HANDLE_VALUE;
+	HANDLE hsection = 0;
+	void* pfx = 0;
+	HCERTSTORE pfxStore = 0;
+	HCERTSTORE myStore = 0;
+	HCERTSTORE rootStore = 0;
+
+	hfile = ::CreateFile((LPCWSTR)certificate_path, FILE_READ_DATA, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+	if (hfile ==INVALID_HANDLE_VALUE)
+	{
+		goto cleanup;
+	}
+
+	hsection = CreateFileMapping(hfile, 0, PAGE_READONLY, 0, 0, 0);
+	if (!hsection)
+	{
+		goto cleanup;
+	}
+
+	pfx = MapViewOfFile(hsection, FILE_MAP_READ, 0, 0, 0);
+	if (!pfx)
+	{
+		goto cleanup;
+	}
+
+	CRYPT_DATA_BLOB blob;
+	blob.cbData = GetFileSize(hfile, 0);
+	blob.pbData = (BYTE*)pfx;
+	if (!PFXIsPFXBlob(&blob))
+	{
+		goto cleanup;
+	}
+
+	DWORD importFlags = CRYPT_MACHINE_KEYSET;
+	pfxStore = PFXImportCertStore(&blob, certificate_password, importFlags);
+	if (!pfxStore)
+	{
+		goto cleanup;
+	}
+
+	myStore = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, 0, CERT_STORE_OPEN_EXISTING_FLAG | CERT_SYSTEM_STORE_LOCAL_MACHINE, L"Sirius");
+	if (!myStore)
+	{
+		goto cleanup;
+	}
+
+	rootStore = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, 0, CERT_STORE_OPEN_EXISTING_FLAG | CERT_SYSTEM_STORE_LOCAL_MACHINE, L"Root");
+	if (!rootStore)
+	{
+		goto cleanup;
+	}
+	unsigned long counter = 0;
+
+	PCCERT_CONTEXT pctx = 0;
+	while (0 != (pctx = CertEnumCertificatesInStore(pfxStore, pctx)))
+	{
+		wchar_t name[128];
+		if (CertGetNameString(pctx, CERT_NAME_FRIENDLY_DISPLAY_TYPE, 0, 0, name, sizeof name / sizeof *name))
+		{
+			::OutputDebugString(L"Found a certificate in the PFX file\n");
+		}
+		else
+		{
+			::OutputDebugString(L"CertGetNameString");
+		}
+		::OutputDebugString(L"Attempting to import certificate into machine store...\n");
+
+		if (CertAddCertificateContextToStore(counter == 0 ? rootStore : myStore, pctx, CERT_STORE_ADD_NEW, 0))
+		{
+			::OutputDebugString(L"Import succeeded.\n");
+		}
+		else
+		{
+			DWORD err = GetLastError();
+			if (CRYPT_E_EXISTS == err)
+			{
+				::OutputDebugString(L"\nAn equivalent certificate already exists. Overwrite? (y/n) ");
+				wchar_t yesOrNo;
+				scanf_s("%lc", &yesOrNo);
+				scanf_s("%lc", &yesOrNo);
+				if (L'y' == yesOrNo)
+				{
+					if (CertAddCertificateContextToStore(counter == 0 ? rootStore : myStore, pctx, CERT_STORE_ADD_REPLACE_EXISTING, 0))
+					{
+						::OutputDebugString(L"Import succeeded.\n");
+					}
+					else
+					{
+						::OutputDebugString(L"CertAddCertificateContextToStore");
+						goto cleanup;
+					}
+				}
+				else
+				{
+					::OutputDebugString(L"Skipped.\n");
+				}
+			}
+			else
+			{
+				::OutputDebugString(L"CertAddCertificateContextToStore");
+				goto cleanup;
+			}
+		}
+		++counter;
+	}
+
+cleanup:
+	if (myStore)
+	{
+		CertCloseStore(myStore, 0);
+	}
+	if (pfxStore)
+	{
+		CertCloseStore(pfxStore, CERT_CLOSE_STORE_FORCE_FLAG);
+	}
+	if (pfx)
+	{
+		UnmapViewOfFile(pfx);
+	}
+	if (hsection)
+	{
+		CloseHandle(hsection);
+	}
+	if (INVALID_HANDLE_VALUE != hfile)
+	{
+		CloseHandle(hfile);
+	}
+	return 0;
+}
+*/
 
 void sirius::app::server::arbitrator::proxy::core::retrieve_db_path(char * path)
 {

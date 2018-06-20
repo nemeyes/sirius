@@ -217,13 +217,617 @@ unsigned __stdcall sirius::library::video::transform::codec::partial::png::compr
 {
 	sirius::library::video::transform::codec::partial::png::compressor::core * self = static_cast<sirius::library::video::transform::codec::partial::png::compressor::core*>(param);
 	
-	if(self->_context->indexed_video && self->_context->partial_post)
-		self->process_psend_indexed();
-	else if(self->_context->indexed_video && !self->_context->partial_post)
-		self->process_bsend_indexed();
+	if(self->_context->indexed_video)
+		self->process_indexed();
 	else
 		self->process_coordinates();
 	return sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
+}
+
+unsigned __stdcall sirius::library::video::transform::codec::partial::png::compressor::core::process_encoding_callback(void * param)
+{
+	sirius::library::video::transform::codec::partial::png::compressor::core::thread_context_t * self = static_cast<sirius::library::video::transform::codec::partial::png::compressor::core::thread_context_t*>(param);
+	self->parent->process_encoding(self);
+	return 0;
+}
+
+void sirius::library::video::transform::codec::partial::png::compressor::core::process_encoding(thread_context_t * thread_ctx)
+{
+
+	while (thread_ctx->run)
+	{
+		if (WaitForSingleObject(thread_ctx->signal, INFINITE) == WAIT_OBJECT_0)
+		{
+			if (thread_ctx->run)
+			{
+				int32_t status = thread_ctx->real_compressor->compress(&thread_ctx->input, &thread_ctx->output);
+				if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
+				{
+					(*thread_ctx->pindex) = thread_ctx->index;
+					(*thread_ctx->plength) = thread_ctx->output.data_size;
+					memmove(thread_ctx->pcompressed, thread_ctx->output.data, (*thread_ctx->plength));
+
+					(*thread_ctx->cached_index) = thread_ctx->index;
+					(*thread_ctx->cached_length) = thread_ctx->output.data_size;
+					memmove(thread_ctx->cached_compressed, thread_ctx->output.data, (*thread_ctx->cached_length));
+				}
+			}
+			::SetEvent(thread_ctx->available);
+		}
+	}
+}
+
+void sirius::library::video::transform::codec::partial::png::compressor::core::process_indexed(void)
+{
+	int32_t status = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
+	sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer = nullptr;
+
+	long long before_encode_timestamp = 0;
+	long long after_encode_timestamp = 0;
+
+	int32_t		simd_align = 32;
+	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;
+	uint8_t *	reference_buffer = static_cast<uint8_t*>(_aligned_malloc(reference_buffer_size, simd_align));
+	memset(reference_buffer, 0x00, reference_buffer_size);
+
+
+	int32_t		nbytes_compressed = (_context->block_width*_context->block_height) << 2;
+	int32_t		block_count = (_context->width / _context->block_width) * (_context->height / _context->block_height);
+
+
+	uint8_t *** rows = static_cast<uint8_t***>(malloc(block_count * sizeof(uint8_t**)));
+
+	int32_t *	pindex = new int32_t[block_count];
+	uint8_t **	pcompressed = new uint8_t*[block_count];
+	int32_t *	pcapacity = new int32_t[block_count];
+	int32_t *	plength = new int32_t[block_count];
+	int32_t *	cached_index = new int32_t[block_count];
+	uint8_t **	cached_compressed = new uint8_t*[block_count];
+	int32_t *	cached_capacity = new int32_t[block_count];
+	int32_t *	cached_length = new int32_t[block_count];
+
+	for (int32_t index = 0; index < block_count; index++)
+	{
+		pindex[index] = index;
+		pcapacity[index] = nbytes_compressed;
+		pcompressed[index] = new uint8_t[pcapacity[index]];
+		plength[index] = 0;
+		cached_index[index] = index;
+		cached_capacity[index] = nbytes_compressed;
+		cached_compressed[index] = new uint8_t[cached_capacity[index]];
+		cached_length[index] = 0;
+
+		rows[index] = static_cast<uint8_t**>(malloc(_context->block_height * sizeof(uint8_t*)));
+	}
+
+	int32_t		process_data_capacity = (_context->width * _context->height) << 2;
+	int32_t		process_data_size = 0;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_capacity, simd_align));
+	int32_t		process_x = 0;
+	int32_t		process_y = 0;
+	int32_t		process_width = 0;
+	int32_t		process_height = 0;
+	long long	process_timestamp = 0;
+	bool		process_force_fullmode = false;
+	bool		process_compress_first_time = true;
+
+
+	int32_t		thread_count = 20;
+	thread_context_t ** thread_ctx = static_cast<thread_context_t**>(malloc(sizeof(thread_context_t*)*thread_count));
+	for (int32_t tindex = 0; tindex < thread_count; tindex++)
+	{
+		uint32_t thrdaddr = 0;
+		thread_ctx[tindex] = static_cast<thread_context_t*>(malloc(sizeof(thread_context_t)));
+		thread_ctx[tindex]->index = 0;
+
+		thread_ctx[tindex]->compressed_buffer_size = 1024 * 512;
+		thread_ctx[tindex]->compressed_buffer = static_cast<char*>(malloc(thread_ctx[tindex]->compressed_buffer_size));
+
+		thread_ctx[tindex]->output.data = thread_ctx[tindex]->compressed_buffer;
+		thread_ctx[tindex]->output.data_capacity = thread_ctx[tindex]->compressed_buffer_size;
+
+		thread_ctx[tindex]->pindex = nullptr;
+		thread_ctx[tindex]->pcompressed = nullptr;
+		thread_ctx[tindex]->pcapacity = nullptr;
+		thread_ctx[tindex]->plength = nullptr;
+
+		thread_ctx[tindex]->cached_index = nullptr;
+		thread_ctx[tindex]->cached_compressed = nullptr;
+		thread_ctx[tindex]->cached_capacity = nullptr;
+		thread_ctx[tindex]->cached_length = nullptr;
+
+
+		thread_ctx[tindex]->run = TRUE;
+		thread_ctx[tindex]->thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::library::video::transform::codec::partial::png::compressor::core::process_encoding_callback, thread_ctx[tindex], 0, &thrdaddr);
+		thread_ctx[tindex]->signal = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+		thread_ctx[tindex]->available = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+		::SetEvent(thread_ctx[tindex]->available);
+		thread_ctx[tindex]->parent = this;
+
+		thread_ctx[tindex]->real_compressor = new sirius::library::video::transform::codec::libpng::compressor(_front);
+		thread_ctx[tindex]->real_compressor->initialize(_context);
+	}
+
+	while (_run)
+	{
+		if (::WaitForSingleObject(_event, INFINITE) == WAIT_OBJECT_0)
+		{
+			_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressing;
+
+			{
+				sirius::autolock lock(&_cs);
+				iobuffer = _iobuffer_queue.get_pending();
+				if (!iobuffer)
+				{
+					if (!_invalidate)
+					{
+						_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+						::Sleep(10);
+						continue;
+					}
+					process_data_size = 0;
+				}
+				else
+				{
+					process_data_size = iobuffer->input.data_size;
+					process_timestamp = iobuffer->input.timestamp;
+					memmove(process_data, iobuffer->input.data, process_data_size);
+					process_x = iobuffer->input.x;
+					process_y = iobuffer->input.y;
+					process_width = iobuffer->input.width;
+					process_height = iobuffer->input.height;
+					process_force_fullmode = iobuffer->input.force_fullmode;
+				}
+			}
+
+
+			if (process_compress_first_time)
+			{
+				//OutputDebugStringA("Begin Encoding(process_compress_first_time) ##################################################\n");
+
+				before_encode_timestamp = process_timestamp;
+				int32_t count = 0;
+				int32_t index = 0;
+				std::vector<thread_context_t*> thread_contexts;
+				for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
+				{
+					for (int32_t w = 0; w < _context->width; w = w + _context->block_width)
+					{
+						for (int32_t eh = 0, row_index = 0; eh < _context->block_height; eh++, row_index++)
+						{
+							int32_t src_index = (h + eh) * (_context->width << 2) + (w << 2);
+							rows[index][row_index] = process_data + src_index;
+						}
+
+						if (_front)
+						{
+							while (TRUE)
+							{
+								BOOL found_thread_ctx = FALSE;
+								for (int32_t tindex = 0; tindex < thread_count; tindex++)
+								{
+									if (::WaitForSingleObject(thread_ctx[tindex]->available, 0) == WAIT_OBJECT_0)
+									{
+										thread_ctx[tindex]->input.data = rows[index];
+										thread_ctx[tindex]->input.data_capacity = _context->block_height;
+										thread_ctx[tindex]->input.data_size = _context->block_height;
+										thread_ctx[tindex]->input.x = 0;
+										thread_ctx[tindex]->input.y = 0;
+										thread_ctx[tindex]->input.width = _context->block_width;
+										thread_ctx[tindex]->input.height = _context->block_height;
+
+										//thread_ctx[tindex]->output.data = thread_ctx[tindex]->compressed_buffer;
+										//thread_ctx[tindex]->output.data_capacity = thread_ctx[tindex]->compressed_buffer_size;
+										thread_ctx[tindex]->output.data_size = 0;
+										thread_ctx[tindex]->output.x = thread_ctx[tindex]->input.x;
+										thread_ctx[tindex]->output.y = thread_ctx[tindex]->input.y;
+										thread_ctx[tindex]->output.width = thread_ctx[tindex]->input.width;
+										thread_ctx[tindex]->output.height = thread_ctx[tindex]->input.height;
+
+
+										thread_ctx[tindex]->index = index;
+
+										thread_ctx[tindex]->pindex = &pindex[count];
+										thread_ctx[tindex]->pcompressed = pcompressed[count];
+										thread_ctx[tindex]->plength = &plength[count];
+
+										thread_ctx[tindex]->cached_index = &cached_index[index];
+										thread_ctx[tindex]->cached_length = &cached_length[index];
+										thread_ctx[tindex]->cached_compressed = cached_compressed[index];
+
+										std::vector<thread_context_t*>::iterator iter = std::find(thread_contexts.begin(), thread_contexts.end(), thread_ctx[tindex]);
+										if (iter == thread_contexts.end())
+											thread_contexts.push_back(thread_ctx[tindex]);
+										
+										count++;
+										::SetEvent(thread_ctx[tindex]->signal);
+										found_thread_ctx = TRUE;
+									}
+									if (found_thread_ctx)
+										break;
+								}
+								if (found_thread_ctx)
+									break;
+							}
+						}
+						index++;
+					}
+				}
+
+				std::vector<thread_context_t*>::iterator iter;
+				for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
+					::WaitForSingleObject((*iter)->available, INFINITE);
+				
+				/*
+				::OutputDebugStringA("#####################################\n");
+				for (int32_t c = 0; c < count; c++)
+				{
+					char debug[MAX_PATH] = { 0 };
+					_snprintf_s(debug, MAX_PATH, "pindex[%d]=%d, plength[%d]=%d \n", c, pindex[c], c, plength[c]);
+					::OutputDebugStringA(debug);
+				}
+				*/
+				_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
+
+				for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
+					::SetEvent((*iter)->available);
+				
+				process_compress_first_time = false;
+
+				//OutputDebugStringA("End Encoding(process_compress_first_time) ##################################################\n");
+				continue;
+			}
+
+			if (_invalidate && _context->binvalidate && (process_data_size == 0))
+			{
+				/*
+				::OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+				for (int32_t c = 0; c < block_count; c++)
+				{
+					char debug[MAX_PATH] = { 0 };
+					_snprintf_s(debug, MAX_PATH, "cached_index[%d]=%d, cached_length[%d]=%d \n", c, cached_index[c], c, cached_length[c]);
+					::OutputDebugStringA(debug);
+				}
+				*/
+				_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+				_invalidate = false;
+			}
+			else
+			{
+				//OutputDebugStringA("Begin Encoding ##################################################\n");
+				while (process_data_size>0)
+				{
+					before_encode_timestamp = process_timestamp;
+					int32_t count = 0;
+					int32_t index = 0;
+					int32_t begin_height = 0;
+					int32_t end_height = 0;
+					int32_t begin_width = 0;
+					int32_t end_width = 0;
+					int32_t resized_begin_height = 0;
+					int32_t resized_end_height = 0;
+					int32_t resized_begin_width = 0;
+					int32_t resized_end_width = 0;
+					if (process_force_fullmode)
+					{
+						begin_height = 0;
+						end_height = _context->height;
+						begin_width = 0;
+						end_width = _context->width;
+					}
+					else
+					{
+						begin_height = (process_y / _context->block_height) * _context->block_height;
+						end_height = ((process_y + process_height) / _context->block_height) * _context->block_height;
+
+						if (((process_y + process_height) % _context->block_height) > 0)
+							end_height += _context->block_height;
+
+						begin_width = (process_x / _context->block_width) * _context->block_width;
+						end_width = ((process_x + process_width) / _context->block_width) * _context->block_width;
+						if (((process_x + process_width) % _context->block_width) > 0)
+							end_width += _context->block_width;
+
+					}
+
+					std::vector<thread_context_t*> thread_contexts;
+					for (int32_t h = begin_height; h < end_height; h = h + _context->block_height)
+					{
+						for (int32_t w = begin_width; w < end_width; w = w + _context->block_width)
+						{
+							bool diff = false;
+							__declspec(align(32)) uint8_t simd_result[32] = { 0 };
+							for (int32_t bh = 0; bh < _context->block_height; bh++)
+							{
+								for (int32_t bw = 0; bw < _context->block_width; bw = bw + (simd_align >> 2))
+								{
+									int32_t ci = (h + bh) * (_context->width << 2) + (w << 2) + (bw << 2);
+									uint8_t * p = process_data + ci;
+									uint8_t * r = reference_buffer + ci;
+									const __m256i current = _mm256_load_si256((__m256i*)p);
+									const __m256i reference = _mm256_load_si256((__m256i*)r);
+									const __m256i cmpeq = _mm256_cmpeq_epi8(current, reference);
+									_mm256_store_si256((__m256i*)simd_result, cmpeq);
+									for (int32_t index = 0; index < simd_align; index++)
+									{
+										if (!simd_result[index])
+										{
+											diff = true;
+											break;
+										}
+									}
+
+									if (diff)
+										break;
+								}
+								if (diff)
+									break;
+							}
+
+							if (diff)
+							{
+								index = (h / _context->block_height) * (_context->width / _context->block_width) + w / _context->block_width;
+								//::OutputDebugStringA("Begin Real Encoding ######################################################\n");
+								for (int32_t eh = 0, row_index = 0; eh < _context->block_height; eh++, row_index++)
+								{
+									int32_t src_index = (h + eh) * (_context->width << 2) + (w << 2);
+									rows[index][row_index] = process_data + src_index;
+									memmove(reference_buffer + +src_index, process_data + src_index, _context->block_width << 2);
+								}
+
+								if (_front)
+								{
+									while (TRUE)
+									{
+										BOOL found_thread_ctx = FALSE;
+										for (int32_t tindex = 0; tindex < thread_count; tindex++)
+										{
+											if (::WaitForSingleObject(thread_ctx[tindex]->available, 0) == WAIT_OBJECT_0)
+											{
+												thread_ctx[tindex]->input.data = rows[index];
+												thread_ctx[tindex]->input.data_capacity = _context->block_height;
+												thread_ctx[tindex]->input.data_size = _context->block_height;
+												thread_ctx[tindex]->input.x = 0;
+												thread_ctx[tindex]->input.y = 0;
+												thread_ctx[tindex]->input.width = _context->block_width;
+												thread_ctx[tindex]->input.height = _context->block_height;
+
+												//thread_ctx[tindex]->output.data = thread_ctx[tindex]->compressed_buffer;
+												//thread_ctx[tindex]->output.data_capacity = thread_ctx[tindex]->compressed_buffer_size;
+
+												thread_ctx[tindex]->output.data_size = 0;
+												thread_ctx[tindex]->output.x = thread_ctx[tindex]->input.x;
+												thread_ctx[tindex]->output.y = thread_ctx[tindex]->input.y;
+												thread_ctx[tindex]->output.width = thread_ctx[tindex]->input.width;
+												thread_ctx[tindex]->output.height = thread_ctx[tindex]->input.height;
+
+												//index = (h / _context->block_height) * (_context->width / _context->block_width) + w / _context->block_width;
+
+												thread_ctx[tindex]->index = index;
+
+												thread_ctx[tindex]->pindex = &pindex[count];
+												thread_ctx[tindex]->plength = &plength[count];
+												thread_ctx[tindex]->pcompressed = pcompressed[count];
+
+												thread_ctx[tindex]->cached_index = &cached_index[index];
+												thread_ctx[tindex]->cached_length = &cached_length[index];
+												thread_ctx[tindex]->cached_compressed = cached_compressed[index];
+
+												std::vector<thread_context_t*>::iterator iter = std::find(thread_contexts.begin(), thread_contexts.end(), thread_ctx[tindex]);
+												if (iter == thread_contexts.end())
+												{
+													thread_contexts.push_back(thread_ctx[tindex]);
+												}
+
+												count++;
+												::SetEvent(thread_ctx[tindex]->signal);
+												found_thread_ctx = TRUE;
+											}
+											if (found_thread_ctx)
+												break;
+										}
+										if (found_thread_ctx)
+											break;
+									}
+								}
+
+								//::OutputDebugStringA("End Real Encoding ######################################################\n");
+							}
+						}
+					}
+					std::vector<thread_context_t*>::iterator iter;
+					for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
+						::WaitForSingleObject((*iter)->available, INFINITE);
+
+					/*
+					::OutputDebugStringA("second : #####################################\n");
+					for (int32_t c = 0; c < count; c++)
+					{
+						char debug[MAX_PATH] = { 0 };
+						_snprintf_s(debug, MAX_PATH, "second : pindex[%d]=%d, plength[%d]=%d \n", c, pindex[c], c, plength[c]);
+						::OutputDebugStringA(debug);
+
+						_snprintf_s(debug, MAX_PATH, "C:\\workspace\\project\\sirius\\platform\\win32\\v140\\x86\\debug\\bin\\apps\\arbitrator\\image\\index[%d]_pcomressed[%d].png", pindex[c], c);
+						HANDLE file = ::CreateFileA(debug, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+						if (file != INVALID_HANDLE_VALUE)
+						{
+							uint32_t bytes_written = 0;
+							uint8_t* temp = (uint8_t*)(pcompressed[c]);
+							do
+							{
+								uint32_t nb_write = 0;
+								::WriteFile(file, temp, plength[c], (LPDWORD)&nb_write, 0);
+								bytes_written += nb_write;
+								if (plength[c] == bytes_written)
+									break;
+							} while (1);
+						}
+						::CloseHandle(file);	
+					}
+					*/
+
+					process_force_fullmode = false;
+					if (_invalidate && _context->binvalidate)
+					{
+						/*
+						::OutputDebugStringA("second : !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+						for (int32_t c = 0; c < block_count; c++)
+						{
+							char debug[MAX_PATH] = { 0 };
+							_snprintf_s(debug, MAX_PATH, "second : cached_index[%d]=%d, cached_length[%d]=%d \n", c, cached_index[c], c, cached_length[c]);
+							::OutputDebugStringA(debug);
+						}
+						*/
+						_front->after_process_callback(block_count, cached_index, cached_compressed, cached_length, before_encode_timestamp, after_encode_timestamp);
+						_invalidate = false;
+					}
+					else
+					{
+						if (count > 0)
+						{
+							/*
+							for (int32_t c = 0; c < count; c++)
+							{
+								char debug[MAX_PATH] = { 0 };
+								_snprintf_s(debug, MAX_PATH, "pindex[%d]=%d, plength[%d]=%d, pcompressed[%d]=%08x \n", c, pindex[c], c, plength[c], c, pcompressed[c]);
+								::OutputDebugStringA(debug);
+							}
+							*/
+							_front->after_process_callback(count, pindex, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
+						}
+					}
+
+					for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
+						::SetEvent((*iter)->available);
+					
+					thread_contexts.clear();
+					{
+						sirius::autolock lock(&_cs);
+						iobuffer = _iobuffer_queue.get_pending();
+						if (iobuffer)
+						{
+							process_data_size = iobuffer->input.data_size;
+							process_timestamp = iobuffer->input.timestamp;
+							memmove(process_data, iobuffer->input.data, process_data_size);
+							process_x = iobuffer->input.x;
+							process_y = iobuffer->input.y;
+							process_width = iobuffer->input.width;
+							process_height = iobuffer->input.height;
+							process_force_fullmode = iobuffer->input.force_fullmode;
+							continue;
+						}
+						else
+						{
+							process_data_size = 0;
+							break;
+						}
+					}
+				}
+				//OutputDebugStringA("End Encoding ##################################################\n");
+			}
+			_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressed;
+		}
+	}
+
+
+	for (int32_t tindex = 0; tindex < thread_count; tindex++)
+	{
+		thread_ctx[tindex]->run = FALSE;
+		if (::WaitForSingleObject(thread_ctx[tindex]->available, INFINITE) == WAIT_OBJECT_0)
+		{
+			::SetEvent(thread_ctx[tindex]->signal);
+
+			if (::WaitForSingleObject(thread_ctx[tindex]->thread, INFINITE) == WAIT_OBJECT_0)
+			{
+				::CloseHandle(thread_ctx[tindex]->thread);
+				thread_ctx[tindex]->thread = INVALID_HANDLE_VALUE;
+
+				::CloseHandle(thread_ctx[tindex]->available);
+				::CloseHandle(thread_ctx[tindex]->signal);
+				thread_ctx[tindex]->available = INVALID_HANDLE_VALUE;
+				thread_ctx[tindex]->signal = INVALID_HANDLE_VALUE;
+			}
+		}
+		thread_ctx[tindex]->real_compressor->release();
+		delete thread_ctx[tindex]->real_compressor;
+		thread_ctx[tindex]->real_compressor = nullptr;
+
+		free(thread_ctx[tindex]->compressed_buffer);
+		thread_ctx[tindex]->compressed_buffer = nullptr;
+
+		thread_ctx[tindex]->pindex = nullptr;
+		thread_ctx[tindex]->pcompressed = nullptr;
+		thread_ctx[tindex]->pcapacity = nullptr;
+		thread_ctx[tindex]->plength = nullptr;
+
+		thread_ctx[tindex]->cached_index = nullptr;
+		thread_ctx[tindex]->cached_compressed = nullptr;
+		thread_ctx[tindex]->cached_capacity = nullptr;
+		thread_ctx[tindex]->cached_length = nullptr;
+
+		free(thread_ctx[tindex]);
+		thread_ctx[tindex] = nullptr;
+	}
+	free(thread_ctx);
+	thread_ctx = nullptr;
+
+	if (process_data)
+		_aligned_free(process_data);
+	process_data = nullptr;
+
+	if (pindex)
+		delete[] pindex;
+	if (plength)
+		delete[] plength;
+	if (pcapacity)
+		delete[] pcapacity;
+	if (pcompressed)
+	{
+		for (int32_t index = 0; index < block_count; index++)
+		{
+			delete[] pcompressed[index];
+		}
+		delete[] pcompressed;
+	}
+		
+
+	if (cached_index)
+		delete[] cached_index;
+	if (cached_length)
+		delete[] cached_length;
+	if (cached_capacity)
+		delete[] cached_capacity;
+	if (cached_compressed)
+	{
+		for (int32_t index = 0; index < block_count; index++)
+		{
+			delete[] cached_compressed[index];
+		}
+		delete[] cached_compressed;
+	}
+
+	for (int32_t index = 0; index < block_count; index++)
+	{
+		if(rows[index])
+			free(rows[index]);
+		rows[index] = nullptr;
+	}
+	if (rows)
+		free(rows);
+	rows = nullptr;
+
+	if (reference_buffer)
+		_aligned_free(reference_buffer);
+	reference_buffer = nullptr;
+	reference_buffer_size = 0;
+
+	/*
+	if (compressed_buffer)
+		free(compressed_buffer);
+	compressed_buffer = nullptr;
+	compressed_buffer_size = 0;
+	*/
 }
 
 void sirius::library::video::transform::codec::partial::png::compressor::core::process_coordinates(void)

@@ -98,7 +98,33 @@ namespace sirius
 									int16_t				cnt;
 								} bounding_box_t;
 
+								typedef struct _thread_context_t
+								{
+									int32_t			index;
 
+									char *			compressed_buffer;
+									int32_t			compressed_buffer_size;
+
+
+									int32_t *		pindex;
+									uint8_t *		pcompressed;
+									int32_t *		pcapacity;
+									int32_t *		plength;
+
+									int32_t *		cached_index;
+									uint8_t *		cached_compressed;
+									int32_t *		cached_capacity;
+									int32_t *		cached_length;
+
+									BOOL			run;
+									HANDLE			thread;
+									HANDLE			signal;
+									HANDLE			available;
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t	input;
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t	output;
+									sirius::library::video::transform::codec::libpng::compressor *					real_compressor;
+									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
+								} thread_context_t;
 
 
 								typedef struct _buffer_t
@@ -125,9 +151,12 @@ namespace sirius
 
 							private:
 								static unsigned __stdcall process_callback(void * param);
+								static unsigned __stdcall process_encoding_callback(void * param);
+								void	process_indexed(void);
 								void	process_psend_indexed(void);
 								void	process_bsend_indexed(void);
 								void	process_coordinates(void);
+								void	process_encoding(thread_context_t * thread_ctx);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
@@ -136,6 +165,8 @@ namespace sirius
 
 								void			copy(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer);
 
+
+								
 							private:
 								sirius::library::video::transform::codec::partial::png::compressor *			_front;
 								sirius::library::video::transform::codec::partial::png::compressor::context_t * _context;
