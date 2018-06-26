@@ -389,6 +389,7 @@ void sirius::app::attendant::proxy::core::key_up_callback(int8_t type, int32_t k
 {
 	if (type == sirius::library::user::event::dinput::receiver::type_t::keyboard)
 	{
+		LOGGER::make_info_log(SLNS, "%s(), %d, [key_up_callback] type:%d, key:%d", __FUNCTION__, __LINE__, type, key);
 		on_key_board_up(key);
 	}
 	else
@@ -401,6 +402,7 @@ void sirius::app::attendant::proxy::core::key_down_callback(int8_t type, int32_t
 {
 	if (type == sirius::library::user::event::dinput::receiver::type_t::keyboard)
 	{
+		LOGGER::make_info_log(SLNS, "%s(), %d, [key_down_callback] type:%d, key:%d", __FUNCTION__, __LINE__, type, key);
 		on_key_board_down(key);
 		if (_key_event_count == NULL)
 		{
