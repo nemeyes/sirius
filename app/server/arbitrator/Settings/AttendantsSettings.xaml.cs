@@ -125,13 +125,13 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.app_session_app = TextAppSessionApp.Text.Trim();
 
             if (Convert.ToInt32(QuantizationColors.Text) > 128)
-                setting_value.video_quantization_colors = 128;
+               setting_value.video_quantization_colors = 128;
             else
                 setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
 
-            if (Convert.ToInt32(TextFrameRate.Text) > 15)
-                setting_value.video_fps = 15;
-            else
+            //if (Convert.ToInt32(TextFrameRate.Text) > 15)
+            //    setting_value.video_fps = 15;
+            //else
                 setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
 
             if (DisaplyAttendantOn.IsChecked.Value)
