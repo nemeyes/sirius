@@ -34,6 +34,8 @@ namespace sirius
 								{
 									int32_t block_width;
 									int32_t block_height;
+									int32_t mb_width;
+									int32_t mb_height;
 									int32_t compression_level;
 									double	gamma;
 									float	floyd;

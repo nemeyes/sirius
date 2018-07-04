@@ -4,6 +4,8 @@
 sirius::library::video::transform::codec::partial::png::compressor::_context_t::_context_t(void)
 	: block_width(128)
 	, block_height(72)
+	, mb_width(8)
+	, mb_height(8)
 	, compression_level(-1)
 	, gamma(1 / 2.2f)
 	, floyd(0)
@@ -22,6 +24,8 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 {
 	block_width = clone.block_width;
 	block_height = clone.block_height;
+	mb_width = clone.mb_width;
+	mb_height = clone.mb_height;
 	compression_level = clone.compression_level;
 	gamma = clone.gamma;
 	floyd = clone.floyd;
@@ -38,6 +42,8 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 {
 	block_width = clone.block_width;
 	block_height = clone.block_height;
+	mb_width = clone.mb_width;
+	mb_height = clone.mb_height;
 	compression_level = clone.compression_level;
 	gamma = clone.gamma;
 	floyd = clone.floyd;
