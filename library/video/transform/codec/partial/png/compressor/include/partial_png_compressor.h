@@ -82,23 +82,26 @@ namespace sirius
 									}
 								} compressed_cache_image_t;
 
-								typedef struct _macro_block_t
+								static const int32_t UNLABELED = 0;
+								static const int32_t LABELED = 1;
+								typedef struct _connected_component_t
 								{
-									int16_t				index;
-									_macro_block_t *	next;
-								} macro_block_t;
+									uint32_t number;
+									uint32_t left;
+									uint32_t top;
+									uint32_t right;
+									uint32_t bottom;
+									std::vector<uint64_t> elements;
+									_connected_component_t(int32_t lable_number)
+										: number(lable_number)
+										, left(1280)
+										, top(720)
+										, right(0)
+										, bottom(0)
+									{}
+								} connected_component_t;
 
-								typedef struct _bounding_box_t
-								{
-									unsigned char *		mb;
-									int16_t				bindex;
-									int16_t				eindex;
-									int16_t				hcnt;
-									int16_t				vcnt;
-									int16_t				cnt;
-								} bounding_box_t;
-
-								typedef struct _thread_context_t
+								typedef struct _indexed_thread_context_t
 								{
 									int32_t			index;
 
@@ -124,8 +127,26 @@ namespace sirius
 									sirius::library::video::transform::codec::partial::png::compressor::entity_t	output;
 									sirius::library::video::transform::codec::libpng::compressor *					real_compressor;
 									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
-								} thread_context_t;
+								} indexed_thread_context_t;
 
+								typedef struct _coordinated_thread_context_t
+								{
+									char *			compressed_buffer;
+									int32_t			compressed_buffer_size;
+
+									uint8_t **		rows;
+									uint8_t *		pcompressed;
+									int32_t *		plength;
+
+									BOOL			run;
+									HANDLE			thread;
+									HANDLE			signal;
+									HANDLE			available;
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t	input;
+									sirius::library::video::transform::codec::partial::png::compressor::entity_t	output;
+									sirius::library::video::transform::codec::libpng::compressor *					real_compressor;
+									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
+								} coordinated_thread_context_t;
 
 								typedef struct _buffer_t
 								{
@@ -151,19 +172,23 @@ namespace sirius
 
 							private:
 								static unsigned __stdcall process_callback(void * param);
-								static unsigned __stdcall process_encoding_callback(void * param);
+								static unsigned __stdcall process_indexed_encoding_callback(void * param);
+								static unsigned __stdcall process_coordinated_encoding_callback(void * param);
+
+								void	process_indexed_encoding(indexed_thread_context_t * thread_ctx);
 								void	process_indexed(void);
-								void	process_psend_indexed(void);
-								void	process_bsend_indexed(void);
-								void	process_coordinates(void);
-								void	process_encoding(thread_context_t * thread_ctx);
+
+								void	process_coordinated_encoding(coordinated_thread_context_t * thread_ctx);
+								void	process_coordinated(void);
+								void	connect_component(unsigned short * pseudo_stack, std::map<uint64_t, uint32_t> * bfgs, connected_component_t * cc, uint32_t width, uint32_t height, uint32_t x, uint32_t y);
+
+								//void	process_psend_indexed(void);
+								//void	process_bsend_indexed(void);
+								//void	process_coordinates(void);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
-								bounding_box_t * create_bounding_box(int16_t macro_block_index);
-								void			 destroy_bounding_box(bounding_box_t * bb);
-
-								void			copy(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer);
+								void	copy(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer);
 
 
 								
