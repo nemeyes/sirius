@@ -68,6 +68,17 @@ namespace sirius.app.server.arbitrator.Settings
                 DisaplyAttendantOff.IsChecked = true;
             }
 
+            if (setting_value.indexed_mode)
+            {
+                IndexedModeOn.IsChecked = true;
+                IndexedModeOff.IsChecked = false;
+            }
+            else
+            {
+                IndexedModeOn.IsChecked = false;
+                IndexedModeOff.IsChecked = true;
+            }
+
             setting_value.enable_auto_start = false;
 
             if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started || 
@@ -138,6 +149,12 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.enable_present = true;
             else
                 setting_value.enable_present = false;
+
+
+            if (IndexedModeOn.IsChecked.Value)
+                setting_value.indexed_mode = true;
+            else
+                setting_value.indexed_mode = false;
 
             setting_value.enable_auto_start = false;
             //if (AutostartOn.IsChecked.Value)
