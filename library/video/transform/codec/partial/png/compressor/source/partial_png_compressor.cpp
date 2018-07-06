@@ -322,6 +322,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 		thread_ctx[tindex]->output.data = thread_ctx[tindex]->compressed_buffer;
 		thread_ctx[tindex]->output.data_capacity = thread_ctx[tindex]->compressed_buffer_size;
+		thread_ctx[tindex]->rows = nullptr;
 		thread_ctx[tindex]->pcompressed = nullptr;
 		thread_ctx[tindex]->plength = nullptr;
 
