@@ -97,6 +97,14 @@
                     <RadioButton x:Name="DisaplyAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
+                <StackPanel>
+                    <Label Content="Indexed Mode" Target="{Binding ElementName=IndexedMode}" Width="150" />
+                    <RadioButton x:Name="IndexedModeOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="IndexedModeOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
                 <!--StackPanel>
                     <Label Content="Auto Start" Target="{Binding ElementName=Autostart}" Width="150"/>
                     <RadioButton x:Name="AutostartOn" IsChecked="True">
