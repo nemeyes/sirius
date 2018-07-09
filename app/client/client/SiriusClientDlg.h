@@ -42,6 +42,7 @@ private:
 	CButton		_debug_level1;
 	CButton		_debug_level2;
 
+	int32_t		_debug_level;
 	client_controller * _client;
 		
 	sirius::library::framework::client::base *	_framework;

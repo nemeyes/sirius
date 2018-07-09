@@ -148,6 +148,37 @@ namespace sirius
 									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
 								} coordinated_thread_context_t;
 
+								typedef struct _ccl_info_t
+								{
+									int32_t x;
+									int32_t y;
+									int32_t width;
+									int32_t height;
+									_ccl_info_t(void)
+										: x(0)
+										, y(0)
+										, width(0)
+										, height(0)
+									{}
+									
+									_ccl_info_t(const _ccl_info_t & clone)
+									{
+										x = clone.x;
+										y = clone.y;
+										width = clone.width;
+										height = clone.height;
+									}
+
+									_ccl_info_t & operator=(const _ccl_info_t & clone)
+									{
+										x = clone.x;
+										y = clone.y;
+										width = clone.width;
+										height = clone.height;
+										return *this;
+									}
+								} ccl_info_t;
+
 								typedef struct _buffer_t
 								{
 									sirius::library::video::transform::codec::partial::png::compressor::core::ibuffer_t	input;
