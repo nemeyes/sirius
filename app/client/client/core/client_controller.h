@@ -56,6 +56,7 @@ private:
 	HMODULE							_hmodule;
 	wchar_t							_address[MAX_PATH];
 	sirius::library::framework::client::base * _framework;
+	int32_t		_debug_level;
 };
 
 #endif

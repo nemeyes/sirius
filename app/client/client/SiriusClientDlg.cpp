@@ -215,6 +215,7 @@ BOOL CSiriusClientDlg::OnInitDialog()
 						FreeLibrary(_hmodule);
 						_hmodule = NULL;
 					}
+					_framework->change_debug_level(_debug_level);
 				}
 				else
 				{
@@ -252,6 +253,7 @@ BOOL CSiriusClientDlg::OnInitDialog()
 	if(_auto_start)
 		SendDlgItemMessage(IDC_BUTTON_CONNECT, BM_CLICK);
 
+	_debug_level = sirius::library::framework::client::base::debug_level_t::none;
 	
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetRange(0, 100);
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetPageSize(1);
@@ -496,7 +498,7 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 
 	_client = new client_controller(this, keepalive?true:false, _ttoi(keepalive_timeout), tls?true:false);
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection?true:false);
-
+	_client->change_debug_level(_debug_level);
 	EnableConnectButton(FALSE);
 
 	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));
@@ -834,7 +836,8 @@ void CSiriusClientDlg::OnBnClickedCheckDebugLevel1()
 	if (_debug_level1.GetCheck())
 	{
 		debug_level = 1;
-		_debug_level2.SetCheck(1);
+		_debug_level2.SetCheck(0);
+		//_debug_level1.SetCheck(1);
 	}
 	else
 	{
@@ -843,7 +846,10 @@ void CSiriusClientDlg::OnBnClickedCheckDebugLevel1()
 		else
 			debug_level = 0;
 	}
-	_client->change_debug_level(debug_level);
+
+	_debug_level = debug_level;
+	if(_client)
+		_client->change_debug_level(debug_level);
 }
 
 
@@ -854,7 +860,9 @@ void CSiriusClientDlg::OnBnClickedCheckDebugLevel2()
 	if (_debug_level2.GetCheck())
 	{
 		debug_level = 2;
-		_debug_level1.SetCheck(1);
+		_debug_level1.SetCheck(0);
+		//_debug_level2.SetCheck(0);
+
 	}
 	else
 	{
@@ -863,5 +871,8 @@ void CSiriusClientDlg::OnBnClickedCheckDebugLevel2()
 		else
 			debug_level = 0;
 	}
-	_client->change_debug_level(debug_level);
+
+	_debug_level = debug_level;
+	if (_client)
+		_client->change_debug_level(debug_level);
 }

@@ -242,8 +242,11 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				int32_t status = thread_ctx->real_compressor->compress(&thread_ctx->input, &thread_ctx->output);
 				if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
 				{
-					(*thread_ctx->plength) = thread_ctx->output.data_size;
-					memmove(thread_ctx->pcompressed, thread_ctx->output.data, (*thread_ctx->plength));
+					if (thread_ctx->output.data_capacity >= thread_ctx->output.data_size)
+					{
+						(*thread_ctx->plength) = thread_ctx->output.data_size;
+						memmove(thread_ctx->pcompressed, thread_ctx->output.data, (*thread_ctx->plength));
+					}
 				}
 
 				if (thread_ctx->rows)
@@ -677,68 +680,256 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						int32_t cc_height = (cc->bottom - cc->top + 1) * _context->mb_height;
 						int32_t cc_width = (cc->right - cc->left + 1) * _context->mb_width;
 
+						int32_t requested_img_size = _context->block_height*_context->block_width;
+						std::vector<ccl_info_t> ccl_infos;
+						if ((cc_height*cc_width) > requested_img_size)
+						{
+							int32_t quotient_y = cc_height / _context->block_height;
+							int32_t remainder_y = cc_height % _context->block_height;
+
+							int32_t quotient_x = cc_width / _context->block_width;
+							int32_t remainder_x = cc_width % _context->block_width;
+
+							if ((quotient_y > 0) && (quotient_x > 0))
+							{
+								for (int32_t y = 0; y < quotient_y; y++)
+								{
+									for (int32_t x = 0; x < quotient_x; x++)
+									{
+										ccl_info_t ccl_info;
+										ccl_info.x = cc_x + (x * _context->block_width);
+										ccl_info.y = cc_y + (y * _context->block_height);
+										ccl_info.width = _context->block_width;
+										ccl_info.height = _context->block_height;
+										ccl_infos.push_back(ccl_info);
+									}
+								}
+
+								if (remainder_y > 0)
+								{
+									int32_t target_img_size = remainder_y * quotient_x * _context->block_width;
+									if (target_img_size > requested_img_size)
+									{
+										int32_t quotient = target_img_size / requested_img_size;
+										int32_t cc_width2 = (quotient_x * _context->block_width) / quotient;
+										
+										for (int32_t x = 0; x < quotient; x++)
+										{
+											ccl_info_t ccl_info;
+											ccl_info.x = cc_x + (x * cc_width2);
+											ccl_info.y = cc_y + (quotient_y * _context->block_height);
+											ccl_info.width = cc_width2;
+											ccl_info.height = remainder_y;
+											ccl_infos.push_back(ccl_info);
+										}
+
+										int32_t cc_width3 = cc_width - cc_width2 * quotient;
+										if (cc_width3> 0)
+										{
+											ccl_info_t ccl_info;
+											ccl_info.x = cc_x + (quotient * cc_width2);
+											ccl_info.y = cc_y + (quotient_y * _context->block_height);
+											ccl_info.width = cc_width3;
+											ccl_info.height = remainder_y;
+											ccl_infos.push_back(ccl_info);
+										}
+									}
+									else
+									{
+										ccl_info_t ccl_info;
+										ccl_info.x = cc_x;
+										ccl_info.y = cc_y + (quotient_y * _context->block_height);
+										ccl_info.width = quotient_x * _context->block_width;
+										ccl_info.height = remainder_y;
+										ccl_infos.push_back(ccl_info);
+									}
+								}
+
+								if (remainder_x > 0)
+								{
+									int32_t target_img_size = remainder_x * ((quotient_y * _context->block_height) + remainder_y);
+									if (target_img_size > requested_img_size)
+									{
+										int32_t quotient = target_img_size / requested_img_size;
+										int32_t cc_height2 = ((quotient_y * _context->block_height) + remainder_y) / quotient;
+										for (int32_t y = 0; y < quotient; y++)
+										{
+											ccl_info_t ccl_info;
+											ccl_info.x = cc_x + (quotient_x * _context->block_width);
+											ccl_info.y = cc_y + (y * cc_height2);
+											ccl_info.width = remainder_x;
+											ccl_info.height = cc_height2;
+											ccl_infos.push_back(ccl_info);
+										}
+
+										int32_t cc_height3 = ((quotient_y * _context->block_height) + remainder_y) - cc_height2 * quotient;
+										if (cc_height3 > 0)
+										{
+											ccl_info_t ccl_info;
+											ccl_info.x = cc_x + (quotient_x * _context->block_width);
+											ccl_info.y = cc_y + (quotient * cc_height2);
+											ccl_info.width = remainder_x;
+											ccl_info.height = cc_height3;
+											ccl_infos.push_back(ccl_info);
+										}
+									}
+									else
+									{
+										ccl_info_t ccl_info;
+										ccl_info.x = cc_x + (quotient_x * _context->block_width);
+										ccl_info.y = cc_y;
+										ccl_info.width = remainder_x;
+										ccl_info.height = (quotient_y * _context->block_height) + remainder_y;
+										ccl_infos.push_back(ccl_info);
+									}
+								}
+							}
+							else if (quotient_y > 0)
+							{
+								int32_t quotient = (cc_height*cc_width) / requested_img_size;
+								int32_t cc_height2 = cc_height / quotient;
+								for (int32_t y = 0; y < quotient; y++)
+								{
+									ccl_info_t ccl_info;
+									ccl_info.x = cc_x;
+									ccl_info.y = cc_y + (y * cc_height2);
+									ccl_info.width = cc_width;
+									ccl_info.height = cc_height2;
+									ccl_infos.push_back(ccl_info);
+								}
+
+								int32_t cc_height3 = cc_height - cc_height2 * quotient;
+								if (cc_height3 > 0)
+								{
+									ccl_info_t ccl_info;
+									ccl_info.x = cc_x;
+									ccl_info.y = cc_y + (quotient * cc_height2);
+									ccl_info.width = cc_width;
+									ccl_info.height = cc_height3;
+									ccl_infos.push_back(ccl_info);
+								}
+							}
+							else if(quotient_x > 0)
+							{
+								int32_t quotient = (cc_height*cc_width) / requested_img_size;
+								int32_t cc_width2 = cc_width / quotient;
+								for (int32_t x = 0; x < quotient; x++)
+								{
+									ccl_info_t ccl_info;
+									ccl_info.x = cc_x + (x * cc_width2);
+									ccl_info.y = cc_y;
+									ccl_info.width = cc_width2;
+									ccl_info.height = cc_height;
+									ccl_infos.push_back(ccl_info);
+								}
+
+								int32_t cc_width3 = cc_width - cc_width2 * quotient;
+								if (cc_width3> 0)
+								{
+									ccl_info_t ccl_info;
+									ccl_info.x = cc_x + (quotient * cc_width2);
+									ccl_info.y = cc_y;
+									ccl_info.width = cc_width3;
+									ccl_info.height = cc_height;
+									ccl_infos.push_back(ccl_info);
+								}
+							}
+							else
+							{
+								ccl_info_t ccl_info;
+								ccl_info.x = cc_x;
+								ccl_info.y = cc_y;
+								ccl_info.width = cc_width;
+								ccl_info.height = cc_height;
+								ccl_infos.push_back(ccl_info);
+							}
+						}
+						else
+						{
+							ccl_info_t ccl_info;
+							ccl_info.x = cc_x;
+							ccl_info.y = cc_y;
+							ccl_info.width = cc_width;
+							ccl_info.height = cc_height;
+							ccl_infos.push_back(ccl_info);
+						}
+
 						if (_front)
 						{
-							while (TRUE)
+							std::vector<ccl_info_t>::iterator ccl_info_iter;
+							for (ccl_info_iter = ccl_infos.begin(); ccl_info_iter != ccl_infos.end(); ccl_info_iter++)
 							{
-								BOOL found_thread_ctx = FALSE;
-								for (int32_t tindex = 0; tindex < thread_count; tindex++)
+								ccl_info_t ccl_info = *ccl_info_iter;
+								while (TRUE)
 								{
-									if (::WaitForSingleObject(thread_ctx[tindex]->available, 0) == WAIT_OBJECT_0)
+									/*
+									if ((ccl_info.width*ccl_info.height) > (_context->block_width * _context->block_height))
 									{
-										thread_ctx[tindex]->rows = static_cast<uint8_t**>(malloc(cc_height * sizeof(uint8_t*)));
-										for (int32_t h = 0; h < cc_height; h++)
+										char debug[MAX_PATH] = { 0 };
+										_snprintf_s(debug, MAX_PATH, "ccl_info.width=%d, ccl_info.height=%d \n", ccl_info.width, ccl_info.height);
+										::OutputDebugStringA(debug);
+									}
+									*/
+
+									BOOL found_thread_ctx = FALSE;
+									for (int32_t tindex = 0; tindex < thread_count; tindex++)
+									{
+										if (::WaitForSingleObject(thread_ctx[tindex]->available, 0) == WAIT_OBJECT_0)
 										{
-											int32_t src_index = (cc_y + h) * (_context->width << 2) + (cc_x << 2);
-											thread_ctx[tindex]->rows[h] = process_data + src_index;
-											memmove(reference_buffer + src_index, process_data + src_index, cc_width << 2);
+											thread_ctx[tindex]->rows = static_cast<uint8_t**>(malloc(ccl_info.height * sizeof(uint8_t*)));
+											for (int32_t h = 0; h < ccl_info.height; h++)
+											{
+												int32_t src_index = (ccl_info.y + h) * (_context->width << 2) + (ccl_info.x << 2);
+												thread_ctx[tindex]->rows[h] = process_data + src_index;
+												memmove(reference_buffer + src_index, process_data + src_index, ccl_info.width << 2);
+											}
+
+											thread_ctx[tindex]->input.data = thread_ctx[tindex]->rows;
+											thread_ctx[tindex]->input.data_capacity = ccl_info.height;
+											thread_ctx[tindex]->input.data_size = ccl_info.height;
+											thread_ctx[tindex]->input.x = 0;
+											thread_ctx[tindex]->input.y = 0;
+											thread_ctx[tindex]->input.width = ccl_info.width;
+											thread_ctx[tindex]->input.height = ccl_info.height;
+
+											thread_ctx[tindex]->output.data_size = 0;
+											thread_ctx[tindex]->output.x = thread_ctx[tindex]->input.x;
+											thread_ctx[tindex]->output.y = thread_ctx[tindex]->input.y;
+											thread_ctx[tindex]->output.width = thread_ctx[tindex]->input.width;
+											thread_ctx[tindex]->output.height = thread_ctx[tindex]->input.height;
+
+											px[count] = int16_t(ccl_info.x);
+											py[count] = int16_t(ccl_info.y);
+											pwidth[count] = int16_t(ccl_info.width);
+											pheight[count] = int16_t(ccl_info.height);
+											if (pcompressed[count])
+											{
+												delete[] pcompressed[count];
+												pcompressed[count] = nullptr;
+											}
+											pcompressed[count] = new uint8_t[nbytes_compressed];
+											thread_ctx[tindex]->pcompressed = pcompressed[count];
+											thread_ctx[tindex]->plength = &plength[count];
+
+											thread_ctx[tindex]->real_compressor->release();
+											thread_ctx[tindex]->real_compressor->initialize(_context);
+
+											std::vector<coordinated_thread_context_t*>::iterator iter = std::find(thread_contexts.begin(), thread_contexts.end(), thread_ctx[tindex]);
+											if (iter == thread_contexts.end())
+											{
+												thread_contexts.push_back(thread_ctx[tindex]);
+											}
+
+											count++;
+											::SetEvent(thread_ctx[tindex]->signal);
+											found_thread_ctx = TRUE;
 										}
-
-										thread_ctx[tindex]->input.data = thread_ctx[tindex]->rows;
-										thread_ctx[tindex]->input.data_capacity = cc_height;
-										thread_ctx[tindex]->input.data_size = cc_height;
-										thread_ctx[tindex]->input.x = 0;
-										thread_ctx[tindex]->input.y = 0;
-										thread_ctx[tindex]->input.width = cc_width;
-										thread_ctx[tindex]->input.height = cc_height;
-
-										thread_ctx[tindex]->output.data_size = 0;
-										thread_ctx[tindex]->output.x = thread_ctx[tindex]->input.x;
-										thread_ctx[tindex]->output.y = thread_ctx[tindex]->input.y;
-										thread_ctx[tindex]->output.width = thread_ctx[tindex]->input.width;
-										thread_ctx[tindex]->output.height = thread_ctx[tindex]->input.height;
-
-										px[count] = int16_t(cc_x);
-										py[count] = int16_t(cc_y);
-										pwidth[count] = int16_t(cc_width);
-										pheight[count] = int16_t(cc_height);
-										if (pcompressed[count])
-										{
-											delete[] pcompressed[count];
-											pcompressed[count] = nullptr;
-										}
-										pcompressed[count] = new uint8_t[nbytes_compressed];
-										thread_ctx[tindex]->pcompressed = pcompressed[count];
-										thread_ctx[tindex]->plength = &plength[count];
-
-										thread_ctx[tindex]->real_compressor->release();
-										thread_ctx[tindex]->real_compressor->initialize(_context);
-
-										std::vector<coordinated_thread_context_t*>::iterator iter = std::find(thread_contexts.begin(), thread_contexts.end(), thread_ctx[tindex]);
-										if (iter == thread_contexts.end())
-										{
-											thread_contexts.push_back(thread_ctx[tindex]);
-										}
-
-										count++;
-										::SetEvent(thread_ctx[tindex]->signal);
-										found_thread_ctx = TRUE;
+										if (found_thread_ctx)
+											break;
 									}
 									if (found_thread_ctx)
 										break;
 								}
-								if (found_thread_ctx)
-									break;
 							}
 						}
 					}
