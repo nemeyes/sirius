@@ -201,10 +201,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 
 	bool alloc_session = false;
 	std::string attendant_uuid;	
-
-	if (_sessions.size() == 1)
-		_last_alloc_session_id = -1;
-				
+			
 	for (int32_t id = _last_alloc_session_id + 1; id < _sessions.size(); id++)
 	{
 		sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
@@ -232,7 +229,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 	
 	if (!alloc_session)
 	{
-		for (int32_t id = 0; id < _last_alloc_session_id; id++)
+		for (int32_t id = 0; id < _last_alloc_session_id + 1; id++)
 		{
 			sirius::app::server::arbitrator::session * session = _sessions.find(id)->second;
 
@@ -252,8 +249,7 @@ int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char 
 				status = sirius::app::server::arbitrator::proxy::err_code_t::success;			
 
 				_use_count = _sessions.size() - get_available_attendant_count();
-				_cluster->backend_client_connect((char*)session->client_id(), _use_count, session->id());
-				
+				_cluster->backend_client_connect((char*)session->client_id(), _use_count, session->id());				
 				break;
 			}
 		}
