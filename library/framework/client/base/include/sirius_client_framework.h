@@ -28,6 +28,7 @@ namespace sirius
 						static const int32_t none = 0;
 						static const int32_t gray = 1;
 						static const int32_t frame = 2;
+						static const int32_t file = 3;
 					} debug_level_t;
 
 					virtual int32_t state(void) = 0;
