@@ -254,7 +254,7 @@ namespace client {
 
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);
 				//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
-				Sleep(500);
+				Sleep(1000);
 
 				browser->ReloadIgnoreCache();
 				//browser->Reload();
@@ -277,8 +277,8 @@ namespace client {
 					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!url diff faile");
 					manager->DeleteCookies("", "", NULL);
 					browser->GetMainFrame()->LoadURL(rootWin->start_url);
-					Sleep(500);
-					browser->Reload();
+					Sleep(1000);
+					browser->ReloadIgnoreCache();
 				}
 			}
 
