@@ -254,9 +254,10 @@ namespace client {
 
 				browser->GetMainFrame()->LoadURL(rootWin->start_url);
 				//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
-				Sleep(3);
-				
+				Sleep(500);
+
 				browser->ReloadIgnoreCache();
+				//browser->Reload();
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 
 				if (rootWin->timeset_event)
@@ -264,6 +265,20 @@ namespace client {
 					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
 					timeKillEvent(rootWin->timeset_event);
 					rootWin->timeset_event = 0;
+				}
+				char get_url[MAX_PATH] = { 0 };
+				char start_url[MAX_PATH] = { 0 };
+				_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
+				_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
+				OutputDebugStringA(get_url);
+				OutputDebugStringA(start_url);
+				if (strcmp(get_url, start_url))
+				{
+					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!url diff faile");
+					manager->DeleteCookies("", "", NULL);
+					browser->GetMainFrame()->LoadURL(rootWin->start_url);
+					Sleep(500);
+					browser->Reload();
 				}
 			}
 
