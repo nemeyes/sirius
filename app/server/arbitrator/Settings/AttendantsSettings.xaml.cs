@@ -49,6 +49,9 @@ namespace sirius.app.server.arbitrator.Settings
             if (TextFrameRate.Text.Length < 1)
                 TextFrameRate.Text = setting_value.video_fps.ToString();
 
+            TextVideoBlockWidth.Text = setting_value.video_block_width.ToString();
+            TextVideoBlockHeight.Text = setting_value.video_block_height.ToString();
+
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
 
             if (QuantizationColors.Text.Length < 1)
@@ -145,6 +148,9 @@ namespace sirius.app.server.arbitrator.Settings
             //else
                 setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
 
+            setting_value.video_block_width = Convert.ToInt32(TextVideoBlockWidth.Text);
+            setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
+
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
             else
@@ -218,6 +224,30 @@ namespace sirius.app.server.arbitrator.Settings
                 if (Convert.ToInt32(TextFrameRate.Text) > 30)
                 {
                     TextFrameRate.Text = "30";
+                }
+            }
+        }
+
+        private void TextVideoBlockWidth_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextVideoBlockHeight_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
                 }
             }
         }
