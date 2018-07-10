@@ -670,6 +670,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 					free(pseudo_stack);
 					pseudo_stack = nullptr;
 
+#if defined(WITH_CALIBRATION)
 					std::vector<coordinated_thread_context_t*> thread_contexts;
 					std::vector<connected_component_t*>::iterator ccc_iter;
 					for (ccc_iter = ccl_component_vec.begin(); ccc_iter != ccl_component_vec.end(); ccc_iter++)
@@ -712,7 +713,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									{
 										int32_t quotient = target_img_size / requested_img_size;
 										int32_t cc_width2 = (quotient_x * _context->block_width) / quotient;
-										
+
 										for (int32_t x = 0; x < quotient; x++)
 										{
 											ccl_info_t ccl_info;
@@ -809,7 +810,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									ccl_infos.push_back(ccl_info);
 								}
 							}
-							else if(quotient_x > 0)
+							else if (quotient_x > 0)
 							{
 								int32_t quotient = (cc_height*cc_width) / requested_img_size;
 								int32_t cc_width2 = cc_width / quotient;
@@ -865,9 +866,9 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									/*
 									if ((ccl_info.width*ccl_info.height) > (_context->block_width * _context->block_height))
 									{
-										char debug[MAX_PATH] = { 0 };
-										_snprintf_s(debug, MAX_PATH, "ccl_info.width=%d, ccl_info.height=%d \n", ccl_info.width, ccl_info.height);
-										::OutputDebugStringA(debug);
+									char debug[MAX_PATH] = { 0 };
+									_snprintf_s(debug, MAX_PATH, "ccl_info.width=%d, ccl_info.height=%d \n", ccl_info.width, ccl_info.height);
+									::OutputDebugStringA(debug);
 									}
 									*/
 
@@ -933,6 +934,94 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 							}
 						}
 					}
+
+#else
+					std::vector<coordinated_thread_context_t*> thread_contexts;
+					std::vector<connected_component_t*>::iterator ccc_iter;
+					for (ccc_iter = ccl_component_vec.begin(); ccc_iter != ccl_component_vec.end(); ccc_iter++)
+					{
+						connected_component_t * cc = (*ccc_iter);
+						int32_t cc_x = cc->left * _context->mb_width;
+						int32_t cc_y = cc->top * _context->mb_height;
+						int32_t cc_height = (cc->bottom - cc->top + 1) * _context->mb_height;
+						int32_t cc_width = (cc->right - cc->left + 1) * _context->mb_width;
+
+						if (_front)
+						{
+							while (TRUE)
+							{
+								/*
+								if ((ccl_info.width*ccl_info.height) > (_context->block_width * _context->block_height))
+								{
+									char debug[MAX_PATH] = { 0 };
+									_snprintf_s(debug, MAX_PATH, "ccl_info.width=%d, ccl_info.height=%d \n", ccl_info.width, ccl_info.height);
+									::OutputDebugStringA(debug);
+								}
+								*/
+
+								BOOL found_thread_ctx = FALSE;
+								for (int32_t tindex = 0; tindex < thread_count; tindex++)
+								{
+									if (::WaitForSingleObject(thread_ctx[tindex]->available, 0) == WAIT_OBJECT_0)
+									{
+										thread_ctx[tindex]->rows = static_cast<uint8_t**>(malloc(cc_height * sizeof(uint8_t*)));
+										for (int32_t h = 0; h < cc_height; h++)
+										{
+											int32_t src_index = (cc_y + h) * (_context->width << 2) + (cc_x << 2);
+											thread_ctx[tindex]->rows[h] = process_data + src_index;
+											memmove(reference_buffer + src_index, process_data + src_index, cc_width << 2);
+										}
+
+										thread_ctx[tindex]->input.data = thread_ctx[tindex]->rows;
+										thread_ctx[tindex]->input.data_capacity = cc_height;
+										thread_ctx[tindex]->input.data_size = cc_height;
+										thread_ctx[tindex]->input.x = 0;
+										thread_ctx[tindex]->input.y = 0;
+										thread_ctx[tindex]->input.width = cc_width;
+										thread_ctx[tindex]->input.height = cc_height;
+
+										thread_ctx[tindex]->output.data_size = 0;
+										thread_ctx[tindex]->output.x = thread_ctx[tindex]->input.x;
+										thread_ctx[tindex]->output.y = thread_ctx[tindex]->input.y;
+										thread_ctx[tindex]->output.width = thread_ctx[tindex]->input.width;
+										thread_ctx[tindex]->output.height = thread_ctx[tindex]->input.height;
+
+										px[count] = int16_t(cc_x);
+										py[count] = int16_t(cc_y);
+										pwidth[count] = int16_t(cc_width);
+										pheight[count] = int16_t(cc_height);
+										if (pcompressed[count])
+										{
+											delete[] pcompressed[count];
+											pcompressed[count] = nullptr;
+										}
+										pcompressed[count] = new uint8_t[nbytes_compressed];
+										thread_ctx[tindex]->pcompressed = pcompressed[count];
+										thread_ctx[tindex]->plength = &plength[count];
+
+										thread_ctx[tindex]->real_compressor->release();
+										thread_ctx[tindex]->real_compressor->initialize(_context);
+
+										std::vector<coordinated_thread_context_t*>::iterator iter = std::find(thread_contexts.begin(), thread_contexts.end(), thread_ctx[tindex]);
+										if (iter == thread_contexts.end())
+										{
+											thread_contexts.push_back(thread_ctx[tindex]);
+										}
+
+										count++;
+										::SetEvent(thread_ctx[tindex]->signal);
+										found_thread_ctx = TRUE;
+									}
+									if (found_thread_ctx)
+										break;
+								}
+								if (found_thread_ctx)
+									break;
+							}
+						}
+					}
+#endif
+
 					std::vector<coordinated_thread_context_t*>::iterator iter;
 					for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
 						::WaitForSingleObject((*iter)->available, INFINITE);
