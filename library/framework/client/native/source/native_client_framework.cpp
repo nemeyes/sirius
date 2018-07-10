@@ -265,6 +265,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		memset(_render_buffer, 0x00, rctx->width * rctx->height * 4);
 	}
 
+	static uint64_t fi = 0;
 	for (int32_t i = 0; i < count; i++)
 	{
 		encoded.data = data[i];
@@ -287,6 +288,30 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 				int32_t dst_index = (video_y + bh) * (rctx->width << 2) + (video_x << 2);
 				memmove(_render_buffer + dst_index, _decoder_buffer + src_index, (video_width << 2));
 			}
+
+			if (_debug_level == sirius::library::framework::client::native::_debug_level_t::file)
+			{
+
+				char debug[MAX_PATH] = { 0 };
+				_snprintf_s(debug, MAX_PATH, ".\\images\\%llu_%d.png", fi, i);
+				HANDLE file = ::CreateFileA(debug, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+				if (file != INVALID_HANDLE_VALUE)
+				{
+					uint32_t bytes_written = 0;
+					uint8_t* temp = (uint8_t*)(data[i]);
+					do
+					{
+						uint32_t nb_write = 0;
+						::WriteFile(file, temp, length[i], (LPDWORD)&nb_write, 0);
+						bytes_written += nb_write;
+						if ((length[i]) == bytes_written)
+							break;
+					} while (1);
+					::CloseHandle(file);
+				}
+			}
+
 		}
 
 		if (i == (count - 1))
@@ -297,6 +322,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 			renderer->render(&render);
 		}
 	}
+	fi++;
 }
 
 void sirius::library::framework::client::native::core::on_end_video(void)
