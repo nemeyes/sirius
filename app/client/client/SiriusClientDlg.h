@@ -41,7 +41,7 @@ private:
 	CEdit		_ctrl_end2end_data;
 	CButton		_debug_level1;
 	CButton		_debug_level2;
-
+	CButton		_debug_level3;
 	int32_t		_debug_level;
 	client_controller * _client;
 		
@@ -50,6 +50,8 @@ private:
 	bool	_auto_start;
 	int32_t _video_width;
 	int32_t _video_height;
+	CEdit _keepalive_timeout;
+
 
 public:
 	char _version[MAX_PATH];
@@ -101,6 +103,7 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedCheckDebugLevel1();
 	afx_msg void OnBnClickedCheckDebugLevel2();
+	afx_msg void OnBnClickedCheckDebugLevel3();
 private:
-	CEdit _keepalive_timeout;
+
 };
