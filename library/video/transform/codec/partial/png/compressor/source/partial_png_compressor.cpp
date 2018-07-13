@@ -459,6 +459,15 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				_front->after_process_callback(count, px, py, pwidth, pheight, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
 				memmove(reference_buffer, process_data, process_data_size);
 
+				for (int32_t index = 0; index < pcount; index++)
+				{
+					if (pcompressed[index])
+					{
+						delete[] pcompressed[index];
+						pcompressed[index] = nullptr;
+					}
+				}
+
 				if (rows)
 				{
 					free(rows);
@@ -558,6 +567,15 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 				_front->after_process_callback(count, px, py, pwidth, pheight, pcompressed, plength, before_encode_timestamp, after_encode_timestamp);
 				memmove(reference_buffer, process_data, process_data_size);
+
+				for (int32_t index = 0; index < pcount; index++)
+				{
+					if (pcompressed[index])
+					{
+						delete[] pcompressed[index];
+						pcompressed[index] = nullptr;
+					}
+				}
 
 				if (rows)
 				{
@@ -1135,6 +1153,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						}
 					}
 
+					for (int32_t index = 0; index < pcount; index++)
+					{
+						if (pcompressed[index])
+						{
+							delete[] pcompressed[index];
+							pcompressed[index] = nullptr;
+						}
+					}
 
 					for (iter = thread_contexts.begin(); iter != thread_contexts.end(); iter++)
 						::SetEvent((*iter)->available);
