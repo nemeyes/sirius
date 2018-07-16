@@ -1153,6 +1153,18 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						}
 					}
 
+					for (ccc_iter = ccl_component_vec.begin(); ccc_iter != ccl_component_vec.end(); ccc_iter++)
+					{
+						connected_component_t * cc = *ccc_iter;
+						if (cc)
+						{
+							cc->elements.clear();
+							delete cc;
+							cc = nullptr;
+						}
+					}
+					ccl_component_vec.clear();
+
 					for (int32_t index = 0; index < pcount; index++)
 					{
 						if (pcompressed[index])
