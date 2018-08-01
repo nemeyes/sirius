@@ -93,9 +93,6 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_URL, _ctrl_url);
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
 	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
-	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL1, _debug_level1);
-	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL2, _debug_level2);
-	DDX_Control(pDX, IDC_CHECK_DEBUG_LEVEL3, _debug_level3);
 	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
 }
 
@@ -127,9 +124,6 @@ BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
 	ON_WM_HSCROLL()
 	ON_WM_WINDOWPOSCHANGED()
 	ON_BN_CLICKED(IDC_FIND_FILE_BUTTON, &CSiriusClientDlg::OnBnClickedFindFileButton)
-	ON_BN_CLICKED(IDC_CHECK_DEBUG_LEVEL1, &CSiriusClientDlg::OnBnClickedCheckDebugLevel1)
-	ON_BN_CLICKED(IDC_CHECK_DEBUG_LEVEL2, &CSiriusClientDlg::OnBnClickedCheckDebugLevel2)
-	ON_BN_CLICKED(IDC_CHECK_DEBUG_LEVEL3, &CSiriusClientDlg::OnBnClickedCheckDebugLevel3)
 END_MESSAGE_MAP()
 
 
@@ -217,7 +211,6 @@ BOOL CSiriusClientDlg::OnInitDialog()
 						FreeLibrary(_hmodule);
 						_hmodule = NULL;
 					}
-					_framework->change_debug_level(_debug_level);
 				}
 				else
 				{
@@ -255,7 +248,6 @@ BOOL CSiriusClientDlg::OnInitDialog()
 	if(_auto_start)
 		SendDlgItemMessage(IDC_BUTTON_CONNECT, BM_CLICK);
 
-	_debug_level = sirius::library::framework::client::base::debug_level_t::none;
 	
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetRange(0, 100);
 	//((CSliderCtrl*)GetDlgItem(IDC_SLIDER_SEEK_BAR))->SetPageSize(1);
@@ -500,7 +492,6 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 
 	_client = new client_controller(this, keepalive?true:false, _ttoi(keepalive_timeout), tls?true:false);
 	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection?true:false);
-	_client->change_debug_level(_debug_level);
 	EnableConnectButton(FALSE);
 
 	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));
@@ -828,83 +819,4 @@ BOOL CSiriusClientDlg::PreTranslateMessage(MSG* pMsg)
 			_client->key_up(pMsg->wParam);
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
-}
-
-
-void CSiriusClientDlg::OnBnClickedCheckDebugLevel1()
-{
-	// TODO: Add your control notification handler code here
-	int32_t debug_level = 0;
-	if (_debug_level1.GetCheck())
-	{
-		debug_level = 1;
-		_debug_level2.SetCheck(0);
-		_debug_level3.SetCheck(0);
-	}
-	else
-	{
-		if (_debug_level2.GetCheck())
-			debug_level = 2;
-		else if (_debug_level3.GetCheck())
-			debug_level = 3;
-		else
-			debug_level = 0;
-	}
-
-	_debug_level = debug_level;
-	if(_client)
-		_client->change_debug_level(debug_level);
-}
-
-
-void CSiriusClientDlg::OnBnClickedCheckDebugLevel2()
-{
-	// TODO: Add your control notification handler code here
-	int32_t debug_level = 0;
-	if (_debug_level2.GetCheck())
-	{
-		debug_level = 2;
-		_debug_level1.SetCheck(0);
-		_debug_level3.SetCheck(0);
-
-	}
-	else
-	{
-		if (_debug_level1.GetCheck())
-			debug_level = 1;
-		else if (_debug_level3.GetCheck())
-			debug_level = 3;
-		else
-			debug_level = 0;
-	}
-
-	_debug_level = debug_level;
-	if (_client)
-		_client->change_debug_level(debug_level);
-}
-
-void CSiriusClientDlg::OnBnClickedCheckDebugLevel3()
-{
-	// TODO: Add your control notification handler code here
-	int32_t debug_level = 0;
-	if (_debug_level3.GetCheck())
-	{
-		debug_level = 3;
-		_debug_level1.SetCheck(0);
-		_debug_level2.SetCheck(0);
-
-	}
-	else
-	{
-		if (_debug_level1.GetCheck())
-			debug_level = 1;
-		else if (_debug_level2.GetCheck())
-			debug_level = 2;
-		else
-			debug_level = 0;
-	}
-
-	_debug_level = debug_level;
-	if (_client)
-		_client->change_debug_level(debug_level);
 }

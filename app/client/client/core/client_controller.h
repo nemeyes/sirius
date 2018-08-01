@@ -12,8 +12,6 @@ public:
 	client_controller(CSiriusClientDlg * front, bool keepalive, int32_t keepalive_timeout, bool tls);
 	virtual ~client_controller(void);
 
-	void change_debug_level(int32_t level);
-
 	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection);
 	void on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection);
 	void on_pre_disconnect(void);
@@ -56,7 +54,6 @@ private:
 	HMODULE							_hmodule;
 	wchar_t							_address[MAX_PATH];
 	sirius::library::framework::client::base * _framework;
-	int32_t		_debug_level;
 };
 
 #endif

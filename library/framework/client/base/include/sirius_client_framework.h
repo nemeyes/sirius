@@ -35,7 +35,6 @@ namespace sirius
 					virtual int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat) = 0;
 					virtual int32_t play(HWND hwnd) = 0;
 					virtual int32_t stop(void) = 0;
-					virtual int32_t change_debug_level(int32_t level) = 0;
 				};
 			};
 		};

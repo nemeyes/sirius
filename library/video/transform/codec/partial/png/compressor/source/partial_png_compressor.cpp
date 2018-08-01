@@ -10,8 +10,6 @@
 #include <vector>
 #include <assert.h>
 
-#include <Simd\SimdLib.h>
-
 
 #if defined(WITH_DEBUG_PNG)
 #include <sirius_io.h>

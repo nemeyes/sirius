@@ -39,10 +39,6 @@ private:
 	CEdit		_ctrl_url;
 	CEdit		_ctrl_port;
 	CEdit		_ctrl_end2end_data;
-	CButton		_debug_level1;
-	CButton		_debug_level2;
-	CButton		_debug_level3;
-	int32_t		_debug_level;
 	client_controller * _client;
 		
 	sirius::library::framework::client::base *	_framework;
@@ -101,9 +97,4 @@ public:
 	void ClientPointToServerPoint(CPoint point, CPoint * output);
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnBnClickedCheckDebugLevel1();
-	afx_msg void OnBnClickedCheckDebugLevel2();
-	afx_msg void OnBnClickedCheckDebugLevel3();
-private:
-
 };

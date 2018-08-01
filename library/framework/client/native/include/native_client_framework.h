@@ -29,8 +29,6 @@ namespace sirius
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 
-					int32_t change_debug_level(int32_t level);
-
 					virtual void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height);
 					virtual void on_recv_video(int32_t codec, const uint8_t * data, int32_t length, long long dts, long long cts);
 					virtual void on_recv_video(int32_t codec, int32_t count, int32_t * index, uint8_t ** data, int32_t * length, long long dts, long long cts);
@@ -49,8 +47,6 @@ namespace sirius
 					uint8_t *					_decoder_buffer;
 					uint8_t *					_render_buffer;
 					uint8_t *					_processing_buffer;
-
-					int32_t						_debug_level;
 				};
 			};
 		};
