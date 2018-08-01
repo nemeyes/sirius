@@ -14,7 +14,6 @@ IF /i %build_mode%=="" set build_mode="release"
 IF /i %work_dir%=="" goto usage1
 
 IF /i %build_mode%=="release" xcopy /Y %work_dir%\3rdparty\gperftools\v2_6_1\win32\v140\x86\bin\libtcmalloc_minimal.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
-xcopy /Y %work_dir%\3rdparty\simd\v4_0_58_1229\win32\v140\x86\bin\Simd.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\zlib1.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 xcopy /Y %work_dir%\3rdparty\libpng\v1_6_34\win32\v140\x86\bin\libpng16.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\stressor\
 

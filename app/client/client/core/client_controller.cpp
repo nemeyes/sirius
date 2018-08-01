@@ -16,7 +16,6 @@ client_controller::client_controller(CSiriusClientDlg * front, bool keepalive, i
 	: _front(front)
 	, _hmodule(NULL)
 	, _framework(NULL)
-	, _debug_level(sirius::library::framework::client::base::debug_level_t::none)
 {
 	HINSTANCE inst = AfxGetInstanceHandle();
 	HWND hwnd = _front->GetSafeHwnd();
@@ -29,15 +28,6 @@ client_controller::~client_controller(void)
 	{
 		delete _controller;
 		_controller = nullptr;
-	}
-}
-
-void client_controller::change_debug_level(int32_t level)
-{
-	_debug_level = level;
-	if (_framework)
-	{
-		_framework->change_debug_level(level);
 	}
 }
 
@@ -87,8 +77,6 @@ void client_controller::on_post_connect(wchar_t * address, int32_t portNumber, b
 						FreeLibrary(_hmodule);
 						_hmodule = NULL;
 					}
-
-					_framework->change_debug_level(_debug_level);
 				}
 				else
 				{

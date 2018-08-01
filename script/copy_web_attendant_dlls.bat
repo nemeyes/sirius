@@ -16,7 +16,6 @@ IF /i %work_dir%=="" goto usage1
 MKDIR %work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web
 MKDIR %work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\configuration
 xcopy /Y /S %work_dir%\platform\win32\v140\x86\%build_mode%\bin\configuration\*.*		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\configuration\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\Simd.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_log4cplus_logger.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
