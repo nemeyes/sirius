@@ -16,15 +16,15 @@ public:
 	static attendant_proxy_wrapper& getInstance();
 
 private:
-	static attendant_proxy_wrapper* _instance;
+	//static attendant_proxy_wrapper* _instance;
 
 	attendant_proxy_wrapper();
 	~attendant_proxy_wrapper();
 	DISALLOW_COPY_AND_ASSIGN(attendant_proxy_wrapper);
 
 public:
-	void Initialize();
-	void finalize();
+	//void Initialize();
+	//void finalize();
 	HWND _proxy_handle;
 	sirius::app::attendant::proxy * _proxy;
 private:

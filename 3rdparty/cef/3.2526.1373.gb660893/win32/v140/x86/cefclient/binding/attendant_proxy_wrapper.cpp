@@ -4,20 +4,8 @@
 
 namespace client {
 	namespace binding {
-
-
-		attendant_proxy_wrapper* attendant_proxy_wrapper::_instance = nullptr;
-
-
 		attendant_proxy_wrapper::attendant_proxy_wrapper()
 			: is_activated_(false) {
-			wchar_t * command = GetCommandLine();
-			int32_t argc = 0;
-			LPWSTR * argv = CommandLineToArgvW(command, &argc);
-			_proxy = new sirius::app::attendant::proxy;
-			if (!_proxy->parse_argument(argc, argv, _proxy->context()))
-				return;
-
 		}
 
 		attendant_proxy_wrapper::~attendant_proxy_wrapper()
@@ -25,13 +13,11 @@ namespace client {
 		}
 
 		attendant_proxy_wrapper& attendant_proxy_wrapper::getInstance() {
-			if (_instance == nullptr)
-				_instance = new attendant_proxy_wrapper;
-
-			return *_instance;
+			static attendant_proxy_wrapper instance_;
+			return instance_;
 		}
 
-		void attendant_proxy_wrapper::Initialize()
+		/*void attendant_proxy_wrapper::Initialize()
 		{
 			OutputDebugString(TEXT("sirius attendant proxy loaded!!\n"));
 			_proxy->initialize();
@@ -66,7 +52,7 @@ namespace client {
 
 			is_activated_ = false;
 
-		}
+		}*/
 
 	}  // namespace binding
 }  // namespace client
