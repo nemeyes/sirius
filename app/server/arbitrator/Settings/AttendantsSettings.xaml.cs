@@ -45,18 +45,11 @@ namespace sirius.app.server.arbitrator.Settings
             TextAttendantUrl.Text = setting_value.url;
             TextAttendantInstanceCount.Text = setting_value.max_attendant_instance.ToString();
             TextAttendantCreationDelay.Text = setting_value.attendant_creation_delay.ToString();
-
-            if (TextFrameRate.Text.Length < 1)
-                TextFrameRate.Text = setting_value.video_fps.ToString();
-
+            TextFrameRate.Text = setting_value.video_fps.ToString();
             TextVideoBlockWidth.Text = setting_value.video_block_width.ToString();
             TextVideoBlockHeight.Text = setting_value.video_block_height.ToString();
-
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
-
-            if (QuantizationColors.Text.Length < 1)
-                QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
-
+            QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
             setting_value.video_compression_level = 1;
             setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
@@ -138,16 +131,8 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.video_compression_level = 1;       
             setting_value.app_session_app = TextAppSessionApp.Text.Trim();
 
-            if (Convert.ToInt32(QuantizationColors.Text) > 128)
-               setting_value.video_quantization_colors = 128;
-            else
-                setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
-
-            //if (Convert.ToInt32(TextFrameRate.Text) > 15)
-            //    setting_value.video_fps = 15;
-            //else
-                setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
-
+            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
+            setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
             setting_value.video_block_width = Convert.ToInt32(TextVideoBlockWidth.Text);
             setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
 
