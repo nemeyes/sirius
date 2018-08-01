@@ -356,7 +356,7 @@ void RootWindowWin::CreateRootWindow(const CefBrowserSettings& settings) {
   find_message_id_ = RegisterWindowMessage(FINDMSGSTRING);
   CHECK(find_message_id_);
 
-  const DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+  const DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
 
   int x, y, width, height;
   if (::IsRectEmpty(&start_rect_)) {
