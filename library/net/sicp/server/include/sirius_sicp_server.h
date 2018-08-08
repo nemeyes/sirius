@@ -19,7 +19,7 @@ namespace sirius
 				public:
 					class core;
 				public:
-					server(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 0, int32_t command_thread_pool_count = 0, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000, BOOL tls = FALSE);
+					server(const char * uuid, int32_t so_recv_buffer_size, int32_t so_send_buffer_size, int32_t recv_buffer_size, int32_t send_buffer_size, int32_t io_thread_pool_count = 0, int32_t command_thread_pool_count = 0, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000, BOOL tls = FALSE, int32_t max_sessions = 500);
 					virtual ~server(void);
 
 					void	uuid(const char * uuid);
