@@ -33,13 +33,14 @@ namespace sirius
 						int32_t video_quantization_colors;
 						bool	invalidate4client;
 						bool	indexed_mode;
-						bool	partial_send;
+						int32_t	nthread;
 						bool	enable_tls;
 						bool	enable_keepalive;
 						int32_t keepalive_timeout;
 						bool	enable_present;
 						bool	enable_auto_start;
 						bool	enable_caching;
+						bool	clean_attendant;
 						_configuration_t(void)
 							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
@@ -56,13 +57,14 @@ namespace sirius
 							, video_quantization_colors(128)
 							, invalidate4client(false)
 							, indexed_mode(false)
-							, partial_send(false)
+							, nthread(20)
 							, enable_tls(false)
 							, enable_keepalive(false)
 							, keepalive_timeout(5000)
 							, enable_present(false)
 							, enable_auto_start(false)
 							, enable_caching(false)
+							, clean_attendant(false)
 						{
 							memset(uuid, 0x00, sizeof(uuid));
 							memset(url, 0x00, sizeof(url));
