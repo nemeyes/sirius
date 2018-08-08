@@ -88,7 +88,8 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		liq_set_quality(liq, _context->min_quality, _context->max_quality);
 	else
 		liq_set_max_colors(liq, _context->max_colors);
-	liq_set_min_posterization(liq, 0);
+
+	//liq_set_min_posterization(liq, 0);
 
 	int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
 	png8_image_t qntpng = { 0 };
