@@ -8,14 +8,14 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, mb_height(8)
 	, compression_level(-1)
 	, gamma(1 / 2.2f)
-	, floyd(0)
+	, floyd(0.5f)
 	, speed(10)
-	, max_colors(128)
+	, max_colors(256)
 	, min_quality(50)
-	, max_quality(80)
+	, max_quality(100)
 	, binvalidate(true)
 	, indexed_video(true)
-	, partial_post(false)
+	, nthread(20)
 {
 
 }
@@ -35,7 +35,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	max_quality = clone.max_quality;
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
-	partial_post = clone.partial_post;
+	nthread = clone.nthread;
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t & sirius::library::video::transform::codec::partial::png::compressor::_context_t::operator=(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
@@ -53,7 +53,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	max_quality = clone.max_quality;
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
-	partial_post = clone.partial_post;
+	nthread = clone.nthread;
 	return (*this);
 }
 

@@ -45,7 +45,7 @@ namespace sirius
 									int32_t	max_quality;
 									bool	binvalidate;
 									bool	indexed_video;
-									bool	partial_post;
+									int32_t nthread;
 									_context_t(void);
 									_context_t(const _context_t & clone);
 									_context_t & operator=(const _context_t & clone);

@@ -206,11 +206,14 @@ namespace sirius
 								static unsigned __stdcall process_indexed_encoding_callback(void * param);
 								static unsigned __stdcall process_coordinated_encoding_callback(void * param);
 
-								void	process_indexed_encoding(indexed_thread_context_t * thread_ctx);
 								void	process_indexed(void);
+								void	process_threaded_indexed_encoding(indexed_thread_context_t * thread_ctx);
+								void	process_threaded_indexed(void);
 
-								void	process_coordinated_encoding(coordinated_thread_context_t * thread_ctx);
 								void	process_coordinated(void);
+								void	process_threaded_coordinated_encoding(coordinated_thread_context_t * thread_ctx);
+								void	process_threaded_coordinated(void);
+
 								void	connect_component(unsigned short * pseudo_stack, std::map<uint64_t, uint32_t> * bfgs, connected_component_t * cc, uint32_t width, uint32_t height, uint32_t x, uint32_t y);
 
 								//void	process_psend_indexed(void);
