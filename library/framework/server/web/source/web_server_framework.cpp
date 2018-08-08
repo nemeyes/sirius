@@ -93,7 +93,7 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 		_venc_context.quantization_colors	= context->video_qauntization_colors;
 		_venc_context.invalidate4client = context->invalidate4client;
 		_venc_context.indexed_mode = context->indexed_mode;
-		_venc_context.partial_send = context->partial_send;
+		_venc_context.nthread = context->nthread;
 	}
 	return sirius::library::framework::server::web::err_code_t::success;
 }

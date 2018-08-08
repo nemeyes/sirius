@@ -834,10 +834,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	long long before_encode_timestamp = 0;
 	long long after_encode_timestamp = 0;
 
-	int32_t		thread_count = 20;
+	int32_t		thread_count = _context->nthread;
 
-	int32_t	compressed_buffer_size = 1024 * 1024 * 2;
-	uint8_t * compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
+	int32_t		compressed_buffer_size = 1024 * 1024 * 2;
+	uint8_t *	compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
 	memset(compressed_buffer, 0x00, compressed_buffer_size);
 
 	int32_t		align = 32;
@@ -2412,7 +2412,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	bool		process_compress_first_time = true;
 
 
-	int32_t		thread_count = 20;
+	int32_t		thread_count = _context->nthread;
 	indexed_thread_context_t ** thread_ctx = static_cast<indexed_thread_context_t**>(malloc(sizeof(indexed_thread_context_t*)*thread_count));
 	for (int32_t tindex = 0; tindex < thread_count; tindex++)
 	{

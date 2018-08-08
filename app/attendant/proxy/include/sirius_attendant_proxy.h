@@ -56,7 +56,7 @@ namespace sirius
 					int32_t video_quantization_colors;
 					bool	invalidate4client;
 					bool	indexed_mode;
-					bool	partial_send;
+					int32_t	nthread;
 					bool	present;
 					bool	keepalive;
 					int32_t keepalive_timeout;
@@ -84,7 +84,7 @@ namespace sirius
 						, video_quantization_colors(128)
 						, invalidate4client(false)
 						, indexed_mode(false)
-						, partial_send(false)
+						, nthread(20)
 						, present(false)
 						, keepalive(false)
 						, keepalive_timeout(5000)
