@@ -464,6 +464,24 @@ bool sirius::library::net::sicp::abstract_server::activate_session(const char * 
 		sirius::autolock lock(&_active_slock);
 		if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 		{
+			if (_activated_sessions.size() > (_max_sessions-1))
+			{
+				int32_t candidates = _activated_sessions.size() - (_max_sessions - 1);
+				for (int32_t candidates_index = 0; candidates_index < candidates; candidates_index++)
+				{
+					std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator candidates_iter = _activated_sessions.begin();
+					std::shared_ptr<sirius::library::net::sicp::session> candidates_session = candidates_iter->second;
+					_activated_sessions.erase(candidates_iter);
+					candidates_session->register_flag(false);
+
+					sirius::autolock lock(&_closing_slock);
+					candidates_session->update_timestamp();
+					_closing_sessions.push_back(candidates_session);
+
+					sirius::library::log::log4cplus::logger::make_debug_log(SAA, "remove sessions because current session count is over max session count\n");
+				}
+			}
+
 			session->update_timestamp();
 			_activated_sessions.insert(std::make_pair(uuid, session));
 			session->uuid(uuid);
