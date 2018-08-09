@@ -26,13 +26,14 @@ namespace sirius.app.server.arbitrator.Settings
         public int video_quantization_colors { get; set; }
         public bool invalidate4client { get; set; }
         public bool indexed_mode { get; set; }
-        public bool partial_send { get; set; }
+        public int nthread { get; set; }
         public bool enable_tls { get; set; }
         public bool enable_keepalive { get; set; }
         public int keepalive_timeout { get; set; }
         public bool enable_present { get; set; }
         public bool enable_auto_start { get; set; }
         public bool enable_caching { get; set; }
+        public bool clean_attendant { get; set; }
         public string cpu { get; set; }
         public string memory { get; set; }
         public int log_level { get; set; }
@@ -78,13 +79,14 @@ namespace sirius.app.server.arbitrator.Settings
                 video_quantization_colors,
                 invalidate4client,
                 indexed_mode,
-                partial_send,
+                nthread,
                 enable_tls, 
                 enable_keepalive,
                 keepalive_timeout, 
                 enable_present, 
                 enable_auto_start, 
                 enable_caching,
+                clean_attendant,
                 (sbyte*)papp_sesion_app);
         }
     }

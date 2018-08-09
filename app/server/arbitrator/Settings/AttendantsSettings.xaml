@@ -82,6 +82,11 @@
                 </StackPanel>
 
                 <StackPanel>
+                    <Label Content="Thread Count" Target="{Binding ElementName=TextThreadCount}" Width="150"/>
+                    <TextBox x:Name="TextThreadCount" Width="70" Text="{Binding ThreadCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextThreadCount_PreviewTextInput"/>
+                </StackPanel>
+
+                <StackPanel>
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
                     <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" />
@@ -114,6 +119,14 @@
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
                     <RadioButton x:Name="IndexedModeOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Clean Attendant" Target="{Binding ElementName=CleanAttendant}" Width="150" />
+                    <RadioButton x:Name="CleanAttendantOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="CleanAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
                 <!--StackPanel>
