@@ -2062,7 +2062,7 @@ if ((self === top && !CoTExt) || isCoTYoutubePlayer) {
 	} // if (!isCoTYoutubePlayer) {
 
 
-	if (document.readyState === 'complete' || document.readyState === 'loaded' || document.readyState === 'interactive')
+	if (document.readyState === 'complete' || document.readyState === 'loaded' || document.readyState === 'interactive' || document.readyState === 'iframe'))
 		CoTExt.main.init();
 	else
 		document.addEventListener('DOMContentLoaded', CoTExt.main.init, false);
