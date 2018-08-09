@@ -85,6 +85,10 @@ public:
 	CEdit _keepalive_timeout;
 	int _key_interval;
 	bool _key_loop;
+
+	int32_t _accumulate_connect_count;
+	int32_t _accumulate_connect_latency;	
+
 public:
 	afx_msg void OnBnClickedButtonConnect();
 	afx_msg void OnBnClickedButtonDisconnect();		

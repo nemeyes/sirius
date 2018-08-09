@@ -143,6 +143,8 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	_accumulate_connect_count = 0;
+	_accumulate_connect_latency = 0;
 	
 	GetDlgItem(IDC_BUTTON_CONNECT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BUTTON_DISCONNECT)->EnableWindow(FALSE);
@@ -165,7 +167,7 @@ BOOL CSiriusStressorDlg::OnInitDialog()
 	_attendant_list.InsertColumn(4, _T("stream connect"), LVCFMT_CENTER, 120);
 	_attendant_list.InsertColumn(5, _T("stream state"), LVCFMT_CENTER, 100);
 	_attendant_list.InsertColumn(6, _T("frame count"), LVCFMT_CENTER, 90);
-	//_attendant_list.InsertColumn(7, _T("latency(ms)"), LVCFMT_CENTER, 100);
+	_attendant_list.InsertColumn(7, _T("latency(ms)"), LVCFMT_CENTER, 100);
 	_attendant_list.ModifyStyle(LVS_TYPEMASK, LVS_REPORT);
 
 	_attendant_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
@@ -633,6 +635,13 @@ LRESULT CSiriusStressorDlg::OnStreamLatencyMsg(WPARAM wParam, LPARAM lParam)
 {
 	int index = wParam;
 	int latency = lParam;
+		
+	_accumulate_connect_count++;
+	_accumulate_connect_latency = _accumulate_connect_latency + latency;
+	
+	CString str_avg_latency;
+	str_avg_latency.Format(_T("%d /ms"), _accumulate_connect_latency / _accumulate_connect_count);
+	SetDlgItemText(IDC_STATIC_AVG_LATENCY, str_avg_latency);
 
 	CString str_latency;
 	str_latency.Format(_T("%d"), latency);
