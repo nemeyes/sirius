@@ -188,11 +188,7 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_indexed_mode=false");
 
-			if (confentity.partial_send)
-				proc_ctrl.set_cmdline(arguments, "--enable_partial_send=true");
-			else
-				proc_ctrl.set_cmdline(arguments, "--enable_partial_send=false");
-
+			proc_ctrl.set_cmdline(arguments, "--nthread=%d", confentity.nthread);
 
 			/*
 			if (confentity.enable_keepalive)

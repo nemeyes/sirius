@@ -150,13 +150,10 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->indexed_mode = false;
 	}
-	if (param.end() != (iter = param.find(L"enable_partial_send")))
+	if (param.end() != (iter = param.find(L"nthread")))
 	{
 		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->partial_send = true;
-		else
-			context->partial_send = false;
+		context->nthread = _wtoi(value.c_str());
 	}
 	if (param.end() != (iter = param.find(L"enable_present")))
 	{

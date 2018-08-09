@@ -63,7 +63,7 @@ namespace sirius
 					int32_t quantization_colors;
 					bool	invalidate4client;
 					bool	indexed_mode;
-					bool	partial_send;
+					int32_t nthread;
 					bool	play_after_init;
 					_video_compressor_context_t(void)
 						: gpuindex(0)
@@ -83,7 +83,7 @@ namespace sirius
 						, play_after_init(false)
 						, invalidate4client(false)
 						, indexed_mode(false)
-						, partial_send(false)
+						, nthread(20)
 					{
 					
 					}
