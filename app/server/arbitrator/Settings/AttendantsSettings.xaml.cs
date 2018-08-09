@@ -48,6 +48,7 @@ namespace sirius.app.server.arbitrator.Settings
             TextFrameRate.Text = setting_value.video_fps.ToString();
             TextVideoBlockWidth.Text = setting_value.video_block_width.ToString();
             TextVideoBlockHeight.Text = setting_value.video_block_height.ToString();
+            TextThreadCount.Text = setting_value.nthread.ToString();
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
             QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
@@ -74,6 +75,18 @@ namespace sirius.app.server.arbitrator.Settings
                 IndexedModeOn.IsChecked = false;
                 IndexedModeOff.IsChecked = true;
             }
+
+            if (setting_value.clean_attendant)
+            {
+                CleanAttendantOn.IsChecked = true;
+                CleanAttendantOff.IsChecked = false;
+            }
+            else
+            {
+                CleanAttendantOn.IsChecked = false;
+                CleanAttendantOff.IsChecked = true;
+            }
+
 
             setting_value.enable_auto_start = false;
 
@@ -135,17 +148,22 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.video_fps = Convert.ToInt32(TextFrameRate.Text);
             setting_value.video_block_width = Convert.ToInt32(TextVideoBlockWidth.Text);
             setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
+            setting_value.nthread = Convert.ToInt32(TextThreadCount.Text);
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
             else
                 setting_value.enable_present = false;
 
-
             if (IndexedModeOn.IsChecked.Value)
                 setting_value.indexed_mode = true;
             else
                 setting_value.indexed_mode = false;
+
+            if (CleanAttendantOn.IsChecked.Value)
+                setting_value.clean_attendant = true;
+            else
+                setting_value.clean_attendant = false;
 
             setting_value.enable_auto_start = false;
             //if (AutostartOn.IsChecked.Value)
@@ -226,6 +244,18 @@ namespace sirius.app.server.arbitrator.Settings
         }
 
         private void TextVideoBlockHeight_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextThreadCount_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             foreach (char c in e.Text)
             {

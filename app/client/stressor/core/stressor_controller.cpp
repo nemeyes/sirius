@@ -260,7 +260,7 @@ void stressor_controller::on_recv_stream(void)
 
 		if (_latency > 0 )
 		{			
-			//::PostMessage(hwnd, WM_STREAM_LATENCY_MSG, _index, recv_stream_time - _latency);
+			::PostMessage(hwnd, WM_STREAM_LATENCY_MSG, _index, recv_stream_time - _latency);
 			_latency = 0;
 		}
 	}
@@ -342,7 +342,7 @@ void stressor_controller::key_event_process()
 			{
 				if (keys[index] > 0)
 				{
-					_latency = GetTickCount();
+					//_latency = GetTickCount();
 					key_down(keys[index]);
 					key_up(keys[index]);
 				}				

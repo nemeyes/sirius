@@ -134,7 +134,7 @@ int main()
 	{
 		sirius::app::server::arbitrator::process::controller proc_ctrl;
 
-		if(!option) 
+		if(!option && confentity.clean_attendant)
 			proc_ctrl.kill("sirius_web_attendant.exe");
 
 		for (int32_t index = 0; index < confentity.max_attendant_instance; index++)
