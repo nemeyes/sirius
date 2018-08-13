@@ -46,7 +46,7 @@ namespace sirius
 					int32_t			clean_activated_session(BOOL force_clean);
 					int32_t			clean_closing_session(BOOL force_clean);
 
-					bool			activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session);
+					bool			activate_session(/*const char * uuid, */std::shared_ptr<sirius::library::net::sicp::session> session);
 					bool			deactivate_session(std::shared_ptr<sirius::library::net::sicp::session> session);
 					bool			check_activate_session(const char * uuid);
 

@@ -347,7 +347,7 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 			//	finalized_sessions.insert(std::make_pair(uuid, session));
 			//}
 		}
-		++iter;
+		iter++;
 	}
 
 	{
@@ -359,16 +359,6 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 			if (iter != _activated_sessions.end() && (removed_session_iter->second.get()== iter->second.get()))
 				_activated_sessions.erase(iter);
 		}
-
-		/*
-		for (iter = finalized_sessions.begin(); iter != finalized_sessions.end(); iter++)
-			_activated_sessions.push_back(*iter);
-		if (finalized_sessions.size() > 0)
-		{
-
-			_activated_sessions = finalized_sessions;
-		}
-		*/
 	}
 
 	return _activated_sessions.size();
@@ -439,12 +429,17 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 	return _closing_sessions.size();
 }
 
-bool sirius::library::net::sicp::abstract_server::activate_session(const char * uuid, std::shared_ptr<sirius::library::net::sicp::session> session)
+bool sirius::library::net::sicp::abstract_server::activate_session(/*const char * uuid, */std::shared_ptr<sirius::library::net::sicp::session> session)
 {
 	//std::shared_ptr<sirius::library::net::iocp::session> iocp_session = std::dynamic_pointer_cast<sirius::library::net::iocp::session>(session);
+	/*
+	char debug[MAX_PATH] = { 0 };
+	_snprintf_s(debug, MAX_PATH, "uuid : %s, session->uuid() : %s\n", uuid, session->uuid());
+	::OutputDebugStringA(debug);
+	*/
 	{
 		sirius::autolock lock(&_active_slock);
-		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = _activated_sessions.find(uuid);
+		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter = _activated_sessions.find(session->uuid());
 		if (iter != _activated_sessions.end())
 		{
 			std::shared_ptr<sirius::library::net::sicp::session> temp = (*iter).second;
@@ -483,9 +478,9 @@ bool sirius::library::net::sicp::abstract_server::activate_session(const char * 
 			}
 
 			session->update_timestamp();
-			_activated_sessions.insert(std::make_pair(uuid, session));
-			session->uuid(uuid);
-			session->register_flag(true);
+			::OutputDebugStringA("_activated_sessions.insert\n");
+			//session->uuid(uuid);
+			_activated_sessions.insert(std::make_pair(session->uuid(), session));
 			return true;
 		}
 		else
