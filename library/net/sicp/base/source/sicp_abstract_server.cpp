@@ -453,6 +453,8 @@ bool sirius::library::net::sicp::abstract_server::activate_session(/*const char 
 		iter = std::find(_connected_sessions.begin(), _connected_sessions.end(), session);
 		if (iter != _connected_sessions.end())
 			_connected_sessions.erase(iter);
+		else
+			return false;
 	}
 
 	{
