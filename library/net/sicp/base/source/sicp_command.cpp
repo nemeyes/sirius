@@ -151,8 +151,11 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	{
 		sirius::uuid  gen_uuid;
 		gen_uuid.create();
+		session->register_flag(true);
 		session->keepalive_flag(TRUE);
-		code = _processor->activate_session(gen_uuid.c_str(), session);
+		session->uuid(gen_uuid.c_str());
+		//code = _processor->activate_session(gen_uuid.c_str(), session);
+		code = _processor->activate_session(session);
 		if (code)
 		{
 			strcpy_s(res.uuid, gen_uuid.c_str());
@@ -165,8 +168,11 @@ void sirius::library::net::sicp::create_session_req::execute(const char * dst, c
 	{
 		if (strlen(src)>0)
 		{
+			session->register_flag(true);
 			session->keepalive_flag(FALSE);
-			code = _processor->activate_session(src, session);
+			session->uuid(src);
+			//code = _processor->activate_session(src, session);
+			code = _processor->activate_session(session);
 			if (code)
 			{
 				strcpy_s(res.uuid, src);
