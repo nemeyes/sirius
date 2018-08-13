@@ -836,9 +836,9 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 	int32_t		thread_count = _context->nthread;
 
-	int32_t		compressed_buffer_size = 1024 * 1024 * 2;
-	uint8_t *	compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
-	memset(compressed_buffer, 0x00, compressed_buffer_size);
+	//int32_t		compressed_buffer_size = 1024 * 1024 * 1;
+	//uint8_t *	compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
+	//memset(compressed_buffer, 0x00, compressed_buffer_size);
 
 	int32_t		align = 32;
 	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;
@@ -943,7 +943,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				before_encode_timestamp = process_timestamp;
 				int32_t count = 0;
 				int32_t index = 0;
-				uint8_t * real_compressed_buffer = compressed_buffer;
+				//uint8_t * real_compressed_buffer = compressed_buffer;
 
 				std::vector<coordinated_thread_context_t*> thread_contexts;
 				for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
@@ -1046,7 +1046,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				before_encode_timestamp = process_timestamp;
 				int32_t count = 0;
 				int32_t index = 0;
-				uint8_t * real_compressed_buffer = compressed_buffer;
+				//uint8_t * real_compressed_buffer = compressed_buffer;
 
 				std::vector<coordinated_thread_context_t*> thread_contexts;
 				for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
@@ -1146,7 +1146,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					before_encode_timestamp = process_timestamp;
 					int32_t count = 0;
-					uint8_t * real_compressed_buffer = compressed_buffer;
+					//uint8_t * real_compressed_buffer = compressed_buffer;
 
 					int32_t begin_height = 0;
 					int32_t end_height = 0;
@@ -1606,7 +1606,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						before_encode_timestamp = process_timestamp;
 						int32_t count = 0;
 						int32_t index = 0;
-						uint8_t * real_compressed_buffer = compressed_buffer;
+						//uint8_t * real_compressed_buffer = compressed_buffer;
 
 						for (int32_t h = 0; h < _context->height; h = h + _context->block_height)
 						{
@@ -1842,12 +1842,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		reference_buffer_size = 0;
 	}
 
+	/*
 	if (compressed_buffer)
 	{
 		free(compressed_buffer);
 		compressed_buffer = nullptr;
 		compressed_buffer_size = 0;
 	}
+	*/
 }
 
 #define RETURN { SP -= 3;                \
@@ -2319,37 +2321,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		free(rows);
 	rows = nullptr;
 
-#if defined(WITH_AVX2_SIMD)
-	if (gray_buffer)
-		free(gray_buffer);
-	gray_buffer = nullptr;
-	gray_buffer_size = 0;
-
-	if (resized_buffer)
-		free(resized_buffer);
-	resized_buffer = nullptr;
-	resized_buffer_size = 0;
-
-	if (reference_buffer)
-		free(reference_buffer);
-	reference_buffer = nullptr;
-#else
-#if defined(WITH_AVX2_BILINEAR_RESIZE)
-	if (resized_buffer)
-		free(resized_buffer);
-	resized_buffer = nullptr;
-	resized_buffer_size = 0;
-
-	if (reference_buffer)
-		free(reference_buffer);
-	reference_buffer = nullptr;
-#else
 	if (reference_buffer)
 		_aligned_free(reference_buffer);
 	reference_buffer = nullptr;
 	reference_buffer_size = 0;
-#endif
-#endif
 
 	if (compressed_buffer)
 		free(compressed_buffer);
@@ -2362,8 +2337,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	int32_t status = sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success;
 	sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer = nullptr;
 
-	long long before_encode_timestamp = 0;
-	long long after_encode_timestamp = 0;
+	long long	before_encode_timestamp = 0;
+	long long	after_encode_timestamp = 0;
 
 	int32_t		simd_align = 32;
 	int32_t		reference_buffer_size = (_context->width * _context->height) << 2;

@@ -30,8 +30,8 @@ namespace sirius
 
 					private:
 						bool		_brecv;
-						uint8_t *	_buffer;
-						int32_t		_buffer_size;
+						//uint8_t *	_buffer;
+						//int32_t	_buffer_size;
 
 						sirius::library::video::source::cpu::capturer::context_t * _context;
 					};
