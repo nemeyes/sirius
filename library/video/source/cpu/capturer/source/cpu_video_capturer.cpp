@@ -6,8 +6,8 @@
 
 sirius::library::video::source::cpu::capturer::core::core(void)
 	: _brecv(false)
-	, _buffer(nullptr)
-	, _buffer_size(0)
+	//, _buffer(nullptr)
+	//, _buffer_size(0)
 	, _context(nullptr)
 {
 }
@@ -20,9 +20,9 @@ sirius::library::video::source::cpu::capturer::core::~core(void)
 int32_t sirius::library::video::source::cpu::capturer::core::initialize(sirius::library::video::source::cpu::capturer::context_t * context)
 {
 	_context = context;
-	_buffer_size = context->width * context->height * 4;
-	_buffer = static_cast<uint8_t*>(malloc(_buffer_size));
-	memset(_buffer, 0x00, _buffer_size);
+	//_buffer_size = context->width * context->height * 4;
+	//_buffer = static_cast<uint8_t*>(malloc(_buffer_size));
+	//memset(_buffer, 0x00, _buffer_size);
 	return sirius::library::video::source::cpu::capturer::err_code_t::success;
 }
 
@@ -31,12 +31,12 @@ int32_t sirius::library::video::source::cpu::capturer::core::release(void)
 	if (sirius::library::video::source::cpu::capturer::context_t::instance().handler)
 		sirius::library::video::source::cpu::capturer::context_t::instance().handler->on_release();
 
-	if (_buffer)
-	{
-		free(_buffer);
-		_buffer = nullptr;
-	}
-	_buffer_size = 0;
+	//if (_buffer)
+	//{
+	//	free(_buffer);
+	//	_buffer = nullptr;
+	//}
+	//_buffer_size = 0;
 	_context = nullptr;
 	return sirius::library::video::source::cpu::capturer::err_code_t::success;
 }
@@ -66,14 +66,14 @@ int32_t sirius::library::video::source::cpu::capturer::core::post(int32_t smt, i
 			_brecv = true;
 		}
 		sirius::library::video::source::cpu::capturer::entity_t input;
-		input.data = _buffer;
+		input.data = video; //_buffer;
 		input.data_size = (video_width * video_height) << 2;
-		input.data_capacity = _buffer_size;
+		input.data_capacity = input.data_size; //_buffer_size;
 		input.x = x;
 		input.y = y;
 		input.width = width;
 		input.height = height;
-		memmove(input.data, video, input.data_size);
+		//memmove(input.data, video, input.data_size);
 		sirius::library::video::source::cpu::capturer::context_t::instance().handler->on_process(&input);
 	}
 
