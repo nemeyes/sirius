@@ -102,6 +102,7 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().enable_present = enable_present;
             SettingValue.Instance().enable_auto_start = enable_auto_start;
             SettingValue.Instance().enable_caching = enable_caching;
+            SettingValue.Instance().clean_attendant = clean_attendant;
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
             SettingValue.Instance().app_session_app = new string(app_session_app);
