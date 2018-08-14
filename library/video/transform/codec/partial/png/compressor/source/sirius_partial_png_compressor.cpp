@@ -10,6 +10,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, gamma(1 / 2.2f)
 	, floyd(0.5f)
 	, speed(10)
+	, posterization(true)
+	, use_dither_map(false)
+	, use_contrast_maps(false)
 	, max_colors(256)
 	, min_quality(50)
 	, max_quality(100)
@@ -30,6 +33,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	gamma = clone.gamma;
 	floyd = clone.floyd;
 	speed = clone.speed;
+	posterization = clone.posterization;
+	use_dither_map = clone.use_dither_map;
+	use_contrast_maps = clone.use_contrast_maps;
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;
@@ -48,6 +54,9 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	gamma = clone.gamma;
 	floyd = clone.floyd;
 	speed = clone.speed;
+	posterization = clone.posterization;
+	use_dither_map = clone.use_dither_map;
+	use_contrast_maps = clone.use_contrast_maps;
 	max_colors = clone.max_colors;
 	min_quality = clone.min_quality;
 	max_quality = clone.max_quality;

@@ -337,7 +337,7 @@ LIQ_EXPORT LIQ_NONNULL int liq_get_min_posterization(const liq_attr *attr)
     return attr->min_posterization_output;
 }
 
-LIQ_EXPORT LIQ_NONNULL liq_error liq_set_speed(liq_attr* attr, int speed)
+LIQ_EXPORT LIQ_NONNULL liq_error liq_set_speed(liq_attr* attr, int speed, bool posterization, bool use_dither_map, bool use_contrast_map)
 {
     if (!CHECK_STRUCT_TYPE(attr, liq_attr)) return LIQ_INVALID_POINTER;
     if (speed < 1 || speed > 10) return LIQ_VALUE_OUT_OF_RANGE;
@@ -348,9 +348,9 @@ LIQ_EXPORT LIQ_NONNULL liq_error liq_set_speed(liq_attr* attr, int speed)
     attr->feedback_loop_trials = MAX(56-9*speed, 0);
 
     attr->max_histogram_entries = (1<<17) + (1<<18)*(10-speed);
-	attr->min_posterization_input = 0;// (speed >= 8) ? 1 : 0;
-	attr->use_dither_map = true;// (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
-	attr->use_contrast_maps = true;// (speed <= 7) || attr->use_dither_map;
+	attr->min_posterization_input = posterization ? 1 : 0;// (speed >= 8) ? 1 : 0;
+	attr->use_dither_map = use_dither_map;// (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
+	attr->use_contrast_maps = use_contrast_map;// (speed <= 7) || attr->use_dither_map;
     attr->speed = speed;
 
     attr->progress_stage1 = attr->use_contrast_maps ? 20 : 8;
@@ -514,7 +514,7 @@ LIQ_EXPORT liq_attr* liq_attr_create_with_allocator(void* (*custom_malloc)(size_
         .target_mse = 0,
         .max_mse = MAX_DIFF,
     };
-    liq_set_speed(attr, 3);
+    liq_set_speed(attr, 10, true, false, false);
     return attr;
 }
 

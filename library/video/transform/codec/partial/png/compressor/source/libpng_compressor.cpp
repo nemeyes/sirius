@@ -83,7 +83,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::compressing;
 
 	liq_attr * liq = liq_attr_create();
-	liq_set_speed(liq, _context->speed);
+	liq_set_speed(liq, _context->speed, _context->posterization, _context->use_dither_map, _context->use_contrast_maps);
 	if (_context->max_colors == 0)
 		liq_set_quality(liq, _context->min_quality, _context->max_quality);
 	else

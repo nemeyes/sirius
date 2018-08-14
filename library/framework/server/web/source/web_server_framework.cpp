@@ -90,6 +90,9 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 		_venc_context.block_width	= context->video_block_width;
 		_venc_context.block_height	= context->video_block_height;
 		_venc_context.compression_level		= context->video_compression_level;
+		_venc_context.quantization_posterization = context->video_quantization_posterization;
+		_venc_context.quantization_dither_map = context->video_quantization_dither_map;
+		_venc_context.quantization_contrast_maps = context->video_quantization_contrast_maps;
 		_venc_context.quantization_colors	= context->video_qauntization_colors;
 		_venc_context.invalidate4client = context->invalidate4client;
 		_venc_context.indexed_mode = context->indexed_mode;

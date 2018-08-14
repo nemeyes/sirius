@@ -480,7 +480,7 @@ bool sirius::library::net::sicp::abstract_server::activate_session(/*const char 
 			}
 
 			session->update_timestamp();
-			::OutputDebugStringA("_activated_sessions.insert\n");
+			//::OutputDebugStringA("_activated_sessions.insert\n");
 			//session->uuid(uuid);
 			_activated_sessions.insert(std::make_pair(session->uuid(), session));
 			return true;

@@ -53,6 +53,9 @@ namespace sirius
 					int32_t video_block_width;
 					int32_t video_block_height;
 					int32_t video_compression_level;
+					bool	video_quantization_posterization;
+					bool	video_quantization_dither_map;
+					bool	video_quantization_contrast_maps;
 					int32_t video_quantization_colors;
 					bool	invalidate4client;
 					bool	indexed_mode;
@@ -81,6 +84,9 @@ namespace sirius
 						, video_block_width(128)
 						, video_block_height(72)
 						, video_compression_level(-1)
+						, video_quantization_posterization(true)
+						, video_quantization_dither_map(false)
+						, video_quantization_contrast_maps(false)
 						, video_quantization_colors(128)
 						, invalidate4client(false)
 						, indexed_mode(false)

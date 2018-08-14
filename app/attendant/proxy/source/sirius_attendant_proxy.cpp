@@ -129,6 +129,30 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_compression_level = _wtoi(value.c_str());
 	}
+	if (param.end() != (iter = param.find(L"video_quantization_posterization")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->video_quantization_posterization = true;
+		else
+			context->video_quantization_posterization = false;
+	}
+	if (param.end() != (iter = param.find(L"video_quantization_dither_map")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->video_quantization_dither_map = true;
+		else
+			context->video_quantization_dither_map = false;
+	}
+	if (param.end() != (iter = param.find(L"video_quantization_contrast_maps")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->video_quantization_contrast_maps = true;
+		else
+			context->video_quantization_contrast_maps = false;
+	}
 	if (param.end() != (iter = param.find(L"video_quantization_colors")))
 	{
 		value = iter->second;
