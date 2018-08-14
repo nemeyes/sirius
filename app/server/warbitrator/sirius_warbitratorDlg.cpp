@@ -89,6 +89,9 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
 	DDX_Control(pDX, IDC_EDIT_THREAD_COUNT, _nthread);
 	DDX_Control(pDX, IDC_CHECK_CLEAN_ATTENDANT, _clean_attendant);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_POSTERIZATION, _video_quantization_posterization);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_DITHER_MAP, _video_quantization_dither_map);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_CONTRAST_MAPS, _video_quantization_contrast_maps);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -323,6 +326,9 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t video_block_width = 128;
 	int32_t video_block_height = 72;
 	int32_t video_compression_level = 5;
+	bool	video_quantization_posterization = true;
+	bool	video_quantization_dither_map = false;
+	bool	video_quantization_contrast_maps = false;
 	int32_t video_quantization_colors = 128;
 	int32_t keepalive_timeout = 5000;
 	int32_t nthread;
@@ -351,6 +357,22 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_nthread.GetWindowTextW(wnthread);
 
 	video_compression_level = _video_compression_level.GetCurSel() + 1;
+
+	if (_video_quantization_posterization.GetCheck())
+		video_quantization_posterization = true;
+	else
+		video_quantization_posterization = false;
+
+	if (_video_quantization_dither_map.GetCheck())
+		video_quantization_dither_map = true;
+	else
+		video_quantization_dither_map = false;
+
+	if (_video_quantization_contrast_maps.GetCheck())
+		video_quantization_contrast_maps = true;
+	else
+		video_quantization_contrast_maps = false;
+
 	if (_video_quantization_colors.GetCurSel() == 0)
 		video_quantization_colors = 0;
 	else if (_video_quantization_colors.GetCurSel() == 1)
@@ -394,7 +416,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_auto_start = true;
 	if (_clean_attendant.GetCheck())
 		clean_attendant = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_colors, invalidate4client, indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, invalidate4client, indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
 
 	if (uuid)
 		free(uuid);
@@ -405,7 +427,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -459,6 +481,10 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_video_block_width.SetWindowTextW(wvideo_block_width);
 	_video_block_height.SetWindowTextW(wvideo_block_height);
 	_video_compression_level.SetCurSel(video_compression_level - 1);
+
+	_video_quantization_posterization.SetCheck(video_quantization_posterization ? 1 : 0);
+	_video_quantization_dither_map.SetCheck(video_quantization_dither_map ? 1 : 0);
+	_video_quantization_contrast_maps.SetCheck(video_quantization_contrast_maps ? 1 : 0);
 
 	if (video_quantization_colors == 0)
 		_video_quantization_colors.SetCurSel(0);

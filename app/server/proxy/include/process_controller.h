@@ -17,7 +17,7 @@ namespace sirius
 						: public sirius::base
 					{
 					public:
-						static const int32_t FIXED_COMMAND_OPTION_SIZE = 1024;
+						static const int32_t FIXED_COMMAND_OPTION_SIZE = 2048;
 						static const int32_t TA_FAILED = 0;
 						static const int32_t TA_SUCCESS_CLEAN = 1;
 						static const int32_t TA_SUCCESS_KILL = 2;

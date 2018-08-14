@@ -160,6 +160,9 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->video_block_width = _context->video_block_width;
 	_framework_context->video_block_height = _context->video_block_height;
 	_framework_context->video_compression_level = _context->video_compression_level;
+	_framework_context->video_quantization_posterization = _context->video_quantization_posterization;
+	_framework_context->video_quantization_dither_map = _context->video_quantization_dither_map;
+	_framework_context->video_quantization_contrast_maps = _context->video_quantization_contrast_maps;
 	_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
 	_framework_context->invalidate4client = _context->invalidate4client;
@@ -218,6 +221,9 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->video_block_width = _context->video_block_width;
 		_framework_context->video_block_height = _context->video_block_height;
 		_framework_context->video_compression_level = _context->video_compression_level;
+		_framework_context->video_quantization_posterization = _context->video_quantization_posterization;
+		_framework_context->video_quantization_dither_map = _context->video_quantization_dither_map;
+		_framework_context->video_quantization_contrast_maps = _context->video_quantization_contrast_maps;
 		_framework_context->video_qauntization_colors = _context->video_quantization_colors;
 
 		_framework_context->invalidate4client = _context->invalidate4client;

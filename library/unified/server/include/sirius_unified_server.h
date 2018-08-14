@@ -60,6 +60,9 @@ namespace sirius
 					int32_t block_width;
 					int32_t block_height;
 					int32_t compression_level;
+					bool	quantization_posterization;
+					bool	quantization_dither_map;
+					bool	quantization_contrast_maps;
 					int32_t quantization_colors;
 					bool	invalidate4client;
 					bool	indexed_mode;
@@ -79,6 +82,9 @@ namespace sirius
 						, block_width(0)
 						, block_height(0)
 						, compression_level(-1)
+						, quantization_posterization(true)
+						, quantization_dither_map(false)
+						, quantization_contrast_maps(false)
 						, quantization_colors(128)
 						, play_after_init(false)
 						, invalidate4client(false)

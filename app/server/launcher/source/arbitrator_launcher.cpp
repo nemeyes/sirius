@@ -6,7 +6,7 @@
 #include <sirius_stringhelper.h>
 #include <map>
 
-#define ARGUMENT_SIZE	1024
+#define ARGUMENT_SIZE	2048
 #define UNDEFINED_UUID	"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFE"
 #define MAX_GPU_COUNT	20
 
@@ -172,6 +172,22 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
 			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
+			
+			if (confentity.video_quantization_posterization)
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_posterization=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_posterization=false");
+
+			if (confentity.video_quantization_dither_map)
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_dither_map=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_dither_map=false");
+
+			if (confentity.video_quantization_contrast_maps)
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_contrast_maps=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--video_quantization_contrast_maps=false");
+
 			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
 			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--streaming_server_portnumber=%d", confentity.streamer_portnumber);

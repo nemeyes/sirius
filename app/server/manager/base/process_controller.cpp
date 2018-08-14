@@ -11,7 +11,7 @@
 #include "sirius_stringhelper.h"
 #include "sirius_log4cplus_logger.h"
 
-#define FIXED_COMMAND_OPTION_SIZE	1024
+#define FIXED_COMMAND_OPTION_SIZE	2048
 
 #define TA_FAILED 0
 #define TA_SUCCESS_CLEAN 1

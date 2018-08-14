@@ -40,6 +40,9 @@ namespace sirius
 									double	gamma;
 									float	floyd;
 									int32_t speed;
+									bool	posterization;
+									bool	use_dither_map;
+									bool	use_contrast_maps;
 									int32_t max_colors;
 									int32_t	min_quality;
 									int32_t	max_quality;
