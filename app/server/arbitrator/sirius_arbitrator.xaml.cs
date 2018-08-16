@@ -76,7 +76,7 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, int video_quantization_colors, bool invalidate4client, bool indexed_mode, int nthread, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int video_quantization_colors, bool invalidate4client, bool indexed_mode, int nthread, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -93,6 +93,9 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().video_block_height = video_block_height;
             SettingValue.Instance().video_compression_level = video_compression_level;
             SettingValue.Instance().video_quantization_colors = video_quantization_colors;
+            SettingValue.Instance().video_quantization_posterization = video_quantization_posterization;
+            SettingValue.Instance().video_quantization_dither_map = video_quantization_dither_map;
+            SettingValue.Instance().video_quantization_contrast_maps = video_quantization_contrast_maps;
             SettingValue.Instance().invalidate4client = invalidate4client;
             SettingValue.Instance().indexed_mode = indexed_mode;
             SettingValue.Instance().nthread = nthread;

@@ -84,7 +84,7 @@
                 <StackPanel>
                     <Label Content="Thread Count" Target="{Binding ElementName=TextThreadCount}" Width="150"/>
                     <TextBox x:Name="TextThreadCount" Width="70" Text="{Binding ThreadCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextThreadCount_PreviewTextInput"/>
-                </StackPanel>
+                </StackPanel>               
 
                 <StackPanel>
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
@@ -98,7 +98,29 @@
                     </ComboBox>
                 </StackPanel>
 
-               
+                <StackPanel>
+                    <Label Content="Posterization" Target="{Binding ElementName=VideoQuantizationPosterization}" Width="150" />
+                    <RadioButton x:Name="VideoQuantizationPosterizationOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="VideoQuantizationPosterizationOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Dither Map" Target="{Binding ElementName=VideoQuantizationDitherMap}" Width="150" />
+                    <RadioButton x:Name="VideoQuantizationDitherMapOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="VideoQuantizationDitherMapOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Contrast Maps" Target="{Binding ElementName=VideoQuantizationContrastMaps}" Width="150" />
+                    <RadioButton x:Name="VideoQuantizationContrastMapsOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="VideoQuantizationContrastMapsOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
 
                 <!--StackPanel>
                     <Label Content="Image Compression Level" Target="{Binding ElementName=SliderImageCompressionLevel}" Width="150"/>
