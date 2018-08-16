@@ -219,8 +219,8 @@ namespace sirius.app.server.arbitrator.Settings
             //    setting_value.enable_auto_start = false;
 
             setting_value.update();
-            sirius_arbitrator.controller.release();
-            sirius_arbitrator.controller.initailize();
+            //sirius_arbitrator.controller.release();
+            //sirius_arbitrator.controller.initailize();
         }
         private void TextAttendantInstanceCount_TextChanged(object sender, TextChangedEventArgs e)
         {

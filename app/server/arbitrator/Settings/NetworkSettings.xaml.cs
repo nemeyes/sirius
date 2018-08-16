@@ -76,8 +76,8 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.keepalive_timeout = Convert.ToInt32(TextKeepAliveTimeout.Text);
 
             setting_value.update();
-            sirius_arbitrator.controller.release();
-            sirius_arbitrator.controller.initailize();
+            //sirius_arbitrator.controller.release();
+            //sirius_arbitrator.controller.initailize();
         }
 
         private void TextControllerPortnumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
