@@ -23,6 +23,9 @@ namespace sirius.app.server.arbitrator.Settings
         public int video_block_width { get; set; }
         public int video_block_height { get; set; }
         public int video_compression_level { get; set; }
+        public bool video_quantization_posterization { get; set; }
+        public bool video_quantization_dither_map { get; set; }
+        public bool video_quantization_contrast_maps { get; set; }
         public int video_quantization_colors { get; set; }
         public bool invalidate4client { get; set; }
         public bool indexed_mode { get; set; }
@@ -75,7 +78,10 @@ namespace sirius.app.server.arbitrator.Settings
                 video_buffer_count,
                 video_block_width, 
                 video_block_height, 
-                video_compression_level, 
+                video_compression_level,
+                video_quantization_posterization,
+                video_quantization_dither_map,
+                video_quantization_contrast_maps,
                 video_quantization_colors,
                 invalidate4client,
                 indexed_mode,
