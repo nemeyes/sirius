@@ -87,6 +87,38 @@ namespace sirius.app.server.arbitrator.Settings
                 CleanAttendantOff.IsChecked = true;
             }
 
+            if (setting_value.video_quantization_posterization)
+            {
+                VideoQuantizationPosterizationOn.IsChecked = true;
+                VideoQuantizationPosterizationOff.IsChecked = false;
+            }
+            else
+            {
+                VideoQuantizationPosterizationOn.IsChecked = false;
+                VideoQuantizationPosterizationOff.IsChecked = true;
+            }
+
+            if (setting_value.video_quantization_dither_map)
+            {
+                VideoQuantizationDitherMapOn.IsChecked = true;
+                VideoQuantizationDitherMapOff.IsChecked = false;
+            }
+            else
+            {
+                VideoQuantizationDitherMapOn.IsChecked = false;
+                VideoQuantizationDitherMapOff.IsChecked = true;
+            }
+
+            if (setting_value.video_quantization_contrast_maps)
+            {
+                VideoQuantizationContrastMapsOn.IsChecked = true;
+                VideoQuantizationContrastMapsOff.IsChecked = false;
+            }
+            else
+            {
+                VideoQuantizationContrastMapsOn.IsChecked = false;
+                VideoQuantizationContrastMapsOff.IsChecked = true;
+            }
 
             setting_value.enable_auto_start = false;
 
@@ -164,6 +196,21 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.clean_attendant = true;
             else
                 setting_value.clean_attendant = false;
+
+            if (VideoQuantizationPosterizationOn.IsChecked.Value)
+                setting_value.video_quantization_posterization = true;
+            else
+                setting_value.video_quantization_posterization = false;
+
+            if (VideoQuantizationDitherMapOn.IsChecked.Value)
+                setting_value.video_quantization_dither_map = true;
+            else
+                setting_value.video_quantization_dither_map = false;
+
+            if (VideoQuantizationContrastMapsOn.IsChecked.Value)
+                setting_value.video_quantization_contrast_maps = true;
+            else
+                setting_value.video_quantization_contrast_maps = false;
 
             setting_value.enable_auto_start = false;
             //if (AutostartOn.IsChecked.Value)
