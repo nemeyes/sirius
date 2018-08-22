@@ -242,6 +242,9 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
 			proc_ctrl.set_cmdline(arguments, "--multi-threaded-message-loop");
 			proc_ctrl.set_cmdline(arguments, "--disable-plugins-discovery");
+			proc_ctrl.set_cmdline(arguments, "--process-per-site");
+			//proc_ctrl.set_cmdline(arguments, "--headless");
+			//proc_ctrl.set_cmdline(arguments, "--disable-backing-store-limit");
 			//proc_ctrl.set_cmdline(arguments, "--show-update-rect");
 
 			if (strlen(confentity.app_session_app) > 0)
