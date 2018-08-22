@@ -31,18 +31,18 @@ sirius::library::net::iocp::session::session(sirius::library::net::iocp::process
 {
 	::InitializeCriticalSection(&_lock);
 
-	_cnct_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(1024, _tls));
+	_cnct_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(1024, 2048, _tls));
 	_cnct_io_context->operation = sirius::library::net::iocp::io_context_t::operation_t::connect;
 
 	if (_tls)
 	{
-		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, _tls));
+		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, recv_buffer_size << 1, _tls));
 		_recv_io_context->operation = sirius::library::net::iocp::io_context_t::operation_t::recv;
 		_recv_io_context->wsabuf.buf = _recv_io_context->ssl_packet;
 		_recv_io_context->wsabuf.len = _recv_io_context->ssl_packet_capacity;
 		for (int32_t index = 0; index < _nsend_io_context; index++)
 		{
-			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, _tls));
+			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, send_buffer_size << 1, _tls));
 			_send_io_context[index]->operation = sirius::library::net::iocp::io_context_t::operation_t::send;
 			_send_io_context[index]->wsabuf.buf = _send_io_context[index]->ssl_packet;
 			_send_io_context[index]->wsabuf.len = 0;
@@ -63,13 +63,13 @@ sirius::library::net::iocp::session::session(sirius::library::net::iocp::process
 	}
 	else
 	{
-		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, _tls));
+		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, recv_buffer_size << 1, _tls));
 		_recv_io_context->operation = sirius::library::net::iocp::io_context_t::operation_t::recv;
 		_recv_io_context->wsabuf.buf = _recv_io_context->packet;
 		_recv_io_context->wsabuf.len = _recv_io_context->packet_capacity;
 		for (int32_t index = 0; index < _nsend_io_context; index++)
 		{
-			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, _tls));
+			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, send_buffer_size << 1, _tls));
 			_send_io_context[index]->operation = sirius::library::net::iocp::io_context_t::operation_t::send;
 			_send_io_context[index]->wsabuf.buf = _send_io_context[index]->packet;
 			_send_io_context[index]->wsabuf.len = 0;
@@ -360,7 +360,11 @@ void sirius::library::net::iocp::session::send(const char * packet, int32_t pack
 					_send_io_context[index]->packet_size = packet_size;
 
 					if (_send_io_context[index]->packet_capacity < packet_size)
+					{
 						_send_io_context[index]->resize(packet_size);
+						_send_io_context[index]->ssl_resize(packet_size << 1);
+						_send_io_context[index]->wsabuf.buf = _send_io_context[index]->ssl_packet;
+					}
 					memmove(_send_io_context[index]->packet, packet, _send_io_context[index]->packet_size);
 
 					int32_t bytes = 0;
@@ -401,8 +405,10 @@ void sirius::library::net::iocp::session::send(const char * packet, int32_t pack
 					continue;
 
 				if (_send_io_context[index]->packet_capacity < packet_size)
+				{
 					_send_io_context[index]->resize(packet_size);
-
+					_send_io_context[index]->wsabuf.buf = _send_io_context[index]->packet;
+				}
 				memcpy_s(_send_io_context[index]->packet, packet_size, packet, packet_size);
 				_send_io_context[index]->packet_size = packet_size;
 				_send_io_context[index]->wsabuf.len = packet_size;
@@ -620,6 +626,7 @@ void sirius::library::net::iocp::session::on_send(std::shared_ptr<sirius::librar
 		BOOL sending = FALSE;
 		for (int32_t index = 0; index < _nsend_io_context; index++)
 		{
+			sirius::autolock lock(&_send_io_context[index]->lock);
 			if (_send_io_context[index]->wsabuf.len > 0)
 			{
 				sending = TRUE;
@@ -753,7 +760,7 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 						_recv_io_context->packet_size = bytes;
 						int32_t packet_size = on_recv(_recv_io_context->packet, _recv_io_context->packet_size);
 						_recv_io_context->packet_size = 0;
-						recv(_recv_io_context->packet_capacity);
+						recv(_recv_io_context->ssl_packet_capacity);
 					}
 					else if (ssl_is_fatal_error(ssl_error))
 					{
@@ -762,7 +769,7 @@ void sirius::library::net::iocp::session::secure_recv_process(void)
 					}
 					else if (!SSL_is_init_finished(_ssl))
 					{
-						recv(_recv_io_context->packet_capacity);
+						recv(_recv_io_context->ssl_packet_capacity);
 					}
 
 				} while (bytes > 0);
@@ -813,11 +820,8 @@ void sirius::library::net::iocp::session::secure_send_process(void)
 					//char message[MAX_PATH] = { 0 };
 					//_snprintf_s(message, sizeof(message), "BIO_read Success : bytes[%d], index[%d]\n", _send_io_context[index]->ssl_packet_size, index);
 					//OutputDebugStringA(message);
-
 					_send_io_context[index]->wsabuf.len = _send_io_context[index]->ssl_packet_size;
-
 					_status |= sirius::library::net::iocp::session::status_t::sending;
-
 					::WSASend(_socket, &_send_io_context[index]->wsabuf, 1, &nbytes, 0, &_send_io_context[index]->overlapped, 0);
 					_send_io_context[index]->result = ::WSAGetLastError();
 
