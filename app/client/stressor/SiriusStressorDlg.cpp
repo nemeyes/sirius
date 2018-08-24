@@ -442,7 +442,7 @@ void CSiriusStressorDlg::auto_mode_proc()
 		close_connect_thread_wait();
 		// !connect
 		
-		::Sleep(1000 * 3);
+		//::Sleep(1000 * 3);
 
 		// disconnect		
 		_disconnect_thread = (HANDLE)_beginthreadex(NULL, 0, CSiriusStressorDlg::disconnect_proc_cb, this, 0, &disconnect_thread_id);
