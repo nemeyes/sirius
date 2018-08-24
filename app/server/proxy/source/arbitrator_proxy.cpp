@@ -196,11 +196,11 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 int32_t	sirius::app::server::arbitrator::proxy::core::connect_client(const char * uuid, const char * client_id)
 {	
 	sirius::autolock lock(&_attendant_cs);
+	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);	
 
-	LOGGER::make_info_log(SAA, "%s, %d, client_uuid=%s", __FUNCTION__, __LINE__, uuid);
-	
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
-	if (_state != sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start)
+
+	if (_state != sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start || !is_valid(uuid))
 		return status;
 
 	bool alloc_session = false;
@@ -344,30 +344,36 @@ void sirius::app::server::arbitrator::proxy::core::disconnect_attendant_callback
 
 void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(const char * uuid, int32_t id, const char * client_id, const char * client_uuid, int32_t code)
 {
-	LOGGER::make_info_log(SAA, "%s, %d, attendant_uuid=%s", __FUNCTION__, __LINE__, uuid);
+	sirius::autolock lock(&_attendant_cs);	
+	LOGGER::make_info_log(SAA, "%s, %d, [CMD_START_ATTENDANT_RES] attendant_uuid=%s, code=%d", __FUNCTION__, __LINE__, uuid, code);
+
+	if (!is_valid(client_uuid))
+		return;
 	
 	sirius::app::server::arbitrator::session * session = nullptr;
+	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
-		std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
-		iter = _sessions.find(id);
-		if (iter != _sessions.end())
+		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
+		{
 			session = iter->second;
-
-		if (session)
-			session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
+			if (strcmp(session->attendant_uuid(), uuid) == 0)
+			{
+				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
+				break;
+			}
+		}
 	}
 }
 
 void sirius::app::server::arbitrator::proxy::core::stop_attendant_callback(const char * uuid, int32_t code)
 {
 	sirius::autolock lock(&_attendant_cs);
-	LOGGER::make_info_log(SAA, "%s, %d, [CMD_STOP_ATTENDANT_RES] attendant_uuid=%s,code=%d", __FUNCTION__, __LINE__, uuid, code);
+	LOGGER::make_info_log(SAA, "%s, %d, [CMD_STOP_ATTENDANT_RES] attendant_uuid=%s, code=%d", __FUNCTION__, __LINE__, uuid, code);
 #ifdef WITH_RESTART
 #else
 	sirius::app::server::arbitrator::session * session = nullptr;
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
-		sirius::autolock lock(&_attendant_cs);
 		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
 		{
 			session = iter->second;
@@ -539,17 +545,15 @@ void sirius::app::server::arbitrator::proxy::core::retrieve_db_path(char * path)
 }
 
 void sirius::app::server::arbitrator::proxy::core::on_create_session(const char * uuid)
-{
-	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);
+{	
+	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);	
 }
 
 void sirius::app::server::arbitrator::proxy::core::on_destroy_session(const char * uuid)
 {
 	sirius::autolock lock(&_attendant_cs);
-
 	LOGGER::make_info_log(SAA, "%s, %d, uuid=%s", __FUNCTION__, __LINE__, uuid);
 	
-	sirius::app::server::arbitrator::process::controller proc;
 	sirius::app::server::arbitrator::session * session = nullptr;
 	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
@@ -915,7 +919,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		if (session)
 			delete session;
 	}
-	_sessions.clear();
+	_sessions.clear();	
 			
 	_cluster->ssm_service_info("STOP", _max_attendant_instance_count);
 	_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop;
