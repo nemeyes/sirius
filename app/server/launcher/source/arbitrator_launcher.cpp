@@ -228,11 +228,12 @@ int main()
 
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
-			proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
-			proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
+			//proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
+			//proc_ctrl.set_cmdline(arguments, "--disable-gpu-vsync");
+			//proc_ctrl.set_cmdline(arguments, "--disable-surfaces");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-rendering-enabled");
 			proc_ctrl.set_cmdline(arguments, "--off-screen-frame-rate=%d", confentity.video_fps);
-			//proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
+			proc_ctrl.set_cmdline(arguments, "--enable-begin-frame-scheduling");
 			proc_ctrl.set_cmdline(arguments, "--disable-extensions");
 			proc_ctrl.set_cmdline(arguments, "--disable-pdf-extension");
 			proc_ctrl.set_cmdline(arguments, "--enable-video-hole");
@@ -242,6 +243,9 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
 			proc_ctrl.set_cmdline(arguments, "--multi-threaded-message-loop");
 			proc_ctrl.set_cmdline(arguments, "--disable-plugins-discovery");
+			proc_ctrl.set_cmdline(arguments, "--process-per-site");
+			//proc_ctrl.set_cmdline(arguments, "--headless");
+			//proc_ctrl.set_cmdline(arguments, "--disable-backing-store-limit");
 			//proc_ctrl.set_cmdline(arguments, "--show-update-rect");
 
 			if (strlen(confentity.app_session_app) > 0)

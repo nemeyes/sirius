@@ -53,19 +53,17 @@ namespace sirius
 						char *									ssl_packet;
 						int32_t									ssl_packet_capacity;
 						int32_t									ssl_packet_size;
-						//BOOL									working;
-						//DWORD									bytes_transfered;
 						sirius::library::net::iocp::session *	session;
 						CRITICAL_SECTION						lock;
 						SOCKADDR_IN								peer;
-						_io_context_t(size_t size, BOOL tls)
+						_io_context_t(int32_t size, int32_t ssl_size, BOOL tls)
 							: sirius::library::net::iocp::io_context_t(sirius::library::net::iocp::io_context_t::operation_t::send)
 							, packet(nullptr)
 							, packet_capacity(size)
 							, packet_size(0)
 							, tls(tls)
 							, ssl_packet(nullptr)
-							, ssl_packet_capacity(size)
+							, ssl_packet_capacity(ssl_size)
 							, ssl_packet_size(0)
 							//, working(FALSE)
 							//, bytes_transfered(0)
