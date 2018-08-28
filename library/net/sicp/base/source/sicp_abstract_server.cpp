@@ -565,7 +565,7 @@ void sirius::library::net::sicp::abstract_server::on_destroy_session(const char 
 {
 	session->increase_session_destroy_count();
 	session->close();
-	on_destroy_session(uuid);
+	on_destroy_session(session->uuid());
 	//if(!_keepalive)
 		deactivate_session(std::dynamic_pointer_cast<sirius::library::net::sicp::session>(session));
 }
