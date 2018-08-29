@@ -8,7 +8,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, mb_height(8)
 	, compression_level(-1)
 	, gamma(1 / 2.2f)
-	, floyd(0.5f)
+	, floyd(0)
 	, speed(10)
 	, posterization(true)
 	, use_dither_map(false)

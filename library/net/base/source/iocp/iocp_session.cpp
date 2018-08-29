@@ -31,7 +31,7 @@ sirius::library::net::iocp::session::session(sirius::library::net::iocp::process
 {
 	::InitializeCriticalSection(&_lock);
 
-	_cnct_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(1024, 2048, _tls));
+	_cnct_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(1024, 0, _tls));
 	_cnct_io_context->operation = sirius::library::net::iocp::io_context_t::operation_t::connect;
 
 	if (_tls)
@@ -63,13 +63,13 @@ sirius::library::net::iocp::session::session(sirius::library::net::iocp::process
 	}
 	else
 	{
-		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, recv_buffer_size << 1, _tls));
+		_recv_io_context = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(recv_buffer_size, 0, _tls));
 		_recv_io_context->operation = sirius::library::net::iocp::io_context_t::operation_t::recv;
 		_recv_io_context->wsabuf.buf = _recv_io_context->packet;
 		_recv_io_context->wsabuf.len = _recv_io_context->packet_capacity;
 		for (int32_t index = 0; index < _nsend_io_context; index++)
 		{
-			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, send_buffer_size << 1, _tls));
+			_send_io_context[index] = std::shared_ptr<sirius::library::net::iocp::session::io_context_t>(new sirius::library::net::iocp::session::io_context_t(send_buffer_size, 0, _tls));
 			_send_io_context[index]->operation = sirius::library::net::iocp::io_context_t::operation_t::send;
 			_send_io_context[index]->wsabuf.buf = _send_io_context[index]->packet;
 			_send_io_context[index]->wsabuf.len = 0;
