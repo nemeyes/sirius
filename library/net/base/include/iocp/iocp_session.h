@@ -65,16 +65,14 @@ namespace sirius
 							, ssl_packet(nullptr)
 							, ssl_packet_capacity(ssl_size)
 							, ssl_packet_size(0)
-							//, working(FALSE)
-							//, bytes_transfered(0)
 						{
-							do
+							if(packet_capacity>0)
 							{
 								packet = static_cast<char*>(malloc(packet_capacity));
-							} while (!packet);
-							::memset(packet, 0x00, packet_capacity);
+								::memset(packet, 0x00, packet_capacity);
+							}
 
-							if (tls)
+							if (tls & (ssl_packet_capacity>0))
 							{
 								ssl_packet = static_cast<char*>(malloc(ssl_packet_capacity));
 								::memset(ssl_packet, 0x00, ssl_packet_capacity);
