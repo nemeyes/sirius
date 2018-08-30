@@ -6,8 +6,6 @@
 #include "cefclient/renderer/client_renderer.h"
 #if defined(WITH_EXTERNAL_INTERFACE)
 #include "cefclient/binding/js_binding.h"
-#else
-#include "cefclient/renderer/performance_test.h"
 #endif
 namespace client {
 
@@ -16,8 +14,6 @@ void ClientAppRenderer::CreateDelegates(DelegateSet& delegates) {
   renderer::CreateDelegates(delegates);
 #if defined(WITH_EXTERNAL_INTERFACE)
   binding::CreateDelegates(delegates);
-#else
-  performance_test::CreateDelegates(delegates);
 #endif
 }
 

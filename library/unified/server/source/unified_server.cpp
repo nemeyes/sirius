@@ -12,10 +12,19 @@ sirius::library::unified::server::core::core(void)
 	, _vcmprs_initialized(false)
 {
 	::InitializeCriticalSection(&_vcs);
+	
+	_unified_compressor = new sirius::library::unified::compressor(this);
 }
 
 sirius::library::unified::server::core::~core(void)
 {
+	if (_unified_compressor)
+	{
+		delete _unified_compressor;
+		_unified_compressor = nullptr;
+	}
+
+
 	::DeleteCriticalSection(&_vcs);
 }
 
@@ -49,7 +58,7 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 
 	_streamer = streamer;
 
-	_unified_compressor = new sirius::library::unified::compressor(this);
+
 
 	return code;
 }
@@ -75,11 +84,6 @@ int32_t sirius::library::unified::server::core::release(void)
 
 	_context = nullptr;
 
-	if (_unified_compressor)
-	{
-		delete _unified_compressor;
-		_unified_compressor = nullptr;
-	}
 
 	return code;
 }

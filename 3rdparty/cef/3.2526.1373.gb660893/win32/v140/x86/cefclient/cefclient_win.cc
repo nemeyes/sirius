@@ -58,7 +58,9 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   // Parse command-line arguments.
   CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
   command_line->InitFromString(::GetCommandLineW());
+#ifdef WITH_ATTENDANT_PROXY
   client::binding::attendant_proxy_wrapper& apc = client::binding::attendant_proxy_wrapper::getInstance();
+#endif
   // Create a ClientApp of the correct type.
   CefRefPtr<CefApp> app;
   ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
@@ -132,8 +134,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   {
 	  present = command_line->GetSwitchValue("enable_present").compare("true") == 0 ? true : false;
   }
-
-#endif
+ 
   if (proxy)
   {
 	  context->GetRootWindowManager()->CreateRootWindow(
@@ -143,8 +144,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 		  &proxy->context()->hwnd,
 		  CefRect(0, 0, 1282, 722),       // Use default system size.
 		  std::string());   // Use default URL.
-#if defined(WITH_EXTERNAL_INTERFACE)
-#else
+#if !defined(WITH_EXTERNAL_INTERFACE)
 	  proxy->initialize();
 #endif
 	  if (proxy->is_initialized())
@@ -170,6 +170,17 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 		  CefRect(0, 0, 1282, 722),       // Use default system size.
 		  std::string());   // Use default URL.
   }
+#else
+// Create the first window.
+  context->GetRootWindowManager()->CreateRootWindow(
+	  false,  // Show controls.
+	  settings.windowless_rendering_enabled ? true : false,
+	  true,
+	  nullptr,
+	  CefRect(0, 0, 1282, 722),       // Use default system size.
+	  std::string());   // Use default URL.
+#endif
+
 
   // Run the message loop. This will block until Quit() is called by the
   // RootWindowManager after all windows have been destroyed.

@@ -501,7 +501,9 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 
   if (errorCode == ERR_CONNECTION_RESET)
   {
+#if defined(WITH_ATTENDANT_PROXY)
 	  client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
+#endif
 	  return;
   }
   // Load the error page.

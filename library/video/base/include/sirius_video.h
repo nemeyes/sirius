@@ -30,6 +30,7 @@ namespace sirius
 					int16_t		y;
 					int16_t		width;
 					int16_t		height;
+					int16_t		stride;
 					_entity_t(void)
 						: timestamp(0)
 						, data(nullptr)
@@ -39,6 +40,7 @@ namespace sirius
 						, y(0)
 						, width(0)
 						, height(0)
+						, stride(0)
 					{}
 
 					_entity_t(const _entity_t & clone)
@@ -51,6 +53,7 @@ namespace sirius
 						y = clone.y;
 						width = clone.width;
 						height = clone.height;
+						stride = clone.stride;
 					}
 
 					_entity_t operator=(const _entity_t & clone)
@@ -63,6 +66,7 @@ namespace sirius
 						y = clone.y;
 						width = clone.width;
 						height = clone.height;
+						stride = clone.stride;
 						return (*this);
 					}
 
