@@ -241,7 +241,7 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--ignore-certificate-errors");
 			proc_ctrl.set_cmdline(arguments, "--transparent-painting-enabled");
 			proc_ctrl.set_cmdline(arguments, "--allow-file-access-from-files");
-			proc_ctrl.set_cmdline(arguments, "--multi-threaded-message-loop");
+			//proc_ctrl.set_cmdline(arguments, "--multi-threaded-message-loop");
 			proc_ctrl.set_cmdline(arguments, "--disable-plugins-discovery");
 			proc_ctrl.set_cmdline(arguments, "--process-per-site");
 			//proc_ctrl.set_cmdline(arguments, "--headless");
