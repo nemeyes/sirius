@@ -55,7 +55,9 @@ namespace client {
 		float GetDeviceScaleFactor() const OVERRIDE;
 		CefRefPtr<CefBrowser> GetBrowser() const OVERRIDE;
 		ClientWindowHandle GetWindowHandle() const OVERRIDE;
+#if defined(WITH_ATTENDANT_PROXY)
 		const CefString& get_java_script_injection() const { return javascript_injection_; }
+#endif
 		int32_t first_reload();
 		std::string start_url;
 		bool stat_timer;

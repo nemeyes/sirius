@@ -1348,5 +1348,7 @@ scoped_refptr<RootWindow> RootWindow::Create() {
 void CALLBACK timer_reload(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2)
 {
 	OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timer_reload");
+#if defined(WITH_ATTENDANT_PROXY)
 	client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
+#endif
 }

@@ -88,8 +88,10 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		liq_set_quality(liq, _context->min_quality, _context->max_quality);
 	else
 		liq_set_max_colors(liq, _context->max_colors);
-
-	//liq_set_min_posterization(liq, 0);
+	if(_context->posterization)
+		liq_set_min_posterization(liq, 2);
+	else
+		liq_set_min_posterization(liq, 0);
 
 	int32_t quality_percent = 90; // quality on 0-100 scale, updated upon successful remap
 	png8_image_t qntpng = { 0 };
@@ -106,7 +108,7 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 		qntpng.width = liq_image_get_width(rgba);
 		qntpng.height = liq_image_get_height(rgba);
 		qntpng.gamma = liq_get_output_gamma(remap);
-		qntpng.output_color = RWPNG_NONE;
+		qntpng.output_color = RWPNG_SRGB;
 		qntpng.indexed_data = static_cast<uint8_t*>(malloc(qntpng.height * qntpng.width));
 		qntpng.row_pointers = static_cast<uint8_t**>(malloc(qntpng.height * sizeof(qntpng.row_pointers[0])));
 
@@ -199,8 +201,10 @@ void sirius::library::video::transform::codec::libpng::compressor::png_flush_cal
 
 void sirius::library::video::transform::codec::libpng::compressor::png_set_gamma(png_infop info_ptr, png_structp png_ptr, double gamma, png_color_transform color)
 {
+	/*
 	if (color != RWPNG_GAMA_ONLY && color != RWPNG_NONE) 
 		png_set_gAMA(png_ptr, info_ptr, gamma);
+	*/
 
 	if (color == RWPNG_SRGB)
 		png_set_sRGB(png_ptr, info_ptr, 0); // 0 = Perceptual
@@ -315,7 +319,6 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 		sample_depth = 8;
 
 	png_chunk_t * chunk = out->chunks;
-	//out->metadata_size = 0;
 	int32_t chunk_num = 0;
 	while (chunk)
 	{
@@ -330,8 +333,6 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::write_png_
 #if defined(PNG_HAVE_IHDR) && PNG_LIBPNG_VER < 10600
 		png_set_unknown_chunk_location(png_ptr, info_ptr, chunk_num, pngchunk.location ? pngchunk.location : PNG_HAVE_IHDR);
 #endif
-
-		//out->metadata_size += chunk->size + 12;
 		chunk = chunk->next;
 		chunk_num++;
 	}
