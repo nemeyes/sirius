@@ -506,7 +506,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 					// find different area between current and previous images
 					std::map<uint64_t, uint32_t> bfgs;
-					__declspec(align(32)) uint8_t result[32] = { 0 };
+					__declspec(align(32)) uint64_t result[4] = { 0 };
 					//const __m256i xor_operand = _mm256_setr_epi8(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
 					for (int32_t h = begin_height, y = (begin_height / _context->mb_height); h < end_height; h = h + _context->mb_height, y++)
 					{
@@ -522,7 +522,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									uint8_t * r = reference_buffer + ci;
 									const __m256i current = _mm256_load_si256((__m256i*)p);
 									const __m256i reference = _mm256_load_si256((__m256i*)r);
-									const __m256i cmpeq = _mm256_cmpeq_epi8(current, reference);
+									const __m256i cmpeq = _mm256_cmpeq_epi64(current, reference);
 									//const __m256i xor		= _mm256_xor_si256(xor_operand, cmpeq);
 									_mm256_store_si256((__m256i*)result, cmpeq);
 									for (int32_t i = 0; i < align; i++)
