@@ -122,7 +122,7 @@ del $(outputpath)$(assemblyname).ilk
       <AdditionalIncludeDirectories>..\..\;..\..\..\..\..\..\..\..\base\include;..\..\..\..\..\..\..\..\library\video\base\include;..\..\..\..\..\..\..\..\library\video\source\base\include;..\..\..\..\..\..\..\..\library\video\source\cpu\capturer\include;..\..\..\..\..\..\..\..\app\attendant\proxy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4100;4127;4244;4512;4701;4702;4996</DisableSpecificWarnings>
       <ExceptionHandling>
       </ExceptionHandling>
