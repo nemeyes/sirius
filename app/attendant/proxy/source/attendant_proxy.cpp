@@ -159,11 +159,20 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->video_process_type = _context->video_process_type;
 	_framework_context->video_block_width = _context->video_block_width;
 	_framework_context->video_block_height = _context->video_block_height;
-	_framework_context->video_compression_level = _context->video_compression_level;
-	_framework_context->video_quantization_posterization = _context->video_quantization_posterization;
-	_framework_context->video_quantization_dither_map = _context->video_quantization_dither_map;
-	_framework_context->video_quantization_contrast_maps = _context->video_quantization_contrast_maps;
-	_framework_context->video_qauntization_colors = _context->video_quantization_colors;
+
+	if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::png)
+	{
+		_framework_context->png.video_compression_level = _context->png.video_compression_level;
+		_framework_context->png.video_quantization_posterization = _context->png.video_quantization_posterization;
+		_framework_context->png.video_quantization_dither_map = _context->png.video_quantization_dither_map;
+		_framework_context->png.video_quantization_contrast_maps = _context->png.video_quantization_contrast_maps;
+		_framework_context->png.video_quantization_colors = _context->png.video_quantization_colors;
+	}
+	else if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::webp)
+	{
+		_framework_context->webp.video_quality = _context->webp.video_quality;
+		_framework_context->webp.video_method = _context->webp.video_method;
+	}
 
 	_framework_context->invalidate4client = _context->invalidate4client;
 	_framework_context->indexed_mode = _context->indexed_mode;
@@ -220,11 +229,20 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->video_process_type = _context->video_process_type;
 		_framework_context->video_block_width = _context->video_block_width;
 		_framework_context->video_block_height = _context->video_block_height;
-		_framework_context->video_compression_level = _context->video_compression_level;
-		_framework_context->video_quantization_posterization = _context->video_quantization_posterization;
-		_framework_context->video_quantization_dither_map = _context->video_quantization_dither_map;
-		_framework_context->video_quantization_contrast_maps = _context->video_quantization_contrast_maps;
-		_framework_context->video_qauntization_colors = _context->video_quantization_colors;
+
+		if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::png)
+		{
+			_framework_context->png.video_compression_level = _context->png.video_compression_level;
+			_framework_context->png.video_quantization_posterization = _context->png.video_quantization_posterization;
+			_framework_context->png.video_quantization_dither_map = _context->png.video_quantization_dither_map;
+			_framework_context->png.video_quantization_contrast_maps = _context->png.video_quantization_contrast_maps;
+			_framework_context->png.video_quantization_colors = _context->png.video_quantization_colors;
+		}
+		else if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::webp)
+		{
+			_framework_context->webp.video_quality = _context->webp.video_quality;
+			_framework_context->webp.video_method = _context->webp.video_method;
+		}
 
 		_framework_context->invalidate4client = _context->invalidate4client;
 		_framework_context->indexed_mode = _context->indexed_mode;

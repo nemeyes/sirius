@@ -78,26 +78,50 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 			return status;
 		}
 	}
-
 	if (!_unified_server->is_video_compressor_initialized())
 	{
-		_venc_context.memtype		= context->video_process_type;
-		_venc_context.codec			= context->video_codec;
-		_venc_context.width			= context->video_width;
-		_venc_context.height		= context->video_height;
-		_venc_context.fps			= context->video_fps;
-		_venc_context.nbuffer		= context->video_nbuffer;
-		_venc_context.block_width	= context->video_block_width;
-		_venc_context.block_height	= context->video_block_height;
-		_venc_context.compression_level		= context->video_compression_level;
-		_venc_context.quantization_posterization = context->video_quantization_posterization;
-		_venc_context.quantization_dither_map = context->video_quantization_dither_map;
-		_venc_context.quantization_contrast_maps = context->video_quantization_contrast_maps;
-		_venc_context.quantization_colors	= context->video_qauntization_colors;
-		_venc_context.invalidate4client = context->invalidate4client;
-		_venc_context.indexed_mode = context->indexed_mode;
-		_venc_context.nthread = context->nthread;
+		switch(_context.video_codec)
+		{
+			case sirius::library::framework::server::web::video_submedia_type_t::png :
+			{
+				_venc_context.memtype = context->video_process_type;
+				_venc_context.codec = context->video_codec;
+				_venc_context.width = context->video_width;
+				_venc_context.height = context->video_height;
+				_venc_context.fps = context->video_fps;
+				_venc_context.nbuffer = context->video_nbuffer;
+				_venc_context.block_width = context->video_block_width;
+				_venc_context.block_height = context->video_block_height;
+				_venc_context.png.compression_level = context->png.video_compression_level;
+				_venc_context.png.quantization_posterization = context->png.video_quantization_posterization;
+				_venc_context.png.quantization_dither_map = context->png.video_quantization_dither_map;
+				_venc_context.png.quantization_contrast_maps = context->png.video_quantization_contrast_maps;
+				_venc_context.png.quantization_colors = context->png.video_quantization_colors;
+				_venc_context.invalidate4client = context->invalidate4client;
+				_venc_context.indexed_mode = context->indexed_mode;
+				_venc_context.nthread = context->nthread;
+				break;
+			}
+			case sirius::library::framework::server::web::video_submedia_type_t::webp :
+			{
+				_venc_context.memtype = context->video_process_type;
+				_venc_context.codec = context->video_codec;
+				_venc_context.width = context->video_width;
+				_venc_context.height = context->video_height;
+				_venc_context.fps = context->video_fps;
+				_venc_context.nbuffer = context->video_nbuffer;
+				_venc_context.block_width = context->video_block_width;
+				_venc_context.block_height = context->video_block_height;
+				_venc_context.webp.quality = context->webp.video_quality;
+				_venc_context.webp.method = context->webp.video_method;
+				_venc_context.invalidate4client = context->invalidate4client;
+				_venc_context.indexed_mode = context->indexed_mode;
+				_venc_context.nthread = context->nthread;
+				break;
+			}
+		}
 	}
+
 	return sirius::library::framework::server::web::err_code_t::success;
 }
 

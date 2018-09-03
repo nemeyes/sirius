@@ -41,6 +41,10 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompre
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompressor.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_png_decompressor.ipdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_webp_decompressor.dll	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_webp_decompressor.pdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_webp_decompressor.ipdb	%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.dll		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.pdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_ddraw_renderer.ipdb		%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\client\client\

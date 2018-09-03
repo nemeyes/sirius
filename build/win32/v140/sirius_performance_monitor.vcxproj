@@ -147,6 +147,8 @@
       <AdditionalDependencies>libtcmalloc_minimal.lib;pdh.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

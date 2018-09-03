@@ -139,6 +139,8 @@
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

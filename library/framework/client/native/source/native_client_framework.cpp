@@ -2,6 +2,7 @@
 #include <sirius_stringhelper.h>
 #include <sirius_locks.h>
 #include <sirius_png_decompressor.h>
+#include <sirius_webp_decompressor.h>
 #include <sirius_ddraw_renderer.h>
 #include <sirius_log4cplus_logger.h>
 
@@ -85,14 +86,32 @@ void sirius::library::framework::client::native::core::on_begin_video(int32_t co
 		_video_renderer_context = nullptr;
 	}
 
-	_video_decompressor = new sirius::library::video::transform::codec::png::decompressor();
-	_video_decompressor_context = new sirius::library::video::transform::codec::png::decompressor::context_t();
+	sirius::library::video::transform::codec::decompressor * decompressor = nullptr;
+	sirius::library::video::transform::codec::decompressor::context_t * dctx = nullptr;
+	switch (codec)
+	{
+		case sirius::library::framework::client::native::video_submedia_type_t::png:
+		{
+			_video_decompressor = new sirius::library::video::transform::codec::png::decompressor();
+			_video_decompressor_context = new sirius::library::video::transform::codec::png::decompressor::context_t();
+
+			decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+		case sirius::library::framework::client::native::video_submedia_type_t::webp:
+		{
+			_video_decompressor = new sirius::library::video::transform::codec::webp::decompressor();
+			_video_decompressor_context = new sirius::library::video::transform::codec::webp::decompressor::context_t();
+
+			decompressor = static_cast<sirius::library::video::transform::codec::webp::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::webp::decompressor::context_t*>(_video_decompressor_context);		
+			break;
+		}
+	}
+
 	_video_renderer = new sirius::library::video::sink::ddraw::renderer();
 	_video_renderer_context = new sirius::library::video::sink::ddraw::renderer::context_t();
-
-	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
-	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
-
 	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
 	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
 
@@ -132,15 +151,29 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	if (!_decoder_buffer)
 		return;
 
-	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
-	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+	sirius::library::video::transform::codec::decompressor * decompressor = nullptr;
+	sirius::library::video::transform::codec::decompressor::context_t * dctx = nullptr;
+	switch (codec)
+	{
+		case sirius::library::framework::client::native::video_submedia_type_t::png:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+		case sirius::library::framework::client::native::video_submedia_type_t::webp:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::webp::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::webp::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+	}
 
 	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
 	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
 
-
-	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
+	sirius::library::video::transform::codec::decompressor::entity_t encoded;
+	sirius::library::video::transform::codec::decompressor::entity_t decoded;
 
 	encoded.data = (uint8_t*)data;
 	encoded.data_size = length;
@@ -149,7 +182,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	decoded.data_capacity = VIDEO_BUFFER_SIZE;
 
 	int32_t decode_err = decompressor->decompress(&encoded, &decoded);
-	if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
+	if ((decode_err == sirius::library::video::transform::codec::decompressor::err_code_t::success) && (decoded.data_size > 0))
 	{
 		sirius::library::video::sink::ddraw::renderer::entity_t render;
 		render.data = decoded.data;
@@ -168,15 +201,30 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	if (!_decoder_buffer)
 		return;
 
-	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
-	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+	sirius::library::video::transform::codec::decompressor * decompressor= nullptr;
+	sirius::library::video::transform::codec::decompressor::context_t * dctx = nullptr;
+	switch (codec)
+	{
+		case sirius::library::framework::client::native::video_submedia_type_t::png:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+		case sirius::library::framework::client::native::video_submedia_type_t::webp:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::webp::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::webp::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+	}
 
 	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
 	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
 
 
-	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
+	sirius::library::video::transform::codec::decompressor::entity_t encoded;
+	sirius::library::video::transform::codec::decompressor::entity_t decoded;
 
 	for (int32_t x = 0; x < count; x++)
 	{
@@ -187,7 +235,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		decoded.data_capacity = VIDEO_BUFFER_SIZE;
 
 		int32_t decode_err = decompressor->decompress(&encoded, &decoded);
-		if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
+		if ((decode_err == sirius::library::video::transform::codec::decompressor::err_code_t::success) && (decoded.data_size > 0))
 		{
 			int32_t hblock_cnt = rctx->height / dctx->height;
 			int32_t wblock_cnt = rctx->width / dctx->width;
@@ -225,15 +273,30 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 	if (!_decoder_buffer)
 		return;
 
-	sirius::library::video::transform::codec::png::decompressor * decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
-	sirius::library::video::transform::codec::png::decompressor::context_t * dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+	sirius::library::video::transform::codec::decompressor * decompressor = nullptr;
+	sirius::library::video::transform::codec::decompressor::context_t * dctx = nullptr;
+	switch (codec)
+	{
+		case sirius::library::framework::client::native::video_submedia_type_t::png:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::png::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::png::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+		case sirius::library::framework::client::native::video_submedia_type_t::webp:
+		{
+			decompressor = static_cast<sirius::library::video::transform::codec::webp::decompressor*>(_video_decompressor);
+			dctx = static_cast<sirius::library::video::transform::codec::webp::decompressor::context_t*>(_video_decompressor_context);
+			break;
+		}
+	}
 
 	sirius::library::video::sink::ddraw::renderer * renderer = static_cast<sirius::library::video::sink::ddraw::renderer*>(_video_renderer);
 	sirius::library::video::sink::ddraw::renderer::context_t * rctx = static_cast<sirius::library::video::sink::ddraw::renderer::context_t*>(_video_renderer_context);
 
 
-	sirius::library::video::transform::codec::png::decompressor::entity_t encoded;
-	sirius::library::video::transform::codec::png::decompressor::entity_t decoded;
+	sirius::library::video::transform::codec::decompressor::entity_t encoded;
+	sirius::library::video::transform::codec::decompressor::entity_t decoded;
 
 	static uint64_t fi = 0;
 	for (int32_t i = 0; i < count; i++)
@@ -245,7 +308,7 @@ void sirius::library::framework::client::native::core::on_recv_video(int32_t cod
 		decoded.data_capacity = VIDEO_BUFFER_SIZE;
 
 		int32_t decode_err = decompressor->decompress(&encoded, &decoded);
-		if ((decode_err == sirius::library::video::transform::codec::png::decompressor::err_code_t::success) && (decoded.data_size > 0))
+		if ((decode_err == sirius::library::video::transform::codec::decompressor::err_code_t::success) && (decoded.data_size > 0))
 		{
 			int16_t video_x = x[i];
 			int16_t video_y = y[i];

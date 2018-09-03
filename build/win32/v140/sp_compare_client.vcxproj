@@ -155,6 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\pthread\v1_11_0\win32\v140\x86\lib;..\..\..\3rdparty\xml\v2_6_2\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;pthreadVCE2.lib;tinyxml.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateMapFile>false</GenerateMapFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

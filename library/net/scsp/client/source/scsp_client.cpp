@@ -174,16 +174,13 @@ void sirius::library::net::scsp::client::core::push_indexed_video_packet(int32_t
 			packet += slength;
 		};
 
-		if (_video_codec == sirius::library::net::scsp::client::video_submedia_type_t::png)
+		if (!_rcv_first_video)
 		{
-			if (!_rcv_first_video)
-			{
-				_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
-				_rcv_first_video = true;
-			}
-
-			_front->on_recv_video(_video_codec, count, mindex, mdata, mlength, 0, 0);
+			_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
+			_rcv_first_video = true;
 		}
+
+		_front->on_recv_video(_video_codec, count, mindex, mdata, mlength, 0, 0);
 
 		if (mindex)
 			delete mindex;
@@ -235,16 +232,13 @@ void sirius::library::net::scsp::client::core::push_coordinates_video_packet(int
 			packet += slength;
 		};
 
-		if (_video_codec == sirius::library::net::scsp::client::video_submedia_type_t::png)
+		if (!_rcv_first_video)
 		{
-			if (!_rcv_first_video)
-			{
-				_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
-				_rcv_first_video = true;
-			}
-
-			_front->on_recv_video(_video_codec, count, mx, my, mwidth, mheight, mdata, mlength, 0, 0);
+			_front->on_begin_video(_video_codec, _video_width, _video_height, _video_block_width, _video_block_height);
+			_rcv_first_video = true;
 		}
+
+		_front->on_recv_video(_video_codec, count, mx, my, mwidth, mheight, mdata, mlength, 0, 0);
 
 		if (mx)
 			delete mx;

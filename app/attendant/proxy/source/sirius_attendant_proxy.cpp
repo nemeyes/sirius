@@ -87,6 +87,8 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		if (!_wcsicmp(value.c_str(), L"png"))
 			context->video_codec = sirius::app::attendant::proxy::video_submedia_type_t::png;
+		else if (!_wcsicmp(value.c_str(), L"webp"))
+			context->video_codec = sirius::app::attendant::proxy::video_submedia_type_t::webp;
 		else if (!_wcsicmp(value.c_str(), L"jpeg"))
 			context->video_codec = sirius::app::attendant::proxy::video_submedia_type_t::jpeg;
 		else if (!_wcsicmp(value.c_str(), L"dxt"))
@@ -124,40 +126,58 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->video_block_height = _wtoi(value.c_str());
 	}
-	if (param.end() != (iter = param.find(L"video_compression_level")))
+
+	if (context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::png)
 	{
-		value = iter->second;
-		context->video_compression_level = _wtoi(value.c_str());
+		if (param.end() != (iter = param.find(L"video_png_compression_level")))
+		{
+			value = iter->second;
+			context->png.video_compression_level = _wtoi(value.c_str());
+		}
+		if (param.end() != (iter = param.find(L"video_png_quantization_posterization")))
+		{
+			value = iter->second;
+			if (!_wcsicmp(value.c_str(), L"true"))
+				context->png.video_quantization_posterization = true;
+			else
+				context->png.video_quantization_posterization = false;
+		}
+		if (param.end() != (iter = param.find(L"video_png_quantization_dither_map")))
+		{
+			value = iter->second;
+			if (!_wcsicmp(value.c_str(), L"true"))
+				context->png.video_quantization_dither_map = true;
+			else
+				context->png.video_quantization_dither_map = false;
+		}
+		if (param.end() != (iter = param.find(L"video_png_quantization_contrast_maps")))
+		{
+			value = iter->second;
+			if (!_wcsicmp(value.c_str(), L"true"))
+				context->png.video_quantization_contrast_maps = true;
+			else
+				context->png.video_quantization_contrast_maps = false;
+		}
+		if (param.end() != (iter = param.find(L"video_png_quantization_colors")))
+		{
+			value = iter->second;
+			context->png.video_quantization_colors = _wtoi(value.c_str());
+		}
 	}
-	if (param.end() != (iter = param.find(L"video_quantization_posterization")))
+	else if (context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::webp)
 	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->video_quantization_posterization = true;
-		else
-			context->video_quantization_posterization = false;
+		if (param.end() != (iter = param.find(L"video_webp_quality")))
+		{
+			value = iter->second;
+			context->webp.video_quality = _wtof(value.c_str());
+		}
+		if (param.end() != (iter = param.find(L"video_webp_method")))
+		{
+			value = iter->second;
+			context->webp.video_method = _wtoi(value.c_str());
+		}
 	}
-	if (param.end() != (iter = param.find(L"video_quantization_dither_map")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->video_quantization_dither_map = true;
-		else
-			context->video_quantization_dither_map = false;
-	}
-	if (param.end() != (iter = param.find(L"video_quantization_contrast_maps")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->video_quantization_contrast_maps = true;
-		else
-			context->video_quantization_contrast_maps = false;
-	}
-	if (param.end() != (iter = param.find(L"video_quantization_colors")))
-	{
-		value = iter->second;
-		context->video_quantization_colors = _wtoi(value.c_str());
-	}
+
 	if (param.end() != (iter = param.find(L"enable_invalidate4client")))
 	{
 		value = iter->second;

@@ -229,6 +229,8 @@
       <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetDir)..\..\ssm_watchdog.exe" "$(TargetDir)ssm_watchdog.exe"</Command>
