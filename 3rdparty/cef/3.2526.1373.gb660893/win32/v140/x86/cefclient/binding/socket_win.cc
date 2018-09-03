@@ -247,6 +247,12 @@ namespace client {
 			{
 				RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 				DCHECK(rootWin);
+				if (rootWin->timeset_event)
+				{
+					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
+					timeKillEvent(rootWin->timeset_event);
+					rootWin->timeset_event = 0;
+				}
 				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
 				CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
@@ -260,12 +266,6 @@ namespace client {
 				//browser->Reload();
 				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 
-				if (rootWin->timeset_event)
-				{
-					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
-					timeKillEvent(rootWin->timeset_event);
-					rootWin->timeset_event = 0;
-				}
 				char get_url[MAX_PATH] = { 0 };
 				char start_url[MAX_PATH] = { 0 };
 				_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
