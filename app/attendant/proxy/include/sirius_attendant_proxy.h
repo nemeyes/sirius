@@ -39,6 +39,33 @@ namespace sirius
 					static const int32_t paused = 2;
 				} mediastate_t;
 
+
+				typedef struct EXP_ATTENDANT_PROXY_CLASS _png_compressor_context_t
+				{
+					int32_t video_compression_level;
+					bool	video_quantization_posterization;
+					bool	video_quantization_dither_map;
+					bool	video_quantization_contrast_maps;
+					int32_t video_quantization_colors;
+					_png_compressor_context_t(void)
+						: video_compression_level(-1)
+						, video_quantization_posterization(true)
+						, video_quantization_dither_map(false)
+						, video_quantization_contrast_maps(false)
+						, video_quantization_colors(128)
+					{}
+				} png_compressor_context_t;
+
+				typedef struct EXP_ATTENDANT_PROXY_CLASS _webp_compressor_context_t
+				{
+					float	video_quality;
+					int32_t	video_method;
+					_webp_compressor_context_t(void)
+						: video_quality(100.f)
+						, video_method(1)
+					{}
+				} webp_compressor_context_t;
+
 				typedef struct EXP_ATTENDANT_PROXY_CLASS _context_t
 				{
 					int32_t type;
@@ -52,11 +79,8 @@ namespace sirius
 					int32_t video_process_type;
 					int32_t video_block_width;
 					int32_t video_block_height;
-					int32_t video_compression_level;
-					bool	video_quantization_posterization;
-					bool	video_quantization_dither_map;
-					bool	video_quantization_contrast_maps;
-					int32_t video_quantization_colors;
+					png_compressor_context_t	png;
+					webp_compressor_context_t	webp;
 					bool	invalidate4client;
 					bool	indexed_mode;
 					int32_t	nthread;
@@ -83,11 +107,6 @@ namespace sirius
 						, video_process_type(sirius::app::attendant::proxy::video_memory_type_t::host)
 						, video_block_width(128)
 						, video_block_height(72)
-						, video_compression_level(-1)
-						, video_quantization_posterization(true)
-						, video_quantization_dither_map(false)
-						, video_quantization_contrast_maps(false)
-						, video_quantization_colors(128)
 						, invalidate4client(false)
 						, indexed_mode(false)
 						, nthread(20)

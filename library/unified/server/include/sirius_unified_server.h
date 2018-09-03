@@ -45,6 +45,32 @@ namespace sirius
 					}
 				} context_t;
 
+				typedef struct EXP_UNIFIED_SERVER_CLASS _video_png_compressor_context_t
+				{
+					int32_t compression_level;
+					bool	quantization_posterization;
+					bool	quantization_dither_map;
+					bool	quantization_contrast_maps;
+					int32_t quantization_colors;
+					_video_png_compressor_context_t()
+						: compression_level(-1)
+						, quantization_posterization(true)
+						, quantization_dither_map(false)
+						, quantization_contrast_maps(false)
+						, quantization_colors(128)
+					{}
+				} video_png_compressor_context_t;
+
+				typedef struct EXP_UNIFIED_SERVER_CLASS _video_webp_compressor_context_t
+				{
+					float	quality;
+					int32_t method;
+					_video_webp_compressor_context_t()
+						: quality(100.f)
+						, method(0)
+					{}
+				} video_webp_compressor_context_t;
+
 				typedef struct EXP_UNIFIED_SERVER_CLASS _video_compressor_context_t
 				{
 					int32_t gpuindex;
@@ -59,11 +85,8 @@ namespace sirius
 					int32_t nbuffer;
 					int32_t block_width;
 					int32_t block_height;
-					int32_t compression_level;
-					bool	quantization_posterization;
-					bool	quantization_dither_map;
-					bool	quantization_contrast_maps;
-					int32_t quantization_colors;
+					video_png_compressor_context_t	png;
+					video_webp_compressor_context_t webp;
 					bool	invalidate4client;
 					bool	indexed_mode;
 					int32_t nthread;
@@ -81,11 +104,6 @@ namespace sirius
 						, nbuffer(1)
 						, block_width(0)
 						, block_height(0)
-						, compression_level(-1)
-						, quantization_posterization(true)
-						, quantization_dither_map(false)
-						, quantization_contrast_maps(false)
-						, quantization_colors(128)
 						, play_after_init(false)
 						, invalidate4client(false)
 						, indexed_mode(false)

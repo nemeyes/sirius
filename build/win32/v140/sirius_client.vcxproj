@@ -165,6 +165,8 @@
       <AdditionalDependencies>libtcmalloc_minimal.lib;wtsapi32.lib;userenv.lib;rpcrt4.lib;lib_json_md.lib;libcurl.lib;tinyxml.lib;sirius_log4cplus_logger.lib;sirius_xml_parser.lib;sirius_curl_client.lib;sirius_client_proxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

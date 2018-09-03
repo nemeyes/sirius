@@ -162,33 +162,49 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--url=\"%s\"", confentity.url);
 			switch (confentity.video_codec)
 			{
-			case sirius::base::video_submedia_type_t::png:
-				proc_ctrl.set_cmdline(arguments, "--video_codec=\"png\"");
-				break;
+				case sirius::base::video_submedia_type_t::png:
+				{
+					proc_ctrl.set_cmdline(arguments, "--video_codec=\"png\"");
+					break;
+				}
+				case sirius::base::video_submedia_type_t::webp:
+				{
+					proc_ctrl.set_cmdline(arguments, "--video_codec=\"webp\"");
+					break;
+				}
 			}
 			proc_ctrl.set_cmdline(arguments, "--video_width=%d", confentity.video_width);
 			proc_ctrl.set_cmdline(arguments, "--video_height=%d", confentity.video_height);
 			proc_ctrl.set_cmdline(arguments, "--video_buffer_count=%d", confentity.video_buffer_count);
 			proc_ctrl.set_cmdline(arguments, "--video_block_width=%d", confentity.video_block_width);
 			proc_ctrl.set_cmdline(arguments, "--video_block_height=%d", confentity.video_block_height);
-			proc_ctrl.set_cmdline(arguments, "--video_compression_level=%d", confentity.video_compression_level);
 			
-			if (confentity.video_quantization_posterization)
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_posterization=true");
-			else
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_posterization=false");
+			if (confentity.video_codec == sirius::base::video_submedia_type_t::png)
+			{
+				proc_ctrl.set_cmdline(arguments, "--video_png_compression_level=%d", confentity.png.video_compression_level);
+				if (confentity.png.video_quantization_posterization)
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_posterization=true");
+				else
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_posterization=false");
 
-			if (confentity.video_quantization_dither_map)
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_dither_map=true");
-			else
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_dither_map=false");
+				if (confentity.png.video_quantization_dither_map)
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_dither_map=true");
+				else
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_dither_map=false");
 
-			if (confentity.video_quantization_contrast_maps)
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_contrast_maps=true");
-			else
-				proc_ctrl.set_cmdline(arguments, "--video_quantization_contrast_maps=false");
+				if (confentity.png.video_quantization_contrast_maps)
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_contrast_maps=true");
+				else
+					proc_ctrl.set_cmdline(arguments, "--video_png_quantization_contrast_maps=false");
 
-			proc_ctrl.set_cmdline(arguments, "--video_quantization_colors=%d", confentity.video_quantization_colors);
+				proc_ctrl.set_cmdline(arguments, "--video_png_quantization_colors=%d", confentity.png.video_quantization_colors);
+			}
+			else if (confentity.video_codec == sirius::base::video_submedia_type_t::webp)
+			{
+				proc_ctrl.set_cmdline(arguments, "--video_webp_quality=%f", confentity.webp.video_quality);
+				proc_ctrl.set_cmdline(arguments, "--video_webp_method=%d", confentity.webp.video_method);
+			}
+
 			proc_ctrl.set_cmdline(arguments, "--control_server_portnumber=%d", confentity.controller_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--streaming_server_portnumber=%d", confentity.streamer_portnumber);
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);

@@ -10,6 +10,7 @@
 
 #include "unified_server.h"
 #include "partial_png_compressor_wrapper.h"
+#include "partial_webp_compressor_wrapper.h"
 
 sirius::library::unified::compressor::compressor(sirius::library::unified::server::core * front)
 	: _front(front)
@@ -59,16 +60,48 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->binvalidate = _external_venc_ctx->invalidate4client;
 			venc_ctx->indexed_video = _external_venc_ctx->indexed_mode;
 			venc_ctx->nthread = _external_venc_ctx->nthread;
-			venc_ctx->compression_level = _external_venc_ctx->compression_level;
-			venc_ctx->posterization = _external_venc_ctx->quantization_posterization;
-			venc_ctx->use_dither_map = _external_venc_ctx->quantization_dither_map;
-			venc_ctx->use_contrast_maps = _external_venc_ctx->quantization_contrast_maps;
+			venc_ctx->compression_level = _external_venc_ctx->png.compression_level;
+			venc_ctx->posterization = _external_venc_ctx->png.quantization_posterization;
+			venc_ctx->use_dither_map = _external_venc_ctx->png.quantization_dither_map;
+			venc_ctx->use_contrast_maps = _external_venc_ctx->png.quantization_contrast_maps;
 			venc_ctx->gamma = 0;// 1 / 2.2f;
 			venc_ctx->floyd = 0.f; //0.5f
 			venc_ctx->speed = 10;
-			venc_ctx->max_colors = _external_venc_ctx->quantization_colors;
+			venc_ctx->max_colors = _external_venc_ctx->png.quantization_colors;
 			venc_ctx->min_quality = 0;
 			venc_ctx->max_quality = 100;
+			venc->initialize(venc_ctx);
+			if (_external_venc_ctx->play_after_init)
+			{
+				venc->play();
+			}
+			else
+			{
+				if (_play_flag & sirius::library::unified::server::media_type_t::video)
+					venc->play();
+			}
+			break;
+		}
+		case sirius::library::unified::server::video_submedia_type_t::webp :
+		{
+			_venc_ctx = new  sirius::library::unified::partialwebp::compressor::context_t();
+			_venc = new sirius::library::unified::partialwebp::compressor(this);
+
+			sirius::library::unified::partialwebp::compressor::context_t * venc_ctx = static_cast<sirius::library::unified::partialwebp::compressor::context_t*>(_venc_ctx);
+			sirius::library::unified::partialwebp::compressor * venc = static_cast<sirius::library::unified::partialwebp::compressor*>(_venc);
+
+			venc_ctx->memtype = _external_venc_ctx->memtype;
+			venc_ctx->device = _external_venc_ctx->device;
+			venc_ctx->width = _external_venc_ctx->width;
+			venc_ctx->height = _external_venc_ctx->height;
+			venc_ctx->nbuffer = _external_venc_ctx->nbuffer;
+			venc_ctx->block_width = _external_venc_ctx->block_width;
+			venc_ctx->block_height = _external_venc_ctx->block_height;
+			venc_ctx->binvalidate = _external_venc_ctx->invalidate4client;
+			venc_ctx->indexed_video = _external_venc_ctx->indexed_mode;
+			venc_ctx->nthread = _external_venc_ctx->nthread;
+			venc_ctx->quality = _external_venc_ctx->webp.quality;
+			venc_ctx->method = _external_venc_ctx->webp.method;
 			venc->initialize(venc_ctx);
 			if (_external_venc_ctx->play_after_init)
 			{

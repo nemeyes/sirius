@@ -29,8 +29,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	std::string sql = "UPDATE tb_configuration SET ";
 	sql += "uuid=?, url=?, max_attendant_instance=?, attendant_creation_delay=?, controller_portnumber=?, streamer_portnumber=?, ";
 	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, video_buffer_count=?, ";
-	sql += "video_block_width=?, video_block_height=?, video_compression_level=?, ";
-	sql += "video_quantization_posterization=?, video_quantization_dither_map=?, video_quantization_contrast_maps=?, video_quantization_colors = ? , ";
+	sql += "video_block_width=?, video_block_height=?, ";
+	sql += "video_png_compression_level = ?, video_png_quantization_posterization=?, video_png_quantization_dither_map=?, video_png_quantization_contrast_maps=?, video_png_quantization_colors = ? , ";
+	sql += "video_webp_quality = ?, video_webp_method=? , ";
 	sql += "enable_invalidate4client=?, enable_indexed_mode=?, nthread=?, ";
 	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_present=?, enable_auto_start=?, enable_caching=?, clean_attendant=?, ";
 	sql += "app_session_app=?";
@@ -51,11 +52,16 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->video_buffer_count);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_height);
-		sqlite3_bind_int(stmt, ++index, entity->video_compression_level);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_posterization ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_dither_map ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_contrast_maps ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_colors);
+		
+		sqlite3_bind_int(stmt, ++index, entity->png.video_compression_level);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_posterization ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_dither_map ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_contrast_maps ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_colors);
+
+		sqlite3_bind_double(stmt, ++index, entity->webp.video_quality);
+		sqlite3_bind_int(stmt, ++index, entity->webp.video_method);
+
 		sqlite3_bind_int(stmt, ++index, entity->invalidate4client ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->indexed_mode ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->nthread);
@@ -117,11 +123,13 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.video_buffer_count = 3;
 		c_entity.video_block_width = 128;
 		c_entity.video_block_height = 72;
-		c_entity.video_compression_level = 1;
-		c_entity.video_quantization_posterization = true;
-		c_entity.video_quantization_dither_map = false;
-		c_entity.video_quantization_contrast_maps = false;
-		c_entity.video_quantization_colors = 128;
+		c_entity.png.video_compression_level = 1;
+		c_entity.png.video_quantization_posterization = true;
+		c_entity.png.video_quantization_dither_map = false;
+		c_entity.png.video_quantization_contrast_maps = false;
+		c_entity.png.video_quantization_colors = 128;
+		c_entity.webp.video_quality = 100.f;
+		c_entity.webp.video_method = 1;
 		c_entity.invalidate4client = true;
 		c_entity.indexed_mode = true;
 		c_entity.nthread = 20;
@@ -141,8 +149,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 
 	std::string sql = "SELECT uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, ";
 	sql += "video_codec, video_width, video_height, video_fps, video_buffer_count, ";
-	sql += "video_block_width, video_block_height, video_compression_level, ";
-	sql += "video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, ";
+	sql += "video_block_width, video_block_height, ";
+	sql += "video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, ";
+	sql += "video_webp_quality, video_webp_method, ";
 	sql += "enable_invalidate4client, enable_indexed_mode, nthread, ";
 	sql += "enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, ";
 	sql += "app_session_app ";
@@ -171,11 +180,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				entity->video_buffer_count = sqlite3_column_int(stmt, index++);
 				entity->video_block_width = sqlite3_column_int(stmt, index++);
 				entity->video_block_height = sqlite3_column_int(stmt, index++);
-				entity->video_compression_level = sqlite3_column_int(stmt, index++);
-				entity->video_quantization_posterization = sqlite3_column_int(stmt, index++) ? true : false;
-				entity->video_quantization_dither_map = sqlite3_column_int(stmt, index++) ? true : false;
-				entity->video_quantization_contrast_maps = sqlite3_column_int(stmt, index++) ? true : false;
-				entity->video_quantization_colors = sqlite3_column_int(stmt, index++);
+
+				entity->png.video_compression_level = sqlite3_column_int(stmt, index++);
+				entity->png.video_quantization_posterization = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->png.video_quantization_dither_map = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->png.video_quantization_contrast_maps = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->png.video_quantization_colors = sqlite3_column_int(stmt, index++);
+
+				entity->webp.video_quality = sqlite3_column_double(stmt, index++);
+				entity->webp.video_method = sqlite3_column_int(stmt, index++);
 
 				entity->invalidate4client = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->indexed_mode = sqlite3_column_int(stmt, index++) ? true : false;
@@ -218,8 +231,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, enable_invalidate4client, enable_indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app) ";
-	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app) ";
+	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -237,11 +250,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->video_buffer_count);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_block_height);
-		sqlite3_bind_int(stmt, ++index, entity->video_compression_level);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_posterization ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_dither_map ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_contrast_maps ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->video_quantization_colors);
+
+		sqlite3_bind_int(stmt, ++index, entity->png.video_compression_level);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_posterization ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_dither_map ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_contrast_maps ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->png.video_quantization_colors);
+
+		sqlite3_bind_double(stmt, ++index, entity->webp.video_quality);
+		sqlite3_bind_int(stmt, ++index, entity->webp.video_method);
 
 		sqlite3_bind_int(stmt, ++index, entity->invalidate4client ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->indexed_mode ? 1 : 0);

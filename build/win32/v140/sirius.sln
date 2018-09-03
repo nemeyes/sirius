@@ -122,6 +122,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sp_compare_client", "sp_com
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_partial_webp_compressor", "sirius_partial_webp_compressor.vcxproj", "{1B465291-69CE-49FA-9E3D-BE88C8EE5310}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sirius_webp_decompressor", "sirius_webp_decompressor.vcxproj", "{224B53E3-F3E8-46C0-9948-05E82E349487}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -532,6 +534,18 @@ Global
 		{1B465291-69CE-49FA-9E3D-BE88C8EE5310}.Release|x64.Build.0 = Release|x64
 		{1B465291-69CE-49FA-9E3D-BE88C8EE5310}.Release|x86.ActiveCfg = Release|Win32
 		{1B465291-69CE-49FA-9E3D-BE88C8EE5310}.Release|x86.Build.0 = Release|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|ARM.ActiveCfg = Debug|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|x64.ActiveCfg = Debug|x64
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|x64.Build.0 = Debug|x64
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|x86.ActiveCfg = Debug|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Debug|x86.Build.0 = Debug|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|Any CPU.ActiveCfg = Release|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|ARM.ActiveCfg = Release|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|x64.ActiveCfg = Release|x64
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|x64.Build.0 = Release|x64
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|x86.ActiveCfg = Release|Win32
+		{224B53E3-F3E8-46C0-9948-05E82E349487}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -588,5 +602,6 @@ Global
 		{D7D42E4D-4010-45CD-B3A2-0FDAAEE0905D} = {1B7597E5-8361-4B7F-9A94-408CB3AA874F}
 		{52FD5CB9-812F-44B1-A27D-0F629A65492C} = {1B7597E5-8361-4B7F-9A94-408CB3AA874F}
 		{1B465291-69CE-49FA-9E3D-BE88C8EE5310} = {61C79071-8116-491F-80A2-29C0BDC317F2}
+		{224B53E3-F3E8-46C0-9948-05E82E349487} = {61C79071-8116-491F-80A2-29C0BDC317F2}
 	EndGlobalSection
 EndGlobal

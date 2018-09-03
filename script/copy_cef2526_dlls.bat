@@ -43,6 +43,10 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.pdb						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
