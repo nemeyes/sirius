@@ -94,14 +94,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_UNIFIED_SERVER;WITH_PARTIAL_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\include;..\..\..\library\net\base\include;..\..\..\library\net\scsp\server\include;..\..\..\library\unified\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\include;..\..\..\library\video\transform\codec\partial\webp\compressor\include;..\..\..\library\net\base\include;..\..\..\library\net\scsp\server\include;..\..\..\library\unified\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;sirius_partial_webp_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,7 +128,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_UNIFIED_SERVER;WITH_PARTIAL_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\include;..\..\..\library\net\base\include;..\..\..\library\net\scsp\server\include;..\..\..\library\unified\server\include;..\..\..\library\net\scsp\base\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\include;..\..\..\library\video\transform\codec\partial\webp\compressor\include;..\..\..\library\net\base\include;..\..\..\library\net\scsp\server\include;..\..\..\library\unified\server\include;..\..\..\library\net\scsp\base\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
@@ -138,8 +138,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;dxgi.lib;rpcrt4.lib;sirius_log4cplus_logger.lib;sirius_scsp_server.lib;sirius_partial_png_compressor.lib;sirius_partial_webp_compressor.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,6 +166,7 @@
     <ClInclude Include="..\..\..\base\include\resource.h" />
     <ClInclude Include="..\..\..\base\include\sirius_string.h" />
     <ClInclude Include="..\..\..\library\unified\server\include\partial_png_compressor_wrapper.h" />
+    <ClInclude Include="..\..\..\library\unified\server\include\partial_webp_compressor_wrapper.h" />
     <ClInclude Include="..\..\..\library\unified\server\include\sirius_unified_server.h" />
     <ClInclude Include="..\..\..\library\unified\server\include\unified_compressor.h" />
     <ClInclude Include="..\..\..\library\unified\server\include\unified_server.h" />
@@ -171,6 +174,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\base\source\sirius_string.cpp" />
     <ClCompile Include="..\..\..\library\unified\server\source\partial_png_compressor_wrapper.cpp" />
+    <ClCompile Include="..\..\..\library\unified\server\source\partial_webp_compressor_wrapper.cpp" />
     <ClCompile Include="..\..\..\library\unified\server\source\sirius_unified_server.cpp" />
     <ClCompile Include="..\..\..\library\unified\server\source\unified_compressor.cpp" />
     <ClCompile Include="..\..\..\library\unified\server\source\unified_server.cpp" />

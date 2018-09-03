@@ -94,14 +94,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SIRIUS_CLIENT_FRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\library\unified\client\include;..\..\..\library\framework\client\base\include;..\..\..\library\framework\client\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\transform\codec\webp\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\library\unified\client\include;..\..\..\library\framework\client\base\include;..\..\..\library\framework\client\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sirius_log4cplus_logger.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;sirius_unified_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sirius_log4cplus_logger.lib;sirius_png_decompressor.lib;sirius_webp_decompressor.lib;sirius_ddraw_renderer.lib;sirius_unified_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,7 +128,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SIRIUS_CLIENT_FRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\library\unified\client\include;..\..\..\library\framework\client\base\include;..\..\..\library\framework\client\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\png\decompressor\include;..\..\..\library\video\transform\codec\webp\decompressor\include;..\..\..\library\video\sink\base\include;..\..\..\library\video\sink\ddraw\renderer\include;..\..\..\library\unified\client\include;..\..\..\library\framework\client\base\include;..\..\..\library\framework\client\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
@@ -139,7 +139,9 @@
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;sirius_log4cplus_logger.lib;sirius_png_decompressor.lib;sirius_ddraw_renderer.lib;sirius_unified_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;sirius_log4cplus_logger.lib;sirius_png_decompressor.lib;sirius_webp_decompressor.lib;sirius_ddraw_renderer.lib;sirius_unified_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

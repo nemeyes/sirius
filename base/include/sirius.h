@@ -83,6 +83,7 @@ namespace sirius
 			static const int32_t jpeg = 6;
 			static const int32_t png = 7;
 			static const int32_t dxt = 8;
+			static const int32_t webp = 9;
 			static const int32_t max_video_submedia_count = dxt;
 		} video_submedia_type_t;
 

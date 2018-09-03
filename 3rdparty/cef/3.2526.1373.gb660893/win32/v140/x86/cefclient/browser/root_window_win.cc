@@ -317,7 +317,7 @@ int32_t RootWindowWin::first_reload()
 		if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
 			return -1;*/
 
-		timeset_event = timeSetEvent(1000, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+		timeset_event = timeSetEvent(100, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 		stat_timer = true;
 	}
 	return int32_t();

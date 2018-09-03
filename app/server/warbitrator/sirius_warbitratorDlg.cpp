@@ -73,8 +73,8 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_ATTENDANT_CREATION_DELAY, _attendant_creation_delay);
 	DDX_Control(pDX, IDC_EDIT_ARBITRATOR_PORTNUMBER, _arbitrator_control_portnumber);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_FPS, _video_fps);
-	DDX_Control(pDX, IDC_COMBO_VIDEO_COMPRESION_LEVEL, _video_compression_level);
-	DDX_Control(pDX, IDC_COMBO_VIDEO_QUANTIZATION_COLORS, _video_quantization_colors);
+	DDX_Control(pDX, IDC_COMBO_VIDEO_PNG_COMPRESION_LEVEL, _video_png_compression_level);
+	DDX_Control(pDX, IDC_COMBO_VIDEO_PNG_QUANTIZATION_COLORS, _video_png_quantization_colors);
 	DDX_Control(pDX, IDC_CHECK_TLS, _use_tls);
 	DDX_Control(pDX, IDC_CHECK_PRESENT, _enable_present);
 	DDX_Control(pDX, IDC_CHECK_AUTOSTART, _enable_auto_start);
@@ -89,9 +89,11 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
 	DDX_Control(pDX, IDC_EDIT_THREAD_COUNT, _nthread);
 	DDX_Control(pDX, IDC_CHECK_CLEAN_ATTENDANT, _clean_attendant);
-	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_POSTERIZATION, _video_quantization_posterization);
-	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_DITHER_MAP, _video_quantization_dither_map);
-	DDX_Control(pDX, IDC_CHECK_VIDEO_QUANTIZATION_CONTRAST_MAPS, _video_quantization_contrast_maps);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_PNG_QUANTIZATION_POSTERIZATION, _video_png_quantization_posterization);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_PNG_QUANTIZATION_DITHER_MAP, _video_png_quantization_dither_map);
+	DDX_Control(pDX, IDC_CHECK_VIDEO_PNG_QUANTIZATION_CONTRAST_MAPS, _video_png_quantization_contrast_maps);
+	DDX_Control(pDX, IDC_EDIT_VIDEO_WEBP_QUALITY, _video_webp_quality);
+	DDX_Control(pDX, IDC_COMBO_VIDEO_CODEC, _video_codec);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -311,7 +313,10 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wvideo_buffer_count;
 	CString wvideo_block_width;
 	CString wvideo_block_height;
-	CString wvideo_quantization_colors;
+
+	CString wvideo_webp_quality;
+	CString wvideo_webp_method;
+
 	CString wkeepalive_timeout;
 	CString wnthread;
 
@@ -321,15 +326,23 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t attendant_creation_delay = 2000;
 	int32_t controller_portnumber;
 	int32_t streamer_portnumber;
+
+	int32_t video_codec = sirius::app::server::arbitrator::proxy::video_submedia_type_t::png;
+
 	int32_t video_fps = 0;
 	int32_t video_buffer_count = 3;
 	int32_t video_block_width = 128;
 	int32_t video_block_height = 72;
-	int32_t video_compression_level = 5;
-	bool	video_quantization_posterization = true;
-	bool	video_quantization_dither_map = false;
-	bool	video_quantization_contrast_maps = false;
-	int32_t video_quantization_colors = 128;
+
+	int32_t video_png_compression_level = 5;
+	bool	video_png_quantization_posterization = true;
+	bool	video_png_quantization_dither_map = false;
+	bool	video_png_quantization_contrast_maps = false;
+	int32_t video_png_quantization_colors = 128;
+
+	float	video_webp_quality = 100.f;
+	int32_t video_webp_method = 1;
+	
 	int32_t keepalive_timeout = 5000;
 	int32_t nthread;
 
@@ -353,40 +366,56 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_video_block_width.GetWindowTextW(wvideo_block_width);
 	_video_block_height.GetWindowTextW(wvideo_block_height);
 
+	_video_webp_quality.GetWindowTextW(wvideo_webp_quality);
 	_keepalive_timeout.GetWindowTextW(wkeepalive_timeout);
 	_nthread.GetWindowTextW(wnthread);
 
-	video_compression_level = _video_compression_level.GetCurSel() + 1;
-
-	if (_video_quantization_posterization.GetCheck())
-		video_quantization_posterization = true;
+	if (_video_codec.GetCurSel() == 0)
+	{
+		video_codec = sirius::app::server::arbitrator::proxy::video_submedia_type_t::png;
+	}
+	else if (_video_codec.GetCurSel() == 1)
+	{
+		video_codec = sirius::app::server::arbitrator::proxy::video_submedia_type_t::webp;
+	}
 	else
-		video_quantization_posterization = false;
+	{
+		video_codec = sirius::app::server::arbitrator::proxy::video_submedia_type_t::png;
+	}
 
-	if (_video_quantization_dither_map.GetCheck())
-		video_quantization_dither_map = true;
+	video_png_compression_level = _video_png_compression_level.GetCurSel() + 1;
+
+	if (_video_png_quantization_posterization.GetCheck())
+		video_png_quantization_posterization = true;
 	else
-		video_quantization_dither_map = false;
+		video_png_quantization_posterization = false;
 
-	if (_video_quantization_contrast_maps.GetCheck())
-		video_quantization_contrast_maps = true;
+	if (_video_png_quantization_dither_map.GetCheck())
+		video_png_quantization_dither_map = true;
 	else
-		video_quantization_contrast_maps = false;
+		video_png_quantization_dither_map = false;
 
-	if (_video_quantization_colors.GetCurSel() == 0)
-		video_quantization_colors = 0;
-	else if (_video_quantization_colors.GetCurSel() == 1)
-		video_quantization_colors = 8;
-	else if (_video_quantization_colors.GetCurSel() == 2)
-		video_quantization_colors = 16;
-	else if (_video_quantization_colors.GetCurSel() == 3)
-		video_quantization_colors = 32;
-	else if (_video_quantization_colors.GetCurSel() == 4)
-		video_quantization_colors = 64;
-	else if (_video_quantization_colors.GetCurSel() == 5)
-		video_quantization_colors = 128;
-	else if (_video_quantization_colors.GetCurSel() == 6)
-		video_quantization_colors = 256;
+	if (_video_png_quantization_contrast_maps.GetCheck())
+		video_png_quantization_contrast_maps = true;
+	else
+		video_png_quantization_contrast_maps = false;
+
+	if (_video_png_quantization_colors.GetCurSel() == 0)
+		video_png_quantization_colors = 0;
+	else if (_video_png_quantization_colors.GetCurSel() == 1)
+		video_png_quantization_colors = 8;
+	else if (_video_png_quantization_colors.GetCurSel() == 2)
+		video_png_quantization_colors = 16;
+	else if (_video_png_quantization_colors.GetCurSel() == 3)
+		video_png_quantization_colors = 32;
+	else if (_video_png_quantization_colors.GetCurSel() == 4)
+		video_png_quantization_colors = 64;
+	else if (_video_png_quantization_colors.GetCurSel() == 5)
+		video_png_quantization_colors = 128;
+	else if (_video_png_quantization_colors.GetCurSel() == 6)
+		video_png_quantization_colors = 256;
+
+
 
 	sirius::stringhelper::convert_wide2multibyte((LPTSTR)(LPCTSTR)wuuid, &uuid);
 	sirius::stringhelper::convert_wide2multibyte((LPTSTR)(LPCTSTR)wurl, &url);
@@ -399,6 +428,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	video_buffer_count = _wtoi(wvideo_buffer_count);
 	video_block_width = _wtoi(wvideo_block_width);
 	video_block_height = _wtoi(wvideo_block_height);
+	video_webp_quality = _wtof(wvideo_webp_quality);
 	keepalive_timeout = _wtoi(wkeepalive_timeout);
 	nthread = _wtoi(wnthread);
 
@@ -416,7 +446,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_auto_start = true;
 	if (_clean_attendant.GetCheck())
 		clean_attendant = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, sirius::app::server::arbitrator::proxy::video_submedia_type_t::png, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, invalidate4client, indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, invalidate4client, indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
 
 	if (uuid)
 		free(uuid);
@@ -427,7 +457,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -439,6 +469,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wvideo_buffer_count[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_width[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_height[MAX_PATH] = { 0 };
+	wchar_t wvideo_webp_quality[MAX_PATH] = { 0 };
 	wchar_t wkeepalive_timeout[MAX_PATH] = { 0 };
 	wchar_t wnthread[MAX_PATH] = { 0 };
 	wchar_t * wcpu = nullptr;
@@ -454,6 +485,10 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_itow_s(video_buffer_count, wvideo_buffer_count, 10);
 	_itow_s(video_block_width, wvideo_block_width, 10);
 	_itow_s(video_block_height, wvideo_block_height, 10);
+	
+	
+	_snwprintf_s(wvideo_webp_quality, sizeof(wvideo_webp_quality) / sizeof(wchar_t), L"%f", video_webp_quality);
+
 	_itow_s(keepalive_timeout, wkeepalive_timeout, 10);
 	_itow_s(nthread, wnthread, 10);
 
@@ -476,30 +511,45 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_arbitrator_control_portnumber.SetWindowTextW(wcontroler_portnumber);
 	_streamer_portnumber.SetWindowTextW(wstreamer_portnumber);
 
+	if (video_codec == sirius::base::video_submedia_type_t::png)
+	{
+		_video_codec.SetCurSel(0);
+	}
+	else if (video_codec == sirius::base::video_submedia_type_t::webp)
+	{
+		_video_codec.SetCurSel(1);
+	}
+	else
+	{
+		_video_codec.SetCurSel(0);
+	}
+
 	_video_fps.SetWindowTextW(wvideo_fps);
 	_video_buffer_count.SetWindowTextW(wvideo_buffer_count);
 	_video_block_width.SetWindowTextW(wvideo_block_width);
 	_video_block_height.SetWindowTextW(wvideo_block_height);
-	_video_compression_level.SetCurSel(video_compression_level - 1);
+	_video_png_compression_level.SetCurSel(video_png_compression_level - 1);
 
-	_video_quantization_posterization.SetCheck(video_quantization_posterization ? 1 : 0);
-	_video_quantization_dither_map.SetCheck(video_quantization_dither_map ? 1 : 0);
-	_video_quantization_contrast_maps.SetCheck(video_quantization_contrast_maps ? 1 : 0);
+	_video_png_quantization_posterization.SetCheck(video_png_quantization_posterization ? 1 : 0);
+	_video_png_quantization_dither_map.SetCheck(video_png_quantization_dither_map ? 1 : 0);
+	_video_png_quantization_contrast_maps.SetCheck(video_png_quantization_contrast_maps ? 1 : 0);
 
-	if (video_quantization_colors == 0)
-		_video_quantization_colors.SetCurSel(0);
-	else if (video_quantization_colors == 8)
-		_video_quantization_colors.SetCurSel(1);
-	else if (video_quantization_colors == 16)
-		_video_quantization_colors.SetCurSel(2);
-	else if (video_quantization_colors == 32)
-		_video_quantization_colors.SetCurSel(3);
-	else if (video_quantization_colors == 64)
-		_video_quantization_colors.SetCurSel(4);
-	else if (video_quantization_colors == 128)
-		_video_quantization_colors.SetCurSel(5);
-	else if (video_quantization_colors == 256)
-		_video_quantization_colors.SetCurSel(6);
+	if (video_png_quantization_colors == 0)
+		_video_png_quantization_colors.SetCurSel(0);
+	else if (video_png_quantization_colors == 8)
+		_video_png_quantization_colors.SetCurSel(1);
+	else if (video_png_quantization_colors == 16)
+		_video_png_quantization_colors.SetCurSel(2);
+	else if (video_png_quantization_colors == 32)
+		_video_png_quantization_colors.SetCurSel(3);
+	else if (video_png_quantization_colors == 64)
+		_video_png_quantization_colors.SetCurSel(4);
+	else if (video_png_quantization_colors == 128)
+		_video_png_quantization_colors.SetCurSel(5);
+	else if (video_png_quantization_colors == 256)
+		_video_png_quantization_colors.SetCurSel(6);
+
+	_video_webp_quality.SetWindowTextW(wvideo_webp_quality);
 
 	_keepalive_timeout.SetWindowTextW(wkeepalive_timeout);
 	_nthread.SetWindowTextW(wnthread);

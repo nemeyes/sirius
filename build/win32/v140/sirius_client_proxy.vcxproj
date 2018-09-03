@@ -139,6 +139,8 @@
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\jsoncpp\v1_7_0\win32\v140\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;winmm.lib;ws2_32.lib;mswsock.lib;libeay32MT.lib;ssleay32MT.lib;lib_json_md.lib;sirius_log4cplus_logger.lib;sirius_internal_notifier.lib;sirius_sicp_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

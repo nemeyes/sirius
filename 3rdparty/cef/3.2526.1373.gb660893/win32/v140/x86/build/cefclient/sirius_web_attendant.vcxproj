@@ -169,6 +169,8 @@ del $(outputpath)$(assemblyname).ilk
       <Version>
       </Version>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

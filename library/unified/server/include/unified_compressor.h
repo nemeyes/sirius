@@ -13,11 +13,16 @@ namespace sirius
 			{
 				class compressor;
 			};
+			namespace partialwebp
+			{
+				class compressor;
+			};
 
 			class compressor
 			{
 			public:
 				friend class sirius::library::unified::partialpng::compressor;
+				friend class sirius::library::unified::partialwebp::compressor;
 
 			public:
 				compressor(sirius::library::unified::server::core * front);
