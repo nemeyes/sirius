@@ -27,6 +27,8 @@ namespace sirius.app.server.arbitrator.Settings
         public bool video_quantization_dither_map { get; set; }
         public bool video_quantization_contrast_maps { get; set; }
         public int video_quantization_colors { get; set; }
+        public float video_webp_quality { get; set; }
+        public int video_webp_method { get; set; }
         public bool invalidate4client { get; set; }
         public bool indexed_mode { get; set; }
         public int nthread { get; set; }
@@ -83,6 +85,8 @@ namespace sirius.app.server.arbitrator.Settings
                 video_quantization_dither_map,
                 video_quantization_contrast_maps,
                 video_quantization_colors,
+                video_webp_quality,
+                video_webp_method,
                 invalidate4client,
                 indexed_mode,
                 nthread,
