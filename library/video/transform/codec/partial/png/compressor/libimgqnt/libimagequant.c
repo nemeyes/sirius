@@ -573,6 +573,7 @@ LIQ_NONNULL static bool liq_image_should_use_low_memory(liq_image *img, const bo
 
 static liq_image *liq_image_create_internal(const liq_attr *attr, rgba_pixel* rows[], liq_image_get_rgba_row_callback *row_callback, void *row_callback_user_info, int width, int height, double gamma)
 {
+	/*
     if (gamma < 0 || gamma > 1.0) {
         liq_log_error(attr, "gamma must be >= 0 and <= 1 (try 1/gamma instead)");
         return NULL;
@@ -582,7 +583,7 @@ static liq_image *liq_image_create_internal(const liq_attr *attr, rgba_pixel* ro
         liq_log_error(attr, "missing row data");
         return NULL;
     }
-
+	*/
     liq_image *img = attr->malloc(sizeof(liq_image));
     if (!img) return NULL;
     *img = (liq_image){
@@ -670,6 +671,7 @@ LIQ_EXPORT liq_image *liq_image_create_custom(const liq_attr *attr, liq_image_ge
 
 LIQ_EXPORT liq_image *liq_image_create_rgba_rows(const liq_attr *attr, void *const rows[], int width, int height, double gamma)
 {
+	/*
     if (!check_image_size(attr, width, height)) {
         return NULL;
     }
@@ -680,6 +682,7 @@ LIQ_EXPORT liq_image *liq_image_create_rgba_rows(const liq_attr *attr, void *con
             return NULL;
         }
     }
+	*/
     return liq_image_create_internal(attr, (rgba_pixel**)rows, NULL, NULL, width, height, gamma);
 }
 
