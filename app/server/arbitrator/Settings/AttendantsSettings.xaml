@@ -84,11 +84,24 @@
                 <StackPanel>
                     <Label Content="Thread Count" Target="{Binding ElementName=TextThreadCount}" Width="150"/>
                     <TextBox x:Name="TextThreadCount" Width="70" Text="{Binding ThreadCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextThreadCount_PreviewTextInput"/>
-                </StackPanel>               
+                </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="30"/>
-                    <ComboBox Margin="0,0,0,8" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
+                    <Label Content="Video Codec" Target="{Binding ElementName=VideoCodec}" Width="150" Height="20"/>
+                    <ComboBox Margin="0,0,0,0" Name="VideoCodec" HorizontalAlignment="Right" MinWidth="70" DropDownClosed="VideoCodec_DropDownClosed">
+                        <ComboBoxItem Content="PNG" />
+                        <ComboBoxItem Content="WEBP" />
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Video Webp Quality" Target="{Binding ElementName=TextVideoWebpQuality}" Width="150"/>
+                    <TextBox x:Name="TextVideoWebpQuality" Width="70" Text="{Binding VideoWebpQuality, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
+                </StackPanel>           
+
+                <StackPanel>
+                    <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="20"/>
+                    <ComboBox Margin="0,0,0,0" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" />
                         <ComboBoxItem Content="16" />
                         <ComboBoxItem Content="32" />

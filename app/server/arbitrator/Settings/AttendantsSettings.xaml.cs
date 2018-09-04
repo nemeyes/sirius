@@ -50,10 +50,16 @@ namespace sirius.app.server.arbitrator.Settings
             TextVideoBlockHeight.Text = setting_value.video_block_height.ToString();
             TextThreadCount.Text = setting_value.nthread.ToString();
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
+            TextVideoWebpQuality.Text = setting_value.video_webp_quality.ToString();
             QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
+
+            if (setting_value.video_codec == sirius_arbitrator.video_submedia_type.png)
+                VideoCodec.Text = "PNG";
+            else if(setting_value.video_codec == sirius_arbitrator.video_submedia_type.webp)
+                VideoCodec.Text = "WEBP";
+
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
-            setting_value.video_compression_level = 1;
-            setting_value.video_quantization_colors = Convert.ToInt32(QuantizationColors.Text);
+
             if (setting_value.enable_present)
             {
                 DisaplyAttendantOn.IsChecked = true;
@@ -181,6 +187,7 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.video_block_width = Convert.ToInt32(TextVideoBlockWidth.Text);
             setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
             setting_value.nthread = Convert.ToInt32(TextThreadCount.Text);
+            setting_value.video_webp_quality = Convert.ToSingle(TextVideoWebpQuality.Text);
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
@@ -211,6 +218,11 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.video_quantization_contrast_maps = true;
             else
                 setting_value.video_quantization_contrast_maps = false;
+
+            if (VideoCodec.Text.CompareTo("PNG") ==0)
+                setting_value.video_codec = sirius_arbitrator.video_submedia_type.png;
+            if (VideoCodec.Text.CompareTo("WEBP") == 0)
+                setting_value.video_codec = sirius_arbitrator.video_submedia_type.webp;
 
             setting_value.enable_auto_start = false;
             //if (AutostartOn.IsChecked.Value)
@@ -311,6 +323,18 @@ namespace sirius.app.server.arbitrator.Settings
                     e.Handled = true;
                     break;
                 }
+            }
+        }
+
+        private void VideoCodec_DropDownClosed(object sender, EventArgs e)
+        {
+            if (VideoCodec.Text.CompareTo("PNG") == 0)
+            {
+                QuantizationColors.IsReadOnly = true;
+            }
+            if (VideoCodec.Text.CompareTo("WEBP") == 0)
+            {
+                QuantizationColors.IsReadOnly = false;
             }
         }
     }

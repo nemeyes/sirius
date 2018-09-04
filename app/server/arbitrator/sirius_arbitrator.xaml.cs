@@ -33,6 +33,21 @@ namespace sirius.app.server.arbitrator
             public const int stopped = 3;
             public const int released = 4;
         };
+        public struct video_submedia_type
+        {
+            public const int unknown = -1;
+            public const int rgb32 = 0;
+            public const int rgb24 = 1;
+            public const int yuy2 = 2;
+            public const int i420 = 3;
+            public const int yv12 = 4;
+            public const int nv12 = 5;
+            public const int jpeg = 6;
+            public const int png = 7;
+            public const int dxt = 8;
+            public const int webp = 9;
+            public const int max_video_submedia_count = dxt;
+        }        
 
         delegate_initialize_callback on_initalize_callback;
         delegate_system_monitor_info_callback on_system_monitor_info_callback;
@@ -76,7 +91,7 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int video_quantization_colors, bool invalidate4client, bool indexed_mode, int nthread, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int video_quantization_colors, float video_webp_quality, int video_webp_method, bool invalidate4client, bool indexed_mode, int nthread, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -93,6 +108,8 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().video_block_height = video_block_height;
             SettingValue.Instance().video_compression_level = video_compression_level;
             SettingValue.Instance().video_quantization_colors = video_quantization_colors;
+            SettingValue.Instance().video_webp_quality = video_webp_quality;
+            SettingValue.Instance().video_webp_method = video_webp_method;
             SettingValue.Instance().video_quantization_posterization = video_quantization_posterization;
             SettingValue.Instance().video_quantization_dither_map = video_quantization_dither_map;
             SettingValue.Instance().video_quantization_contrast_maps = video_quantization_contrast_maps;
