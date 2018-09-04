@@ -2218,11 +2218,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									for (int32_t eh = 0, row_index = 0; eh < _context->block_height; eh++, row_index++)
 									{
 										int32_t src_index = (h + eh) * (_context->width << 2) + (w << 2);
-										//*(process_data + src_index) = 0;
-										//*(process_data + src_index + 1) = 0;
-										//*(process_data + src_index + 2) = 0;
-										//if (_context->block_height == (bh + 1))
-										//	memset(process_data + src_index, 0x00, _context->block_width << 2);
 										rows[row_index] = process_data + src_index;
 										memmove(reference_buffer + +src_index, process_data + src_index, _context->block_width << 2);
 									}
