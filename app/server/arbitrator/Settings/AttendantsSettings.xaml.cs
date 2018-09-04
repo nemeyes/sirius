@@ -54,9 +54,23 @@ namespace sirius.app.server.arbitrator.Settings
             QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
 
             if (setting_value.video_codec == sirius_arbitrator.video_submedia_type.png)
+            {
                 VideoCodec.Text = "PNG";
-            else if(setting_value.video_codec == sirius_arbitrator.video_submedia_type.webp)
+                QutizationPanel.IsEnabled = true;
+                PosterizationPanel.IsEnabled = true;
+                DitherMapPanel.IsEnabled = true;
+                ContrastMapsPanel.IsEnabled = true;
+                WebpQualityPanel.IsEnabled = false;
+            }
+            else if (setting_value.video_codec == sirius_arbitrator.video_submedia_type.webp)
+            {
                 VideoCodec.Text = "WEBP";
+                QutizationPanel.IsEnabled = false;
+                PosterizationPanel.IsEnabled = false;
+                DitherMapPanel.IsEnabled = false;
+                ContrastMapsPanel.IsEnabled = false;
+                WebpQualityPanel.IsEnabled = true;
+            }
 
             //SliderImageCompressionLevel.Value = setting_value.video_compression_level;
 
@@ -330,11 +344,19 @@ namespace sirius.app.server.arbitrator.Settings
         {
             if (VideoCodec.Text.CompareTo("PNG") == 0)
             {
-                QuantizationColors.IsReadOnly = true;
+                QutizationPanel.IsEnabled = true;
+                PosterizationPanel.IsEnabled = true;
+                DitherMapPanel.IsEnabled = true;
+                ContrastMapsPanel.IsEnabled = true;
+                WebpQualityPanel.IsEnabled = false;
             }
             if (VideoCodec.Text.CompareTo("WEBP") == 0)
             {
-                QuantizationColors.IsReadOnly = false;
+                QutizationPanel.IsEnabled = false;                
+                PosterizationPanel.IsEnabled = false;
+                DitherMapPanel.IsEnabled = false;
+                ContrastMapsPanel.IsEnabled = false;
+                WebpQualityPanel.IsEnabled = true;
             }
         }
     }

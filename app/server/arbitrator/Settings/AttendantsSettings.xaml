@@ -94,12 +94,12 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel Name="WebpQualityPanel" VerticalAlignment="Top">
                     <Label Content="Video Webp Quality" Target="{Binding ElementName=TextVideoWebpQuality}" Width="150"/>
                     <TextBox x:Name="TextVideoWebpQuality" Width="70" Text="{Binding VideoWebpQuality, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
-                </StackPanel>           
+                </StackPanel>
 
-                <StackPanel>
+                <StackPanel Name="QutizationPanel" VerticalAlignment="Top">
                     <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="20"/>
                     <ComboBox Margin="0,0,0,0" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" />
@@ -111,7 +111,7 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel Name="PosterizationPanel" VerticalAlignment="Top">
                     <Label Content="Posterization" Target="{Binding ElementName=VideoQuantizationPosterization}" Width="150" />
                     <RadioButton x:Name="VideoQuantizationPosterizationOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
@@ -119,7 +119,7 @@
                     <RadioButton x:Name="VideoQuantizationPosterizationOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel Name="DitherMapPanel" VerticalAlignment="Top">
                     <Label Content="Dither Map" Target="{Binding ElementName=VideoQuantizationDitherMap}" Width="150" />
                     <RadioButton x:Name="VideoQuantizationDitherMapOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
@@ -127,7 +127,7 @@
                     <RadioButton x:Name="VideoQuantizationDitherMapOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel Name="ContrastMapsPanel" VerticalAlignment="Top">
                     <Label Content="Contrast Maps" Target="{Binding ElementName=VideoQuantizationContrastMaps}" Width="150" />
                     <RadioButton x:Name="VideoQuantizationContrastMapsOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
@@ -139,8 +139,8 @@
                     <Label Content="Image Compression Level" Target="{Binding ElementName=SliderImageCompressionLevel}" Width="150"/>
                 </-->
                 <!--Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" /-->
-               
-                <StackPanel>
+
+                <StackPanel VerticalAlignment="Top">
                     <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150" />
                     <RadioButton x:Name="DisaplyAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
@@ -148,7 +148,7 @@
                     <RadioButton x:Name="DisaplyAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel VerticalAlignment="Top">
                     <Label Content="Indexed Mode" Target="{Binding ElementName=IndexedMode}" Width="150" />
                     <RadioButton x:Name="IndexedModeOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
@@ -156,7 +156,7 @@
                     <RadioButton x:Name="IndexedModeOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel VerticalAlignment="Top">
                     <Label Content="Clean Attendant" Target="{Binding ElementName=CleanAttendant}" Width="150" />
                     <RadioButton x:Name="CleanAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
