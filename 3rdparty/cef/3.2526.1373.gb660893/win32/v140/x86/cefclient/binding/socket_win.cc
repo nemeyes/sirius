@@ -267,13 +267,11 @@ namespace client {
 					char get_url[MAX_PATH] = { 0 };
 					char start_url[MAX_PATH] = { 0 };
 					_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
-					OutputDebugStringA(get_url);
 
 					if (rootWin)
 					{
 						_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
 
-						OutputDebugStringA(start_url);
 						if (strcmp(get_url, start_url))
 						{
 							manager->DeleteCookies("", "", NULL);

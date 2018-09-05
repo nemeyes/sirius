@@ -1135,7 +1135,9 @@ void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame>
 	OutputDebugStringA(debug);*/
 	if (cnt == 0)
 	{
+#ifdef FIRST_RELOAD
 		first_reload();
+#endif
 		cnt++;
 	}
 	else
