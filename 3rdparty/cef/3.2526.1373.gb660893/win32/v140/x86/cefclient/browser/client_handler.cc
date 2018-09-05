@@ -484,9 +484,9 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
                                 const CefString& failedUrl) {
   CEF_REQUIRE_UI_THREAD();
 
-  char debug[MAX_PATH] = { 0 };
+ /* char debug[MAX_PATH] = { 0 };
   _snprintf(debug, MAX_PATH, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!OnLoadError=%d, failedUrl=%s\n", errorCode, failedUrl.ToString().c_str());
-  OutputDebugStringA(debug);
+  OutputDebugStringA(debug);*/
   // Don't display an error for downloaded files.
   if (errorCode == ERR_ABORTED)
     return;
@@ -871,20 +871,20 @@ static int32_t cnt = 0;
 void ClientHandler::OnLoadStart(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame) {
 	CEF_REQUIRE_UI_THREAD();
-	OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
+	//OutputDebugStringA("========================ClientHandler::OnLoadStart========================\n");
 
 #if defined(WITH_EXTERNAL_INTERFACE)
 	if (cnt > 0)
 	{
 		if (!binding::global::get_instance().get_java_script_injection().empty()) {
-			OutputDebugStringA("ExecuteJavaScript!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			//OutputDebugStringA("ExecuteJavaScript!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			frame->ExecuteJavaScript(binding::global::get_instance().get_java_script_injection(), frame->GetURL(), 0);
 			/*char debug[MAX_PATH] = { 0 };
 			_snprintf(debug, MAX_PATH, "GetURL:%s\n", frame->GetURL().ToString().c_str());
 			OutputDebugStringA(debug);*/
 		}
-		else
-			OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//else
+			//OutputDebugStringA("Not get_java_script_injection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 #endif
 	}
@@ -914,7 +914,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	//		browser->ReloadIgnoreCache();
 	//	}
 	//}
-	OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
+	//OutputDebugStringA("========================ClientHandler::OnLoadEnd========================\n");
 	if (delegate_)
 		delegate_->OnLoadEnd(browser, frame, httpStatusCode);
 
