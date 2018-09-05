@@ -56,7 +56,7 @@ void CEF_CALLBACK load_handler_on_load_start(struct _cef_load_handler_t* self,
   if (!frame)
     return;
 
-  OutputDebugStringA("===================load_handler_on_load_start()===================\n");
+  //OutputDebugStringA("===================load_handler_on_load_start()===================\n");
   // Execute
   CefLoadHandlerCppToC::Get(self)->OnLoadStart(
       CefBrowserCToCpp::Wrap(browser),
@@ -79,7 +79,7 @@ void CEF_CALLBACK load_handler_on_load_end(struct _cef_load_handler_t* self,
   if (!frame)
     return;
 
-  OutputDebugStringA("===================load_handler_on_load_end()===================\n");
+  //OutputDebugStringA("===================load_handler_on_load_end()===================\n");
   // Execute
   CefLoadHandlerCppToC::Get(self)->OnLoadEnd(
       CefBrowserCToCpp::Wrap(browser),

@@ -307,7 +307,7 @@ int32_t RootWindowWin::first_reload()
 {
 	if (stat_timer == NULL)
 	{
-		OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!first_reload");
+		//OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!first_reload");
 		TIMECAPS _timecaps;
 		if (timeGetDevCaps(&_timecaps, sizeof(TIMECAPS)) != TIMERR_NOERROR)
 			return -1;
@@ -317,7 +317,7 @@ int32_t RootWindowWin::first_reload()
 		if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
 			return -1;*/
 
-		timeset_event = timeSetEvent(100, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+		timeset_event = timeSetEvent(1000, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 		stat_timer = true;
 	}
 	return int32_t();
@@ -505,7 +505,7 @@ void RootWindowWin::read_injection_js()
 {
 	char path[MAX_PATH] = { 0 };
 	if (GetModuleFileNameA(GetModuleHandleA(NULL), path, MAX_PATH) == 0) {
-		OutputDebugStringA("error read_injection_js\n");
+		//OutputDebugStringA("error read_injection_js\n");
 		return;
 	}
 	*(strrchr(path, '\\') + 1) = 0;
@@ -518,7 +518,7 @@ void RootWindowWin::read_injection_js()
 	buffer << file.rdbuf();
 	javascript_injection_ = buffer.str();
 	binding::global::get_instance().set_java_script_injection(javascript_injection_);
-	OutputDebugStringA("read_injection_js OK\n");
+	//OutputDebugStringA("read_injection_js OK\n");
 
 }
 #endif
@@ -931,7 +931,7 @@ void RootWindowWin::OnDestroyed() {
 #ifdef WITH_ATTENDANT_PROXY
 void RootWindowWin::OnKeyEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	OutputDebugStringA("========================OnKeyEvent========================\n");
+	//OutputDebugStringA("========================OnKeyEvent========================\n");
 
 	CefKeyEvent event;
 	event.windows_key_code = wParam;
@@ -1130,19 +1130,21 @@ void RootWindowWin::OnMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 static int32_t cnt = 0;
 void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode)
 {
-	char debug[MAX_PATH] = { 0 };
+	/*char debug[MAX_PATH] = { 0 };
 	_snprintf(debug, MAX_PATH, "httpStatusCode:%d\n", httpStatusCode);
-	OutputDebugStringA(debug);
+	OutputDebugStringA(debug);*/
 	if (cnt == 0)
 	{
+#ifdef FIRST_RELOAD
 		first_reload();
+#endif
 		cnt++;
 	}
 	else
 	{
 		load_finish = true;
-		_snprintf(debug, MAX_PATH, "RootWindowWin::OnLoadEnd->load_finish:%d\n", load_finish);
-		OutputDebugStringA(debug);
+	/*	_snprintf(debug, MAX_PATH, "RootWindowWin::OnLoadEnd->load_finish:%d\n", load_finish);
+		OutputDebugStringA(debug);*/
 	}
 }
 #endif
@@ -1347,7 +1349,7 @@ scoped_refptr<RootWindow> RootWindow::Create() {
 
 void CALLBACK timer_reload(uint32_t ui_id, uint32_t ui_msg, DWORD_PTR dw_user, DWORD_PTR dw1, DWORD_PTR dw2)
 {
-	OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timer_reload");
+	//OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timer_reload");
 #if defined(WITH_ATTENDANT_PROXY)
 	client::binding::socket_win::get_instance()->sirius_to_javascript((uint8_t*)"reload", 5);
 #endif

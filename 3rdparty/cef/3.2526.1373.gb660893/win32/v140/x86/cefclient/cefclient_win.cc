@@ -72,7 +72,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
 	  app = new ClientAppOther();
 
 #ifdef WITH_ATTENDANT_PROXY
-  OutputDebugStringA("++++++++++++++++++++++++++++++++cefclient+++++++++++++++++++");
+  //OutputDebugStringA("++++++++++++++++++++++++++++++++cefclient+++++++++++++++++++");
   sirius::app::attendant::proxy * proxy = nullptr;
   if (command_line->HasSwitch("single-process") || (process_type == ClientApp::BrowserProcess && command_line->HasSwitch("off-screen-rendering-enabled")) || (process_type == ClientApp::OtherProcess && !command_line->HasSwitch("off-screen-rendering-enabled")))
   {

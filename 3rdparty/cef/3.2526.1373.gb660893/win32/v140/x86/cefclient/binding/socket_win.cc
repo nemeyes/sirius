@@ -133,10 +133,8 @@ namespace client {
 		bool socket_win::recvBody_cmdType_response(const HEADER& header) {
 			switch (header.contentsType) {
 			case CONTENTS_TYPE::CONNECT:
-				OutputDebugStringA("[sirius->attendnet]sirius Connect\n");
 				break;
 			case CONTENTS_TYPE::TOAPP:
-				OutputDebugStringA("[sirius->attendnet]Receive Data From sirius\n");
 				break;
 			default:
 				break;
@@ -152,7 +150,6 @@ namespace client {
 				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::TOAPP:
-				OutputDebugStringA("[sirius->attendant]Receive Data From sirius & Bypass to V8 Engine\n");
 				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::MENUID_URL:
@@ -172,12 +169,15 @@ namespace client {
 			RootWindowWin* rootWin =
 				GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 			DCHECK(rootWin);
-			CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+			if (rootWin)
+			{
+				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
-			CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("AttendantToApp");
-			msg->GetArgumentList()->SetString(0, data);
+				CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("AttendantToApp");
+				msg->GetArgumentList()->SetString(0, data);
 
-			browser->SendProcessMessage(PID_RENDERER, msg);
+				browser->SendProcessMessage(PID_RENDERER, msg);
+			}
 		}
 
 		bool socket_win::recvHeader(const BUFFER& buffer, HEADER& header) {
@@ -206,8 +206,6 @@ namespace client {
 			int size = 0;
 
 			if (!make_json_packet(send_packet, size, contentsType, utf8_data)) {
-				OutputDebugStringA("[attendant->sirius] message send failed\n");
-
 				if (send_packet)
 					delete[] send_packet;
 
@@ -247,38 +245,41 @@ namespace client {
 			{
 				RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
 				DCHECK(rootWin);
-				if (rootWin->timeset_event)
+				if (rootWin)
 				{
-					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
-					timeKillEvent(rootWin->timeset_event);
-					rootWin->timeset_event = 0;
-				}
-				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+					if (rootWin->timeset_event)
+					{
+						timeKillEvent(rootWin->timeset_event);
+						rootWin->timeset_event = 0;
+					}
+					CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
-				CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
-				manager->DeleteCookies("", "", NULL);
-
-				browser->GetMainFrame()->LoadURL(rootWin->start_url);
-				//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
-				Sleep(1000);
-
-				browser->ReloadIgnoreCache();
-				//browser->Reload();
-				OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
-
-				char get_url[MAX_PATH] = { 0 };
-				char start_url[MAX_PATH] = { 0 };
-				_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
-				_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
-				OutputDebugStringA(get_url);
-				OutputDebugStringA(start_url);
-				if (strcmp(get_url, start_url))
-				{
-					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!url diff faile");
+					CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
 					manager->DeleteCookies("", "", NULL);
+
 					browser->GetMainFrame()->LoadURL(rootWin->start_url);
+					//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
 					Sleep(1000);
+
 					browser->ReloadIgnoreCache();
+					//browser->Reload();
+
+					char get_url[MAX_PATH] = { 0 };
+					char start_url[MAX_PATH] = { 0 };
+					_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
+
+					if (rootWin)
+					{
+						_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
+
+						if (strcmp(get_url, start_url))
+						{
+							manager->DeleteCookies("", "", NULL);
+							browser->GetMainFrame()->LoadURL(rootWin->start_url);
+							Sleep(1000);
+							browser->ReloadIgnoreCache();
+						}
+					}
 				}
 			}
 
