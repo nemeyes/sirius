@@ -150,7 +150,7 @@ StructName*
 
 template <class ClassName, class BaseName, class StructName>
 bool CefCToCpp<ClassName, BaseName, StructName>::Release() const {
-  UnderlyingRelease();
+  //UnderlyingRelease();
   if (ref_count_.Release()) {
     WrapperStruct* wrapperStruct = GetWrapperStruct(this);
     // Verify that the wrapper offset was calculated correctly.

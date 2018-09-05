@@ -5,3 +5,5 @@
 2018/03/27 20:45:41 [notice] 33896#34948: signal process started
 2018/03/27 20:45:47 [notice] 2332#25276: signal process started
 2018/03/27 20:45:49 [notice] 17580#34360: signal process started
+2018/09/04 13:57:06 [emerg] 40764#38944: CreateDirectory() "E:\20180503_backup\sirius\source\sirius_org\platform\win32\v140\x86\release\bin\nginx/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2018/09/04 14:02:01 [emerg] 2472#37064: CreateDirectory() "E:\20180503_backup\sirius\source\sirius_org\platform\win32\v140\x86\release\bin\nginx/temp/client_body_temp" failed (3: The system cannot find the path specified)
