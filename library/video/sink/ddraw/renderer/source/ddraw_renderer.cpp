@@ -416,7 +416,7 @@ int32_t sirius::library::video::sink::ddraw::renderer::core::render(sirius::libr
 					return sirius::library::video::sink::ddraw::renderer::err_code_t::fail;
 
 				while (_pdd_rgb->Blt(0, _pdd_video, 0, DDBLT_WAIT, 0) == DDERR_SURFACEBUSY)
-					Sleep(0);
+					Sleep(1);
 
 				/*if (_enable_time_text)
 				{

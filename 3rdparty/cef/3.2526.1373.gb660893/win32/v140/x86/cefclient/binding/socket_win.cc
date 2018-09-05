@@ -247,11 +247,13 @@ namespace client {
 				DCHECK(rootWin);
 				if (rootWin)
 				{
+					/*
 					if (rootWin->timeset_event)
 					{
 						timeKillEvent(rootWin->timeset_event);
 						rootWin->timeset_event = 0;
 					}
+					*/
 					CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
 
 					CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);

@@ -189,8 +189,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 	uint8_t **	pcompressed = new uint8_t*[pcount];
 	int32_t *	plength = new int32_t[pcount];
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -222,7 +222,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -761,7 +762,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -810,6 +812,13 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 	{
 		delete[] pcompressed;
 		pcompressed = nullptr;
+	}
+
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
 	}
 
 	if (reference_buffer)
@@ -892,8 +901,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		plength[index] = 0;
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -949,7 +958,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -1619,7 +1629,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -1710,6 +1721,13 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		}
 		delete[] pcompressed;
 		pcompressed = nullptr;
+	}
+
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
 	}
 
 	if (reference_buffer)
@@ -1846,8 +1864,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		cached_length[index] = 0;
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, simd_align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -1881,7 +1899,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -2088,7 +2107,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -2132,15 +2152,26 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		delete[] cached_compressed;
 	}
 
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
+	}
+
 	if (reference_buffer)
+	{
 		_aligned_free(reference_buffer);
-	reference_buffer = nullptr;
-	reference_buffer_size = 0;
+		reference_buffer = nullptr;
+		reference_buffer_size = 0;
+	}
 
 	if (compressed_buffer)
+	{
 		free(compressed_buffer);
-	compressed_buffer = nullptr;
-	compressed_buffer_size = 0;
+		compressed_buffer = nullptr;
+		compressed_buffer_size = 0;
+	}
 }
 
 unsigned __stdcall sirius::library::video::transform::codec::partial::webp::compressor::core::process_threaded_indexed_encoding_callback(void * param)
@@ -2213,8 +2244,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		cached_length[index] = 0;
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, simd_align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -2283,7 +2314,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -2537,7 +2569,8 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -2630,10 +2663,19 @@ void sirius::library::video::transform::codec::partial::webp::compressor::core::
 		delete[] cached_compressed;
 	}
 
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
+	}
+
 	if (reference_buffer)
+	{
 		_aligned_free(reference_buffer);
-	reference_buffer = nullptr;
-	reference_buffer_size = 0;
+		reference_buffer = nullptr;
+		reference_buffer_size = 0;
+	}
 }
 
 int32_t sirius::library::video::transform::codec::partial::webp::compressor::core::allocate_io_buffers(void)

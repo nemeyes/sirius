@@ -91,7 +91,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;USE_SSE;WITH_AVX2;WITH_CALIBRATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;USE_SSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\misc\timestamp\generator\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt;..\..\..\library\video\transform\codec\partial\png\compressor\processing;..\..\..\library\video\transform\codec\partial\png\compressor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -126,7 +126,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;USE_SSE;WITH_AVX2;WITH_CALIBRATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;EXPORT_VIDEO_LIB;EXPORT_VIDEO_COMPRESSOR_LIB;EXPORT_PARTIAL_PNG_COMPRESSOR_LIB;USE_SSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\3rdparty\libpng\v1_6_34\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\misc\timestamp\generator\include;..\..\..\library\video\base\include;..\..\..\library\video\transform\codec\base\include;..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt;..\..\..\library\video\transform\codec\partial\png\compressor\processing;..\..\..\library\video\transform\codec\partial\png\compressor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -174,12 +174,12 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\libpng_compressor.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\include\partial_png_compressor.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.h" />
-    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mediancut.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mempool.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\nearest.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.h" />
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\viter.h" />
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.h" />
   </ItemGroup>
   <ItemGroup>
@@ -187,12 +187,12 @@
     <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_compressor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\base\source\sirius_video_processor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.c" />
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mediancut.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\mempool.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\nearest.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.c" />
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\viter.c" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\sirius_partial_png_compressor.cpp" />
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp" />
