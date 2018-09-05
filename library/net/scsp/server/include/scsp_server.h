@@ -22,7 +22,7 @@ namespace sirius
 					: public sirius::library::net::sicp::server
 				{
 					static const int32_t MAX_STREAM_QUEUE = 30;
-					static const int32_t IO_THREAD_POOL_COUNT = 4;
+					static const int32_t IO_THREAD_POOL_COUNT = 2;
 					static const int32_t COMMAND_THREAD_POOL_COUNT = 2;
 					static const int32_t RECV_BUF_SIZE = 1024 * 1024;
 					static const int32_t SEND_BUF_SIZE = 1024 * 1024;
