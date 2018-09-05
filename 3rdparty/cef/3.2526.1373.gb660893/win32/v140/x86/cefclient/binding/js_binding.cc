@@ -92,10 +92,10 @@ namespace client {
 			virtual void OnWebKitInitialized(CefRefPtr<ClientAppRenderer> app) 
 			{
 #if defined(DEBUG)
-				DWORD threadid = GetCurrentThreadId();
+				/*DWORD threadid = GetCurrentThreadId();
 				char debug[MAX_PATH] = { 0 };
 				_snprintf(debug, MAX_PATH, "OnWebKitInitialized : threadid is %ld\n", threadid);
-				OutputDebugStringA(debug);
+				OutputDebugStringA(debug);*/
 #endif
 				CefString code =
 					"var __SIRIUS_APP__;"
