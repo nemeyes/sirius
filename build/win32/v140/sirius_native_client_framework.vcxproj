@@ -135,7 +135,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>

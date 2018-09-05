@@ -138,7 +138,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\libwebp\v1_0_0\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal.lib;libwebp.lib;sirius_timestamp_generator.lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -146,7 +146,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>libtcmalloc_minimal.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>

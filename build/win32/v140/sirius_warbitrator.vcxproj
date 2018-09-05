@@ -163,6 +163,7 @@
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <StripPrivateSymbols>
       </StripPrivateSymbols>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

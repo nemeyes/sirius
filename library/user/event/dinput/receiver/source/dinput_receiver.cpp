@@ -79,9 +79,6 @@ int32_t sirius::library::user::event::dinput::receiver::core::initialize(HINSTAN
 	if(_thread==NULL || _thread==INVALID_HANDLE_VALUE)
 		return sirius::library::user::event::dinput::receiver::err_code_t::fail;
 
-	//for (int32_t index = 0; index < 100 || !_run; index++)
-	//	::Sleep(10);
-
 	return sirius::library::user::event::dinput::receiver::err_code_t::success;
 }
 
@@ -152,7 +149,7 @@ void sirius::library::user::event::dinput::receiver::core::process(void)
 				continue;
 		}
 
-		Sleep(1);
+		Sleep(10);
 	}
 }
 

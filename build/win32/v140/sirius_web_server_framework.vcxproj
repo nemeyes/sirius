@@ -134,7 +134,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
       <AdditionalDependencies>libtcmalloc_minimal.lib;sirius_log4cplus_logger.lib;sirius_internal_notifier.lib;sirius_cpu_video_capturer.lib;sirius_unified_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
