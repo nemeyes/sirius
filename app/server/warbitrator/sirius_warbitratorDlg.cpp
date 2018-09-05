@@ -610,6 +610,7 @@ void sirius_warbitrator_dlg::on_attendant_create(double percent)
 		::Sleep(1000);
 		if(_progress)
 			_progress->ShowWindow(SW_HIDE);
+		::Sleep(3000);
 		GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
 		GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(TRUE);
 	}
