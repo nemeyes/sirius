@@ -133,10 +133,8 @@ namespace client {
 		bool socket_win::recvBody_cmdType_response(const HEADER& header) {
 			switch (header.contentsType) {
 			case CONTENTS_TYPE::CONNECT:
-				OutputDebugStringA("[sirius->attendnet]sirius Connect\n");
 				break;
 			case CONTENTS_TYPE::TOAPP:
-				OutputDebugStringA("[sirius->attendnet]Receive Data From sirius\n");
 				break;
 			default:
 				break;
@@ -152,7 +150,6 @@ namespace client {
 				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::TOAPP:
-				OutputDebugStringA("[sirius->attendant]Receive Data From sirius & Bypass to V8 Engine\n");
 				send_to_javascript(body);
 				break;
 			case CONTENTS_TYPE::MENUID_URL:
@@ -209,8 +206,6 @@ namespace client {
 			int size = 0;
 
 			if (!make_json_packet(send_packet, size, contentsType, utf8_data)) {
-				OutputDebugStringA("[attendant->sirius] message send failed\n");
-
 				if (send_packet)
 					delete[] send_packet;
 
@@ -254,7 +249,6 @@ namespace client {
 				{
 					if (rootWin->timeset_event)
 					{
-						OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!timeKillEvent");
 						timeKillEvent(rootWin->timeset_event);
 						rootWin->timeset_event = 0;
 					}
@@ -269,21 +263,17 @@ namespace client {
 
 					browser->ReloadIgnoreCache();
 					//browser->Reload();
-					OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attendant LoadURL");
 
 					char get_url[MAX_PATH] = { 0 };
 					char start_url[MAX_PATH] = { 0 };
 					_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
-					OutputDebugStringA(get_url);
 
 					if (rootWin)
 					{
 						_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
 
-						OutputDebugStringA(start_url);
 						if (strcmp(get_url, start_url))
 						{
-							OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!url diff faile");
 							manager->DeleteCookies("", "", NULL);
 							browser->GetMainFrame()->LoadURL(rootWin->start_url);
 							Sleep(1000);

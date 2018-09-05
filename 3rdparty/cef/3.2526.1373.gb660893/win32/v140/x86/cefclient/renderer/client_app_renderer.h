@@ -56,7 +56,7 @@ class ClientAppRenderer : public ClientApp,
                                    CefRefPtr<CefBrowser> browser,
                                    CefRefPtr<CefFrame> frame,
                                    CefRefPtr<CefV8Context> context) {
-		OutputDebugStringA("OnContextReleased");
+		//OutputDebugStringA("OnContextReleased");
 	}
 
     virtual void OnUncaughtException(CefRefPtr<ClientAppRenderer> app,
@@ -65,7 +65,7 @@ class ClientAppRenderer : public ClientApp,
                                      CefRefPtr<CefV8Context> context,
                                      CefRefPtr<CefV8Exception> exception,
                                      CefRefPtr<CefV8StackTrace> stackTrace) {
-		OutputDebugStringA("OnUncaughtException");
+		//OutputDebugStringA("OnUncaughtException");
 	}
 
     virtual void OnFocusedNodeChanged(CefRefPtr<ClientAppRenderer> app,

@@ -56,7 +56,7 @@ namespace client {
 				{
 					std::string str = "";
 					str = value->GetString(index);
-					::OutputDebugStringA(str.c_str());
+					//::OutputDebugStringA(str.c_str());
 					new_value = CefV8Value::CreateString(value->GetString(index));
 					break;
 				}
