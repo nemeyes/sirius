@@ -291,7 +291,7 @@ LIQ_EXPORT int liq_get_min_posterization(const liq_attr *attr)
     return attr->min_posterization_output;
 }
 
-LIQ_EXPORT liq_error liq_set_speed(liq_attr* attr, int speed)
+LIQ_EXPORT liq_error liq_set_speed(liq_attr* attr, int speed, bool posterization, bool use_dither_map, bool use_contrast_map)
 {
     if (!CHECK_STRUCT_TYPE(attr, liq_attr)) return LIQ_INVALID_POINTER;
     if (speed < 1 || speed > 10) return LIQ_VALUE_OUT_OF_RANGE;
@@ -302,10 +302,10 @@ LIQ_EXPORT liq_error liq_set_speed(liq_attr* attr, int speed)
     attr->feedback_loop_trials = MAX(56-9*speed, 0);
 
     attr->max_histogram_entries = (1<<17) + (1<<18)*(10-speed);
-    attr->min_posterization_input = (speed >= 8) ? 1 : 0;
+	attr->min_posterization_input = posterization;// (speed >= 8) ? 1 : 0;
     attr->fast_palette = (speed >= 7);
-    attr->use_dither_map = (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
-    attr->use_contrast_maps = (speed <= 7) || attr->use_dither_map;
+	attr->use_dither_map = use_dither_map;// (speed <= (omp_get_max_threads() > 1 ? 7 : 5)); // parallelized dither map might speed up floyd remapping
+	attr->use_contrast_maps = use_contrast_map;// (speed <= 7) || attr->use_dither_map;
     attr->speed = speed;
     return LIQ_OK;
 }
@@ -448,7 +448,7 @@ LIQ_EXPORT liq_attr* liq_attr_create_with_allocator(void* (*custom_malloc)(size_
         .target_mse = 0,
         .max_mse = MAX_DIFF,
     };
-    liq_set_speed(attr, 3);
+    liq_set_speed(attr, 10, true, false, false);
     return attr;
 }
 
@@ -548,6 +548,7 @@ LIQ_EXPORT liq_image *liq_image_create_custom(liq_attr *attr, liq_image_get_rgba
 
 LIQ_EXPORT liq_image *liq_image_create_rgba_rows(liq_attr *attr, void* rows[], int width, int height, double gamma)
 {
+	/*
     if (width <= 0 || height <= 0) {
         liq_log_error(attr, "width and height must be > 0");
         return NULL;
@@ -563,6 +564,7 @@ LIQ_EXPORT liq_image *liq_image_create_rgba_rows(liq_attr *attr, void* rows[], i
             return NULL;
         }
     }
+	*/
     return liq_image_create_internal(attr, (rgba_pixel**)rows, NULL, NULL, width, height, gamma);
 }
 

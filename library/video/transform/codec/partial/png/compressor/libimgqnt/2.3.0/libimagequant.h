@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct liq_attr liq_attr;
 typedef struct liq_image liq_image;
@@ -55,7 +56,7 @@ LIQ_EXPORT void liq_attr_destroy(liq_attr* attr);
 
 LIQ_EXPORT liq_error liq_set_max_colors(liq_attr* attr, int colors);
 LIQ_EXPORT int liq_get_max_colors(const liq_attr* attr);
-LIQ_EXPORT liq_error liq_set_speed(liq_attr* attr, int speed);
+LIQ_EXPORT liq_error liq_set_speed(liq_attr* attr, int speed, bool posterization, bool use_dither_map, bool use_contrast_map);
 LIQ_EXPORT int liq_get_speed(const liq_attr* attr);
 LIQ_EXPORT liq_error liq_set_min_opacity(liq_attr* attr, int min);
 LIQ_EXPORT int liq_get_min_opacity(const liq_attr* attr);

@@ -61,7 +61,7 @@ namespace client {
 		int32_t first_reload();
 		std::string start_url;
 		bool stat_timer;
-		uint32_t timeset_event;
+		//MMRESULT timeset_event;
 		static bool load_finish;
 	private:
 		void CreateBrowserWindow(const std::string& startup_url);

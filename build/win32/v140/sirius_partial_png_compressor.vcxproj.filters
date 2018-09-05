@@ -48,10 +48,10 @@
     <ClInclude Include="..\..\..\base\include\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.h">
-      <Filter>libimgqnt</Filter>
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.h">
+      <Filter>processing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.h">
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.h">
       <Filter>libimgqnt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.h">
@@ -69,8 +69,8 @@
     <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.h">
       <Filter>libimgqnt</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.h">
-      <Filter>processing</Filter>
+    <ClInclude Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\viter.h">
+      <Filter>libimgqnt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,10 +92,10 @@
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\source\libpng_compressor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.c">
-      <Filter>libimgqnt</Filter>
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.cpp">
+      <Filter>processing</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\kmeans.c">
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\blur.c">
       <Filter>libimgqnt</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\libimagequant.c">
@@ -113,8 +113,8 @@
     <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\pam.c">
       <Filter>libimgqnt</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\processing\simd_image_processor.cpp">
-      <Filter>processing</Filter>
+    <ClCompile Include="..\..\..\library\video\transform\codec\partial\png\compressor\libimgqnt\viter.c">
+      <Filter>libimgqnt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
