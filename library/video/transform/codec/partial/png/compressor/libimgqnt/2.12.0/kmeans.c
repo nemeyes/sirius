@@ -1,20 +1,6 @@
 /*
-© 2011-2016 by Kornel Lesiński.
-
-This file is part of libimagequant.
-
-libimagequant is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-libimagequant is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with libimagequant. If not, see <http://www.gnu.org/licenses/>.
+** © 2011-2016 by Kornel Lesiński.
+** See COPYRIGHT file for license.
 */
 
 #include "libimagequant.h"
@@ -80,7 +66,7 @@ LIQ_PRIVATE void kmeans_finalize(colormap *map, const unsigned int max_threads, 
 LIQ_PRIVATE double kmeans_do_iteration(histogram *hist, colormap *const map, kmeans_callback callback)
 {
     const unsigned int max_threads = omp_get_max_threads();
-    kmeans_state *average_color = malloc((KMEANS_CACHE_LINE_GAP+map->colors) * max_threads * sizeof(kmeans_state));
+    LIQ_ARRAY(kmeans_state, average_color, (KMEANS_CACHE_LINE_GAP+map->colors) * max_threads);
     kmeans_init(map, max_threads, average_color);
     struct nearest_map *const n = nearest_init(map);
     hist_item *const achv = hist->achv;
@@ -88,7 +74,7 @@ LIQ_PRIVATE double kmeans_do_iteration(histogram *hist, colormap *const map, kme
 
     double total_diff=0;
     int j;
-    #pragma omp parallel for if (hist_size > 3000) \
+    #pragma omp parallel for if (hist_size > 2000) \
         schedule(static) default(none) shared(average_color,callback) reduction(+:total_diff)
     for(j=0; j < hist_size; j++) {
         float diff;
@@ -104,6 +90,5 @@ LIQ_PRIVATE double kmeans_do_iteration(histogram *hist, colormap *const map, kme
     nearest_free(n);
     kmeans_finalize(map, max_threads, average_color);
 
-    free(average_color);
     return total_diff / hist->total_perceptual_weight;
 }

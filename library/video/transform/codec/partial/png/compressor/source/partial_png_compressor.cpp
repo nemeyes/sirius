@@ -153,6 +153,7 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 				iobuffer = _iobuffer_queue.get_pending();
 				if (!iobuffer)
 					break;
+				::Sleep(10);
 			}
 			
 			iobuffer = _iobuffer_queue.get_available();
@@ -293,8 +294,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	uint8_t **	pcompressed = new uint8_t*[pcount];
 	int32_t *	plength = new int32_t[pcount];
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -326,7 +327,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -912,7 +914,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -961,6 +964,13 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	{
 		delete[] pcompressed;
 		pcompressed = nullptr;
+	}
+
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
 	}
 
 	if (reference_buffer)
@@ -1013,8 +1023,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		plength[index] = 0;
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -1071,7 +1081,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -1767,7 +1778,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -1864,6 +1876,13 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		}
 		delete[] pcompressed;
 		pcompressed = nullptr;
+	}
+
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
 	}
 
 	if (reference_buffer)
@@ -2029,8 +2048,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		cached_length[index] = 0;
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, simd_align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -2064,7 +2083,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -2285,7 +2305,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -2306,6 +2327,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	}
 
 	_real_compressor->release();
+
+	if (process_data)
+		_aligned_free(process_data);
+	process_data = nullptr;
 
 	if (pindex)
 		delete[] pindex;
@@ -2387,8 +2412,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		rows[index] = static_cast<uint8_t**>(malloc(_context->block_height * sizeof(uint8_t*)));
 	}
 
-	int32_t		process_data_size = 0;
-	uint8_t *	process_data = nullptr;
+	int32_t		process_data_size = reference_buffer_size;
+	uint8_t *	process_data = static_cast<uint8_t*>(_aligned_malloc(process_data_size, simd_align));
 	int32_t		process_x = 0;
 	int32_t		process_y = 0;
 	int32_t		process_width = 0;
@@ -2457,7 +2482,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
 					process_width = iobuffer->input.width;
@@ -2725,7 +2751,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 						{
 							process_data_size = iobuffer->input.data_size;
 							process_timestamp = iobuffer->input.timestamp;
-							process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							//process_data = static_cast<uint8_t*>(iobuffer->input.data);
+							memmove(process_data, iobuffer->input.data, process_data_size);
 							process_x = iobuffer->input.x;
 							process_y = iobuffer->input.y;
 							process_width = iobuffer->input.width;
@@ -2787,6 +2814,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	free(thread_ctx);
 	thread_ctx = nullptr;
 
+	if (process_data)
+		_aligned_free(process_data);
+	process_data = nullptr;
+
 	if (pindex)
 		delete[] pindex;
 	if (plength)
@@ -2801,7 +2832,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		}
 		delete[] pcompressed;
 	}
-		
 
 	if (cached_index)
 		delete[] cached_index;

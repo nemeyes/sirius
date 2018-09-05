@@ -99,7 +99,12 @@ int32_t sirius::library::video::transform::codec::libpng::compressor::compress(s
 	//liq_image_set_memory_ownership(rgba, LIQ_OWN_ROWS | LIQ_OWN_PIXELS);
 
 	liq_result * remap = nullptr;
-	liq_error liqerr = liq_image_quantize(rgba, liq, &remap);
+	liq_error liqerr = LIQ_OK;
+#if 0
+	liqerr = liq_image_quantize(rgba, liq, &remap);
+#else
+	remap = liq_quantize_image(liq, rgba);
+#endif
 	if (remap)
 	{
 		liq_set_output_gamma(remap, _context->gamma);

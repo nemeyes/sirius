@@ -174,7 +174,7 @@ void sirius::library::net::sicp::abstract_client::wait_command_thread_end(void)
 			abstract_command * command = (*iter).second;
 			if (command->is_running())
 			{
-				::Sleep(5);
+				::Sleep(10);
 				running = true;
 				break;
 			}

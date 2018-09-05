@@ -305,22 +305,24 @@ ClientWindowHandle RootWindowWin::GetWindowHandle() const {
 
 int32_t RootWindowWin::first_reload()
 {
-	if (stat_timer == NULL)
+	if (!stat_timer)
 	{
 		//OutputDebugStringA("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!first_reload");
+		/*
 		TIMECAPS _timecaps;
 		if (timeGetDevCaps(&_timecaps, sizeof(TIMECAPS)) != TIMERR_NOERROR)
 			return -1;
 
-		/*uint32_t _timer_res = min(max(_timecaps.wPeriodMin, TARGET_RESOLUTION), _timecaps.wPeriodMax);
+		uint32_t _timer_res = min(max(_timecaps.wPeriodMin, TARGET_RESOLUTION), _timecaps.wPeriodMax);
 
 		if (timeBeginPeriod(_timer_res) != TIMERR_NOERROR)
-			return -1;*/
+			return -1;
+		*/
 
-		timeset_event = timeSetEvent(1000, 0, &timer_reload, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+		/*timeset_event = */timeSetEvent(1000, 0, &timer_reload, (DWORD_PTR)this, TIME_ONESHOT);
 		stat_timer = true;
 	}
-	return int32_t();
+	return int32_t(0);
 }
 
 void RootWindowWin::CreateBrowserWindow(const std::string& startup_url) {

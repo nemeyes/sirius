@@ -87,7 +87,7 @@ sirius::library::net::iocp::session::~session(void)
 
 	::DeleteCriticalSection(&_lock);
 
-	::OutputDebugStringA("sirius::library::net::iocp::session::~session(void)\n");
+	//::OutputDebugStringA("sirius::library::net::iocp::session::~session(void)\n");
 }
 
 SOCKET sirius::library::net::iocp::session::listen_socket(void)
