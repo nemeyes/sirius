@@ -333,8 +333,8 @@ int32_t sirius::library::net::sicp::abstract_server::clean_activated_session(BOO
 	{
 		std::string uuid = iter->first;
 		std::shared_ptr<sirius::library::net::sicp::session> session = iter->second;
-		uint64_t interval = now - session->timestamp();
-		if ((session->keepalive_flag() && interval > (_keepalive_timeout + KEEPALIVE_MARGIN)) || force_clean)
+		int64_t interval = now - session->timestamp();
+		if ((session->keepalive_flag() && (interval > 0) && interval > (_keepalive_timeout + KEEPALIVE_MARGIN)) || force_clean)
 		{
 			if (session->socket() != NULL && session->socket() != INVALID_SOCKET)
 			{
