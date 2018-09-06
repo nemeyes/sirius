@@ -2020,8 +2020,8 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 	long long before_encode_timestamp = 0;
 	long long after_encode_timestamp = 0;
 
-	int32_t	compressed_buffer_size = 1024 * 1024 * 2;
-	uint8_t * compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
+	int32_t		compressed_buffer_size = 1024 * 1024 * 2;
+	uint8_t *	compressed_buffer = static_cast<uint8_t*>(malloc(compressed_buffer_size));
 	memset(compressed_buffer, 0x00, compressed_buffer_size);
 
 	int32_t		simd_align = 32;
@@ -2083,7 +2083,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 				{
 					process_data_size = iobuffer->input.data_size;
 					process_timestamp = iobuffer->input.timestamp;
-					//process_data = static_cast<uint8_t*>(iobuffer->input.data);
 					memmove(process_data, iobuffer->input.data, process_data_size);
 					process_x = iobuffer->input.x;
 					process_y = iobuffer->input.y;
@@ -2328,10 +2327,6 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 	_real_compressor->release();
 
-	if (process_data)
-		_aligned_free(process_data);
-	process_data = nullptr;
-
 	if (pindex)
 		delete[] pindex;
 	if (plength)
@@ -2358,15 +2353,27 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 		free(rows);
 	rows = nullptr;
 
+
+	if (process_data)
+	{
+		_aligned_free(process_data);
+		process_data = nullptr;
+		process_data_size = 0;
+	}
+
 	if (reference_buffer)
+	{
 		_aligned_free(reference_buffer);
-	reference_buffer = nullptr;
-	reference_buffer_size = 0;
+		reference_buffer = nullptr;
+		reference_buffer_size = 0;
+	}
 
 	if (compressed_buffer)
+	{
 		free(compressed_buffer);
-	compressed_buffer = nullptr;
-	compressed_buffer_size = 0;
+		compressed_buffer = nullptr;
+		compressed_buffer_size = 0;
+	}
 }
 
 void sirius::library::video::transform::codec::partial::png::compressor::core::process_threaded_indexed(void)

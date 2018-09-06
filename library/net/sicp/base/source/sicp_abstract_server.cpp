@@ -496,6 +496,7 @@ bool sirius::library::net::sicp::abstract_server::activate_session(/*const char 
 					std::shared_ptr<sirius::library::net::sicp::session> candidates_session = candidates_iter->second;
 					_activated_sessions.erase(candidates_iter);
 					candidates_session->register_flag(false);
+					candidates_session->close();
 
 					sirius::autolock lock(&_closing_slock);
 					candidates_session->update_timestamp();
@@ -538,7 +539,6 @@ bool sirius::library::net::sicp::abstract_server::deactivate_session(std::shared
 		sirius::autolock lock(&_closing_slock);
 		session->update_timestamp();
 		_closing_sessions.push_back(session);
-
 	}
 	return true;
 }
