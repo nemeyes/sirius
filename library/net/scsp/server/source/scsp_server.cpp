@@ -22,7 +22,7 @@
 #include <commands_payload.h>
 
 sirius::library::net::scsp::server::core::core(const char * uuid, sirius::library::net::scsp::server * front)
-	: sirius::library::net::sicp::server(uuid, RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, 5000, FALSE, 2)
+	: sirius::library::net::sicp::server(uuid, RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, 5000, FALSE, 1)
 	, _context(nullptr)
 	, _front(front)
 {
