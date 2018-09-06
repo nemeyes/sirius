@@ -21,7 +21,7 @@ namespace sirius
 				{
 				public:
 					static const int32_t MINIMUM_KEEPALIVE_INTERVAL	= 5000;
-					static const int32_t KEEPALIVE_INTERVAL_MARGIN	= 2000;
+					//static const int32_t KEEPALIVE_INTERVAL_MARGIN	= 2000;
 
 
 				public:
