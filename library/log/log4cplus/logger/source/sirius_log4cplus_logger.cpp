@@ -1024,6 +1024,10 @@ void sirius::library::log::log4cplus::logger::streamer_log_init(const char * dev
 		_logger_attendant_error.addAppender(_append_attendant_error);
 		_logger_attendant_error.setLogLevel(::log4cplus::ERROR_LOG_LEVEL);
 		_append_attendant_error->setLayout(_layout_err);
+
+		if (change_device_id)
+			free(change_device_id);
+		change_device_id = nullptr;
 	}
 #endif
 }
