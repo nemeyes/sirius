@@ -275,7 +275,7 @@ void sirius::library::net::sicp::abstract_client::on_running(void)
 			if ((!sicp_session->register_flag()) && ((elapsed_millisec % 3000) == 0))
 				sicp_session->send(SERVER_UUID, _uuid, CMD_CREATE_SESSION_REQUEST, NULL, 0);
 
-			if (_keepalive && ((elapsed_millisec % (_keepalive_timeout - KEEPALIVE_INTERVAL_MARGIN)) == 0))
+			if (_keepalive && ((elapsed_millisec % (_keepalive_timeout/* - KEEPALIVE_INTERVAL_MARGIN*/)) == 0))
 			{
 				sicp_session->send(SERVER_UUID, _uuid, CMD_KEEPALIVE_REQUEST, NULL, 0);
 			}

@@ -97,9 +97,8 @@ void sirius::library::net::sicp::abstract_server::on_data_indication(const char 
 	else
 	{
 		std::shared_ptr<sirius::library::net::sicp::session> session = nullptr;
+		std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
 		{
-			std::map<std::string, std::shared_ptr<sirius::library::net::sicp::session>>::iterator iter;
-
 			sirius::autolock lock(&_active_slock);
 			iter = _activated_sessions.find(dst);
 			if (iter != _activated_sessions.end())
@@ -107,8 +106,34 @@ void sirius::library::net::sicp::abstract_server::on_data_indication(const char 
 		}
 		if (session)
 		{
-			session->send(dst, src, command_id, packet, packet_size);
-			LOGGER::make_info_log(SAA, "%s, %d on_data_indication, command_id=%d, dst=%s, src=%s", __FUNCTION__, __LINE__, command_id, dst, src);
+			if (strncmp(session->uuid(), dst, 64))
+			{
+				{
+					sirius::autolock lock(&_active_slock);
+
+					for (iter = _activated_sessions.begin(); iter != _activated_sessions.end(); iter++)
+					{
+						session = iter->second;
+						if (!strncmp(session->uuid(), dst, 64))
+						{
+							break;
+						}
+						else
+						{
+							session = nullptr;
+						}
+					}
+				}
+				if (session)
+				{
+					session->send(dst, src, command_id, packet, packet_size);
+				}
+			}
+			else
+			{
+				session->send(dst, src, command_id, packet, packet_size);
+				LOGGER::make_info_log(SAA, "%s, %d on_data_indication, command_id=%d, dst=%s, src=%s", __FUNCTION__, __LINE__, command_id, dst, src);
+			}
 		}
 	}
 }
