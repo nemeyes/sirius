@@ -23,6 +23,8 @@ namespace client {
 			bool create();
 			bool send_bypass_packet(int contentsType, const std::string& utf8_data);
 			bool sirius_to_javascript(uint8_t * data, size_t size);
+			std::string start_url;
+			std::string get_url;
 
 		protected:
 			bool make_json_packet(char* data, int& size, int& contentsType, const std::string& utf8_json);

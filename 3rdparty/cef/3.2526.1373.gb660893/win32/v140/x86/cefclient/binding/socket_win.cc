@@ -247,39 +247,40 @@ namespace client {
 				DCHECK(rootWin);
 				if (rootWin)
 				{
-					/*
-					if (rootWin->timeset_event)
+					/*if (rootWin->timeset_event)
 					{
 						timeKillEvent(rootWin->timeset_event);
 						rootWin->timeset_event = 0;
-					}
-					*/
+					}*/
 					CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
-
+					browser->GetMainFrame()->LoadURL(rootWin->start_url);
+					get_url = browser->GetMainFrame()->GetURL().ToString();
 					CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
 					manager->DeleteCookies("", "", NULL);
 
-					browser->GetMainFrame()->LoadURL(rootWin->start_url);
+					
 					//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
 					Sleep(1000);
 
-					browser->ReloadIgnoreCache();
+					//browser->ReloadIgnoreCache();
 					//browser->Reload();
+					browser->GoBack();
+					manager->DeleteCookies("", "", NULL);
 
-					char get_url[MAX_PATH] = { 0 };
-					char start_url[MAX_PATH] = { 0 };
-					_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
+					//_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
 
 					if (rootWin)
 					{
-						_snprintf(start_url, MAX_PATH, "%s", rootWin->start_url.c_str());
 
-						if (strcmp(get_url, start_url))
+						//if (strcmp(get_url, start_url))
+						if (start_url.compare(get_url))
 						{
 							manager->DeleteCookies("", "", NULL);
 							browser->GetMainFrame()->LoadURL(rootWin->start_url);
 							Sleep(1000);
-							browser->ReloadIgnoreCache();
+							//browser->ReloadIgnoreCache();
+							browser->GoBack();
+							manager->DeleteCookies("", "", NULL);
 						}
 					}
 				}
