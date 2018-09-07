@@ -27,6 +27,7 @@ public:
 	//void finalize();
 	HWND _proxy_handle;
 	sirius::app::attendant::proxy * _proxy;
+	bool is_reload;
 private:
 	
 	bool is_activated_;
