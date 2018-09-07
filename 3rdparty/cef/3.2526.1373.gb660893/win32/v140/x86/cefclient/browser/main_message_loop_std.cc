@@ -5,6 +5,7 @@
 #include "cefclient/browser/main_message_loop_std.h"
 
 #include "include/cef_app.h"
+#include "malloc_extension.h"
 
 namespace client {
 
@@ -13,6 +14,7 @@ MainMessageLoopStd::MainMessageLoopStd() {
 
 int MainMessageLoopStd::Run() {
   CefRunMessageLoop();
+  MallocExtension::instance()->ReleaseFreeMemory();
   return 0;
 }
 

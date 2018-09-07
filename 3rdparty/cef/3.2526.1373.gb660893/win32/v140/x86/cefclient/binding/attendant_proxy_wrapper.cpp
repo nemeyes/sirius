@@ -5,7 +5,8 @@
 namespace client {
 	namespace binding {
 		attendant_proxy_wrapper::attendant_proxy_wrapper()
-			: is_activated_(false) {
+			: is_activated_(false),
+			  is_reload(false) {
 		}
 
 		attendant_proxy_wrapper::~attendant_proxy_wrapper()

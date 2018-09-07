@@ -171,6 +171,7 @@ void RootWindowWin::Init(RootWindow::Delegate* delegate,
 
   CreateBrowserWindow(url);
   start_url = url;
+  client::binding::socket_win::get_instance()->start_url = start_url;
   initialized_ = true;
 
   // Create the native root window on the main thread.
@@ -1148,6 +1149,7 @@ void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame>
 	/*	_snprintf(debug, MAX_PATH, "RootWindowWin::OnLoadEnd->load_finish:%d\n", load_finish);
 		OutputDebugStringA(debug);*/
 	}
+
 }
 #endif
 

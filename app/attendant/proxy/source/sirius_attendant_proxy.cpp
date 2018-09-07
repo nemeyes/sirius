@@ -266,6 +266,7 @@ sirius::app::attendant::proxy::proxy(void)
 	: _core(nullptr)
 	, _key_pressed(FALSE)
 	, _initialized(FALSE)
+	, is_reload(FALSE)
 {
 
 }
@@ -300,6 +301,10 @@ int32_t sirius::app::attendant::proxy::initialize(void)
 int32_t sirius::app::attendant::proxy::release(void)
 {
 	int32_t status = sirius::app::attendant::proxy::err_code_t::fail;
+	//while (!is_reload)
+	//{
+	//	Sleep(1000);
+	//}
 	if (_core)
 	{
 		status = _core->release();
@@ -474,4 +479,9 @@ void sirius::app::attendant::proxy::set_attendant_cb(FuncPtrCallback fncallback)
 {
 	if (_core)
 		_core->set_attendant_cb(fncallback);
+}
+
+void sirius::app::attendant::proxy::finish_reload()
+{
+	is_reload = true;
 }

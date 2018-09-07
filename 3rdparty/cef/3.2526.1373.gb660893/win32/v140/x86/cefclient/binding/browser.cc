@@ -37,6 +37,8 @@ namespace client {
 
 			if (_ptr_this) {
 				_ptr_this->Release();
+				if (_ptr_this)
+					delete _ptr_this;
 			}
 		}
 	}  // namespace binding
