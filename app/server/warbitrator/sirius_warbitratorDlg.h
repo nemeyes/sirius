@@ -52,7 +52,13 @@ protected:
 	void initialize_gpus(void);
 	void release_gpus(void);
 
-	virtual void on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app);
+	virtual void on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+		int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
+		int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
+		float video_webp_quality, int32_t video_webp_method, 
+		bool invalidate4client, bool indexed_mode, int32_t nthread, 
+		bool double_reloading_on_creating, bool reloading_on_disconnecting,
+		bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app);
 	virtual void on_attendant_create(double percent);
 	virtual void on_system_monitor_info(double cpu_usage, double memory_usage);
 	virtual void on_start(void);
@@ -95,11 +101,13 @@ private:
 	CButton			_use_indexed_mode;
 	CEdit			_nthread;
 
+	CButton			_double_reload_creating;
+	CButton			_reload_disconnecting;
+
 	CButton			_enable_invalidate4client;
 	CButton			_use_tls;
 	CButton			_enable_present;
 	CButton			_enable_auto_start;
-	CListCtrl		_attendants;
 	CButton			_enable_keepalive;
 	CEdit			_keepalive_timeout;
 	bool			_auto_start;
@@ -111,5 +119,7 @@ private:
 
 public:
 	afx_msg void OnDestroy();
+
+private:
 
 };

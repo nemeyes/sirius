@@ -22,6 +22,8 @@
 #include "cefclient/binding/global.h"
 #include "cefclient/binding/browser.h"
 #include "cefclient/binding/socket_win.h"
+#include "sirius_attendant_proxy.h"
+#include <shellapi.h>
 #endif
 #include <shlwapi.h>
 #include <tchar.h>
@@ -1139,6 +1141,16 @@ void RootWindowWin::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame>
 	{
 #ifdef FIRST_RELOAD
 		first_reload();
+#else
+
+		sirius::app::attendant::proxy::context_t context;
+		wchar_t * command = GetCommandLine();
+		int32_t argc = 0;
+		LPWSTR * argv = ::CommandLineToArgvW(command, &argc);
+		sirius::app::attendant::proxy::parse_argument(argc, argv, &context);
+
+		if (context.double_reloading_on_creating)
+			first_reload();
 #endif
 		cnt++;
 	}

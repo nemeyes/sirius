@@ -88,7 +88,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, confentity.png.video_compression_level, confentity.png.video_quantization_posterization, confentity.png.video_quantization_dither_map, confentity.png.video_quantization_contrast_maps, confentity.png.video_quantization_colors, confentity.webp.video_quality, confentity.webp.video_method, confentity.invalidate4client, confentity.indexed_mode, confentity.nthread, confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, 
+			confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, 
+			confentity.png.video_compression_level, confentity.png.video_quantization_posterization, confentity.png.video_quantization_dither_map, confentity.png.video_quantization_contrast_maps, confentity.png.video_quantization_colors, 
+			confentity.webp.video_quality, confentity.webp.video_method, 
+			confentity.invalidate4client, confentity.indexed_mode, confentity.nthread, 
+			confentity.double_reloading_on_creating, confentity.reloading_on_disconnecting,
+			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -152,7 +158,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
+	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
+	float video_webp_quality, int32_t video_webp_method, 
+	bool invalidate4client, bool indexed_mode, int32_t nthread, 
+	bool double_reloading_on_creating, bool reloading_on_disconnecting,
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -185,6 +197,10 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.invalidate4client = invalidate4client;
 	configuration.indexed_mode = indexed_mode;
 	configuration.nthread = nthread;
+
+	configuration.double_reloading_on_creating = double_reloading_on_creating;
+	configuration.reloading_on_disconnecting = reloading_on_disconnecting;
+
 	configuration.enable_tls = enable_tls;
 	configuration.enable_keepalive = enable_keepalive;
 	configuration.keepalive_timeout = keepalive_timeout;

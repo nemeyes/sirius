@@ -199,6 +199,22 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->nthread = _wtoi(value.c_str());
 	}
+	if (param.end() != (iter = param.find(L"double_reloading_on_creating")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->double_reloading_on_creating = true;
+		else
+			context->double_reloading_on_creating = false;
+	}
+	if (param.end() != (iter = param.find(L"reloading_on_disconnecting")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->reloading_on_disconnecting = true;
+		else
+			context->reloading_on_disconnecting = false;
+	}
 	if (param.end() != (iter = param.find(L"enable_present")))
 	{
 		value = iter->second;

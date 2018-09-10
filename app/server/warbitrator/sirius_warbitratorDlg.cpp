@@ -78,7 +78,6 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_TLS, _use_tls);
 	DDX_Control(pDX, IDC_CHECK_PRESENT, _enable_present);
 	DDX_Control(pDX, IDC_CHECK_AUTOSTART, _enable_auto_start);
-	DDX_Control(pDX, IDC_LIST_ATTENDANTS, _attendants);
 	DDX_Control(pDX, IDC_CHECK_KEEPALIVE, _enable_keepalive);
 	DDX_Control(pDX, IDC_EDIT_STREAMER_PORTNUMBER, _streamer_portnumber);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_BUFFER_COUNT, _video_buffer_count);
@@ -94,6 +93,8 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_VIDEO_PNG_QUANTIZATION_CONTRAST_MAPS, _video_png_quantization_contrast_maps);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_WEBP_QUALITY, _video_webp_quality);
 	DDX_Control(pDX, IDC_COMBO_VIDEO_CODEC, _video_codec);
+	DDX_Control(pDX, IDC_CHECK_DOBULE_RELOAD_CREATING, _double_reload_creating);
+	DDX_Control(pDX, IDC_CHECK_RELOAD_DISCONNECTING, _reload_disconnecting);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -346,6 +347,9 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t keepalive_timeout = 5000;
 	int32_t nthread;
 
+	bool double_reload_creating = false;
+	bool reload_disconnecting = false;
+
 	bool invalidate4client = false;
 	bool indexed_mode = false;
 	bool enable_keepalive = false;
@@ -432,6 +436,11 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	keepalive_timeout = _wtoi(wkeepalive_timeout);
 	nthread = _wtoi(wnthread);
 
+	if (_double_reload_creating.GetCheck())
+		double_reload_creating = true;
+	if (_reload_disconnecting.GetCheck())
+		reload_disconnecting = true;
+
 	if (_enable_invalidate4client.GetCheck())
 		invalidate4client = true;
 	if (_use_indexed_mode.GetCheck())
@@ -446,7 +455,13 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_auto_start = true;
 	if (_clean_attendant.GetCheck())
 		clean_attendant = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, invalidate4client, indexed_mode, nthread, enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
+	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, 
+		video_codec, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, 
+		video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, 
+		video_webp_quality, video_webp_method, 
+		invalidate4client, indexed_mode, nthread, 
+		double_reload_creating, reload_disconnecting, 
+		enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
 
 	if (uuid)
 		free(uuid);
@@ -457,7 +472,13 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
+	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
+	float video_webp_quality, int32_t video_webp_method, 
+	bool invalidate4client, bool indexed_mode, int32_t nthread, 
+	bool double_reloading_on_creating, bool reloading_on_disconnecting,
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -554,6 +575,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_keepalive_timeout.SetWindowTextW(wkeepalive_timeout);
 	_nthread.SetWindowTextW(wnthread);
 
+	_double_reload_creating.SetCheck(double_reloading_on_creating ? 1 : 0);
+	_reload_disconnecting.SetCheck(reloading_on_disconnecting ? 1 : 0);
 	_enable_invalidate4client.SetCheck(invalidate4client ? 1 : 0);
 	_use_indexed_mode.SetCheck(indexed_mode ? 1 : 0);
 	_enable_keepalive.SetCheck(enable_keepalive ? 1 : 0);
@@ -643,16 +666,16 @@ void sirius_warbitrator_dlg::on_release(void)
 
 void sirius_warbitrator_dlg::initialize_gpus(void)
 {
-	int iItem = 0;
+	//int iItem = 0;
 
-	_attendants.InsertColumn(iItem++, _T("No"), LVCFMT_CENTER, 44, 1);
-	_attendants.InsertColumn(iItem++, _T("Attendant Id"), LVCFMT_CENTER, 150, 2);
-	_attendants.InsertColumn(iItem++, _T("Client Id"), LVCFMT_CENTER, 150, 3);
-	_attendants.InsertColumn(iItem++, _T("Status"), LVCFMT_CENTER, 200, 4);
-	_attendants.InsertColumn(iItem++, _T("Time"), LVCFMT_CENTER, 100, 5);
-	_attendants.InsertColumn(iItem++, _T("PID"), LVCFMT_CENTER, 100, 6);
-	_attendants.InsertColumn(iItem++, _T("CPU"), LVCFMT_CENTER, 100, 7);
-	_attendants.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES | LVS_EX_DOUBLEBUFFER | LVS_SORTASCENDING);
+	//_attendants.InsertColumn(iItem++, _T("No"), LVCFMT_CENTER, 44, 1);
+	//_attendants.InsertColumn(iItem++, _T("Attendant Id"), LVCFMT_CENTER, 150, 2);
+	//_attendants.InsertColumn(iItem++, _T("Client Id"), LVCFMT_CENTER, 150, 3);
+	//_attendants.InsertColumn(iItem++, _T("Status"), LVCFMT_CENTER, 200, 4);
+	//_attendants.InsertColumn(iItem++, _T("Time"), LVCFMT_CENTER, 100, 5);
+	//_attendants.InsertColumn(iItem++, _T("PID"), LVCFMT_CENTER, 100, 6);
+	//_attendants.InsertColumn(iItem++, _T("CPU"), LVCFMT_CENTER, 100, 7);
+	//_attendants.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES | LVS_EX_DOUBLEBUFFER | LVS_SORTASCENDING);
 }
 
 void sirius_warbitrator_dlg::release_gpus(void)
