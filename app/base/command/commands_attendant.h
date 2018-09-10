@@ -9,6 +9,7 @@
 #include "sirius_attendant_proxy.h"
 #include "sirius_log4cplus_logger.h"
 #define ATTENDANT_RELOAD		"reload"
+#define WEBAPP_REINIT			"reinit"
 namespace sirius
 {
 	namespace app
@@ -114,7 +115,10 @@ namespace sirius
 
 					_attendant->stop_attendant_callback(client_uuid.c_str());
 
-					_attendant->attendant_to_app_callback((uint8_t*)ATTENDANT_RELOAD, strlen(ATTENDANT_RELOAD));
+					if (_attendant->context()->reloading_on_disconnecting)
+						_attendant->attendant_to_app_callback((uint8_t*)ATTENDANT_RELOAD, strlen(ATTENDANT_RELOAD));
+					else
+						_attendant->attendant_to_app_callback((uint8_t*)WEBAPP_REINIT, strlen(WEBAPP_REINIT));
 				}
 			};
 

@@ -57,16 +57,13 @@ namespace sirius
 						int32_t video_block_height;
 						png_compressor_configration_t  png;
 						webp_compressor_configration_t webp;
-						/*
-						int32_t video_compression_level;
-						bool	video_quantization_posterization;
-						bool	video_quantization_dither_map;
-						bool	video_quantization_contrast_maps;
-						int32_t video_quantization_colors;
-						*/
 						bool	invalidate4client;
 						bool	indexed_mode;
 						int32_t	nthread;
+
+						bool	double_reloading_on_creating;
+						bool	reloading_on_disconnecting;
+
 						bool	enable_tls;
 						bool	enable_keepalive;
 						int32_t keepalive_timeout;
@@ -89,6 +86,8 @@ namespace sirius
 							, invalidate4client(false)
 							, indexed_mode(false)
 							, nthread(20)
+							, double_reloading_on_creating(false)
+							, reloading_on_disconnecting(true)
 							, enable_tls(false)
 							, enable_keepalive(false)
 							, keepalive_timeout(5000)

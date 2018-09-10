@@ -84,6 +84,10 @@ namespace sirius
 					bool	invalidate4client;
 					bool	indexed_mode;
 					int32_t	nthread;
+
+					bool	double_reloading_on_creating;
+					bool	reloading_on_disconnecting;
+
 					bool	present;
 					bool	keepalive;
 					int32_t keepalive_timeout;
@@ -110,6 +114,8 @@ namespace sirius
 						, invalidate4client(false)
 						, indexed_mode(false)
 						, nthread(20)
+						, double_reloading_on_creating(false)
+						, reloading_on_disconnecting(false)
 						, present(false)
 						, keepalive(false)
 						, keepalive_timeout(5000)
