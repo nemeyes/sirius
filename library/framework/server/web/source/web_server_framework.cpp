@@ -46,7 +46,6 @@ sirius::library::framework::server::web::core::~core()
 
 	while (_data_msg_queue.empty() == false)
 	{
-		_data_msg_queue.front();
 		_data_msg_queue.pop();
 	}
 }

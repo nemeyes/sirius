@@ -146,7 +146,6 @@ namespace sirius
 				virtual sirius::app::attendant::proxy::context_t * context(void);
 
 				virtual bool	is_initialized(void);
-
 				virtual int32_t initialize(void);
 				virtual int32_t release(void);
 
@@ -173,7 +172,7 @@ namespace sirius
 				virtual void mouse_lb_dclick_callback(int32_t pos_x, int32_t pos_y);
 				virtual void mouse_rb_dclick_callback(int32_t pos_x, int32_t pos_y);
 				virtual void mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
-
+				virtual void finish_reload(void);
 				void app_to_attendant(uint8_t * packet, int32_t len);
 				void attendant_to_app_callback(uint8_t * packet, int32_t len);
 				void set_attendant_cb(FuncPtrCallback fncallback);
@@ -183,6 +182,7 @@ namespace sirius
 				sirius::app::attendant::proxy::core * _core;
 				bool _key_pressed;
 				bool _initialized;
+				bool is_reload;
 			};
 		};
 	};
