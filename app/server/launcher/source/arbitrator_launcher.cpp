@@ -222,6 +222,23 @@ int main()
 
 			proc_ctrl.set_cmdline(arguments, "--nthread=%d", confentity.nthread);
 
+			if (confentity.double_reloading_on_creating)
+			{
+				proc_ctrl.set_cmdline(arguments, "--double_reloading_on_creating=true");
+			}
+			else
+			{
+				proc_ctrl.set_cmdline(arguments, "--double_reloading_on_creating=false");
+			}
+
+			if (confentity.reloading_on_disconnecting)
+			{
+				proc_ctrl.set_cmdline(arguments, "--reloading_on_disconnecting=true");
+			}
+			else
+			{
+				proc_ctrl.set_cmdline(arguments, "--reloading_on_disconnecting=false");
+			}
 			/*
 			if (confentity.enable_keepalive)
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
