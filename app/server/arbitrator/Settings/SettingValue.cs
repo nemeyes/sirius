@@ -32,6 +32,8 @@ namespace sirius.app.server.arbitrator.Settings
         public bool invalidate4client { get; set; }
         public bool indexed_mode { get; set; }
         public int nthread { get; set; }
+        public bool double_reloading_on_creating { get; set; }
+        public bool reloading_on_disconnecting { get; set; }
         public bool enable_tls { get; set; }
         public bool enable_keepalive { get; set; }
         public int keepalive_timeout { get; set; }
@@ -90,6 +92,8 @@ namespace sirius.app.server.arbitrator.Settings
                 invalidate4client,
                 indexed_mode,
                 nthread,
+                double_reloading_on_creating,
+                reloading_on_disconnecting,                
                 enable_tls, 
                 enable_keepalive,
                 keepalive_timeout, 
