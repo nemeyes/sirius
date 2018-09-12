@@ -367,22 +367,16 @@ void sirius::app::server::arbitrator::proxy::core::start_attendant_callback(cons
 {
 	sirius::autolock lock(&_attendant_cs);	
 	LOGGER::make_info_log(SAA, "%s, %d, [CMD_START_ATTENDANT_RES] attendant_uuid=%s, code=%d", __FUNCTION__, __LINE__, uuid, code);
-
-	if (!is_valid(client_uuid))
-		return;
 	
 	sirius::app::server::arbitrator::session * session = nullptr;
-	std::map<int32_t, sirius::app::server::arbitrator::session * >::iterator iter;
 	{
-		for (iter = _sessions.begin(); iter != _sessions.end(); iter++)
-		{
+		std::map<int32_t, sirius::app::server::arbitrator::session *>::iterator iter;
+		iter = _sessions.find(id);
+		if (iter != _sessions.end())
 			session = iter->second;
-			if (strcmp(session->attendant_uuid(), uuid) == 0)
-			{
-				session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
-				break;
-			}
-		}
+
+		if (session && session->state() == sirius::app::server::arbitrator::proxy::core::attendant_state_t::starting)
+			session->state(sirius::app::server::arbitrator::proxy::core::attendant_state_t::running);
 	}
 }
 

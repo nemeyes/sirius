@@ -44,50 +44,50 @@
                 </StackPanel>
 
                 <StackPanel>
-                    <TextBox x:Name="TextAttendantUrl" Width="221" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
+                    <TextBox x:Name="TextAttendantUrl" Width="311" Text="{Binding AttendantUrl, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="AppSessionApp" Target="{Binding ElementName=TextAppSessionApp}" Width="150"/>
+                    <Label Content="AppSessionApp" Target="{Binding ElementName=TextAppSessionApp}" Width="240"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <TextBox x:Name="TextAppSessionApp" Width="221" Text="{Binding AppSessionApp, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
+                    <TextBox x:Name="TextAppSessionApp" Width="311" Text="{Binding AppSessionApp, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="150"/>
+                    <Label Content="Attendant Instance" Target="{Binding ElementName=TextAttendantInstanceCount}" Width="240"/>
                     <TextBox x:Name="TextAttendantInstanceCount" Width="70" Text="{Binding AttendantInstanceCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" TextChanged="TextAttendantInstanceCount_TextChanged" PreviewTextInput="TextAttendantInstanceCount_PreviewTextInput" />
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Attendant Creation Delay" Target="{Binding ElementName=TextAttendantCreationDelay}" Width="150"/>
+                    <Label Content="Attendant Creation Delay" Target="{Binding ElementName=TextAttendantCreationDelay}" Width="240"/>
                     <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantCreationDelay_PreviewTextInput" /> 
                     <Label Content="ms"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Frame Rate" Target="{Binding ElementName=TextFrameRate}" Width="150"/>
+                    <Label Content="Frame Rate" Target="{Binding ElementName=TextFrameRate}" Width="240"/>
                     <TextBox x:Name="TextFrameRate" Width="70" Text="{Binding FrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextFraemRate_PreviewTextInput" TextChanged="TextFrameRate_TextChanged" />                    
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Video Block Width" Target="{Binding ElementName=TextVideoBlockWidth}" Width="150"/>
+                    <Label Content="Video Block Width" Target="{Binding ElementName=TextVideoBlockWidth}" Width="240"/>
                     <TextBox x:Name="TextVideoBlockWidth" Width="70" Text="{Binding VIdeoBlockWidth, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextVideoBlockWidth_PreviewTextInput"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Video Block Height" Target="{Binding ElementName=TextVideoBlockHeight}" Width="150"/>
+                    <Label Content="Video Block Height" Target="{Binding ElementName=TextVideoBlockHeight}" Width="240"/>
                     <TextBox x:Name="TextVideoBlockHeight" Width="70" Text="{Binding VideoBlockHeight, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextVideoBlockHeight_PreviewTextInput"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Thread Count" Target="{Binding ElementName=TextThreadCount}" Width="150"/>
+                    <Label Content="Thread Count" Target="{Binding ElementName=TextThreadCount}" Width="240"/>
                     <TextBox x:Name="TextThreadCount" Width="70" Text="{Binding ThreadCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextThreadCount_PreviewTextInput"/>
                 </StackPanel>
 
                 <StackPanel>
-                    <Label Content="Video Codec" Target="{Binding ElementName=VideoCodec}" Width="150" Height="20"/>
+                    <Label Content="Video Codec" Target="{Binding ElementName=VideoCodec}" Width="240" Height="20"/>
                     <ComboBox Margin="0,0,0,0" Name="VideoCodec" HorizontalAlignment="Right" MinWidth="70" DropDownClosed="VideoCodec_DropDownClosed">
                         <ComboBoxItem Content="PNG" />
                         <ComboBoxItem Content="WEBP" />
@@ -95,12 +95,12 @@
                 </StackPanel>
 
                 <StackPanel Name="WebpQualityPanel" VerticalAlignment="Top">
-                    <Label Content="Video Webp Quality" Target="{Binding ElementName=TextVideoWebpQuality}" Width="150"/>
+                    <Label Content="Video Webp Quality" Target="{Binding ElementName=TextVideoWebpQuality}" Width="240"/>
                     <TextBox x:Name="TextVideoWebpQuality" Width="70" Text="{Binding VideoWebpQuality, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
                 </StackPanel>
 
                 <StackPanel Name="QutizationPanel" VerticalAlignment="Top">
-                    <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="150" Height="20"/>
+                    <Label Content="Quantization Colors" Target="{Binding ElementName=QuantizationColors}" Width="240" Height="20"/>
                     <ComboBox Margin="0,0,0,0" Name="QuantizationColors" HorizontalAlignment="Right" MinWidth="70">
                         <ComboBoxItem Content="8" />
                         <ComboBoxItem Content="16" />
@@ -112,7 +112,7 @@
                 </StackPanel>
 
                 <StackPanel Name="PosterizationPanel" VerticalAlignment="Top">
-                    <Label Content="Posterization" Target="{Binding ElementName=VideoQuantizationPosterization}" Width="150" />
+                    <Label Content="Posterization" Target="{Binding ElementName=VideoQuantizationPosterization}" Width="240" />
                     <RadioButton x:Name="VideoQuantizationPosterizationOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
@@ -120,7 +120,7 @@
                 </StackPanel>
 
                 <StackPanel Name="DitherMapPanel" VerticalAlignment="Top">
-                    <Label Content="Dither Map" Target="{Binding ElementName=VideoQuantizationDitherMap}" Width="150" />
+                    <Label Content="Dither Map" Target="{Binding ElementName=VideoQuantizationDitherMap}" Width="240" />
                     <RadioButton x:Name="VideoQuantizationDitherMapOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
@@ -128,7 +128,7 @@
                 </StackPanel>
 
                 <StackPanel Name="ContrastMapsPanel" VerticalAlignment="Top">
-                    <Label Content="Contrast Maps" Target="{Binding ElementName=VideoQuantizationContrastMaps}" Width="150" />
+                    <Label Content="Contrast Maps" Target="{Binding ElementName=VideoQuantizationContrastMaps}" Width="240" />
                     <RadioButton x:Name="VideoQuantizationContrastMapsOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
@@ -141,7 +141,7 @@
                 <!--Slider Name="SliderImageCompressionLevel" Value="{Binding ImageCompressionLevel, Mode=TwoWay, ValidatesOnDataErrors=True}" Margin="0,0,220,10" /-->
 
                 <StackPanel VerticalAlignment="Top">
-                    <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="150" />
+                    <Label Content="Display Attendant" Target="{Binding ElementName=DisaplyAttendant}" Width="240" />
                     <RadioButton x:Name="DisaplyAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
@@ -149,7 +149,7 @@
                 </StackPanel>
 
                 <StackPanel VerticalAlignment="Top">
-                    <Label Content="Indexed Mode" Target="{Binding ElementName=IndexedMode}" Width="150" />
+                    <Label Content="Indexed Mode" Target="{Binding ElementName=IndexedMode}" Width="240" />
                     <RadioButton x:Name="IndexedModeOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
@@ -157,11 +157,27 @@
                 </StackPanel>
 
                 <StackPanel VerticalAlignment="Top">
-                    <Label Content="Clean Attendant" Target="{Binding ElementName=CleanAttendant}" Width="150" />
+                    <Label Content="Clean Attendant" Target="{Binding ElementName=CleanAttendant}" Width="240" />
                     <RadioButton x:Name="CleanAttendantOn" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
                     <RadioButton x:Name="CleanAttendantOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel VerticalAlignment="Top">
+                    <Label Content="Double Reload On Browser Creating" Target="{Binding ElementName=DoubleReloadOnBrowserCreating}" Width="240" />
+                    <RadioButton x:Name="DoubleReloadOnBrowserCreatingOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="DoubleReloadOnBrowserCreatingOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel VerticalAlignment="Top">
+                    <Label Content="Reload On Client Disconnecting" Target="{Binding ElementName=ReloadOnClientDisconnecting}" Width="240" />
+                    <RadioButton x:Name="ReloadOnClientDisconnectingOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="ReloadOnClientDisconnectingOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
                 <!--StackPanel>

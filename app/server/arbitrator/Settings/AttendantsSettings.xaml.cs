@@ -107,6 +107,29 @@ namespace sirius.app.server.arbitrator.Settings
                 CleanAttendantOff.IsChecked = true;
             }
 
+            if (setting_value.double_reloading_on_creating)
+            {
+                DoubleReloadOnBrowserCreatingOn.IsChecked = true;
+                DoubleReloadOnBrowserCreatingOff.IsChecked = false;
+            }
+            else
+            {
+                DoubleReloadOnBrowserCreatingOn.IsChecked = false;
+                DoubleReloadOnBrowserCreatingOff.IsChecked = true;
+            }
+
+
+            if (setting_value.reloading_on_disconnecting)
+            {
+                ReloadOnClientDisconnectingOn.IsChecked = true;
+                ReloadOnClientDisconnectingOff.IsChecked = false;
+            }
+            else
+            {
+                ReloadOnClientDisconnectingOn.IsChecked = false;
+                ReloadOnClientDisconnectingOff.IsChecked = true;
+            }
+
             if (setting_value.video_quantization_posterization)
             {
                 VideoQuantizationPosterizationOn.IsChecked = true;
@@ -217,6 +240,16 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.clean_attendant = true;
             else
                 setting_value.clean_attendant = false;
+
+            if (DoubleReloadOnBrowserCreatingOn.IsChecked.Value)
+                setting_value.double_reloading_on_creating = true;
+            else
+                setting_value.double_reloading_on_creating = false;
+
+            if (ReloadOnClientDisconnectingOn.IsChecked.Value)
+                setting_value.reloading_on_disconnecting = true;
+            else
+                setting_value.reloading_on_disconnecting = false;
 
             if (VideoQuantizationPosterizationOn.IsChecked.Value)
                 setting_value.video_quantization_posterization = true;
