@@ -769,15 +769,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									memmove(reference_buffer + src_index, process_data + src_index, ccl_info.width << 2);
 								}
 
-								sirius::library::video::transform::codec::partial::png::compressor::context_t context;
-								context.speed = _context->speed;
-								context.max_colors = _context->max_colors;
-								context.min_quality = _context->min_quality;
-								context.max_quality = _context->max_quality;
-								context.gamma = _context->gamma;
-								context.floyd = _context->floyd;
-
-								_real_compressor->initialize(&context);
+								_real_compressor->initialize(_context);
 								sirius::library::video::transform::codec::partial::png::compressor::entity_t input;
 								input.data = cc_rows;
 								input.data_capacity = ccl_info.height;
