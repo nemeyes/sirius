@@ -285,9 +285,9 @@ namespace sirius.app.server.arbitrator.Settings
         {
             if (TextAttendantInstanceCount.Text.Length > 0)
             {
-                if (Convert.ToInt32(TextAttendantInstanceCount.Text) > 600)
+                if (Convert.ToInt32(TextAttendantInstanceCount.Text) > 1000)
                 {
-                    TextAttendantInstanceCount.Text = "600";
+                    TextAttendantInstanceCount.Text = "1000";
                 }
             }
         }
