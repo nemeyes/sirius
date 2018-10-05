@@ -871,7 +871,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		{
 			if (_max_attendant_instance_count > 0)
 			{
-				int32_t count = (get_attendant_count()) >> 1;
+				int32_t count = get_available_attendant_count();
 				int32_t percent = ((float)count / (float)_max_attendant_instance_count) * 100;
 
 				if (percent < 100)
