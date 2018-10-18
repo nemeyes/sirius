@@ -262,9 +262,9 @@ namespace client {
 					//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
 					Sleep(1000);
 
-					//browser->ReloadIgnoreCache();
+					browser->ReloadIgnoreCache();
 					//browser->Reload();
-					browser->GoBack();
+					//browser->GoBack();
 					manager->DeleteCookies("", "", NULL);
 
 					//_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
@@ -278,8 +278,8 @@ namespace client {
 							manager->DeleteCookies("", "", NULL);
 							browser->GetMainFrame()->LoadURL(rootWin->start_url);
 							Sleep(1000);
-							//browser->ReloadIgnoreCache();
-							browser->GoBack();
+							browser->ReloadIgnoreCache();
+							//browser->GoBack();
 							manager->DeleteCookies("", "", NULL);
 						}
 					}
