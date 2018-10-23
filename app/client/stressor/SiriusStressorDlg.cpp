@@ -281,7 +281,7 @@ void CSiriusStressorDlg::connect_proc()
 	_ip_address.GetWindowTextW(str_server_address);
 	_port.GetWindowTextW(str_server_port);
 	_keepalive_timeout.GetWindowTextW(str_keepalive_timeout);
-	_streamer_keepalive_timeout.GetWindowTextW(str_keepalive_timeout);
+	_streamer_keepalive_timeout.GetWindowTextW(str_streamer_keepalive_timeout);
 
 	wchar_t server_address[16];
 	wcsncpy_s(server_address, (LPCWSTR)str_server_address, str_server_address.GetLength() + 1);
@@ -313,7 +313,7 @@ void CSiriusStressorDlg::connect_proc()
 	{
 		int index = client_count + i;
 		stressor_controller* client = new stressor_controller(this, index, keepalive_timeout > 0 ? true:false, keepalive_timeout, IsDlgButtonChecked(IDC_CHECK_USE_TLS));
-		client->connect(server_address, server_port, IsDlgButtonChecked(IDC_CHECK_RECONNECTION), streamer_keepalive_timeout > 0 ? true : false, keepalive_timeout);
+		client->connect(server_address, server_port, IsDlgButtonChecked(IDC_CHECK_RECONNECTION), streamer_keepalive_timeout > 0 ? true : false, streamer_keepalive_timeout);
 		_vec_client.push_back(client);
 
 		if (connect_count > 1)
