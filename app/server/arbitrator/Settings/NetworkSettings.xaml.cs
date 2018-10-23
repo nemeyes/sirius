@@ -43,8 +43,10 @@ namespace sirius.app.server.arbitrator.Settings
             TextControllerPortnumber.Text = setting_value.controller_portnumber.ToString();
             TextStreamerPortnumber.Text = setting_value.streamer_portnumber.ToString();
             UseTLS.IsChecked = setting_value.enable_tls;
-            UseKeepAlive.IsChecked = setting_value.enable_keepalive;
-            TextKeepAliveTimeout.Text = setting_value.keepalive_timeout.ToString();
+            UseKeepalive.IsChecked = setting_value.enable_keepalive;
+            TextKeepaliveTimeout.Text = setting_value.keepalive_timeout.ToString();
+            UseStreamerKeepalive.IsChecked = setting_value.enable_streamer_keepalive;
+            TextStreamerKeepaliveTimeout.Text = setting_value.streamer_keepalive_timeout.ToString();
 
             if (sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.started ||
                 sirius_arbitrator.handle.get_status() == sirius_arbitrator.status_t.starting)
@@ -65,15 +67,25 @@ namespace sirius.app.server.arbitrator.Settings
             else
                 setting_value.enable_tls = false;
 
-            if (UseKeepAlive.IsChecked.Value)
+            if (UseKeepalive.IsChecked.Value)
                 setting_value.enable_keepalive = true;
             else
                 setting_value.enable_keepalive = false;
                        
-            if (Convert.ToInt32(TextKeepAliveTimeout.Text) < 5000)
-                TextKeepAliveTimeout.Text = "5000";
+            if (Convert.ToInt32(TextKeepaliveTimeout.Text) < 5000)
+                TextKeepaliveTimeout.Text = "5000";
 
-            setting_value.keepalive_timeout = Convert.ToInt32(TextKeepAliveTimeout.Text);
+            setting_value.keepalive_timeout = Convert.ToInt32(TextKeepaliveTimeout.Text);
+            
+            if (UseStreamerKeepalive.IsChecked.Value)
+                setting_value.enable_streamer_keepalive = true;
+            else
+                setting_value.enable_streamer_keepalive = false;
+
+            if (Convert.ToInt32(TextStreamerKeepaliveTimeout.Text) < 5000)
+                TextStreamerKeepaliveTimeout.Text = "5000";
+
+            setting_value.streamer_keepalive_timeout = Convert.ToInt32(TextStreamerKeepaliveTimeout.Text);
 
             setting_value.update();
             //sirius_arbitrator.controller.release();
@@ -106,7 +118,20 @@ namespace sirius.app.server.arbitrator.Settings
             }
         }
 
-        private void TextKeepAliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TextKeepaliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //only number type
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
+
+        private void TextStreamerKeepaliveTimeout_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //only number type
             foreach (char c in e.Text)

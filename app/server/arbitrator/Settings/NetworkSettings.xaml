@@ -41,31 +41,42 @@
                 </StackPanel.Resources>
 
                 <StackPanel>
-                    <Label Content="Controller Portnumber" Target="{Binding ElementName=TextControllerPortnumber}" Width="150"/>
+                    <Label Content="Controller Portnumber" Target="{Binding ElementName=TextControllerPortnumber}" Width="240"/>
                     <TextBox x:Name="TextControllerPortnumber" Width="85" Text="{Binding ControllerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextControllerPortnumber_PreviewTextInput" />
                 </StackPanel>
                 <StackPanel>
-                    <Label Content="Streamer Portnumber" Target="{Binding ElementName=TextStreamerPortnumber}" Width="150"/>
+                    <Label Content="Streamer Portnumber" Target="{Binding ElementName=TextStreamerPortnumber}" Width="240"/>
                     <TextBox x:Name="TextStreamerPortnumber" Width="85" Text="{Binding StreamerPortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextStreamerPortnumber_PreviewTextInput"/>
                 </StackPanel>
                 <StackPanel>
-                    <Label Content="Use TLS" Target="{Binding ElementName=UseTLS}" Width="150"/>
+                    <Label Content="Use TLS" Target="{Binding ElementName=UseTLS}" Width="240"/>
                     <RadioButton x:Name="UseTLS">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
                     <RadioButton Content="No" Margin="8,0,0,0"  IsChecked="True"/>
                 </StackPanel>
                 <StackPanel>
-                    <Label Content="Use Keep Alive" Target="{Binding ElementName=UseKeepAlive}" Width="150"/>
-                    <RadioButton x:Name="UseKeepAlive" IsChecked="True">
+                    <Label Content="Use Keepalive" Target="{Binding ElementName=UseKeepalive}" Width="240"/>
+                    <RadioButton x:Name="UseKeepalive" IsChecked="True">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
                     <RadioButton Content="No" Margin="8,0,0,0" IsChecked="True"/>
                 </StackPanel>
                 <StackPanel>
-                    <Label Content="KeepAlive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
-                    <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />
+                    <Label Content="Keepalive Timeout" Target="{Binding ElementName=TextKeepaliveTimeout}" Width="240"/>
+                    <TextBox x:Name="TextKeepaliveTimeout" Width="85" Text="{Binding KeepaliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepaliveTimeout_PreviewTextInput" />
                 </StackPanel>
+                <StackPanel>
+                    <Label Content="Use Streamer Keepalive" Target="{Binding ElementName=UseStreamerKeepalive}" Width="240"/>
+                    <RadioButton x:Name="UseStreamerKeepalive" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton Content="No" Margin="8,0,0,0" IsChecked="True"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Streamer Keepalive Timeout" Target="{Binding ElementName=TextStreamerKeepaliveTimeout}" Width="240"/>
+                    <TextBox x:Name="TextStreamerKeepaliveTimeout" Width="85" Text="{Binding StreamerKeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextStreamerKeepaliveTimeout_PreviewTextInput" />
+                </StackPanel>               
                 <!--StackPanel>
                     <Label Content="Keep Alive Timeout" Target="{Binding ElementName=TextKeepAliveTimeout}" Width="150"/>
                     <TextBox x:Name="TextKeepAliveTimeout" Width="85" Text="{Binding KeepAliveTimeout, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextKeepAliveTimeout_PreviewTextInput" />
