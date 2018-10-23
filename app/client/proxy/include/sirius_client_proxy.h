@@ -51,7 +51,7 @@ namespace sirius
 					const wchar_t *	address(void);
 					const int32_t	streamer_portnumber(void);
 
-					int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection);
+					int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 					int32_t			disconnect(void);
 					void			disconnect(BOOL enable);
 
@@ -71,8 +71,8 @@ namespace sirius
 					int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
 					void			post_end2end_data(const char * packet, int32_t packet_size);
 
-					virtual void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
-					virtual void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection) = 0;
+					virtual void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout) = 0;
+					virtual void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout) = 0;
 					virtual void on_pre_disconnect(void) = 0;
 					virtual void on_post_disconnect(void) = 0;
 
@@ -95,7 +95,7 @@ namespace sirius
 					virtual void on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height) = 0;
 					virtual void on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height) = 0;
 
-					virtual void on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection) = 0;
+					virtual void on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout) = 0;
 					virtual void on_play_streaming(void) = 0;
 					virtual void on_stop_streaming(void) = 0;
 
@@ -122,7 +122,7 @@ namespace sirius
 				const wchar_t *	address(void);
 				const int32_t	streamer_portnumber(void);
 
-				int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection);
+				int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 				int32_t			disconnect(void);
 				void			disconnect(BOOL enable);
 
@@ -143,8 +143,8 @@ namespace sirius
 				void			post_end2end_data(const char * packet, int32_t packet_size);
 
 			private:
-				void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection);
-				void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection);
+				void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
+				void on_post_connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 				void on_pre_disconnect(void);
 				void on_post_disconnect(void);
 
@@ -168,7 +168,7 @@ namespace sirius
 				void on_pre_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height);
 				void on_post_attendant_info(int32_t code, wchar_t * attendant_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height);
 
-				void on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection);
+				void on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 				void on_play_streaming(void);
 				void on_stop_streaming(void);
 

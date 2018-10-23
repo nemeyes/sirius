@@ -31,7 +31,7 @@ client_controller::~client_controller(void)
 	}
 }
 
-void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 	::PostMessage(hwnd, WM_CONNECTION_BEGIN_MESSAGE, 0, 0);
@@ -39,7 +39,7 @@ void client_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bo
 	wcsncpy_s(_address, address, sizeof(_address) / sizeof(wchar_t) - 1);
 }
 
-void client_controller::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void client_controller::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 
@@ -201,11 +201,11 @@ void client_controller::on_post_attendant_info(int32_t code, wchar_t * attendant
 
 }
 
-void client_controller::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection)
+void client_controller::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	HWND hwnd = ::GetDlgItem(_front->GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW);
 	if (_framework)
-		_framework->open(_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection);
+		_framework->open(_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection, keepalive, keepalive_timeout);
 }
 
 void client_controller::on_play_streaming(void)

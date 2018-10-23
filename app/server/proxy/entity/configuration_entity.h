@@ -67,6 +67,8 @@ namespace sirius
 						bool	enable_tls;
 						bool	enable_keepalive;
 						int32_t keepalive_timeout;
+						bool	enable_streamer_keepalive;
+						int32_t	streamer_keepalive_timeout;
 						bool	enable_present;
 						bool	enable_auto_start;
 						bool	enable_caching;
@@ -91,6 +93,8 @@ namespace sirius
 							, enable_tls(false)
 							, enable_keepalive(false)
 							, keepalive_timeout(5000)
+							, enable_streamer_keepalive(false)
+							, streamer_keepalive_timeout(5000)
 							, enable_present(false)
 							, enable_auto_start(false)
 							, enable_caching(false)

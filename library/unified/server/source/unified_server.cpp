@@ -43,6 +43,8 @@ int32_t sirius::library::unified::server::core::initialize(sirius::library::unif
 
 	strncpy_s(streamer_context->uuid, uuid.wtoa().c_str(), uuid.size() + 1);
 	streamer_context->portnumber = _context->portnumber;
+	streamer_context->keepalive = _context->keepalive;
+	streamer_context->keepalive_timeout = _context->keepalive_timeout;
 	streamer_context->video_codec = _context->video_codec;
 	streamer_context->video_width = _context->video_width;
 	streamer_context->video_height = _context->video_height;

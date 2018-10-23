@@ -20,7 +20,7 @@ namespace sirius
 					receiver(sirius::library::unified::client * front);
 					virtual ~receiver(void);
 
-					void play(const char * url, int32_t port, int32_t recv_option, bool repeat);
+					void play(const char * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive, int32_t keepalive_timeout);
 					void stop(void);
 
 					void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height);

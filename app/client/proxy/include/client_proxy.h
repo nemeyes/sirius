@@ -25,7 +25,7 @@ namespace sirius
 				const wchar_t *	address(void);
 				const int32_t	streamer_portnumber(void);
 
-				int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection);
+				int32_t			connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 				int32_t			disconnect(void);
 				void			disconnect(BOOL enable);
 
@@ -65,6 +65,8 @@ namespace sirius
 				char		_address[64];
 				wchar_t		_waddress[64];
 				bool		_reconnection;
+				bool		_keepalive;
+				int32_t		_keepalive_timeout;
 
 				//connect attendant/disconnect attendant/attendant info noti
 				bool		_recv_attendant_info;

@@ -5,7 +5,9 @@
 #include "cefclient/browser/main_message_loop_std.h"
 
 #include "include/cef_app.h"
+#ifdef NDEBUG
 #include "malloc_extension.h"
+#endif
 
 namespace client {
 
@@ -14,7 +16,9 @@ MainMessageLoopStd::MainMessageLoopStd() {
 
 int MainMessageLoopStd::Run() {
   CefRunMessageLoop();
+#ifdef NDEBUG
   MallocExtension::instance()->ReleaseFreeMemory();
+#endif  
   return 0;
 }
 

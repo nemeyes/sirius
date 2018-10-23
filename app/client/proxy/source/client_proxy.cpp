@@ -75,11 +75,11 @@ const int32_t sirius::app::client::proxy::core::streamer_portnumber(void)
 	return _streamer_portnumber;
 }
 
-int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t portnumber, bool reconnection)
+int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 	if (_front)
-		_front->on_pre_connect(address, portnumber, reconnection);
+		_front->on_pre_connect(address, portnumber, reconnection, keepalive, keepalive_timeout);
 
 	memset(_address, 0x00, sizeof(_address));
 	memset(_waddress, 0x00, sizeof(_waddress));
@@ -90,6 +90,8 @@ int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t por
 		strncpy_s(_address, ascii_address, sizeof(_address));
 		wcsncpy_s(_waddress, address, sizeof(_waddress));
 		_reconnection = reconnection;
+		_keepalive = keepalive;
+		_keepalive_timeout = keepalive_timeout;
 
 		_state = sirius::app::client::proxy::state_t::connecting;
 		if (sirius::library::net::sicp::client::connect(_address, portnumber, _reconnection))
@@ -105,7 +107,7 @@ int32_t sirius::app::client::proxy::core::connect(wchar_t * address, int32_t por
 
 
 	if (_front)
-		_front->on_post_connect(address, portnumber, reconnection);
+		_front->on_post_connect(address, portnumber, reconnection, keepalive, keepalive_timeout);
 
 	return status;
 }
@@ -392,7 +394,7 @@ void sirius::app::client::proxy::core::attendant_info_callback(int32_t code, con
 		if (_front)
 		{
 			_front->on_stop_streaming();
-			_front->on_open_streaming(_szwattendant_uuid, streamer_portnumber, _reconnection);
+			_front->on_open_streaming(_szwattendant_uuid, streamer_portnumber, _reconnection, _keepalive, _keepalive_timeout);
 			_front->on_play_streaming();
 		}
 	}

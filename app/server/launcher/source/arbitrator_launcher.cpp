@@ -239,15 +239,17 @@ int main()
 			{
 				proc_ctrl.set_cmdline(arguments, "--reloading_on_disconnecting=false");
 			}
-			/*
-			if (confentity.enable_keepalive)
+			
+			if (confentity.enable_streamer_keepalive)
+			{
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=true");
+				proc_ctrl.set_cmdline(arguments, "--keepalive_timeout=%d", confentity.streamer_keepalive_timeout);
+			}
 			else
+			{
 				proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
-			*/
-			proc_ctrl.set_cmdline(arguments, "--enable_keepalive=false");
-
-			proc_ctrl.set_cmdline(arguments, "--keepalive_timeout=%d", confentity.keepalive_timeout);
+				proc_ctrl.set_cmdline(arguments, "--keepalive_timeout=5000");
+			}
 
 			if (confentity.enable_tls)
 				proc_ctrl.set_cmdline(arguments, "--enable_tls=true");

@@ -61,7 +61,7 @@ namespace sirius
 						float video_webp_quality, int32_t video_webp_method, 
 						bool invalidate4client, bool indexed_mode, int32_t nthread, 
 						bool double_reloading_on_creating, bool reloading_on_disconnecting,
-						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app);
+						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app);
 
 					int32_t	connect_client(const char * uuid, const char * client_id);
 					int32_t disconnect_client(const char * uuid);

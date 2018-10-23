@@ -179,6 +179,7 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->nthread = _context->nthread;
 	_framework_context->present = _context->present;
 	_framework_context->keepalive = _context->keepalive;
+	_framework_context->keepalive_timeout = _context->keepalive_timeout;
 	_framework_context->tls = _context->tls;
 	_framework_context->hwnd = _context->hwnd;
 	_framework_context->type = _context->type;
@@ -249,6 +250,7 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 		_framework_context->nthread = _context->nthread;
 		_framework_context->present = _context->present;
 		_framework_context->keepalive = _context->keepalive;
+		_framework_context->keepalive_timeout = _context->keepalive_timeout;
 		_framework_context->tls = _context->tls;
 		_framework_context->hwnd = _context->hwnd;
 		_framework_context->type = _context->type;

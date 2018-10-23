@@ -58,12 +58,12 @@ const int32_t sirius::app::client::proxy::handler::streamer_portnumber(void)
 	return portnumber;
 }
 
-int32_t sirius::app::client::proxy::handler::connect(wchar_t * address, int32_t portnumber, bool reconnection)
+int32_t sirius::app::client::proxy::handler::connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_proxy)
-		status = _proxy->connect(address, portnumber, reconnection);
+		status = _proxy->connect(address, portnumber, reconnection, keepalive, keepalive_timeout);
 
 	return status;
 }
@@ -276,12 +276,12 @@ const int32_t sirius::app::client::proxy::streamer_portnumber(void)
 	return streamingPortNumber;
 }
 
-int32_t sirius::app::client::proxy::connect(wchar_t * address, int32_t portnumber, bool reconnection)
+int32_t sirius::app::client::proxy::connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	int32_t status = sirius::app::client::proxy::err_code_t::fail;
 
 	if (_core)
-		status = _core->connect(address, portnumber, reconnection);
+		status = _core->connect(address, portnumber, reconnection, keepalive, keepalive_timeout);
 
 	return status;
 }
@@ -429,16 +429,16 @@ void sirius::app::client::proxy::post_end2end_data(const char * packet, int32_t 
 }
 
 //CALLBACK
-void sirius::app::client::proxy::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void sirius::app::client::proxy::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	if (_handler)
-		_handler->on_pre_connect(address, portNumber, reconnection);
+		_handler->on_pre_connect(address, portNumber, reconnection, keepalive, keepalive_timeout);
 }
 
-void sirius::app::client::proxy::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void sirius::app::client::proxy::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	if (_handler)
-		_handler->on_post_connect(address, portNumber, reconnection);
+		_handler->on_post_connect(address, portNumber, reconnection, keepalive, keepalive_timeout);
 }
 
 void sirius::app::client::proxy::on_pre_disconnect(void)
@@ -537,10 +537,10 @@ void sirius::app::client::proxy::on_post_attendant_info(int32_t code, wchar_t * 
 		_handler->on_post_attendant_info(code, attendant_uuid, streamer_portnumber, video_width, video_height);
 }
 
-void sirius::app::client::proxy::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection)
+void sirius::app::client::proxy::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	if (_handler)
-		_handler->on_open_streaming(attendant_uuid, streamer_portnumber, reconnection);
+		_handler->on_open_streaming(attendant_uuid, streamer_portnumber, reconnection, keepalive, keepalive_timeout);
 }
 
 void sirius::app::client::proxy::on_play_streaming(void)

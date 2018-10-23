@@ -94,7 +94,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 			confentity.webp.video_quality, confentity.webp.video_method, 
 			confentity.invalidate4client, confentity.indexed_mode, confentity.nthread, 
 			confentity.double_reloading_on_creating, confentity.reloading_on_disconnecting,
-			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
+			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_streamer_keepalive, confentity.streamer_keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -164,7 +164,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	float video_webp_quality, int32_t video_webp_method, 
 	bool invalidate4client, bool indexed_mode, int32_t nthread, 
 	bool double_reloading_on_creating, bool reloading_on_disconnecting,
-	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -204,6 +204,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.enable_tls = enable_tls;
 	configuration.enable_keepalive = enable_keepalive;
 	configuration.keepalive_timeout = keepalive_timeout;
+	configuration.enable_streamer_keepalive = enable_streamer_keepalive;
+	configuration.streamer_keepalive_timeout = streamer_keepalive_timeout;
 	configuration.enable_present = enable_present;
 	configuration.enable_auto_start = enable_auto_start;
 	configuration.enable_caching = enable_caching;

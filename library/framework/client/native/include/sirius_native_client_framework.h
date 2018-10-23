@@ -26,7 +26,7 @@ namespace sirius
 					virtual ~native(void);
 
 					int32_t state(void);
-					int32_t open(wchar_t * url, int32_t port=0, int32_t recv_option= sirius::library::framework::client::native::media_type_t::video, bool repeat=false);
+					int32_t open(wchar_t * url, int32_t port=0, int32_t recv_option= sirius::library::framework::client::native::media_type_t::video, bool reconnect = false, bool keepalive = false, int32_t keepalive_timeout = 5000);
 					int32_t play(HWND hwnd);
 					int32_t stop(void);
 

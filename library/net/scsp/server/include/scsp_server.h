@@ -70,7 +70,7 @@ namespace sirius
 						}
 					} stream_conf_t;
 
-					core(const char * uuid, sirius::library::net::scsp::server * front);
+					core(const char * uuid, sirius::library::net::scsp::server * front, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000);
 					virtual ~core(void);
 
 					int32_t start(sirius::library::net::scsp::server::context_t * context);
