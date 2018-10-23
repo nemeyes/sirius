@@ -11,8 +11,8 @@
 
 #define USE_MINIMIZED_VIDEO_PACKET
 
-sirius::library::net::scsp::client::core::core(sirius::library::net::scsp::client * front)
-	: sirius::library::net::sicp::client(RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, FALSE, 5000, FALSE)
+sirius::library::net::scsp::client::core::core(sirius::library::net::scsp::client * front, BOOL keepalive, int32_t keepalive_timeout)
+	: sirius::library::net::sicp::client(RECV_BUF_SIZE, SEND_BUF_SIZE, RECV_BUF_SIZE, SEND_BUF_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, keepalive, keepalive_timeout, FALSE)
 	, _front(front)
 	, _video_codec(sirius::library::net::scsp::client::video_submedia_type_t::unknown)
 	, _video_width(1280)
@@ -41,7 +41,7 @@ sirius::library::net::scsp::client::core::~core(void)
 	::DeleteCriticalSection(&_state_cs);
 }
 
-int32_t sirius::library::net::scsp::client::core::play(const char * url, int32_t port, int32_t recv_option, bool repeat)
+int32_t sirius::library::net::scsp::client::core::play(const char * url, int32_t port, int32_t recv_option, bool reconnection)
 {
 	_receive_option = recv_option;
 	_play = true;
@@ -53,7 +53,7 @@ int32_t sirius::library::net::scsp::client::core::play(const char * url, int32_t
 	}
 
 	_state = sirius::library::net::scsp::client::state_t::connecting;
-	sirius::library::net::sicp::client::connect((char*)url, port, repeat);
+	sirius::library::net::sicp::client::connect((char*)url, port, reconnection);
 	return _state;
 }
 

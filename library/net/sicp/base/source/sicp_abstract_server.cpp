@@ -428,7 +428,9 @@ int32_t sirius::library::net::sicp::abstract_server::clean_closing_session(BOOL 
 			else
 			{
 				session->close();
+#ifdef NDEBUG
 				MallocExtension::instance()->ReleaseFreeMemory();
+#endif
 				if (((session->status() & sirius::library::net::iocp::session::status_t::closed) != sirius::library::net::iocp::session::status_t::closed) ||
 					//((session->status() & sirius::library::net::iocp::session::status_t::receiving) != sirius::library::net::iocp::session::status_t::receiving) ||
 					((session->status() & sirius::library::net::iocp::session::status_t::sending) == sirius::library::net::iocp::session::status_t::sending))

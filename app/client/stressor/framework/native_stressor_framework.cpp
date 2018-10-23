@@ -3,8 +3,8 @@
 #include <sirius_locks.h>
 #include <sirius_log4cplus_logger.h>
 
-sirius::library::framework::stressor::native::core::core(sirius::library::framework::stressor::native * front) :
-	_front(front)
+sirius::library::framework::stressor::native::core::core(sirius::library::framework::stressor::native * front)
+	: _front(front)
 {
 	::InitializeCriticalSection(&_vcs);	
 }

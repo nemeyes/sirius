@@ -75,6 +75,7 @@ namespace sirius
 						int32_t	nthread;
 						bool	present;
 						bool	keepalive;
+						int32_t keepalive_timeout;
 						bool	tls;
 						wchar_t uuid[MAX_PATH];
 						int32_t portnumber;
@@ -94,6 +95,9 @@ namespace sirius
 							, indexed_mode(false)
 							, nthread(20)
 							, present(false)
+							, tls(false)
+							, keepalive(false)
+							, keepalive_timeout(5000)
 							, portnumber(7000)
 							, hwnd(NULL)
 							, type(sirius::library::framework::server::base::attendant_type_t::web) //web

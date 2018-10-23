@@ -12,9 +12,9 @@ sirius::library::unified::scsp::receiver::~receiver(void)
 
 }
 
-void sirius::library::unified::scsp::receiver::play(const char * url, int32_t port, int32_t recv_option, bool repeat)
+void sirius::library::unified::scsp::receiver::play(const char * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive, int32_t keepalive_timeout)
 {
-	sirius::library::net::scsp::client::play(url, port, recv_option, repeat);
+	sirius::library::net::scsp::client::play(url, port, recv_option, reconnect, keepalive, keepalive_timeout);
 }
 
 void sirius::library::unified::scsp::receiver::stop(void)

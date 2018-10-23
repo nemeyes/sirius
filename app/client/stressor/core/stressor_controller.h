@@ -13,8 +13,8 @@ public:
 	stressor_controller(CSiriusStressorDlg * front, int32_t index, bool keepalive, int32_t keepalive_timeout, bool tls);
 	virtual ~stressor_controller(void);
 
-	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection);
-	void on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection);
+	void on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
+	void on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 	void on_pre_disconnect(void);
 	void on_post_disconnect(void);
 
@@ -37,7 +37,7 @@ public:
 	void on_pre_attendant_info(int32_t code, wchar_t * container_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height);
 	void on_post_attendant_info(int32_t code, wchar_t * container_uuid, int32_t streamer_portnumber, int32_t video_width, int32_t video_height);
 
-	void on_open_streaming(wchar_t * container_uuid, int32_t streamer_portnumber, bool reconnection);
+	void on_open_streaming(wchar_t * container_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);
 	void on_play_streaming(void);
 	void on_stop_streaming(void);
 

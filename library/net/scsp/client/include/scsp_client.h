@@ -25,10 +25,10 @@ namespace sirius
 					static const int32_t SEND_BUF_SIZE = 1024 * 1024;
 					static const int32_t VIDEO_DATA_SIZE = 1024 * 1024;
 				public:
-					core(sirius::library::net::scsp::client * front);
+					core(sirius::library::net::scsp::client * front, BOOL keepalive = FALSE, int32_t keepalive_timeout = 5000);
 					virtual ~core(void);
 
-					int32_t play(const char * url, int32_t port, int32_t recv_option, bool repeat);
+					int32_t play(const char * url, int32_t port, int32_t recv_option, bool reconnection);
 					int32_t stop(void);
 
 					void request_play(int32_t recv_option);

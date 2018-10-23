@@ -35,7 +35,7 @@ namespace sirius
 					client(void);
 					virtual ~client(void);
 
-					void play(const char * url, int32_t port, int32_t recv_option, bool reconnection = true);
+					void play(const char * url, int32_t port, int32_t recv_option, bool reconnection = true, bool keepalive = false, int32_t keepalive_timeout = 5000);
 					void stop(void);
 
 					virtual void on_begin_video(int32_t codec, int32_t width, int32_t height, int32_t block_width, int32_t block_height) = 0;

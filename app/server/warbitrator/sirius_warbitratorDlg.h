@@ -58,7 +58,7 @@ protected:
 		float video_webp_quality, int32_t video_webp_method, 
 		bool invalidate4client, bool indexed_mode, int32_t nthread, 
 		bool double_reloading_on_creating, bool reloading_on_disconnecting,
-		bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app);
+		bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app);
 	virtual void on_attendant_create(double percent);
 	virtual void on_system_monitor_info(double cpu_usage, double memory_usage);
 	virtual void on_start(void);
@@ -110,6 +110,8 @@ private:
 	CButton			_enable_auto_start;
 	CButton			_enable_keepalive;
 	CEdit			_keepalive_timeout;
+	CButton			_enable_streamer_keepalive;
+	CEdit			_streamer_keepalive_timeout;
 	bool			_auto_start;
 	CButton			_clean_attendant;
 	int32_t			_status;

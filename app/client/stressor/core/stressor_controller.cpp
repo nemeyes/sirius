@@ -30,7 +30,7 @@ stressor_controller::~stressor_controller(void)
 	}
 }
 
-void stressor_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void stressor_controller::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	_latency = GetTickCount64();
 	HWND hwnd = _front->GetSafeHwnd();
@@ -39,7 +39,7 @@ void stressor_controller::on_pre_connect(wchar_t * address, int32_t portNumber, 
 	wcsncpy_s(_address, address, sizeof(_address) / sizeof(wchar_t) - 1);
 }
 
-void stressor_controller::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection)
+void stressor_controller::on_post_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {
 	HWND hwnd = _front->GetSafeHwnd();
 	if (!_framework)
@@ -177,10 +177,10 @@ void stressor_controller::on_post_attendant_info(int32_t code, wchar_t * attenda
 
 }
 
-void stressor_controller::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection)
+void stressor_controller::on_open_streaming(wchar_t * attendant_uuid, int32_t streamer_portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {	
 	if (_framework)
-		_framework->open(_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection);
+		_framework->open(_address, streamer_portnumber, sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection, keepalive, keepalive_timeout);
 	check_stream_state();
 }
 

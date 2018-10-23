@@ -94,6 +94,7 @@ void CSiriusClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_CLIENT_PORT, _ctrl_port);
 	DDX_Control(pDX, IDC_EDIT_TOAPP_DATA, _ctrl_end2end_data);
 	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
+	DDX_Control(pDX, IDC_EDIT_STREAMER_KEEPALIVE_TIMEOUT, _streamer_keepalive_timeout);
 }
 
 BEGIN_MESSAGE_MAP(CSiriusClientDlg, CDialogEx)
@@ -445,12 +446,15 @@ void CSiriusClientDlg::OnBnClickedButtonOpen()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CString url;
 	CString port;
-
-	bool reconnection = IsDlgButtonChecked(IDC_CHECK_AUTO_RECONNECTION)?true:false;
+	CString keepalive_timeout;
 	_ctrl_url.GetWindowTextW(url);
 	_ctrl_port.GetWindowTextW(port);
+	bool reconnection = IsDlgButtonChecked(IDC_CHECK_AUTO_RECONNECTION)?true:false;
+	bool keepalive = IsDlgButtonChecked(IDC_CHECK_STREAMER_KEEPALIVE) ? true : false;
+	_streamer_keepalive_timeout.GetWindowTextW(keepalive_timeout);
+
 	if (_framework)
-		_framework->open((LPWSTR)(LPCWSTR)url, _wtoi(port), sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection);
+		_framework->open((LPWSTR)(LPCWSTR)url, _wtoi(port), sirius::base::media_type_t::video | sirius::base::media_type_t::audio, reconnection, keepalive, _ttoi(keepalive_timeout));
 }
 
 void CSiriusClientDlg::OnBnClickedButtonPlay()
@@ -490,8 +494,12 @@ void CSiriusClientDlg::OnBnClickedButtonConnect()
 	_ctrl_port_number.GetWindowTextW(server_port_number);
 	_keepalive_timeout.GetWindowTextW(keepalive_timeout);
 
+	CString streamer_keepalive_timeout;
+	BOOL streamer_keepalive = IsDlgButtonChecked(IDC_CHECK_STREAMER_KEEPALIVE) ? true : false;
+	_streamer_keepalive_timeout.GetWindowTextW(streamer_keepalive_timeout);
+
 	_client = new client_controller(this, keepalive?true:false, _ttoi(keepalive_timeout), tls?true:false);
-	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection?true:false);
+	_client->connect((LPWSTR)(LPCWSTR)server_address, _ttoi(server_port_number), reconnection?true:false, streamer_keepalive?true:false, _ttoi(streamer_keepalive_timeout));
 	EnableConnectButton(FALSE);
 
 	::SetFocus(::GetDlgItem(GetSafeHwnd(), IDC_STATIC_VIDEO_VIEW));

@@ -70,6 +70,8 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 	_unified_server_ctx->video_block_height = context->video_block_height;
 	wcsncpy_s(_unified_server_ctx->uuid, context->uuid, sizeof(_unified_server_ctx->uuid));
 	_unified_server_ctx->portnumber = context->portnumber;
+	_unified_server_ctx->keepalive = context->keepalive;
+	_unified_server_ctx->keepalive_timeout = context->keepalive_timeout;
 
 	if (_unified_server_ctx->video_codec != sirius::library::unified::server::video_submedia_type_t::unknown)
 	{

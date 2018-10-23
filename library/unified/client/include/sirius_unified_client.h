@@ -35,7 +35,7 @@ namespace sirius
 				virtual ~client(void);
 
 				int32_t state(void);
-				int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat);
+				int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive = false, int32_t keepalive_timeout = 5000);
 				int32_t play(void);
 				int32_t stop(void);
 

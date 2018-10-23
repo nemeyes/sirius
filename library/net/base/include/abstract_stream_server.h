@@ -34,6 +34,8 @@ namespace sirius
 					{
 						char			uuid[64];
 						int32_t			portnumber;
+						bool			keepalive;
+						int32_t			keepalive_timeout;
 						int32_t			video_codec;
 						int32_t			video_width;
 						int32_t			video_height;
@@ -42,7 +44,9 @@ namespace sirius
 						int32_t			video_block_height;
 						proxy *			controller;
 						_context_t(void)
-							: video_codec(sirius::library::net::stream::server::video_submedia_type_t::unknown)
+							: keepalive(false)
+							, keepalive_timeout(5000)
+							, video_codec(sirius::library::net::stream::server::video_submedia_type_t::unknown)
 							, video_width(1280)
 							, video_height(720)
 							, video_fps(30)

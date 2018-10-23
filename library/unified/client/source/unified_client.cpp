@@ -25,7 +25,7 @@ int32_t sirius::library::unified::client::core::state(void)
 	return _state;
 }
 
-int32_t sirius::library::unified::client::core::open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat)
+int32_t sirius::library::unified::client::core::open(wchar_t * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive, int32_t keepalive_timeout)
 {
 	sirius::autolock mutex(&_cs);
 
@@ -38,7 +38,9 @@ int32_t sirius::library::unified::client::core::open(wchar_t * url, int32_t port
 			_bfile = true;
 		_port = port;
 		_recv_option = recv_option;
-		_repeat = repeat;
+		_reconnect = reconnect;
+		_keepalive = keepalive;
+		_keepalive_timeout = keepalive_timeout;
 		free(mb_url);
 	}
 	return sirius::library::unified::client::err_code_t::success;
@@ -58,7 +60,7 @@ int32_t sirius::library::unified::client::core::play(void)
 		else
 		{
 			_scsp_receiver = new sirius::library::unified::scsp::receiver(_front);
-			_scsp_receiver->play(_url, _port, _recv_option, _repeat);
+			_scsp_receiver->play(_url, _port, _recv_option, _reconnect, _keepalive, _keepalive_timeout);
 		}
 		_state = sirius::library::unified::client::state_t::running;
 		return sirius::library::unified::client::err_code_t::success;

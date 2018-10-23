@@ -21,7 +21,7 @@ namespace sirius
 
 				int32_t state(void);
 
-				int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat);
+				int32_t open(wchar_t * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive, int32_t keepalive_timeout);
 				int32_t play(void);
 				int32_t stop(void);
 
@@ -33,7 +33,9 @@ namespace sirius
 				int32_t						_transport_option;
 				int32_t						_recv_option;
 				int32_t						_recv_timeout;
-				bool						_repeat;
+				bool						_reconnect;
+				bool						_keepalive;
+				int32_t						_keepalive_timeout;
 
 				sirius::library::unified::file::receiver * _file_receiver;
 				sirius::library::unified::scsp::receiver * _scsp_receiver;

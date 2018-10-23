@@ -46,7 +46,8 @@ private:
 	bool	_auto_start;
 	int32_t _video_width;
 	int32_t _video_height;
-	CEdit _keepalive_timeout;
+	CEdit	_keepalive_timeout;
+	CEdit	_streamer_keepalive_timeout;
 
 
 public:

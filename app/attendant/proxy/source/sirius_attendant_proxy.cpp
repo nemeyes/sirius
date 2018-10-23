@@ -215,6 +215,7 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->reloading_on_disconnecting = false;
 	}
+
 	if (param.end() != (iter = param.find(L"enable_present")))
 	{
 		value = iter->second;
@@ -236,6 +237,7 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->keepalive_timeout = _wtoi(value.c_str());
 	}
+
 	if (param.end() != (iter = param.find(L"enable_tls")))
 	{
 		value = iter->second;

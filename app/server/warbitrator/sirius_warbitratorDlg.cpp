@@ -78,14 +78,16 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_TLS, _use_tls);
 	DDX_Control(pDX, IDC_CHECK_PRESENT, _enable_present);
 	DDX_Control(pDX, IDC_CHECK_AUTOSTART, _enable_auto_start);
-	DDX_Control(pDX, IDC_CHECK_KEEPALIVE, _enable_keepalive);
 	DDX_Control(pDX, IDC_EDIT_STREAMER_PORTNUMBER, _streamer_portnumber);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_BUFFER_COUNT, _video_buffer_count);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_BLOCK_WIDTH, _video_block_width);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_BLOCK_HEIGHT, _video_block_height);
 	DDX_Control(pDX, IDC_CHECK_INVALIDATE4CLIENT, _enable_invalidate4client);
 	DDX_Control(pDX, IDC_CHECK_INDEXED_MODE, _use_indexed_mode);
+	DDX_Control(pDX, IDC_CHECK_KEEPALIVE, _enable_keepalive);
 	DDX_Control(pDX, IDC_EDIT_KEEPALIVE_TIMEOUT, _keepalive_timeout);
+	DDX_Control(pDX, IDC_CHECK_STREAMER_KEEPALIVE, _enable_streamer_keepalive);
+	DDX_Control(pDX, IDC_EDIT_STREAMER_KEEPALIVE_TIMEOUT, _streamer_keepalive_timeout);
 	DDX_Control(pDX, IDC_EDIT_THREAD_COUNT, _nthread);
 	DDX_Control(pDX, IDC_CHECK_CLEAN_ATTENDANT, _clean_attendant);
 	DDX_Control(pDX, IDC_CHECK_VIDEO_PNG_QUANTIZATION_POSTERIZATION, _video_png_quantization_posterization);
@@ -318,8 +320,9 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wvideo_webp_quality;
 	CString wvideo_webp_method;
 
-	CString wkeepalive_timeout;
 	CString wnthread;
+	CString wkeepalive_timeout;
+	CString wstreamer_keepalive_timeout;
 
 	char * uuid = nullptr;
 	char * url = nullptr;
@@ -345,6 +348,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t video_webp_method = 1;
 	
 	int32_t keepalive_timeout = 5000;
+	int32_t streamer_keepalive_timeout = 5000;
 	int32_t nthread;
 
 	bool double_reload_creating = false;
@@ -353,6 +357,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	bool invalidate4client = false;
 	bool indexed_mode = false;
 	bool enable_keepalive = false;
+	bool enable_streamer_keepalive = false;
 	bool enable_tls = false;
 	bool enable_present = false;
 	bool enable_auto_start = false;
@@ -372,6 +377,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 
 	_video_webp_quality.GetWindowTextW(wvideo_webp_quality);
 	_keepalive_timeout.GetWindowTextW(wkeepalive_timeout);
+	_streamer_keepalive_timeout.GetWindowTextW(wstreamer_keepalive_timeout);
+
 	_nthread.GetWindowTextW(wnthread);
 
 	if (_video_codec.GetCurSel() == 0)
@@ -434,6 +441,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	video_block_height = _wtoi(wvideo_block_height);
 	video_webp_quality = _wtof(wvideo_webp_quality);
 	keepalive_timeout = _wtoi(wkeepalive_timeout);
+	streamer_keepalive_timeout = _wtoi(wstreamer_keepalive_timeout);
 	nthread = _wtoi(wnthread);
 
 	if (_double_reload_creating.GetCheck())
@@ -447,6 +455,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		indexed_mode = true;
 	if (_enable_keepalive.GetCheck())
 		enable_keepalive = true;
+	if (_enable_streamer_keepalive.GetCheck())
+		enable_streamer_keepalive = true;
 	if (_use_tls.GetCheck())
 		enable_tls = true;
 	if (_enable_present.GetCheck())
@@ -461,7 +471,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		video_webp_quality, video_webp_method, 
 		invalidate4client, indexed_mode, nthread, 
 		double_reload_creating, reload_disconnecting, 
-		enable_tls, enable_keepalive, keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
+		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
 
 	if (uuid)
 		free(uuid);
@@ -478,7 +488,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	float video_webp_quality, int32_t video_webp_method, 
 	bool invalidate4client, bool indexed_mode, int32_t nthread, 
 	bool double_reloading_on_creating, bool reloading_on_disconnecting,
-	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -492,6 +502,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wvideo_block_height[MAX_PATH] = { 0 };
 	wchar_t wvideo_webp_quality[MAX_PATH] = { 0 };
 	wchar_t wkeepalive_timeout[MAX_PATH] = { 0 };
+	wchar_t wstreamer_keepalive_timeout[MAX_PATH] = { 0 };
+
 	wchar_t wnthread[MAX_PATH] = { 0 };
 	wchar_t * wcpu = nullptr;
 	wchar_t * wmemory = nullptr;
@@ -511,6 +523,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_snwprintf_s(wvideo_webp_quality, sizeof(wvideo_webp_quality) / sizeof(wchar_t), L"%f", video_webp_quality);
 
 	_itow_s(keepalive_timeout, wkeepalive_timeout, 10);
+	_itow_s(streamer_keepalive_timeout, wstreamer_keepalive_timeout, 10);
 	_itow_s(nthread, wnthread, 10);
 
 	_label_arbitrator_uuid.SetWindowText(wuuid);
@@ -573,6 +586,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_video_webp_quality.SetWindowTextW(wvideo_webp_quality);
 
 	_keepalive_timeout.SetWindowTextW(wkeepalive_timeout);
+	_streamer_keepalive_timeout.SetWindowTextW(wstreamer_keepalive_timeout);
 	_nthread.SetWindowTextW(wnthread);
 
 	_double_reload_creating.SetCheck(double_reloading_on_creating ? 1 : 0);
@@ -580,6 +594,7 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_enable_invalidate4client.SetCheck(invalidate4client ? 1 : 0);
 	_use_indexed_mode.SetCheck(indexed_mode ? 1 : 0);
 	_enable_keepalive.SetCheck(enable_keepalive ? 1 : 0);
+	_enable_streamer_keepalive.SetCheck(enable_streamer_keepalive ? 1 : 0);
 	_use_tls.SetCheck(enable_tls ? 1 : 0);
 	_enable_present.SetCheck(enable_present ? 1 : 0);
 	_enable_auto_start.SetCheck(enable_auto_start ? 1 : 0);

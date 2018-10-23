@@ -21,9 +21,9 @@ int32_t sirius::library::unified::client::state(void)
 	return _core->state();
 }
 
-int32_t sirius::library::unified::client::open(wchar_t * url, int32_t port, int32_t recv_option, bool repeat)
+int32_t sirius::library::unified::client::open(wchar_t * url, int32_t port, int32_t recv_option, bool reconnect, bool keepalive, int32_t keepalive_timeout)
 {
-	return _core->open(url, port, recv_option, repeat);
+	return _core->open(url, port, recv_option, reconnect, keepalive, keepalive_timeout);
 }
 
 int32_t sirius::library::unified::client::play(void)
