@@ -37,6 +37,8 @@ namespace sirius.app.server.arbitrator.Settings
         public bool enable_tls { get; set; }
         public bool enable_keepalive { get; set; }
         public int keepalive_timeout { get; set; }
+        public bool enable_streamer_keepalive { get; set; }
+        public int streamer_keepalive_timeout { get; set; }
         public bool enable_present { get; set; }
         public bool enable_auto_start { get; set; }
         public bool enable_caching { get; set; }
@@ -96,7 +98,9 @@ namespace sirius.app.server.arbitrator.Settings
                 reloading_on_disconnecting,                
                 enable_tls, 
                 enable_keepalive,
-                keepalive_timeout, 
+                keepalive_timeout,
+                enable_streamer_keepalive,
+                streamer_keepalive_timeout,
                 enable_present, 
                 enable_auto_start, 
                 enable_caching,

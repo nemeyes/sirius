@@ -83,6 +83,7 @@ public:
 	CEdit _connect_count;
 	CEdit _connect_interval;
 	CEdit _keepalive_timeout;
+	CEdit _streamer_keepalive_timeout;
 	int _key_interval;
 	bool _key_loop;
 
@@ -122,5 +123,5 @@ public:
 	void update_config(void);	
 	afx_msg void OnBnClickedButtonAutoStart();
 	afx_msg void OnBnClickedButtonAutoStop();
-	afx_msg void OnBnClickedButtonKeySetting();	
+	afx_msg void OnBnClickedButtonKeySetting();		
 };
