@@ -23,6 +23,7 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	, _hmodule(NULL)
 	, _callback(nullptr)
 	, _key_event_count(NULL)
+	, _use_count(0)
 	//, _alloc(FALSE)
 {
 	if (uuid && strlen(uuid) > 0)
@@ -392,6 +393,8 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 		}
 		free(uuid);
 		uuid = nullptr;
+
+		_use_count++;
 	}
 }
 
@@ -404,6 +407,29 @@ void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * c
 	if (response.size() > 0)
 	{
 		data_request((char*)SERVER_UUID, CMD_STOP_ATTENDANT_RES, (char*)response.c_str(), response.size() + 1);
+
+		if (_context->min_attendant_restart_threshold == _context->max_attendant_restart_threshold)
+		{
+			if (_context->min_attendant_restart_threshold != 0)
+			{
+				if (_use_count == _context->min_attendant_restart_threshold)
+				{
+					if (_context->hwnd)
+						::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);
+					//disconnect(true);
+				}
+			}
+		}
+		else if (_context->max_attendant_restart_threshold > _context->min_attendant_restart_threshold)
+		{
+			int32_t selected = rand() % (_context->max_attendant_restart_threshold - _context->min_attendant_restart_threshold + 1) + _context->min_attendant_restart_threshold;
+			if (_use_count >= selected)
+			{
+				if (_context->hwnd)
+					::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);
+				//disconnect(true);
+			}
+		}
 	}
 }
 

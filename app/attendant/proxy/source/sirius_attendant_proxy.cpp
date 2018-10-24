@@ -76,6 +76,19 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 			context->type = sirius::app::attendant::proxy::attendant_type_t::web;
 		}
 	}
+
+	if (param.end() != (iter = param.find(L"min_attendant_restart_threshold")))
+	{
+		value = iter->second;
+		context->min_attendant_restart_threshold = _wtoi(value.c_str());
+	}
+
+	if (param.end() != (iter = param.find(L"max_attendant_restart_threshold")))
+	{
+		value = iter->second;
+		context->max_attendant_restart_threshold = _wtoi(value.c_str());
+	}
+
 	if (param.end() != (iter = param.find(L"url")))
 	{
 		std::map<std::wstring, std::wstring>::iterator iter2;

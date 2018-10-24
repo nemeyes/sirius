@@ -88,7 +88,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 
 	if (_context && _context->handler)
 	{	
-		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.controller_portnumber, confentity.streamer_portnumber, 
+		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.min_attendant_restart_threshold, confentity.max_attendant_restart_threshold, confentity.controller_portnumber, confentity.streamer_portnumber,
 			confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, 
 			confentity.png.video_compression_level, confentity.png.video_quantization_posterization, confentity.png.video_quantization_dither_map, confentity.png.video_quantization_contrast_maps, confentity.png.video_quantization_colors, 
 			confentity.webp.video_quality, confentity.webp.video_method, 
@@ -158,7 +158,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	return sirius::app::server::arbitrator::proxy::err_code_t::success;
 }
 
-int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
 	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 	float video_webp_quality, int32_t video_webp_method, 
@@ -175,6 +175,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	strncpy_s(configuration.url, url, sizeof(configuration.url) - 1);
 	configuration.max_attendant_instance = max_attendant_instance;
 	configuration.attendant_creation_delay = attendant_creation_delay;
+	configuration.min_attendant_restart_threshold = min_attendant_restart_threshold;
+	configuration.max_attendant_restart_threshold = max_attendant_restart_threshold;
 	configuration.controller_portnumber = controller_portnumber;
 	configuration.streamer_portnumber = streamer_portnumber;
 	configuration.video_codec = video_codec;

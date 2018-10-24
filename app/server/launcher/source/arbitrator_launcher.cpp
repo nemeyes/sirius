@@ -159,6 +159,8 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--reconnect=true");
 			proc_ctrl.set_cmdline(arguments, "--uuid=\"%s\"", contenity.uuid);
 			proc_ctrl.set_cmdline(arguments, "--attendant_type=\"web\"");
+			proc_ctrl.set_cmdline(arguments, "--min_attendant_restart_threshold=%d", confentity.min_attendant_restart_threshold);
+			proc_ctrl.set_cmdline(arguments, "--max_attendant_restart_threshold=%d", confentity.max_attendant_restart_threshold);
 			proc_ctrl.set_cmdline(arguments, "--url=\"%s\"", confentity.url);
 			switch (confentity.video_codec)
 			{

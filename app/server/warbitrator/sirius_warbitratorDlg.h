@@ -52,7 +52,7 @@ protected:
 	void initialize_gpus(void);
 	void release_gpus(void);
 
-	virtual void on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+	virtual void on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
 		int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 		int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 		float video_webp_quality, int32_t video_webp_method, 
@@ -81,6 +81,8 @@ private:
 	CEdit			_url;
 	CEdit			_attendant_instance;
 	CEdit			_attendant_creation_delay;
+	CEdit			_min_attendant_restart_threshold;
+	CEdit			_max_attendant_restart_threshold;
 	CEdit			_arbitrator_control_portnumber;
 	CEdit			_streamer_portnumber;
 	CEdit			_video_fps;

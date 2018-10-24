@@ -71,6 +71,8 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_URL, _url);
 	DDX_Control(pDX, IDC_EDIT_ATTENDANT_INSTANCE, _attendant_instance);
 	DDX_Control(pDX, IDC_EDIT_ATTENDANT_CREATION_DELAY, _attendant_creation_delay);
+	DDX_Control(pDX, IDC_EDIT_MINIMUM_ATTENDANT_RESTART_THRESHOLD, _min_attendant_restart_threshold);
+	DDX_Control(pDX, IDC_EDIT_MAXIMUM_ATTENDANT_RESTART_THRESHOLD, _max_attendant_restart_threshold);
 	DDX_Control(pDX, IDC_EDIT_ARBITRATOR_PORTNUMBER, _arbitrator_control_portnumber);
 	DDX_Control(pDX, IDC_EDIT_VIDEO_FPS, _video_fps);
 	DDX_Control(pDX, IDC_COMBO_VIDEO_PNG_COMPRESION_LEVEL, _video_png_compression_level);
@@ -309,6 +311,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wurl;
 	CString wattendant_instance;
 	CString wattendant_creation_delay;
+	CString wmin_attendant_restart_threshold;
+	CString wmax_attendant_restart_threshold;
 	CString wcontroller_portnumber;
 	CString wstreamer_portnumber;
 
@@ -328,6 +332,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	char * url = nullptr;
 	int32_t attendant_instance;
 	int32_t attendant_creation_delay = 2000;
+	int32_t min_attendant_restart_threshold = 5;
+	int32_t max_attendant_restart_threshold = 10;
 	int32_t controller_portnumber;
 	int32_t streamer_portnumber;
 
@@ -367,6 +373,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_url.GetWindowTextW(wurl);
 	_attendant_instance.GetWindowTextW(wattendant_instance);
 	_attendant_creation_delay.GetWindowTextW(wattendant_creation_delay);
+	_min_attendant_restart_threshold.GetWindowTextW(wmin_attendant_restart_threshold);
+	_max_attendant_restart_threshold.GetWindowTextW(wmax_attendant_restart_threshold);
 	_arbitrator_control_portnumber.GetWindowTextW(wcontroller_portnumber);
 	_streamer_portnumber.GetWindowTextW(wstreamer_portnumber);
 
@@ -433,6 +441,8 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 
 	attendant_instance = _wtoi(wattendant_instance);
 	attendant_creation_delay = _wtoi(wattendant_creation_delay);
+	min_attendant_restart_threshold = _wtoi(wmin_attendant_restart_threshold);
+	max_attendant_restart_threshold = _wtoi(wmax_attendant_restart_threshold);
 	controller_portnumber = _wtoi(wcontroller_portnumber);
 	streamer_portnumber = _wtoi(wstreamer_portnumber);
 	video_fps = _wtoi(wvideo_fps);
@@ -465,7 +475,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 		enable_auto_start = true;
 	if (_clean_attendant.GetCheck())
 		clean_attendant = true;
-	update(uuid, url, attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, 
+	update(uuid, url, attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
 		video_codec, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, 
 		video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, 
 		video_webp_quality, video_webp_method, 
@@ -482,7 +492,7 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 }
 
 
-void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
 	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 	float video_webp_quality, int32_t video_webp_method, 
@@ -496,6 +506,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wstreamer_portnumber[MAX_PATH] = { 0 };
 	wchar_t wattendant_instance[MAX_PATH] = { 0 };
 	wchar_t wattendant_creation_delay[MAX_PATH] = { 0 };
+	wchar_t wmin_attendant_restart_threshold[MAX_PATH] = { 0 };
+	wchar_t wmax_attendant_restart_threshold[MAX_PATH] = { 0 };
 	wchar_t wvideo_fps[MAX_PATH] = { 0 };
 	wchar_t wvideo_buffer_count[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_width[MAX_PATH] = { 0 };
@@ -512,6 +524,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	sirius::stringhelper::convert_multibyte2wide((char*)url, &wurl);
 	_itow_s(attendant_instance, wattendant_instance, 10);
 	_itow_s(attendant_creation_delay, wattendant_creation_delay, 10);
+	_itow_s(min_attendant_restart_threshold, wmin_attendant_restart_threshold, 10);
+	_itow_s(max_attendant_restart_threshold, wmax_attendant_restart_threshold, 10);
 	_itow_s(controller_portnumber, wcontroler_portnumber, 10);
 	_itow_s(streamer_portnumber, wstreamer_portnumber, 10);
 	_itow_s(video_fps, wvideo_fps, 10);
@@ -542,6 +556,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_url.SetWindowTextW(wurl);
 	_attendant_instance.SetWindowTextW(wattendant_instance);
 	_attendant_creation_delay.SetWindowTextW(wattendant_creation_delay);
+	_min_attendant_restart_threshold.SetWindowTextW(wmin_attendant_restart_threshold);
+	_max_attendant_restart_threshold.SetWindowTextW(wmax_attendant_restart_threshold);
 	_arbitrator_control_portnumber.SetWindowTextW(wcontroler_portnumber);
 	_streamer_portnumber.SetWindowTextW(wstreamer_portnumber);
 

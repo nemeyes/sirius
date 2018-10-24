@@ -46,6 +46,8 @@ namespace sirius
 						char	app_session_app[MAX_PATH * 5];		
 						int32_t	max_attendant_instance;
 						int32_t attendant_creation_delay;
+						int32_t min_attendant_restart_threshold;
+						int32_t max_attendant_restart_threshold;
 						int32_t controller_portnumber;
 						int32_t streamer_portnumber;
 						int32_t video_codec;
@@ -76,6 +78,8 @@ namespace sirius
 						_configuration_t(void)
 							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
+							, min_attendant_restart_threshold(0)
+							, max_attendant_restart_threshold(0)
 							, controller_portnumber(5000)
 							, streamer_portnumber(7000)
 							, video_codec(sirius::base::video_submedia_type_t::png)
