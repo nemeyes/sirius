@@ -55,7 +55,7 @@ namespace sirius
 					int32_t start(void);
 					int32_t stop(void);
 
-					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t controller_portnumber, int32_t streamer_portnumber, 
+					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
 						int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 						int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 						float video_webp_quality, int32_t video_webp_method, 

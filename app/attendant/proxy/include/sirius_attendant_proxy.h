@@ -69,6 +69,8 @@ namespace sirius
 				typedef struct EXP_ATTENDANT_PROXY_CLASS _context_t
 				{
 					int32_t type;
+					int32_t min_attendant_restart_threshold;
+					int32_t max_attendant_restart_threshold;
 					bool	reconnect;
 					wchar_t url[MAX_PATH];
 					int32_t video_codec;
@@ -102,6 +104,8 @@ namespace sirius
 
 					_context_t(void)
 						: type(sirius::app::attendant::proxy::attendant_type_t::web)
+						, min_attendant_restart_threshold(0)
+						, max_attendant_restart_threshold(0)
 						, reconnect(true)
 						, video_codec(sirius::app::attendant::proxy::video_submedia_type_t::unknown)
 						, video_width(1280)

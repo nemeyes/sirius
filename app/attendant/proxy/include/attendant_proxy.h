@@ -81,6 +81,8 @@ namespace sirius
 				char _client_uuid[64];
 				HANDLE		_wait_timer;
 				HMODULE		_hmodule;
+
+				int32_t		_use_count;
 				//bool		_alloc;
 			};
 		};

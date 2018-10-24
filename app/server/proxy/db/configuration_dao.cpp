@@ -27,7 +27,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		conn = connection;
 
 	std::string sql = "UPDATE tb_configuration SET ";
-	sql += "uuid=?, url=?, max_attendant_instance=?, attendant_creation_delay=?, controller_portnumber=?, streamer_portnumber=?, ";
+	sql += "uuid=?, url=?, max_attendant_instance=?, attendant_creation_delay=?, min_attendant_restart_threshold=?, max_attendant_restart_threshold=?, controller_portnumber=?, streamer_portnumber=?, ";
 	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, video_buffer_count=?, ";
 	sql += "video_block_width=?, video_block_height=?, ";
 	sql += "video_png_compression_level = ?, video_png_quantization_posterization=?, video_png_quantization_dither_map=?, video_png_quantization_contrast_maps=?, video_png_quantization_colors = ? , ";
@@ -44,6 +44,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_text(stmt, ++index, entity->url, -1, 0);
 		sqlite3_bind_int(stmt, ++index, entity->max_attendant_instance);
 		sqlite3_bind_int(stmt, ++index, entity->attendant_creation_delay);
+		sqlite3_bind_int(stmt, ++index, entity->min_attendant_restart_threshold);
+		sqlite3_bind_int(stmt, ++index, entity->max_attendant_restart_threshold);
 		sqlite3_bind_int(stmt, ++index, entity->controller_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->streamer_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->video_codec);
@@ -121,6 +123,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		strncpy_s(c_entity.url, "about:blank", sizeof(c_entity.url));
 		c_entity.max_attendant_instance = 1;
 		c_entity.attendant_creation_delay = 1000;
+		c_entity.min_attendant_restart_threshold = 5;
+		c_entity.max_attendant_restart_threshold = 10;
 		c_entity.controller_portnumber = 5000;
 		c_entity.streamer_portnumber = 7000;
 		c_entity.video_codec = sirius::app::server::arbitrator::db::configuration_dao::video_submedia_type_t::png;
@@ -158,7 +162,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 			return status;
 	}
 
-	std::string sql = "SELECT uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, ";
+	std::string sql = "SELECT uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, ";
 	sql += "video_codec, video_width, video_height, video_fps, video_buffer_count, ";
 	sql += "video_block_width, video_block_height, ";
 	sql += "video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, ";
@@ -183,6 +187,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				strncpy_s(entity->url, url, sizeof(entity->url));
 				entity->max_attendant_instance = sqlite3_column_int(stmt, index++);
 				entity->attendant_creation_delay = sqlite3_column_int(stmt, index++);
+				entity->min_attendant_restart_threshold = sqlite3_column_int(stmt, index++);
+				entity->max_attendant_restart_threshold = sqlite3_column_int(stmt, index++);
 				entity->controller_portnumber = sqlite3_column_int(stmt, index++);
 				entity->streamer_portnumber = sqlite3_column_int(stmt, index++);
 				entity->video_codec = sqlite3_column_int(stmt, index++);
@@ -249,8 +255,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app) ";
-	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app) ";
+	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -259,6 +265,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_text(stmt, ++index, entity->url, -1, 0);
 		sqlite3_bind_int(stmt, ++index, entity->max_attendant_instance);
 		sqlite3_bind_int(stmt, ++index, entity->attendant_creation_delay);
+		sqlite3_bind_int(stmt, ++index, entity->min_attendant_restart_threshold);
+		sqlite3_bind_int(stmt, ++index, entity->max_attendant_restart_threshold);
 		sqlite3_bind_int(stmt, ++index, entity->controller_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->streamer_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->video_codec);
