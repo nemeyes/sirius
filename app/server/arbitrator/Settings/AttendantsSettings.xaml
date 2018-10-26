@@ -67,6 +67,16 @@
                 </StackPanel>
 
                 <StackPanel>
+                    <Label Content="Minimum Attendant Restart Threshold" Target="{Binding ElementName=TextMinimumAttendantRestartThreshold}" Width="240"/>
+                    <TextBox x:Name="TextMinimumAttendantRestartThreshold" Width="70" Text="{Binding MinimumAttendantRestartThreshold, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextMinimumAttendantRestartThreshold_PreviewTextInput"/>                    
+                </StackPanel>
+
+                <StackPanel>
+                    <Label Content="Maximum Attendant Restart Threshold" Target="{Binding ElementName=TextMaximumAttendantRestartThreshold}" Width="240"/>
+                    <TextBox x:Name="TextMaximumAttendantRestartThreshold" Width="70" Text="{Binding MaximumAttendantRestartThreshold, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextMaximumAttendantRestartThreshold_PreviewTextInput"/>
+                </StackPanel>
+
+                <StackPanel>
                     <Label Content="Frame Rate" Target="{Binding ElementName=TextFrameRate}" Width="240"/>
                     <TextBox x:Name="TextFrameRate" Width="70" Text="{Binding FrameRate, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextFraemRate_PreviewTextInput" TextChanged="TextFrameRate_TextChanged" />                    
                 </StackPanel>
