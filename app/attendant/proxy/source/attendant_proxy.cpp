@@ -422,6 +422,7 @@ void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * c
 		}
 		else if (_context->max_attendant_restart_threshold > _context->min_attendant_restart_threshold)
 		{
+			srand(time(NULL));
 			int32_t selected = rand() % (_context->max_attendant_restart_threshold - _context->min_attendant_restart_threshold + 1) + _context->min_attendant_restart_threshold;
 			if (_use_count >= selected)
 			{

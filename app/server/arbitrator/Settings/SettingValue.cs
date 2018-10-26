@@ -13,6 +13,8 @@ namespace sirius.app.server.arbitrator.Settings
         public string url { get; set; }
         public int max_attendant_instance { get; set; }
         public int attendant_creation_delay { get; set; }
+        public int min_attendant_restart_threshold { get; set; }
+        public int max_attendant_restart_threshold { get; set; }
         public int controller_portnumber { get; set; }
         public int streamer_portnumber { get; set; }
         public int video_codec { get; set; }
@@ -74,7 +76,9 @@ namespace sirius.app.server.arbitrator.Settings
                 (sbyte*)puuid, 
                 (sbyte*)purl, 
                 max_attendant_instance, 
-                attendant_creation_delay, 
+                attendant_creation_delay,
+                min_attendant_restart_threshold,
+                max_attendant_restart_threshold,
                 controller_portnumber,
                 streamer_portnumber, 
                 video_codec, 

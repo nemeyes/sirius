@@ -44,7 +44,8 @@ namespace sirius.app.server.arbitrator.Settings
 
             TextAttendantUrl.Text = setting_value.url;
             TextAttendantInstanceCount.Text = setting_value.max_attendant_instance.ToString();
-            TextAttendantCreationDelay.Text = setting_value.attendant_creation_delay.ToString();
+            TextMinimumAttendantRestartThreshold.Text = setting_value.min_attendant_restart_threshold.ToString();
+            TextMaximumAttendantRestartThreshold.Text = setting_value.max_attendant_restart_threshold.ToString();
             TextFrameRate.Text = setting_value.video_fps.ToString();
             TextVideoBlockWidth.Text = setting_value.video_block_width.ToString();
             TextVideoBlockHeight.Text = setting_value.video_block_height.ToString();
@@ -215,6 +216,8 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.url = TextAttendantUrl.Text.Trim();
             setting_value.max_attendant_instance = Convert.ToInt32(TextAttendantInstanceCount.Text);
             setting_value.attendant_creation_delay = Convert.ToInt32(TextAttendantCreationDelay.Text);
+            setting_value.min_attendant_restart_threshold = Convert.ToInt32(TextMinimumAttendantRestartThreshold.Text);
+            setting_value.max_attendant_restart_threshold = Convert.ToInt32(TextMaximumAttendantRestartThreshold.Text);
             //setting_value.video_compression_level = (int)SliderImageCompressionLevel.Value;
             setting_value.video_compression_level = 1;       
             setting_value.app_session_app = TextAppSessionApp.Text.Trim();
@@ -372,7 +375,29 @@ namespace sirius.app.server.arbitrator.Settings
                 }
             }
         }
+        private void TextMinimumAttendantRestartThreshold_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
 
+        private void TextMaximumAttendantRestartThreshold_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char c in e.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    e.Handled = true;
+                    break;
+                }
+            }
+        }
         private void VideoCodec_DropDownClosed(object sender, EventArgs e)
         {
             if (VideoCodec.Text.CompareTo("PNG") == 0)
