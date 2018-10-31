@@ -392,10 +392,10 @@ void sirius::app::attendant::proxy::start_attendant_callback(const char * client
 		_core->start_attendant_callback(client_uuid, client_id);
 }
 
-void sirius::app::attendant::proxy::stop_attendant_callback(const char * client_uuid)
+void sirius::app::attendant::proxy::stop_attendant_callback(const char * client_uuid, bool * reload)
 {
 	if (_core)
-		_core->stop_attendant_callback(client_uuid);
+		_core->stop_attendant_callback(client_uuid, reload);
 }
 
 void sirius::app::attendant::proxy::destroy_callback(void)
