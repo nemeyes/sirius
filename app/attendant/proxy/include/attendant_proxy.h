@@ -33,7 +33,7 @@ namespace sirius
 				void	connect_attendant_callback(int32_t code);
 				void	disconnect_attendant_callback(void);
 				void	start_attendant_callback(const char * client_uuid, const char * client_id);
-				void	stop_attendant_callback(const char * client_uuid);
+				void	stop_attendant_callback(const char * client_uuid, bool * reload);
 				void	destroy_callback(void);
 
 				void	key_up_callback(int8_t type, int32_t key);

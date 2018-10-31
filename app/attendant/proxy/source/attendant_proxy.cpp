@@ -398,7 +398,7 @@ void sirius::app::attendant::proxy::core::start_attendant_callback(const char * 
 	}
 }
 
-void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * client_uuid)
+void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * client_uuid, bool * reload)
 {
 	Json::Value wpacket;
 	Json::StyledWriter writer;
@@ -415,7 +415,10 @@ void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * c
 				if (_use_count == _context->min_attendant_restart_threshold)
 				{
 					if (_context->hwnd)
+					{
 						::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);
+						*reload = false;
+					}
 					//disconnect(true);
 				}
 			}
@@ -427,7 +430,10 @@ void sirius::app::attendant::proxy::core::stop_attendant_callback(const char * c
 			if (_use_count >= selected)
 			{
 				if (_context->hwnd)
+				{
 					::SendMessage(_context->hwnd, WM_CLOSE, NULL, NULL);
+					*reload = false;
+				}
 				//disconnect(true);
 			}
 		}

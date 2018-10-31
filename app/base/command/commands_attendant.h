@@ -113,11 +113,12 @@ namespace sirius
 
 					std::string client_uuid = rpacket["client_uuid"].asString();
 
-					_attendant->stop_attendant_callback(client_uuid.c_str());
+					bool reload = true;
+					_attendant->stop_attendant_callback(client_uuid.c_str(), &reload);
 
-					if (_attendant->context()->reloading_on_disconnecting)
+					if (_attendant->context()->reloading_on_disconnecting && reload)
 						_attendant->attendant_to_app_callback((uint8_t*)ATTENDANT_RELOAD, strlen(ATTENDANT_RELOAD));
-					else
+					else if(!_attendant->context()->reloading_on_disconnecting)
 						_attendant->attendant_to_app_callback((uint8_t*)WEBAPP_REINIT, strlen(WEBAPP_REINIT));
 				}
 			};
