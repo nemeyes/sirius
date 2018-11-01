@@ -12,8 +12,7 @@
 
 
             <TextBlock Text="Network Configuration" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
-            <mui:BBCodeBlock BBCode="Setting For Network Configuration" Margin="0,0,0,0"/>
-            <mui:BBCodeBlock BBCode="※ sirius restart required" Margin="0,0,0,8" Foreground="Red"/>
+            <mui:BBCodeBlock BBCode="Setting For Network Configuration" Margin="0,0,0,16"/>
 
             <!-- actual form starts here -->
             <StackPanel x:Name="Form" Orientation="Vertical">
@@ -117,7 +116,8 @@
                     <Button Content="Add" Margin="100,16,0,0" HorizontalAlignment="Left" />
                     <Button Content="Remove" Margin="100,16,0,0" HorizontalAlignment="Left" />
                 </StackPanel//-->
-                <Button x:Name="network_apply_button" Content="Apply" Margin="100,16,0,0" HorizontalAlignment="Left" Click="network_set_apply_click" />
+                <!--> <mui:BBCodeBlock BBCode="※ Restart sirius when 'Apply' button is clicked" Margin="0,0,0,8" Foreground="Red"/> <-->
+                <Button x:Name="network_apply_button" Content="Apply" Margin="130,16,0,0" HorizontalAlignment="Left" Click="network_set_apply_click" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

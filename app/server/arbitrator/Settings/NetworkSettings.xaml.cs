@@ -88,6 +88,8 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.streamer_keepalive_timeout = Convert.ToInt32(TextStreamerKeepaliveTimeout.Text);
 
             setting_value.update();
+            System.Windows.Forms.Application.Restart();
+            Environment.Exit(0);
             //sirius_arbitrator.controller.release();
             //sirius_arbitrator.controller.initailize();
         }
