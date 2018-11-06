@@ -109,6 +109,7 @@ namespace sirius
 					static bool configure_load();
 					static bool file_monitor_start();
 					static bool file_monitor_stop();
+					static bool file_save();
 					static void log_level_change(int log_level, int log_type);
 					static void streamer_log_init(const char * device_id, const char * log_type);
 					static const char * get_device_id() { return _device_id; };

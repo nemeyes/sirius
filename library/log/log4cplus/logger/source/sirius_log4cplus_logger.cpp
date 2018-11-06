@@ -551,6 +551,15 @@ DWORD WINAPI sirius::library::log::log4cplus::logger::monitor_Thread_proc(LPVOID
 				&file_att_data.ftLastWriteTime,
 				&_monitor->_file_att_data.ftLastWriteTime) != 0)
 			{
+				int size;
+				FILE *fp = fopen(_monitor->_file_path, "r");   
+				fseek(fp, 0, SEEK_END); 
+				size = ftell(fp);
+				fclose(fp);
+
+				if (size <= 0)
+					file_save();
+
 				(*_monitor->_pfn_file_changed)();
 				_monitor->_file_att_data = file_att_data;
 			}
@@ -945,6 +954,31 @@ bool sirius::library::log::log4cplus::logger::file_monitor_stop()
 
 	::Sleep(100);
 #endif
+	return true;
+}
+
+bool sirius::library::log::log4cplus::logger::file_save()
+{
+	scopped_lock mutex(&g_log4cplus_critical_section);
+	TCHAR file_name[MAX_PATH];
+	wchar_t pw_module_path[MAX_PATH];
+	int len = (int)strlen(_module_path) + 1;
+	size_t ret_val = 0;
+	mbstowcs_s(&ret_val, pw_module_path, _module_path, len);
+	::GetModuleFileName(NULL, file_name, MAX_PATH);
+	::PathRemoveFileSpec(file_name);
+	::PathAppend(file_name, pw_module_path);
+	if (!::PathFileExists(file_name))
+		return false;
+
+	wchar_t log_level[MAX_PATH];
+	wsprintfW(log_level, L"%d", _change_log_type);
+
+	::WritePrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SAA"), log_level, file_name);
+	::WritePrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNS"), log_level, file_name);
+	::WritePrivateProfileString(_T("CONFIGURATION"), _T("LOGLEVEL_SLNSC"), log_level, file_name);
+	::WritePrivateProfileString(_T("CONFIGURATION"), _T("ALL_LOG_LEVEL or TRACE_LOG_LEVEL"), L"0, DEBUG_LOG_LEVEL=10000, INFO_LOG_LEVEL=20000, WARN_LOG_LEVEL=3000, ERROR_LOG_LEVEL=40000, FATAL_LOG_LEVEL=50000, OFF_LOG_LEVEL=60000", file_name);
+
 	return true;
 }
 
