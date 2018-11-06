@@ -150,6 +150,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 	}
 	::Sleep(20);
 	_cluster->backend_stop();
+	sirius::library::log::log4cplus::logger::file_save();
 	if (_cluster)
 	{
 		delete _cluster;
