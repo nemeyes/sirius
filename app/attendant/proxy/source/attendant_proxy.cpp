@@ -567,12 +567,24 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	if (len < LOGGER::max_message_size)
 		LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, app_to_attendant data=%s", __FUNCTION__, __LINE__, _client_uuid, packet);
 	else
-		LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, app_to_attendant max_message_size over!!!=%d", __FUNCTION__, __LINE__, _client_uuid, len);
+	{
+		char log_data[6000] = { 0, };
+		strncpy_s(log_data, (const char *)packet, 5000);
+		LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, app_to_attendant max_message_size over!!!=%d data=%s...", __FUNCTION__, __LINE__, _client_uuid, len, log_data);
+	}
 }
 
 void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)
 {
-	sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d packet=%s, len=%d", __FUNCTION__, __LINE__, packet, len);
+	if (len < LOGGER::max_message_size)
+		LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app_callback data=%s, len=%d", __FUNCTION__, __LINE__,  packet, len);
+	else
+	{
+		char log_data[6000] = { 0, };
+		strncpy_s(log_data, (const char *)packet, 5000);
+		LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app_callback max_message_size over!!!=%d data=%s...", __FUNCTION__, __LINE__, len, log_data);
+	}
+
 	if (_callback)
 	{
 		_callback(packet, len);
