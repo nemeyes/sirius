@@ -76,7 +76,7 @@ namespace sirius
 						critical_section * _cs;
 					};
 
-					static const int max_message_size = 10000;
+					static const int max_message_size = 1024*1024*1;
 
 					class EXP_LOG4CPLUS_LOGGER_DLL trace_logger
 					{
