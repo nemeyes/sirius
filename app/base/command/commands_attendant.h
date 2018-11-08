@@ -365,7 +365,7 @@ namespace sirius
 				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
 				{
 					_attendant->attendant_to_app_callback((uint8_t*)msg, length);
-					LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app data=%s, dst=%s, src=%s", __FUNCTION__, __LINE__, msg, dst, src);
+					//LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app data=%s, dst=%s, src=%s", __FUNCTION__, __LINE__, msg, dst, src);
 				}
 			};
 		};
