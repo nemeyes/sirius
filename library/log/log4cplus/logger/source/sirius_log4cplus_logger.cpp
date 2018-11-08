@@ -100,6 +100,7 @@ sirius::library::log::log4cplus::logger::trace_logger::trace_logger(const char *
 	strncpy_s(rlog, max_message_size - index, _log, strlen(_log));
 	::OutputDebugStringA(log);
 #else
+	char _log[max_message_size];
 	strncpy_s(_section, section, strlen(section));
 	memset(_log, 0x00, sizeof(_log));
 	va_list args;
@@ -124,6 +125,7 @@ sirius::library::log::log4cplus::logger::trace_logger::~trace_logger(void)
 	strncpy_s(rlog, max_message_size - index, _log, strlen(_log));
 	::OutputDebugStringA(log);
 #else
+	char _log[max_message_size];
 	char log[max_message_size] = { "LEAVE :" };
 	int32_t index = strlen(log);
 	char * rlog = &log[index];
