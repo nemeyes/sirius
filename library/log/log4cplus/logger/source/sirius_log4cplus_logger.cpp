@@ -4,6 +4,7 @@
 #if defined(WITH_DISABLE)
 #include <stdio.h>
 #include <stdarg.h>
+#include <tchar.h>
 #else
 #include <codecvt>
 #include <locale.h>
@@ -608,12 +609,13 @@ void sirius::library::log::log4cplus::logger::make_fatal_log(const char * secion
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_FATAL(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_FATAL(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
@@ -648,13 +650,15 @@ void sirius::library::log::log4cplus::logger::make_error_log(const char * secion
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
+
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_ERROR(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
-		LOG4CPLUS_ERROR(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(SBE)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_ERROR(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		LOG4CPLUS_ERROR(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(SBE)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
@@ -689,12 +693,13 @@ void sirius::library::log::log4cplus::logger::make_warn_log(const char * secion,
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_WARN(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_WARN(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
@@ -729,12 +734,13 @@ void sirius::library::log::log4cplus::logger::make_info_log(const char * secion,
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_INFO(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_INFO(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
@@ -769,12 +775,14 @@ void sirius::library::log::log4cplus::logger::make_debug_log(const char * secion
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
+
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_DEBUG(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_DEBUG(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
@@ -809,12 +817,13 @@ void sirius::library::log::log4cplus::logger::make_trace_log(const char * secion
 		::OutputDebugStringA(log);
 #else
 		log_directory_check(secion);
-		char log[max_message_size] = { 0 };
+		char * logger = new char[max_message_size];
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(log, sizeof(log), fmt, args);
+		vsnprintf_s(logger, max_message_size, max_message_size, fmt, args);
 		va_end(args);
-		LOG4CPLUS_TRACE(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(log));
+		LOG4CPLUS_TRACE(::log4cplus::Logger::getInstance(LOG4CPLUS_STRING_TO_TSTRING(secion)), LOG4CPLUS_STRING_TO_TSTRING(logger));
+		delete[] logger;
 #endif
 	}
 }
