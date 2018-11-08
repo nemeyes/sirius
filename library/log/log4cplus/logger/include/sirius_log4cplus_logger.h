@@ -85,7 +85,7 @@ namespace sirius
 						~trace_logger(void);
 					private:
 						char _section[MAX_PATH];
-						char _log[max_message_size];
+						//char _log[max_message_size];
 					};
 
 
