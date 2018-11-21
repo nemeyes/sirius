@@ -34,13 +34,13 @@ xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_log4cplus_lo
 
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.dll		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.pdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.ipdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.iobj		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.ipdb	%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_performance_monitor.iobj	%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.exe		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.pdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.ipdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.iobj		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.ipdb	%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_launcher.iobj	%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_proxy.dll		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_arbitrator_proxy.pdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
@@ -55,8 +55,10 @@ xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_backend_clus
 
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.dll			%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.pdb			%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.ipdb			%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
-xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.iobj			%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.ipdb		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+xcopy /Y %work_dir%\platform\win32\v140\x64\%build_mode%\bin\sirius_curl_client.iobj		%work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\
+
+xcopy /Y /e /h /k %work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\*.*			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator(x64)\
 
 ECHO copy complited.
 goto end

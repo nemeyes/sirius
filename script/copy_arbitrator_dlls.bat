@@ -65,6 +65,8 @@ xcopy /Y %work_dir%\3rdparty\curl\v7_50_0\win32\v140\x86\bin\libidn-11.dll					%
 xcopy /Y %work_dir%\3rdparty\openssl\v1_0_1c\win32\v140\x86\bin\libeay32.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 xcopy /Y %work_dir%\3rdparty\openssl\v1_0_1c\win32\v140\x86\bin\ssleay32.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator\
 
+xcopy /Y /e /h /k %work_dir%\platform\win32\v140\x64\%build_mode%\bin\apps\arbitrator\*.*			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\arbitrator(x64)\
+
 ECHO copy complited.
 goto end
 
