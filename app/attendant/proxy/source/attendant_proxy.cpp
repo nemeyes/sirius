@@ -12,7 +12,7 @@ typedef void(*fpn_destory_server_framework)(sirius::library::framework::server::
 
 #define IO_THREAD_POOL_COUNT		2
 #define COMMAND_THREAD_POOL_COUNT	2
-#define MTU_SIZE					1024 * 1024 * 1
+#define MTU_SIZE					1024 * 1024 * 2
 //#define MTU_SIZE					4096
 
 sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front, const char * uuid, bool keepalive, int32_t keepalive_timeout, bool tls)
