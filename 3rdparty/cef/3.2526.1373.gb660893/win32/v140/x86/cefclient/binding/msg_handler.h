@@ -8,7 +8,9 @@
 namespace client {
 	namespace binding {
 		const char msg_app_to_attendant[] = "AppToAttendant";
+		const char msg_sync_app_to_attendant[] = "SyncAppToAttendant";
 		const char msg_attendant_to_app[] = "AttendantToApp";
+		const char msg_sync_attendant_to_app[] = "SyncAttendantToApp";
 		const char kRequestPID[] = "RequestPID";
 		const char kRequestedPID[] = "RequestedPID";
 
@@ -20,8 +22,9 @@ namespace client {
 			bool external_interface_message_received(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message);
 			bool removeMessageCallback(const CefString& message_name, int browser_id);
 			bool setMessageCallback(const CefString& message_name, int browser_id, CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> function);
-			bool msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message);
+			bool msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message, int mode);
 			void msg_from_attendant_to_app(CefRefPtr<CefBrowser> browser, CefRefPtr<CefProcessMessage> message);
+			void msg_from_sync_attendant_to_app(CefRefPtr<CefBrowser> browser, CefRefPtr<CefProcessMessage> message);
 		private:
 			//static message_handler* _instance;
 			typedef enum _RETURN {

@@ -490,10 +490,12 @@ void sirius::app::attendant::proxy::mouse_wheel_callback(int32_t pos_x, int32_t 
 		_core->mouse_wheel_callback(pos_x, pos_y, wheel_z);
 }
 
-void sirius::app::attendant::proxy::app_to_attendant(uint8_t * packet, int32_t len)
+void sirius::app::attendant::proxy::app_to_attendant(uint8_t * packet, int32_t len, int32_t mode)
 {
+	sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+
 	if (_core)
-		_core->app_to_attendant(packet, len);
+		_core->app_to_attendant(packet, len, mode);
 }
 
 void sirius::app::attendant::proxy::attendant_to_app_callback(uint8_t * packet, int32_t len)
@@ -506,10 +508,26 @@ void sirius::app::attendant::proxy::attendant_to_app_callback(uint8_t * packet, 
 	}
 }
 
+void sirius::app::attendant::proxy::sync_attendant_to_app_callback(uint8_t * packet, int32_t len)
+{
+	sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+	if (_core)
+	{
+		_core->sync_attendant_to_app_callback(packet, len);
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+	}
+}
+
 void sirius::app::attendant::proxy::set_attendant_cb(FuncPtrCallback fncallback)
 {
 	if (_core)
 		_core->set_attendant_cb(fncallback);
+}
+
+void sirius::app::attendant::proxy::set_sync_attendant_cb(FuncPtrCallback fncallback)
+{
+	if (_core)
+		_core->set_sync_attendant_cb(fncallback);
 }
 
 void sirius::app::attendant::proxy::finish_reload()

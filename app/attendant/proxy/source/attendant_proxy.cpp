@@ -48,6 +48,7 @@ sirius::app::attendant::proxy::core::core(sirius::app::attendant::proxy * front,
 	add_command(new sirius::app::attendant::mouse_rb_dclick_noti(front));
 	add_command(new sirius::app::attendant::mouse_wheel_noti(front));
 	add_command(new sirius::app::attendant::end2end_data_noti(front));
+	add_command(new sirius::app::attendant::sync_end2end_data_noti(front));
 }
 
 sirius::app::attendant::proxy::core::~core(void)
@@ -299,6 +300,7 @@ int32_t sirius::app::attendant::proxy::core::stop(void)
 
 void sirius::app::attendant::proxy::core::on_create_session(void)
 {
+	OutputDebugStringA("on_create_session \n");
 	Json::Value wpacket;
 	Json::StyledWriter writer;
 	size_t noti_size = 0;
@@ -555,7 +557,7 @@ void sirius::app::attendant::proxy::core::on_key_board_down(int32_t key)
 	_framework->on_keydown(key);
 }
 
-void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int32_t len)
+void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int32_t len, int32_t mode)
 {
 	/*Json::Value jsonpacket;
 	Json::StyledWriter writer;
@@ -563,9 +565,18 @@ void sirius::app::attendant::proxy::core::app_to_attendant(uint8_t * packet, int
 	std::string xml_str = std::string((char *)packet);
 	jsonpacket["xml"] = xml_str.c_str();
 	std::string json_str = writer.write(jsonpacket);*/
+	if (mode == JS_MESSAGE_MODE::APP_TO_ATTENDANT)
+	{
 	data_request(_client_uuid, CMD_END2END_DATA_IND, (char*)packet, len);
 	if (len < LOGGER::max_message_size - 500)
 		LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, app_to_attendant data=%s", __FUNCTION__, __LINE__, _client_uuid, packet);
+}
+	else if (mode == JS_MESSAGE_MODE::SYNC_APP_TO_ATTENDANT)
+	{
+		data_request(_client_uuid, CMD_SYNC_END2END_DATA_IND, (char*)packet, len);
+		if (len < LOGGER::max_message_size - 500)
+			LOGGER::make_info_log(SLNS, "%s, %d _client_uuid=%s, sync_app_to_attendant data=%s", __FUNCTION__, __LINE__, _client_uuid, packet);
+	}
 }
 
 void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * packet, int32_t len)
@@ -586,9 +597,32 @@ void sirius::app::attendant::proxy::core::attendant_to_app_callback(uint8_t * pa
 	}
 }
 
+void sirius::app::attendant::proxy::core::sync_attendant_to_app_callback(uint8_t * packet, int32_t len)
+{
+	if (len < LOGGER::max_message_size - 500)
+		LOGGER::make_info_log(SLNS, "%s, %d attendant_to_app_callback data=%s, len=%d", __FUNCTION__, __LINE__, packet, len);
+
+	if (_sync_callback)
+	{
+		_sync_callback(packet, len);
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d", __FUNCTION__, __LINE__);
+	}
+
+	if (strcmp((const char *)packet, ATTENDANT_RELOAD) != 0)
+	{
+		sirius::library::log::log4cplus::logger::make_info_log(SLNS, "%s, %d ", __FUNCTION__, __LINE__);
+		_framework->on_end2end_data(packet, len);
+	}
+}
+
 void sirius::app::attendant::proxy::core::set_attendant_cb(FuncPtrCallback fncallback) 
 { 
 	_callback = fncallback;
+}
+
+void sirius::app::attendant::proxy::core::set_sync_attendant_cb(FuncPtrCallback fncallback)
+{
+	_sync_callback = fncallback;
 }
 
 void sirius::app::attendant::proxy::core::on_recv_notification(int32_t type, char * msg, int32_t size)

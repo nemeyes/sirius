@@ -141,6 +141,8 @@ namespace sirius
 				int32_t			mouse_rb_down(int32_t pos_x, int32_t pos_y);
 				int32_t			mouse_rb_up(int32_t pos_x, int32_t pos_y);
 				void			post_end2end_data(const char * packet, int32_t packet_size);
+				void			sync_post_end2end_data(const char * packet, int32_t packet_size);
+
 
 			private:
 				void on_pre_connect(wchar_t * address, int32_t portnumber, bool reconnection, bool keepalive, int32_t keepalive_timeout);

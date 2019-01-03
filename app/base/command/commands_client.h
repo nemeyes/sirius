@@ -121,6 +121,22 @@ namespace sirius
 				}
 			};
 
+			class sync_end2end_data_noti : public sirius::app::client::abstract_client_cmd
+			{
+			public:
+				sync_end2end_data_noti(sirius::app::client::proxy::core * prxy)
+					: sirius::app::client::abstract_client_cmd(prxy, CMD_SYNC_END2END_DATA_IND)
+				{}
+				virtual ~sync_end2end_data_noti(void)
+				{}
+
+				void execute(const char * dst, const char * src, int32_t command_id, uint8_t version, const char * msg, int32_t length, std::shared_ptr<sirius::library::net::sicp::session> session)
+				{
+					LOGGER::make_info_log(SAC, "%s, %d read end2end_data_noti size = %d", __FUNCTION__, __LINE__, length);
+					//_proxy->end2end_data_callback(msg, length);
+				}
+			};
+
 			class error_noti : public sirius::app::client::abstract_client_cmd
 			{
 			public:

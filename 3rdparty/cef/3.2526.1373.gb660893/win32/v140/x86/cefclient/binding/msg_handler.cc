@@ -56,9 +56,12 @@ namespace client {
 			CefString message_name = message->GetName();
 			bool ret = false;
 
-			if (message_name == msg_app_to_attendant) 
+			if (message_name == msg_app_to_attendant || message_name == msg_sync_app_to_attendant)
 			{
-				msg_from_app_to_attendant(message);
+			if (message_name == msg_app_to_attendant) 
+					msg_from_app_to_attendant(message, client::binding::global::JS_MESSAGE_MODE::APP_TO_ATTENDANT);
+				else if (message_name == msg_sync_app_to_attendant)
+					msg_from_app_to_attendant(message, client::binding::global::JS_MESSAGE_MODE::SYNC_APP_TO_ATTENDANT);
 			}
 			else if (message_name == msg_attendant_to_app) 
 			{
@@ -67,12 +70,12 @@ namespace client {
 			return ret;
 		}
 
-		bool message_handler::msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message) 
+		bool message_handler::msg_from_app_to_attendant(CefRefPtr<CefProcessMessage> message, int mode)
 		{
 			CefRefPtr<CefListValue> args = message->GetArgumentList();
 			bool ret = false;
 			CefString result = args->GetString(0);
-			ret = socket_win::get_instance()->send_bypass_packet(CONTENTS_TYPE::TOAPP, result.ToString());
+			ret = socket_win::get_instance()->send_bypass_packet(CONTENTS_TYPE::TOAPP, result.ToString(), mode);
 			return ret;
 		}
 
@@ -121,6 +124,11 @@ namespace client {
 					}
 				}
 			}
+		}
+
+		void message_handler::msg_from_sync_attendant_to_app(CefRefPtr<CefBrowser> browser, CefRefPtr<CefProcessMessage> message)
+		{
+			
 		}
 	}
 }

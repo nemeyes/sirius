@@ -237,6 +237,11 @@ void client_controller::on_post_end2end_data(const char * packet, int32_t packet
 	_controller->post_end2end_data(packet, packet_size);
 }
 
+void client_controller::on_sync_post_end2end_data(const char * packet, int32_t packet_size)
+{
+	_controller->sync_post_end2end_data(packet, packet_size);
+}
+
 void client_controller::on_pre_error(int32_t error_code)
 {
 
