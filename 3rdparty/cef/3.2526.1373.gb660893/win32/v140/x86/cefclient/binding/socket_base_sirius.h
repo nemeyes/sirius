@@ -24,9 +24,10 @@ namespace client {
 		class socketbase : public ISocketThread, CefBase {
 		public:
 			bool create(UINT nSocketPort = 0, int nSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
-			int send_data(const void *lpBuf, int nBuflen, int nFlags = 0);
+			int send_data(const void *lpBuf, int nBuflen, int mode, int nFlags = 0);
 			virtual void ProcessingThread();
 			static void calback_attendant_to_app(uint8_t* packet, size_t len);
+			static void calback_sync_attendant_to_app(uint8_t* packet, size_t len);
 			socketbase();
 			virtual ~socketbase();
 		public:

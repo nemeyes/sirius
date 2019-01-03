@@ -122,7 +122,7 @@ bool ClientAppRenderer::OnProcessMessageReceived(
 #if defined(WITH_EXTERNAL_INTERFACE)
   if (!handled)
   {
-	  if (message->GetName() == binding::msg_attendant_to_app) {
+	  if (message->GetName() == binding::msg_attendant_to_app || message->GetName() == binding::msg_sync_attendant_to_app) {
 		  binding::message_handler::
 			  getInstance().external_interface_message_received(browser, source_process, message);
 	  }

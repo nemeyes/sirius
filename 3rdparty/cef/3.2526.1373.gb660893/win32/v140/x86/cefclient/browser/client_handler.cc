@@ -52,6 +52,7 @@ enum client_menu_ids {
 const char kFocusedNodeChangedMessage[] = "ClientRenderer.FocusedNodeChanged";
 #if defined(WITH_EXTERNAL_INTERFACE)
 const char msg_app_to_attendant[] = "AppToAttendant";
+const char msg_sync_app_to_attendant[] = "SyncAppToAttendant";
 const char kRequestedPID[] = "RequestedPID";
 #endif
 std::string GetTimeString(const CefTime& value) {
@@ -199,7 +200,7 @@ bool ClientHandler::OnProcessMessageReceived(
     return true;
   }
 #if defined(WITH_EXTERNAL_INTERFACE)
-  else if (message_name == msg_app_to_attendant) {
+  else if (message_name == msg_app_to_attendant || message_name == msg_sync_app_to_attendant) {
 	  return client::binding::message_handler::
 		  getInstance().external_interface_message_received(browser, source_process, message);
   }

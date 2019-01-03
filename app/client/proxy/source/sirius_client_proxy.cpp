@@ -428,6 +428,12 @@ void sirius::app::client::proxy::post_end2end_data(const char * packet, int32_t 
 		_core->post_end2end_data(packet, packet_size);
 }
 
+void sirius::app::client::proxy::sync_post_end2end_data(const char * packet, int32_t packet_size)
+{
+	if (_core)
+		_core->sync_post_end2end_data(packet, packet_size);
+}
+
 //CALLBACK
 void sirius::app::client::proxy::on_pre_connect(wchar_t * address, int32_t portNumber, bool reconnection, bool keepalive, int32_t keepalive_timeout)
 {

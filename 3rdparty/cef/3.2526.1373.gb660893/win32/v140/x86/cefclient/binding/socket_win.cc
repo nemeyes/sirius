@@ -9,6 +9,8 @@
 #include "socket_win.h"
 #include "cefclient/binding/attendant_interface.h"
 #include "mmsystem.h"
+#include <tlhelp32.h>
+
 namespace client {
 	namespace binding {
 
@@ -180,6 +182,68 @@ namespace client {
 			}
 		}
 
+		void socket_win::send_to_sync_javascript(const CefString& data) {
+			if (!CefCurrentlyOn(TID_UI)) {
+				CefPostTask(TID_UI, base::Bind(&socket_win::send_to_sync_javascript, this, data));
+				return;
+			}
+			RootWindowWin* rootWin =
+				GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
+			DCHECK(rootWin);
+			std::string buffer;
+			char debug[MAX_PATH] = { 0 };
+			int ppid;
+
+			HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+			PROCESSENTRY32 pe = { 0 };
+			pe.dwSize = sizeof(PROCESSENTRY32);
+			if (Process32First(h, &pe)) {
+				do {
+					if (pe.th32ProcessID == GetCurrentProcessId()) {
+						ppid = pe.th32ParentProcessID;
+						_snprintf(debug, MAX_PATH, "send_to_sync_javascript pid=%d, ppid=%d \n", GetCurrentProcessId(), ppid);
+						OutputDebugStringA(debug);
+					}
+				} while (Process32Next(h, &pe));
+			}
+
+
+			if (rootWin)
+			{
+				CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+
+				CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create("SyncAttendantToApp");
+				msg->GetArgumentList()->SetString(0, data);
+
+				HANDLE hPipe;
+				DWORD dwWritten;
+				buffer = data;
+
+				char pipe_name[MAX_PATH] = { 0, };
+				_snprintf(pipe_name, MAX_PATH, "\\\\.\\pipe\\%d", GetCurrentProcessId());
+				OutputDebugStringA(pipe_name);
+
+				wchar_t wtext[MAX_PATH];
+				mbstowcs(wtext, pipe_name, strlen(pipe_name) + 1);
+				LPCWSTR ptr = wtext;
+
+				hPipe = CreateFile(ptr,
+					GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+				if (hPipe != INVALID_HANDLE_VALUE)
+				{
+					WriteFile(hPipe, buffer.c_str(), buffer.length(), &dwWritten, NULL);
+					CloseHandle(hPipe);
+				}
+
+				
+				_snprintf(debug, MAX_PATH, "SyncAttendantToApp data=%s \n", buffer.c_str());
+				OutputDebugStringA(debug);
+
+				browser->SendProcessMessage(PID_RENDERER, msg);
+				OutputDebugStringA("send_to_sync_javascript SyncAttendantToApp \n ");
+			}
+		}
+
 		bool socket_win::recvHeader(const BUFFER& buffer, HEADER& header) {
 			memcpy(&header, &buffer[0], sizeof(header));
 			header.bodyLength = ntohl(header.bodyLength);
@@ -199,7 +263,7 @@ namespace client {
 			return true;
 		}
 
-		bool socket_win::send_bypass_packet(int contentsType, const std::string& utf8_data) {
+		bool socket_win::send_bypass_packet(int contentsType, const std::string& utf8_data, int mode) {
 			int bufSize = utf8_data.length() + 12;
 			char* send_packet = new char[bufSize];
 			memset(send_packet, 0x00, bufSize);
@@ -212,7 +276,7 @@ namespace client {
 				return false;
 			}
 
-			int rtn = send_data(send_packet, size);
+			int rtn = send_data(send_packet, size, mode);
 			//binding::socketbase::calback_attendant_to_app((uint8_t *)send_packet, strlen(send_packet));
 			if (rtn <= 0) {
 				if (send_packet)
@@ -232,6 +296,60 @@ namespace client {
 			len = utf8_json.length();
 			memcpy(&data[index], utf8_json.c_str(), len);
 			size = index + len;
+
+			return true;
+		}
+
+		bool socket_win::sirius_to_sync_javascript(uint8_t * data, size_t size)
+		{
+			if (strcmp((const char *)data, "reload") != 0)
+			{
+				send_to_sync_javascript((char *)data);
+			}
+			else
+			{
+				RootWindowWin* rootWin = GetUserDataPtr<RootWindowWin*>(global::get_instance().get_window_handle());
+				DCHECK(rootWin);
+				if (rootWin)
+				{
+					/*if (rootWin->timeset_event)
+					{
+					timeKillEvent(rootWin->timeset_event);
+					rootWin->timeset_event = 0;
+					}*/
+					CefRefPtr<CefBrowser> browser = rootWin->GetBrowser();
+					browser->GetMainFrame()->LoadURL(rootWin->start_url);
+					get_url = browser->GetMainFrame()->GetURL().ToString();
+					CefRefPtr<CefCookieManager> manager = CefCookieManager::GetGlobalManager(NULL);
+					manager->DeleteCookies("", "", NULL);
+
+
+					//browser->GetMainFrame()->ExecuteJavaScript(rootWin->get_java_script_injection(), "", 0);
+					Sleep(1000);
+
+					browser->ReloadIgnoreCache();
+					//browser->Reload();
+					//browser->GoBack();
+					manager->DeleteCookies("", "", NULL);
+
+					//_snprintf(get_url, MAX_PATH, "%s", browser->GetMainFrame()->GetURL().ToString().c_str());
+
+					if (rootWin)
+					{
+
+						//if (strcmp(get_url, start_url))
+						if (start_url.compare(get_url))
+						{
+							manager->DeleteCookies("", "", NULL);
+							browser->GetMainFrame()->LoadURL(rootWin->start_url);
+							Sleep(1000);
+							browser->ReloadIgnoreCache();
+							//browser->GoBack();
+							manager->DeleteCookies("", "", NULL);
+						}
+					}
+				}
+			}
 
 			return true;
 		}

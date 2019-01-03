@@ -23,6 +23,7 @@ namespace client {
 			client::binding::attendant_proxy_wrapper& apc = attendant_proxy_wrapper::getInstance();
 			_attendant = apc._proxy;
 			_attendant->set_attendant_cb(&calback_attendant_to_app);
+			_attendant->set_sync_attendant_cb(&calback_sync_attendant_to_app);
 		}
 
 		socketbase::~socketbase() {
@@ -34,9 +35,9 @@ namespace client {
 
 		}
 
-		int socketbase::send_data(const void *lpBuf, int nBuflen, int nFlags)
+		int socketbase::send_data(const void *lpBuf, int nBuflen, int mode, int nFlags)
 		{
-			_attendant->app_to_attendant((uint8_t *)lpBuf, nBuflen);
+			_attendant->app_to_attendant((uint8_t *)lpBuf, nBuflen, mode);
 			return true;
 		}
 
@@ -48,6 +49,11 @@ namespace client {
 		void socketbase::calback_attendant_to_app(uint8_t* packet, size_t len)
 		{
 			socket_win::get_instance()->sirius_to_javascript((uint8_t*)packet, len);
+		}
+
+		void socketbase::calback_sync_attendant_to_app(uint8_t* packet, size_t len)
+		{
+			socket_win::get_instance()->sirius_to_sync_javascript((uint8_t*)packet, len);
 		}
 
 	}  // namespace binding

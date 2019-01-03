@@ -23,6 +23,14 @@ namespace client {
 			void set_java_script_injection(CefString java_script_injection) { _java_script_injection = java_script_injection; }
 			HWND get_window_handle() const { return _handle; }
 			const CefString& get_java_script_injection() const { return _java_script_injection; }
+
+			typedef enum _JS_MESSAGE_MODE {
+				APP_TO_ATTENDANT = 0,
+				SYNC_APP_TO_ATTENDANT,
+				ATTENDANT_TO_APP,
+				SYNC_ATTENDANT_TO_APP,
+			}JS_MESSAGE_MODE;
+
 		private:
 			HWND _handle;
 			CefString _java_script_injection;

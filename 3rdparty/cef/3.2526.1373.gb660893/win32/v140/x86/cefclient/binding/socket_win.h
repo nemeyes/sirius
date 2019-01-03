@@ -21,8 +21,9 @@ namespace client {
 			static void release();
 			virtual void OnReceive(int nErrorCode);
 			bool create();
-			bool send_bypass_packet(int contentsType, const std::string& utf8_data);
+			bool send_bypass_packet(int contentsType, const std::string& utf8_data, int mode);
 			bool sirius_to_javascript(uint8_t * data, size_t size);
+			bool sirius_to_sync_javascript(uint8_t * data, size_t size);
 			std::string start_url;
 			std::string get_url;
 
@@ -36,6 +37,7 @@ namespace client {
 			bool recvBody_cmdType_response(const HEADER& header);
 			bool recvBody_cmdType_request(const HEADER& header, const CefString& body);
 			void send_to_javascript(const CefString& data);
+			void send_to_sync_javascript(const CefString& data);
 			bool connectSTB();
 			bool disconnectSTB();
 

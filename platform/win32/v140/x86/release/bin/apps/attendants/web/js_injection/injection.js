@@ -1,3 +1,4 @@
+
 var isCoTYoutubePlayer = false;
 if (window.frameElement && window.frameElement.id && window.frameElement.id === 'CoT_youtube_player')
 	isCoTYoutubePlayer = true;
@@ -123,12 +124,21 @@ if ((self === top && !CoTExt) || isCoTYoutubePlayer) {
 					CoTExt.csObject.sendMessage('AppToAttendant', [jsonStr]);
 				console.info('%c[CoTExt.cs.sendMessage] ' + jsonStr, 'color:green');
 			};
+			
+			var syncSendMessageToCSS = function(obj) {
+				var jsonStr = JSON.stringify(obj);
+				if (typeof CoTExt.csObject !== 'undefined')
+					CoTExt.csObject.syncSendMessage('jstest', [jsonStr]);
+				console.info('%c[CoTExt.cs.syncSendMessage] ' + jsonStr, 'color:green');
+			};
 
 			initialize();
 
 			return {
 				'sendMessageToCSS' : sendMessageToCSS,
-				'receiveMessageFromCSS' : receiveMessageFromCSS
+				'receiveMessageFromCSS' : receiveMessageFromCSS,
+				'syncSendMessageToCSS' : syncSendMessageToCSS
+
 			};
 		})();
 		// CoTExt.cs communicator define
@@ -1900,14 +1910,24 @@ if ((self === top && !CoTExt) || isCoTYoutubePlayer) {
 		};
 
 		CoTExt.api.setHistory = function(data, serviceId) {
-			CoTExt.cs.sendMessageToCSS({
-				'name' : 'setHistory',
-				'data' : {
-					name : (serviceId != undefined ? serviceId : CoTExt.properties['SERVICE_ID']),
-					history : data
-				}
-			});
+			//CoTExt.cs.sendMessageToCSS({
+			//	'name' : 'setHistory',
+			//	'data' : {
+			//		name : (serviceId != undefined ? serviceId : CoTExt.properties['SERVICE_ID']),
+			//		history : data
+			//	}
+		//	});
+
+			 var retval = CoTExt.csObject.syncSendMessage('SyncAppToAttendant', 'test');
+			 console.info(retval);
 		};
+		
+					var sendMessageToCSS = function(obj) {
+				var jsonStr = JSON.stringify(obj);
+				if (typeof CoTExt.csObject !== 'undefined')
+					CoTExt.csObject.sendMessage('AppToAttendant', [jsonStr]);
+				console.info('%c[CoTExt.cs.sendMessage] ' + jsonStr, 'color:green');
+			};
 
 		CoTExt.api.setTimeout = function(data) {
 			CoTExt.cs.sendMessageToCSS({
@@ -2066,4 +2086,13 @@ if ((self === top && !CoTExt) || isCoTYoutubePlayer) {
 		CoTExt.main.init();
 	else
 		document.addEventListener('DOMContentLoaded', CoTExt.main.init, false);
+		
+			function sleep(num){	//[1/1000초]
+	 var now = new Date();
+			 var stop = now.getTime() + num;
+			 while(true){
+			now = new Date();
+			if(now.getTime() > stop)return;
+			 }
+	}
 }

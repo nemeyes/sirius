@@ -24,6 +24,8 @@ sirius::app::client::proxy::core::core(sirius::app::client::proxy * front, bool 
 	add_command(new sirius::app::client::disconnect_client_res(this));
 	add_command(new sirius::app::client::attendant_info_noti(this));
 	add_command(new sirius::app::client::end2end_data_noti(this));
+	add_command(new sirius::app::client::sync_end2end_data_noti(this));
+
 	add_command(new sirius::app::client::error_noti(this));
 
 	add_command(CMD_PLAY_RES);
@@ -295,6 +297,14 @@ void sirius::app::client::proxy::core::post_end2end_data(const char * packet, in
 	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
 	{
 		data_request(_szattendant_uuid, CMD_END2END_DATA_IND, packet, packet_size);
+	}
+}
+
+void sirius::app::client::proxy::core::sync_post_end2end_data(const char * packet, int32_t packet_size)
+{
+	if (strlen(_szattendant_uuid) > 0 && _recv_attendant_info)
+	{
+		data_request(_szattendant_uuid, CMD_SYNC_END2END_DATA_IND, packet, packet_size);
 	}
 }
 

@@ -43,6 +43,7 @@ public:
 	void on_pre_end2end_data(const char * packet, int32_t packet_size);
 	void on_end2end_data(const char * packet, int32_t packet_size);
 	void on_post_end2end_data(const char * packet, int32_t packet_size);
+	void on_sync_post_end2end_data(const char * packet, int32_t packet_size);
 
 	void on_pre_error(int32_t error_code);
 	void on_error(int32_t error_code);

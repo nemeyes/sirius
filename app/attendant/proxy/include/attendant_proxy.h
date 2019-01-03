@@ -48,11 +48,15 @@ namespace sirius
 				void	mouse_rb_dclick_callback(int32_t pos_x, int32_t pos_y);
 				void	mouse_wheel_callback(int32_t pos_x, int32_t pos_y, int32_t wheel_z);
 
-				void	app_to_attendant(uint8_t * packet, int32_t len);
+				void	app_to_attendant(uint8_t * packet, int32_t len, int32_t mode);
 				void	attendant_to_app_callback(uint8_t * packet, int32_t len);
+				void	sync_attendant_to_app_callback(uint8_t * packet, int32_t len);
 				void	set_attendant_cb(FuncPtrCallback fncallback); //{ _callback = fncallback; }
+				void	set_sync_attendant_cb(FuncPtrCallback fncallback);
 				
 				FuncPtrCallback _callback;
+				FuncPtrCallback _sync_callback;
+
 
 			private:
 				template <class T> inline T msecs2ticks(const T & t) { return t * 10000; }
@@ -84,6 +88,13 @@ namespace sirius
 
 				int32_t		_use_count;
 				//bool		_alloc;
+
+				typedef enum _JS_MESSAGE_MODE {
+					APP_TO_ATTENDANT = 0,
+					SYNC_APP_TO_ATTENDANT,
+					ATTENDANT_TO_APP,
+					SYNC_ATTENDANT_TO_APP,
+				}JS_MESSAGE_MODE;
 			};
 		};
 	};
