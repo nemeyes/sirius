@@ -304,6 +304,7 @@ namespace client {
 		{
 			if (strcmp((const char *)data, "reload") != 0)
 			{
+				data[size] = '\0';
 				send_to_sync_javascript((char *)data);
 			}
 			else
