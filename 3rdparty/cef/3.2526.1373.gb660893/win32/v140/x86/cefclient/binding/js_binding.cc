@@ -102,15 +102,7 @@ namespace client {
 					int ppid;
 
 					if (!name.empty())
-					{
-						CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(name);
-
-						if (arguments.size() == 2 && arguments[1]->IsArray())
-							message_handler::getInstance().set_list(arguments[1], msg->GetArgumentList());
-
-						cef_browser->SendProcessMessage(PID_BROWSER, msg);
-
-
+					{	
 						HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 						PROCESSENTRY32 pe = { 0 };
 						pe.dwSize = sizeof(PROCESSENTRY32);
@@ -140,6 +132,12 @@ namespace client {
 
 						OVERLAPPED ov = { 0 };
 						ov.hEvent = ::CreateEventW(nullptr, TRUE, FALSE, nullptr);
+						CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(name);
+
+						if (arguments.size() == 2 && arguments[1]->IsArray())
+							message_handler::getInstance().set_list(arguments[1], msg->GetArgumentList());
+
+						cef_browser->SendProcessMessage(PID_BROWSER, msg);
 						while (hPipe != INVALID_HANDLE_VALUE)
 						{
 							BOOL ret = ::ConnectNamedPipe(hPipe, &ov);
@@ -178,7 +176,7 @@ namespace client {
 						delete[] debug;
 						delete[] buffer;
 
-						OutputDebugStringA("exit!!!!!!!!!!!!! \n");
+						OutputDebugStringA("exit!!!!!!!!!!!!! \n");					
 					}
 				}
 
