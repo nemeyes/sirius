@@ -19,6 +19,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, binvalidate(true)
 	, indexed_video(true)
 	, nthread(20)
+	, caching(false)
 {
 
 }
@@ -42,6 +43,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
 	nthread = clone.nthread;
+	caching = clone.caching;
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t & sirius::library::video::transform::codec::partial::png::compressor::_context_t::operator=(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
@@ -63,6 +65,7 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
 	nthread = clone.nthread;
+	caching = clone.caching;
 	return (*this);
 }
 

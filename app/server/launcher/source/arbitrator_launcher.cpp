@@ -263,6 +263,11 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
+			if (confentity.enable_caching)
+				proc_ctrl.set_cmdline(arguments, "--enable_caching=true");
+			else
+				proc_ctrl.set_cmdline(arguments, "--enable_caching=false");
+
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
 			//proc_ctrl.set_cmdline(arguments, "--disable-d3d11");

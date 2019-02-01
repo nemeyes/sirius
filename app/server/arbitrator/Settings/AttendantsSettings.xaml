@@ -190,6 +190,14 @@
                     <RadioButton x:Name="ReloadOnClientDisconnectingOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
                 </StackPanel>
 
+                <StackPanel VerticalAlignment="Top">
+                    <Label Content="Caching" Target="{Binding ElementName=Caching}" Width="240" />
+                    <RadioButton x:Name="CachingOn" IsChecked="True">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="CachingOff" IsChecked="False" Content="No" Margin="8,0,0,0" />
+                </StackPanel>
+
                 <!--StackPanel>
                     <Label Content="Auto Start" Target="{Binding ElementName=Autostart}" Width="150"/>
                     <RadioButton x:Name="AutostartOn" IsChecked="True">

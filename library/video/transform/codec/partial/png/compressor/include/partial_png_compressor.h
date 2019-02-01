@@ -17,8 +17,6 @@
 
 #include "libpng_compressor.h"
 
-#define IMAGE_CACHE_ROOT_DIR	"C:\\cache"
-
 namespace sirius
 {
 	namespace library

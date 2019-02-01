@@ -60,6 +60,7 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->binvalidate = _external_venc_ctx->invalidate4client;
 			venc_ctx->indexed_video = _external_venc_ctx->indexed_mode;
 			venc_ctx->nthread = _external_venc_ctx->nthread;
+			venc_ctx->caching = _external_venc_ctx->caching;
 			venc_ctx->compression_level = _external_venc_ctx->png.compression_level;
 			venc_ctx->posterization = _external_venc_ctx->png.quantization_posterization;
 			venc_ctx->use_dither_map = _external_venc_ctx->png.quantization_dither_map;
