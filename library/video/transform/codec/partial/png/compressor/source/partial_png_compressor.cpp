@@ -81,6 +81,13 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 	_state = sirius::library::video::transform::codec::partial::png::compressor::state_t::initializing;
 
 	_context = context;
+
+	if (_context->caching)
+	{
+		if (_access(IMAGE_CACHE_ROOT_DIR, 0) != 0)
+			CreateDirectoryA(IMAGE_CACHE_ROOT_DIR, NULL);
+	}
+
 	status = _real_compressor->initialize(_context);
 	if (status == sirius::library::video::transform::codec::partial::png::compressor::err_code_t::success)
 	{

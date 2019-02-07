@@ -692,7 +692,6 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 				create_attendant(session->id());
 			}
 		}
-
 	}	
 }
 
@@ -711,7 +710,7 @@ void sirius::app::server::arbitrator::proxy::core::check_expire_cache(int32_t ex
 	SystemTimeToFileTime(&stm, &ftm);
 
 	memcpy(&current_time, &ftm, sizeof(FILETIME));
-	current_time.QuadPart -= HOUR * expire_time;
+	current_time.QuadPart -= DAY * expire_time;
 	memcpy(&ftm, &current_time, sizeof(FILETIME));
 		
 	HANDLE dir;
@@ -957,8 +956,8 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				if (elapsed_millisec % (onesec * 10) == 0)			
 					check_alive_attendant();
 
-				if (elapsed_millisec % (onesec * 60) == 0)
-					check_expire_cache(1);
+				if (elapsed_millisec % (onesec * 60 * 60) == 0)
+					check_expire_cache(7);
 
 				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
 				//	close_disconnected_attendant();
