@@ -131,6 +131,17 @@ namespace sirius.app.server.arbitrator.Settings
                 ReloadOnClientDisconnectingOff.IsChecked = true;
             }
 
+            if (setting_value.enable_caching)
+            {
+                CachingOn.IsChecked = true;
+                CachingOff.IsChecked = false;
+            }
+            else
+            {
+                CachingOn.IsChecked = false;
+                CachingOff.IsChecked = true;
+            }
+
             if (setting_value.video_quantization_posterization)
             {
                 VideoQuantizationPosterizationOn.IsChecked = true;
@@ -253,6 +264,11 @@ namespace sirius.app.server.arbitrator.Settings
                 setting_value.reloading_on_disconnecting = true;
             else
                 setting_value.reloading_on_disconnecting = false;
+
+            if (CachingOn.IsChecked.Value)
+                setting_value.enable_caching = true;
+            else
+                setting_value.enable_caching = false;
 
             if (VideoQuantizationPosterizationOn.IsChecked.Value)
                 setting_value.video_quantization_posterization = true;

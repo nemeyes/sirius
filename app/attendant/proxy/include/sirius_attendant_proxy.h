@@ -91,6 +91,7 @@ namespace sirius
 					bool	reloading_on_disconnecting;
 
 					bool	present;
+					bool	caching;
 					bool	keepalive;
 					int32_t keepalive_timeout;
 					bool	tls;
@@ -121,6 +122,7 @@ namespace sirius
 						, double_reloading_on_creating(false)
 						, reloading_on_disconnecting(false)
 						, present(false)
+						, caching(false)
 						, keepalive(false)
 						, keepalive_timeout(5000)
 						, tls(false)

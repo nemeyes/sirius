@@ -95,6 +95,7 @@ namespace sirius
 					bool	indexed_mode;
 					int32_t nthread;
 					bool	play_after_init;
+					bool	caching;
 					_video_compressor_context_t(void)
 						: gpuindex(0)
 						, memtype(sirius::library::unified::server::video_memory_type_t::host)
@@ -112,6 +113,7 @@ namespace sirius
 						, invalidate4client(false)
 						, indexed_mode(false)
 						, nthread(20)
+						, caching(false)
 					{
 					
 					}

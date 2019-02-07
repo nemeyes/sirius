@@ -696,6 +696,42 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 	}	
 }
 
+void sirius::app::server::arbitrator::proxy::core::check_expire_cache(int32_t expire_time)
+{
+	__int64 WEEK =	(__int64)10000000 * 60 * 60 * 24 * 7;
+	__int64 DAY =	(__int64)10000000 * 60 * 60 * 24;
+	__int64 HOUR =	(__int64)10000000 * 60 * 60;
+	__int64 MIN =	(__int64)10000000 * 60;
+	__int64 SEC =	(__int64)10000000;
+	
+	ULARGE_INTEGER current_time;
+	SYSTEMTIME stm;
+	FILETIME ftm;
+	GetSystemTime(&stm);
+	SystemTimeToFileTime(&stm, &ftm);
+
+	memcpy(&current_time, &ftm, sizeof(FILETIME));
+	current_time.QuadPart -= HOUR * expire_time;
+	memcpy(&ftm, &current_time, sizeof(FILETIME));
+		
+	HANDLE dir;
+	WIN32_FIND_DATAA file_data;		
+	char dir_files[MAX_PATH] = { 0 };
+	sprintf_s(dir_files, "%s\\%s", IMAGE_CACHE_ROOT_DIR,"*.png");
+	if ((dir = FindFirstFileA(dir_files, &file_data)) == INVALID_HANDLE_VALUE)
+		return; /* No files found */
+	do 
+	{
+		if (CompareFileTime(&ftm, &file_data.ftLastAccessTime) == 1)
+		{			
+			char filepath[MAX_PATH] = { 0 };
+			sprintf_s(filepath, "%s\\%s", IMAGE_CACHE_ROOT_DIR, file_data.cFileName);
+			DeleteFileA(filepath);				
+		}
+	} while (FindNextFileA(dir, &file_data));
+	FindClose(dir);
+}
+
 void sirius::app::server::arbitrator::proxy::core::close_disconnected_attendant(void)
 {	
 	sirius::autolock lock(&_attendant_cs);
@@ -921,8 +957,8 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				if (elapsed_millisec % (onesec * 10) == 0)			
 					check_alive_attendant();
 
-				//if (elapsed_millisec % (onesec * 10) == 0)
-				//	update_available_attendant();				
+				if (elapsed_millisec % (onesec * 60) == 0)
+					check_expire_cache(1);
 
 				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
 				//	close_disconnected_attendant();

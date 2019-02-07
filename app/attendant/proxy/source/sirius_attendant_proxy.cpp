@@ -237,6 +237,14 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->present = false;
 	}
+	if (param.end() != (iter = param.find(L"enable_caching")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->caching = true;
+		else
+			context->caching = false;
+	}
 	if (param.end() != (iter = param.find(L"enable_keepalive")))
 	{
 		value = iter->second;

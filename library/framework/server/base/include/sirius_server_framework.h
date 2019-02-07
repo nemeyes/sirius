@@ -74,6 +74,7 @@ namespace sirius
 						bool	indexed_mode;
 						int32_t	nthread;
 						bool	present;
+						bool	caching;
 						bool	keepalive;
 						int32_t keepalive_timeout;
 						bool	tls;
@@ -95,6 +96,7 @@ namespace sirius
 							, indexed_mode(false)
 							, nthread(20)
 							, present(false)
+							, caching(false)
 							, tls(false)
 							, keepalive(false)
 							, keepalive_timeout(5000)
