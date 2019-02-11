@@ -223,7 +223,7 @@ namespace sirius
 								int32_t release_io_buffers(void);
 
 								void	copy(sirius::library::video::transform::codec::partial::png::compressor::entity_t * input, sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t * iobuffer);
-
+								void	md5_hash(uint8_t * data, int32_t data_size, char* hash);
 
 								
 							private:

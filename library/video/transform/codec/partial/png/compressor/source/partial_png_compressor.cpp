@@ -21,28 +21,6 @@
 #define SIMD_RESIZER	sirius::library::video::transform::codec::partial::simd::avx2::resizer
 #define SIMD_EVALUATOR	sirius::library::video::transform::codec::partial::simd::avx2::evaluator
 
-char * hash_md5(uint8_t * data, int32_t data_size)
-{
-	if (!data)
-		return nullptr;
-	
-	char* md5_hash = (char*)malloc(128);
-	
-	unsigned char digest[MD5_DIGEST_LENGTH]; // #define MD5_DIGEST_LENGTH    16
-
-	MD5_CTX context;
-	MD5_Init(&context);
-	MD5_Update(&context, (char*)data, data_size);
-	MD5_Final(digest, &context);
-
-	for (int i = 0; i < MD5_DIGEST_LENGTH; ++i)
-	{
-		sprintf(md5_hash + (i * 2), "%02x", digest[i]);
-	}
-
-	return md5_hash;
-}
-
 sirius::library::video::transform::codec::partial::png::compressor::core::core(sirius::library::video::transform::codec::partial::png::compressor * front)
 	: _front(front)
 	, _context(nullptr)
@@ -829,22 +807,22 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 								bitstream.height = input.height;
 
 								if (_context->caching)
-								{									
-									char* hash = hash_md5(hash_buffer, (_context->block_width * _context->block_height) << 2);
+								{				
+									char hash[128] = { 0 };
+									md5_hash(hash_buffer, (input.width * input.height) << 2, hash);
 
 									bool is_cache = false;
-									//char cache_dir[MAX_PATH] = { 0 };
-									char cache_file[MAX_PATH * 2] = { 0 };
+									char cache_dir[MAX_PATH] = { 0 };
+									char cache_file[MAX_PATH] = { 0 };
 
-									//_snprintf_s(cache_dir, MAX_PATH, "%s\\%dx%d", IMAGE_CACHE_ROOT_DIR, ccl_info.width, ccl_info.height);
-									//if (_access(cache_dir, 0) != 0)
-									//	CreateDirectoryA(cache_dir, NULL);
+									_snprintf_s(cache_dir, MAX_PATH, "%s\\%dx%d", IMAGE_CACHE_ROOT_DIR, ccl_info.width, ccl_info.height);
+									if (_access(cache_dir, 0) != 0)
+										CreateDirectoryA(cache_dir, NULL);
 
-									_snprintf_s(cache_file, MAX_PATH, "%s\\%s.png", IMAGE_CACHE_ROOT_DIR, hash);
+									_snprintf_s(cache_file, MAX_PATH , "%s\\%s.png", cache_dir, hash);
 									if (_access(cache_file, 0) == 0)
 										is_cache = true;
-
-									free(hash);
+																		
 									if (!is_cache)
 									{
 										status = _real_compressor->compress(&input, &bitstream);
@@ -2370,24 +2348,25 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 										bitstream.y = input.y;
 										bitstream.width = input.width;
 										bitstream.height = input.height;
+										index = (h / _context->block_height) * (_context->width / _context->block_width) + w / _context->block_width;
 
 										if (_context->caching)
 										{
-											char* hash = hash_md5(hash_buffer, (_context->block_width * _context->block_height) << 2);
+											char hash[128] = {0};
+											md5_hash(hash_buffer, (input.width * input.height) << 2, hash);
 
 											bool is_cache = false;
-											//char cache_dir[MAX_PATH] = { 0 };
+											char cache_dir[MAX_PATH] = { 0 };
 											char cache_file[MAX_PATH * 2] = { 0 };
 
-											//_snprintf_s(cache_dir, MAX_PATH, "%s\\%dx%d", IMAGE_CACHE_ROOT_DIR, ccl_info.width, ccl_info.height);
-											//if (_access(cache_dir, 0) != 0)
-											//	CreateDirectoryA(cache_dir, NULL);
+											_snprintf_s(cache_dir, MAX_PATH, "%s\\%d", IMAGE_CACHE_ROOT_DIR, index);
+											if (_access(cache_dir, 0) != 0)
+												CreateDirectoryA(cache_dir, NULL);
 
-											_snprintf_s(cache_file, MAX_PATH, "%s\\%s.png", IMAGE_CACHE_ROOT_DIR, hash);
+											_snprintf_s(cache_file, MAX_PATH, "%s\\%s.png", cache_dir, hash);
 											if (_access(cache_file, 0) == 0)
 												is_cache = true;
-
-											free(hash);
+																						
 											if (!is_cache)
 											{
 												status = _real_compressor->compress(&input, &bitstream);
@@ -5051,4 +5030,20 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::c
 	_prev_height = input->height;
 
 
+}
+
+void sirius::library::video::transform::codec::partial::png::compressor::core::md5_hash(uint8_t * data, int32_t data_size, char* hash)
+{
+	unsigned char digest[MD5_DIGEST_LENGTH]; // #define MD5_DIGEST_LENGTH    16
+
+	MD5_CTX context;
+	MD5_Init(&context);
+	MD5_Update(&context, data, data_size);
+	MD5_Final(digest, &context);
+
+	for (int i = 0; i < MD5_DIGEST_LENGTH; i++)
+	{
+		sprintf(hash + (i * 2), "%02x", digest[i]);
+	}
+	return;
 }
