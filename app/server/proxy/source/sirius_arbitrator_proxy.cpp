@@ -68,7 +68,7 @@ int32_t sirius::app::server::arbitrator::proxy::update(const char * uuid, const 
 						float video_webp_quality, int32_t video_webp_method, 
 						bool invalidate4client, bool indexed_mode, int32_t nthread, 
 						bool double_reloading_on_creating, bool reloading_on_disconnecting,
-						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
+						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
 {
 	if (_core)
 		return _core->update(uuid, url, max_containter_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
@@ -77,7 +77,7 @@ int32_t sirius::app::server::arbitrator::proxy::update(const char * uuid, const 
 			video_webp_quality, video_webp_method, 
 			invalidate4client, indexed_mode, nthread, 
 			double_reloading_on_creating, reloading_on_disconnecting,
-			enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app);
+			enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expire_time);
 	else
 		return sirius::app::server::arbitrator::proxy::err_code_t::fail;
 }

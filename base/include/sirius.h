@@ -19,8 +19,6 @@ typedef unsigned long UPARAM;
 
 #endif
 
-#define IMAGE_CACHE_ROOT_DIR	"C:\\cache"
-
 namespace sirius
 {
 	class base

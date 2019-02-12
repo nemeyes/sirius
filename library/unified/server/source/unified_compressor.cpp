@@ -71,6 +71,8 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->max_colors = _external_venc_ctx->png.quantization_colors;
 			venc_ctx->min_quality = 0;
 			venc_ctx->max_quality = 100;
+			wcsncpy_s(venc_ctx->caching_directory, _external_venc_ctx->caching_directory, MAX_PATH);
+
 			venc->initialize(venc_ctx);
 			if (_external_venc_ctx->play_after_init)
 			{

@@ -46,7 +46,7 @@ namespace sirius
 							float video_webp_quality, int32_t video_webp_method, 
 							bool invalidate4client, bool indexed_mode, int32_t nthread, 
 							bool double_reloading_on_creating, bool reloading_on_disconnecting,
-							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
+							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
 						{
 							if(_proxy)
 								_proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
@@ -55,7 +55,7 @@ namespace sirius
 									video_webp_quality, video_webp_method, 
 									invalidate4client, indexed_mode, nthread, 
 									double_reloading_on_creating, reloading_on_disconnecting,
-									enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app);
+									enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expire_time);
 						}
 
 						virtual void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
@@ -64,7 +64,7 @@ namespace sirius
 							float video_webp_quality, int32_t video_webp_method, 
 							bool invalidate4client, bool indexed_mode, int32_t nthread, 
 							bool double_reloading_on_creating, bool reloading_on_disconnecting,
-							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app) = 0;
+							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time) = 0;
 						virtual void on_system_monitor_info(double cpu_usage, double memory_usage) = 0;
 						virtual void on_attendant_create(double percent) = 0;
 						virtual void on_start(void) = 0;
@@ -97,7 +97,7 @@ namespace sirius
 						float video_webp_quality, int32_t video_webp_method, 
 						bool invalidate4client, bool indexed_mode, int32_t nthread, 
 						bool double_reloading_on_creating, bool reloading_on_disconnecting,
-						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app);
+						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time);
 
 					int32_t	connect_client(const char * uuid, const char * id);
 					int32_t disconnect_client(const char * uuid);

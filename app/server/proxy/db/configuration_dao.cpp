@@ -35,7 +35,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	sql += "enable_invalidate4client=?, enable_indexed_mode=?, nthread=?, ";
 	sql += "double_reloading_on_creating=?, reloading_on_disconnecting=?, ";
 	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_streamer_keepalive=?, streamer_keepalive_timeout=?, enable_present=?, enable_auto_start=?, enable_caching=?, clean_attendant=?, ";
-	sql += "app_session_app=?";
+	sql += "app_session_app=?, ";
+	sql += "caching_directory=?, caching_expire_time=?";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -82,6 +83,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->clean_attendant ? 1 : 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
+		sqlite3_bind_text(stmt, ++index, entity->caching_directory, -1, 0);
+		sqlite3_bind_int(stmt, ++index, entity->caching_expire_time);
 
 		int32_t result = sqlite3_step(stmt);
 		if (result == SQLITE_DONE)
@@ -156,6 +159,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.enable_caching = false;
 		c_entity.clean_attendant = false;
 		strncpy_s(c_entity.app_session_app, "", sizeof(c_entity.app_session_app));
+		strncpy_s(c_entity.caching_directory, "", sizeof(c_entity.caching_directory));
+		c_entity.caching_expire_time = 1;
 
 		status = create(&c_entity, conn);
 		if (status != sirius::app::server::arbitrator::db::configuration_dao::err_code_t::success)
@@ -170,7 +175,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 	sql += "enable_invalidate4client, enable_indexed_mode, nthread, ";
 	sql += "double_reloading_on_creating, reloading_on_disconnecting, ";
 	sql += "enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, ";
-	sql += "app_session_app ";
+	sql += "app_session_app, ";
+	sql += "caching_directory, caching_expire_time ";
 	sql += "FROM tb_configuration";
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -228,6 +234,10 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				char * app_session_app = (char*)sqlite3_column_text(stmt, index++);
 				strncpy_s(entity->app_session_app, app_session_app, sizeof(entity->app_session_app));
 
+				char * caching_directory = (char*)sqlite3_column_text(stmt, index++);
+				strncpy_s(entity->caching_directory, caching_directory, sizeof(entity->caching_directory));
+				entity->caching_expire_time = sqlite3_column_int(stmt, index++);
+
 				status = sirius::app::server::arbitrator::db::configuration_dao::err_code_t::success;
 			}
 			else
@@ -255,7 +265,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app) ";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expier_time) ";
 	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
@@ -304,6 +314,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->clean_attendant ? 1 : 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
+		sqlite3_bind_text(stmt, ++index, entity->caching_directory, -1, 0);
+		sqlite3_bind_int(stmt, ++index, entity->caching_expire_time);
 
 		int32_t result = SQLITE_ERROR;
 		result = sqlite3_step(stmt);

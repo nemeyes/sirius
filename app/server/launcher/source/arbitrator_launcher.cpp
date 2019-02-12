@@ -296,6 +296,9 @@ int main()
 				proc_ctrl.set_cmdline(arguments, confentity.app_session_app);
 			}
 
+			proc_ctrl.set_cmdline(arguments, "--caching_directory=\"%s\"", confentity.caching_directory);
+			proc_ctrl.set_cmdline(arguments, "--caching_expire_time=%d", confentity.caching_expire_time);
+
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 
 			if (option)	
