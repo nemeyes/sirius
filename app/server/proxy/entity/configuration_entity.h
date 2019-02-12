@@ -43,7 +43,8 @@ namespace sirius
 					{
 						char	uuid[MAX_PATH];
 						char	url[MAX_PATH];
-						char	app_session_app[MAX_PATH * 5];		
+						char	app_session_app[MAX_PATH * 5];
+						char	caching_directory[MAX_PATH];
 						int32_t	max_attendant_instance;
 						int32_t attendant_creation_delay;
 						int32_t min_attendant_restart_threshold;
@@ -75,6 +76,7 @@ namespace sirius
 						bool	enable_auto_start;
 						bool	enable_caching;
 						bool	clean_attendant;
+						int32_t	caching_expire_time;
 						_configuration_t(void)
 							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
@@ -102,11 +104,13 @@ namespace sirius
 							, enable_present(false)
 							, enable_auto_start(false)
 							, enable_caching(false)
-							, clean_attendant(false)
+							, clean_attendant(false)							
+							, caching_expire_time(1)							
 						{
 							memset(uuid, 0x00, sizeof(uuid));
 							memset(url, 0x00, sizeof(url));
 							memset(app_session_app, 0x00, sizeof(app_session_app));
+							memset(caching_directory, 0x00, sizeof(caching_directory));
 						}
 					} configuration_t;
 				};

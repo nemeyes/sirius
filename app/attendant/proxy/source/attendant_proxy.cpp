@@ -169,6 +169,7 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		_framework_context->png.video_quantization_dither_map = _context->png.video_quantization_dither_map;
 		_framework_context->png.video_quantization_contrast_maps = _context->png.video_quantization_contrast_maps;
 		_framework_context->png.video_quantization_colors = _context->png.video_quantization_colors;
+		wcsncpy_s(_framework_context->caching_directory, _context->caching_directory, sizeof(_framework_context->caching_directory));
 	}
 	else if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::webp)
 	{

@@ -17,8 +17,7 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _thread(INVALID_HANDLE_VALUE)
 	, _system_monitor_run(false)
 	, _system_monitor_thread(INVALID_HANDLE_VALUE)
-	, _use_count(NULL)
-	, _max_attendant_instance_count(0)
+	, _use_count(NULL)	
 	, _last_alloc_session_id(-1)
 	, _state(sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop)
 {
@@ -94,7 +93,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 			confentity.webp.video_quality, confentity.webp.video_method, 
 			confentity.invalidate4client, confentity.indexed_mode, confentity.nthread, 
 			confentity.double_reloading_on_creating, confentity.reloading_on_disconnecting,
-			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_streamer_keepalive, confentity.streamer_keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
+			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_streamer_keepalive, confentity.streamer_keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app, confentity.caching_directory, confentity.caching_expire_time);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -165,7 +164,7 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	float video_webp_quality, int32_t video_webp_method, 
 	bool invalidate4client, bool indexed_mode, int32_t nthread, 
 	bool double_reloading_on_creating, bool reloading_on_disconnecting,
-	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app)
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -213,7 +212,9 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.enable_auto_start = enable_auto_start;
 	configuration.enable_caching = enable_caching;
 	configuration.clean_attendant = clean_attendant;
-	strncpy_s(configuration.app_session_app, app_session_app, sizeof(configuration.app_session_app) - 1);	
+	strncpy_s(configuration.app_session_app, app_session_app, sizeof(configuration.app_session_app) - 1);
+	strncpy_s(configuration.caching_directory, caching_directory, sizeof(configuration.caching_directory) - 1);
+	configuration.caching_expire_time = caching_expire_time;
 
 	status = dao.update(&configuration);
 	return status;
@@ -695,7 +696,7 @@ void sirius::app::server::arbitrator::proxy::core::check_alive_attendant(void)
 	}	
 }
 
-void sirius::app::server::arbitrator::proxy::core::check_expire_cache(int32_t expire_time)
+void sirius::app::server::arbitrator::proxy::core::check_expire_cache(char * caching_directory, int32_t caching_expire_time)
 {
 	__int64 WEEK =	(__int64)10000000 * 60 * 60 * 24 * 7;
 	__int64 DAY =	(__int64)10000000 * 60 * 60 * 24;
@@ -710,13 +711,13 @@ void sirius::app::server::arbitrator::proxy::core::check_expire_cache(int32_t ex
 	SystemTimeToFileTime(&stm, &ftm);
 
 	memcpy(&current_time, &ftm, sizeof(FILETIME));
-	current_time.QuadPart -= DAY * expire_time;
+	current_time.QuadPart -= HOUR * caching_expire_time;
 	memcpy(&ftm, &current_time, sizeof(FILETIME));
 		
 	HANDLE dir;
 	WIN32_FIND_DATAA file_data;		
 	char dir_files[MAX_PATH] = { 0 };
-	sprintf_s(dir_files, "%s\\%s", IMAGE_CACHE_ROOT_DIR,"*.png");
+	sprintf_s(dir_files, "%s\\%s", caching_directory,"*.png");
 	if ((dir = FindFirstFileA(dir_files, &file_data)) == INVALID_HANDLE_VALUE)
 		return; /* No files found */
 	do 
@@ -724,7 +725,7 @@ void sirius::app::server::arbitrator::proxy::core::check_expire_cache(int32_t ex
 		if (CompareFileTime(&ftm, &file_data.ftLastAccessTime) == 1)
 		{			
 			char filepath[MAX_PATH] = { 0 };
-			sprintf_s(filepath, "%s\\%s", IMAGE_CACHE_ROOT_DIR, file_data.cFileName);
+			sprintf_s(filepath, "%s\\%s", caching_directory, file_data.cFileName);
 			DeleteFileA(filepath);				
 		}
 	} while (FindNextFileA(dir, &file_data));
@@ -829,8 +830,8 @@ unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
 }
 
 void sirius::app::server::arbitrator::proxy::core::process(void)
-{	
-	_max_attendant_instance_count = 0;
+{		
+	sirius::app::server::arbitrator::entity::configuration_t confentity;
 	if (_context && _context->handler)
 	{
 		unsigned long pid = 0;
@@ -858,21 +859,16 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				_strset_s(module_path, strlen(module_path) + 1, 0);
 			}
 		}
-
 /*
 		sirius::app::server::arbitrator::db::attendant_dao dao(_context->db_path);
 		dao.remove();
 */
-
-		sirius::app::server::arbitrator::entity::configuration_t confentity;
-		{
-			sirius::app::server::arbitrator::db::configuration_dao confdao(_context->db_path);
-			status = confdao.retrieve(&confentity);
-		}
-
+			
+		sirius::app::server::arbitrator::db::configuration_dao confdao(_context->db_path);
+		status = confdao.retrieve(&confentity);
+		
 		if (status == sirius::app::server::arbitrator::proxy::err_code_t::success)
-		{
-			_max_attendant_instance_count = confentity.max_attendant_instance;
+		{		
 			sirius::library::net::sicp::server::start(nullptr, confentity.controller_portnumber);
 			if (_context && _context->handler)
 				_context->handler->on_start();		
@@ -909,10 +905,10 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 	{		
 		if (!attendant_created)
 		{
-			if (_max_attendant_instance_count > 0)
+			if (confentity.max_attendant_instance > 0)
 			{
 				int32_t count = get_available_attendant_count();
-				int32_t percent = ((float)count / (float)_max_attendant_instance_count) * 100;
+				int32_t percent = ((float)count / (float)confentity.max_attendant_instance) * 100;
 
 				if (percent < 100)
 				{
@@ -945,7 +941,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				LOGGER::make_info_log(SAA, "%s, %d, [WAIT_FOR_SSM_SERVICE_START] cpu usage = %0.2f", __FUNCTION__, __LINE__, cpu_usage);
 				if (cpu_usage < 80)
 				{
-					_cluster->ssm_service_info("START", _max_attendant_instance_count);
+					_cluster->ssm_service_info("START", confentity.max_attendant_instance);
 					_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start;
 					LOGGER::make_info_log(SAA, "%s, %d, [SSM_SERVICE_START]", __FUNCTION__, __LINE__);
 					_cluster->alive_start();
@@ -957,7 +953,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 					check_alive_attendant();
 
 				if (elapsed_millisec % (onesec * 60 * 60) == 0)
-					check_expire_cache(7);
+					check_expire_cache(confentity.caching_directory ,confentity.caching_expire_time);
 
 				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
 				//	close_disconnected_attendant();
@@ -976,7 +972,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 	}
 	_sessions.clear();	
 			
-	_cluster->ssm_service_info("STOP", _max_attendant_instance_count);
+	_cluster->ssm_service_info("STOP", confentity.max_attendant_instance);
 	_state = sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop;
 	if (_context && _context->handler)
 		_context->handler->on_stop();

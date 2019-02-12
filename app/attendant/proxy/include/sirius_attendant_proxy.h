@@ -102,6 +102,7 @@ namespace sirius
 					int32_t controller_portnumber;
 					int32_t streamer_portnumber;
 					int32_t play_after_connect;
+					wchar_t caching_directory[MAX_PATH];
 
 					_context_t(void)
 						: type(sirius::app::attendant::proxy::attendant_type_t::web)

@@ -62,8 +62,8 @@ int32_t sirius::library::video::transform::codec::partial::png::compressor::core
 
 	if (_context->caching)
 	{
-		if (_access(IMAGE_CACHE_ROOT_DIR, 0) != 0)
-			CreateDirectoryA(IMAGE_CACHE_ROOT_DIR, NULL);
+		if (_waccess(_context->caching_directory, 0) != 0)
+			CreateDirectory(_context->caching_directory, NULL);
 	}
 
 	status = _real_compressor->initialize(_context);
@@ -815,7 +815,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									char cache_dir[MAX_PATH] = { 0 };
 									char cache_file[MAX_PATH] = { 0 };
 
-									_snprintf_s(cache_dir, MAX_PATH, "%s\\%dx%d", IMAGE_CACHE_ROOT_DIR, ccl_info.width, ccl_info.height);
+									_snprintf_s(cache_dir, MAX_PATH, "%ws\\%dx%d", _context->caching_directory, ccl_info.width, ccl_info.height);
 									if (_access(cache_dir, 0) != 0)
 										CreateDirectoryA(cache_dir, NULL);
 
@@ -2359,7 +2359,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											char cache_dir[MAX_PATH] = { 0 };
 											char cache_file[MAX_PATH * 2] = { 0 };
 
-											_snprintf_s(cache_dir, MAX_PATH, "%s\\%d", IMAGE_CACHE_ROOT_DIR, index);
+											_snprintf_s(cache_dir, MAX_PATH, "%ws\\%d", _context->caching_directory, index);
 											if (_access(cache_dir, 0) != 0)
 												CreateDirectoryA(cache_dir, NULL);
 

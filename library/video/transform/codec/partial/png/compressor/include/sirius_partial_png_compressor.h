@@ -50,6 +50,7 @@ namespace sirius
 									bool	indexed_video;
 									int32_t nthread;
 									bool	caching;
+									wchar_t	caching_directory[MAX_PATH];									
 									_context_t(void);
 									_context_t(const _context_t & clone);
 									_context_t & operator=(const _context_t & clone);

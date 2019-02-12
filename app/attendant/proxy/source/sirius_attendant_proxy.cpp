@@ -258,7 +258,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		context->keepalive_timeout = _wtoi(value.c_str());
 	}
-
 	if (param.end() != (iter = param.find(L"enable_tls")))
 	{
 		value = iter->second;
@@ -283,6 +282,11 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 			value = iter->second;
 			context->video_fps = _wtoi(value.c_str());
 		}
+	}
+	if (param.end() != (iter = param.find(L"caching_directory")))
+	{
+		value = iter->second;
+		wcscpy_s(context->caching_directory, value.c_str());
 	}
 	else
 	{

@@ -104,7 +104,8 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 				_venc_context.invalidate4client = context->invalidate4client;
 				_venc_context.indexed_mode = context->indexed_mode;
 				_venc_context.nthread = context->nthread;
-				_venc_context.caching = context->caching;
+				_venc_context.caching = context->caching;		
+				wcsncpy_s(_venc_context.caching_directory, context->caching_directory, sizeof(_venc_context.caching_directory));
 				break;
 			}
 			case sirius::library::framework::server::web::video_submedia_type_t::webp :
@@ -123,6 +124,7 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 				_venc_context.indexed_mode = context->indexed_mode;
 				_venc_context.nthread = context->nthread;
 				_venc_context.caching = context->caching;
+				wcsncpy_s(_venc_context.caching_directory, context->caching_directory, sizeof(_venc_context.caching_directory));
 				break;
 			}
 		}

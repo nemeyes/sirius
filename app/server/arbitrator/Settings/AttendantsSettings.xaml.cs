@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -25,7 +26,7 @@ namespace sirius.app.server.arbitrator.Settings
     {
         public static AttendantsSettings handle;
     }
-    public partial class AttendantsSettings : UserControl
+    public partial class AttendantsSettings : System.Windows.Controls.UserControl
     {
         public AttendantsSettings()
         {
@@ -53,6 +54,8 @@ namespace sirius.app.server.arbitrator.Settings
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
             TextVideoWebpQuality.Text = setting_value.video_webp_quality.ToString();
             QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
+            TextCachingExpireTime.Text = setting_value.caching_expire_time.ToString();
+            TextCachingDirectory.Text = setting_value.caching_directory.ToString();
 
             if (setting_value.video_codec == sirius_arbitrator.video_submedia_type.png)
             {
@@ -131,17 +134,6 @@ namespace sirius.app.server.arbitrator.Settings
                 ReloadOnClientDisconnectingOff.IsChecked = true;
             }
 
-            if (setting_value.enable_caching)
-            {
-                CachingOn.IsChecked = true;
-                CachingOff.IsChecked = false;
-            }
-            else
-            {
-                CachingOn.IsChecked = false;
-                CachingOff.IsChecked = true;
-            }
-
             if (setting_value.video_quantization_posterization)
             {
                 VideoQuantizationPosterizationOn.IsChecked = true;
@@ -173,6 +165,17 @@ namespace sirius.app.server.arbitrator.Settings
             {
                 VideoQuantizationContrastMapsOn.IsChecked = false;
                 VideoQuantizationContrastMapsOff.IsChecked = true;
+            }
+
+            if (setting_value.enable_caching)
+            {
+                CachingOn.IsChecked = true;
+                CachingOff.IsChecked = false;
+            }
+            else
+            {
+                CachingOn.IsChecked = false;
+                CachingOff.IsChecked = true;
             }
 
             setting_value.enable_auto_start = false;
@@ -239,6 +242,8 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
             setting_value.nthread = Convert.ToInt32(TextThreadCount.Text);
             setting_value.video_webp_quality = Convert.ToSingle(TextVideoWebpQuality.Text);
+            setting_value.caching_expire_time = Convert.ToInt32(TextCachingExpireTime.Text);
+            setting_value.caching_directory = TextCachingDirectory.Text.Trim();
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
@@ -432,6 +437,25 @@ namespace sirius.app.server.arbitrator.Settings
                 ContrastMapsPanel.IsEnabled = false;
                 WebpQualityPanel.IsEnabled = true;
             }
+        }
+        private void CachingOn_Click(object sender, RoutedEventArgs e)
+        {
+            CachingExpireTimePanel.IsEnabled = true;
+            CachingDirectoryPanel.IsEnabled = true;
+            TextCachingDirectoryPanel.IsEnabled = true;
+        }
+
+        private void CachingOff_Click(object sender, RoutedEventArgs e)
+        {
+            CachingExpireTimePanel.IsEnabled = false;
+            CachingDirectoryPanel.IsEnabled = false;
+            TextCachingDirectoryPanel.IsEnabled = false;                    
+        }
+        private void CachingDirectoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.ShowDialog();
+            TextCachingDirectory.Text = dialog.SelectedPath;
         }
     }
 }

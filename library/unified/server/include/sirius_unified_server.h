@@ -96,6 +96,7 @@ namespace sirius
 					int32_t nthread;
 					bool	play_after_init;
 					bool	caching;
+					wchar_t	caching_directory[MAX_PATH];					
 					_video_compressor_context_t(void)
 						: gpuindex(0)
 						, memtype(sirius::library::unified::server::video_memory_type_t::host)
@@ -115,7 +116,7 @@ namespace sirius
 						, nthread(20)
 						, caching(false)
 					{
-					
+						memset(caching_directory, 0x00, MAX_PATH);
 					}
 				} video_compressor_context_t;
 

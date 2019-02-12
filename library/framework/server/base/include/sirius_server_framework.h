@@ -83,6 +83,7 @@ namespace sirius
 						int32_t type;
 						HWND	hwnd;
 						void *	user_data;
+						wchar_t caching_directory[MAX_PATH];
 						_context_t(void)
 							: video_codec(sirius::library::framework::server::base::video_submedia_type_t::unknown)
 							, video_width(0)
@@ -107,6 +108,7 @@ namespace sirius
 						{
 							memset(url, 0x00, sizeof(url));
 							memset(uuid, 0x00, sizeof(uuid));
+							memset(caching_directory, 0x00, sizeof(caching_directory));
 						}
 
 						~_context_t(void)
