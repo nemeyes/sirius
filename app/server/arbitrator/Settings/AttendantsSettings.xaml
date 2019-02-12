@@ -63,7 +63,7 @@
                 <StackPanel>
                     <Label Content="Attendant Creation Delay" Target="{Binding ElementName=TextAttendantCreationDelay}" Width="240"/>
                     <TextBox x:Name="TextAttendantCreationDelay" Width="70" Text="{Binding AttendantCreationDelay, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right" PreviewTextInput="TextAttendantCreationDelay_PreviewTextInput" /> 
-                    <Label Content="ms"/>
+                    <Label Content="(ms)"/>
                 </StackPanel>
 
                 <StackPanel>
@@ -198,17 +198,18 @@
                     <RadioButton x:Name="CachingOff" IsChecked="False" Content="No" Margin="8,0,0,0" Click="CachingOff_Click"/>
                 </StackPanel>
 
-                <StackPanel Name="CachingExpireTimePanel">
-                    <Label Content="Caching Expire Time" Target="{Binding ElementName=TextCachingExpireTime}" Width="240"/>
-                    <TextBox x:Name="TextCachingExpireTime" Width="70" Text="{Binding TextCachingExpireTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
-                </StackPanel>
-
                 <StackPanel Name="CachingDirectoryPanel">
                     <Label Content="Caching Directory" Target="{Binding ElementName=TextCachingDirectory}" Width="240"/>
                 </StackPanel>
                 <StackPanel Name="TextCachingDirectoryPanel">
                     <TextBox x:Name="TextCachingDirectory" Width="262" Text="{Binding TextCachingDirectory, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
                     <Button x:Name="CachingDirectoryButton" Width="43" Content="..." Margin="5,0,0,0" HorizontalAlignment="Right" Click="CachingDirectoryButton_Click"/>
+                </StackPanel>
+
+                <StackPanel Name="CachingExpireTimePanel">
+                    <Label Content="Caching Expire Time" Target="{Binding ElementName=TextCachingExpireTime}" Width="240"/>
+                    <TextBox x:Name="TextCachingExpireTime" Width="70" Text="{Binding TextCachingExpireTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
+                    <Label Content="(h)"/>
                 </StackPanel>
 
                 <!--StackPanel>

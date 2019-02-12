@@ -812,14 +812,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									md5_hash(hash_buffer, (input.width * input.height) << 2, hash);
 
 									bool is_cache = false;
-									char cache_dir[MAX_PATH] = { 0 };
+									//char cache_dir[MAX_PATH] = { 0 };
 									char cache_file[MAX_PATH] = { 0 };
 
-									_snprintf_s(cache_dir, MAX_PATH, "%ws\\%dx%d", _context->caching_directory, ccl_info.width, ccl_info.height);
-									if (_access(cache_dir, 0) != 0)
-										CreateDirectoryA(cache_dir, NULL);
+									//_snprintf_s(cache_dir, MAX_PATH, "%ws\\%dx%d", _context->caching_directory, ccl_info.width, ccl_info.height);
+									//if (_access(cache_dir, 0) != 0)
+									//	CreateDirectoryA(cache_dir, NULL);
 
-									_snprintf_s(cache_file, MAX_PATH , "%s\\%s.png", cache_dir, hash);
+									_snprintf_s(cache_file, MAX_PATH , "%ws\\%s.png", _context->caching_directory, hash);
 									if (_access(cache_file, 0) == 0)
 										is_cache = true;
 																		
@@ -2356,14 +2356,14 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 											md5_hash(hash_buffer, (input.width * input.height) << 2, hash);
 
 											bool is_cache = false;
-											char cache_dir[MAX_PATH] = { 0 };
+											//char cache_dir[MAX_PATH] = { 0 };
 											char cache_file[MAX_PATH * 2] = { 0 };
 
-											_snprintf_s(cache_dir, MAX_PATH, "%ws\\%d", _context->caching_directory, index);
-											if (_access(cache_dir, 0) != 0)
-												CreateDirectoryA(cache_dir, NULL);
+											//_snprintf_s(cache_dir, MAX_PATH, "%ws\\%d", _context->caching_directory, index);
+											//if (_waccess(_context->caching_directory, 0) != 0)
+											//	CreateDirectory(_context->caching_directory, NULL);
 
-											_snprintf_s(cache_file, MAX_PATH, "%s\\%s.png", cache_dir, hash);
+											_snprintf_s(cache_file, MAX_PATH, "%ws\\%s.png", _context->caching_directory, hash);
 											if (_access(cache_file, 0) == 0)
 												is_cache = true;
 																						
