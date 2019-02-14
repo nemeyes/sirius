@@ -312,6 +312,15 @@ void sirius::app::server::manager::manager::run()
 extern "C" int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE,
 	LPTSTR lpCmdLine, int nShowCmd)
 {
+	DEVMODE Mode;
+	ZeroMemory(&Mode, sizeof(Mode));
+	Mode.dmSize = sizeof(Mode);
+	Mode.dmPelsWidth = 1920;
+	Mode.dmPelsHeight = 1080;
+	Mode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+	int res = ChangeDisplaySettings(&Mode, 0);
+	Sleep(5000);
+
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAW, "");
 	lpCmdLine = GetCommandLine();
 	_proc.init(ObjectMap, hInstance, IDS_SERVICENAME, &LIBID_SERVERMANAGERLIB);
