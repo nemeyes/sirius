@@ -11,6 +11,7 @@
 #include <vector>
 #include <assert.h>
 #include <stdlib.h>
+#include <sys/utime.h>
 
 #include <openssl/md5.h>
 
@@ -814,14 +815,17 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									bool is_cache = false;
 									//char cache_dir[MAX_PATH] = { 0 };
 									char cache_file[MAX_PATH] = { 0 };
-
+									
 									//_snprintf_s(cache_dir, MAX_PATH, "%ws\\%dx%d", _context->caching_directory, ccl_info.width, ccl_info.height);
 									//if (_access(cache_dir, 0) != 0)
 									//	CreateDirectoryA(cache_dir, NULL);
 
 									_snprintf_s(cache_file, MAX_PATH , "%ws\\%s.png", _context->caching_directory, hash);
 									if (_access(cache_file, 0) == 0)
+									{
 										is_cache = true;
+										utime(cache_file, NULL);
+									}
 																		
 									if (!is_cache)
 									{
@@ -842,7 +846,7 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 									{
 										FILE *fp = nullptr;
 										if (fopen_s(&fp, cache_file, "rb") == 0)
-										{
+										{										
 											fseek(fp, 0, SEEK_END);
 											int32_t rsize = ftell(fp);
 											char* read_buffer = static_cast<char*>(malloc(rsize + 1));
@@ -2365,8 +2369,10 @@ void sirius::library::video::transform::codec::partial::png::compressor::core::p
 
 											_snprintf_s(cache_file, MAX_PATH, "%ws\\%s.png", _context->caching_directory, hash);
 											if (_access(cache_file, 0) == 0)
+											{
 												is_cache = true;
-																						
+												utime(cache_file, NULL);
+											}
 											if (!is_cache)
 											{
 												status = _real_compressor->compress(&input, &bitstream);

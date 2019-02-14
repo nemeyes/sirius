@@ -952,7 +952,7 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 				if (elapsed_millisec % (onesec * 10) == 0)			
 					check_alive_attendant();
 
-				if (elapsed_millisec % (onesec * 60 * 30) == 0)
+				if (elapsed_millisec % (onesec * 60) == 0)
 					check_expire_cache(confentity.caching_directory ,confentity.caching_expire_time);
 
 				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)

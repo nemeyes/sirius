@@ -368,12 +368,20 @@ BOOL CALLBACK sirius::app::server::manager::controller::terminate_app_enum(HWND 
 bool sirius::app::server::manager::controller::launch_app_different_session(char* path, char* arguments, int session_id)
 {
 	
-	wchar_t *unicode_path;
-	sirius::stringhelper::convert_multibyte2wide(path, &unicode_path);
 
+	wchar_t *unicode_path;
 	wchar_t *unicode_arguments;
-	sirius::stringhelper::convert_multibyte2wide(arguments, &unicode_arguments);
+
+	if (path)
+		sirius::stringhelper::convert_multibyte2wide(path, &unicode_path);
+	else
+		return S_FALSE;
 	
+	if (arguments)
+		sirius::stringhelper::convert_multibyte2wide(arguments, &unicode_arguments);
+	else
+		unicode_arguments = nullptr;
+
 	HMODULE hInstWtsapi32 = NULL;
 	typedef BOOL(WINAPI *WTSQueryUserTokenPROC)(ULONG SessionId, PHANDLE phToken);
 	WTSQueryUserTokenPROC WTSQueryUserToken = NULL;

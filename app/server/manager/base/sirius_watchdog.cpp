@@ -73,6 +73,9 @@ void sirius::app::server::manager::monitor::process()
 	char sirius_path[MAX_PATH] = { 0 };
 	sprintf_s(sirius_path, "%s\\sirius_arbitrator.exe", mb_file_name);
 
+	char resize_path[MAX_PATH] = { 0 };
+	sprintf_s(resize_path, "%s\\resize.exe", mb_file_name);
+
 	char system_user_path[MAX_PATH] = { 0 };
 	sprintf_s(system_user_path, "sirius_arbitrator.exe --manager");
 	if (mb_file_name)
@@ -89,10 +92,12 @@ void sirius::app::server::manager::monitor::process()
 		{
 			LOGGER::make_info_log(SAW, "%s(), %d, Unable to find sirius_arbitrator.exe in process list.", __FUNCTION__, __LINE__);
 			if (id > 0)
-			{	
+			{					
 				controller.process_kill("sirius_web_attendant.exe");
 
 				LOGGER::make_info_log(SAW, "%s(), %d, process = session_id:%d, path:%s.", __FUNCTION__, __LINE__, id, sirius_path);
+				controller.launch_app_different_session(resize_path, nullptr, id);
+				::Sleep(1000 * 5);
 				controller.launch_app_different_session(sirius_path, system_user_path, id);
 			}
 			else
