@@ -60,7 +60,6 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->binvalidate = _external_venc_ctx->invalidate4client;
 			venc_ctx->indexed_video = _external_venc_ctx->indexed_mode;
 			venc_ctx->nthread = _external_venc_ctx->nthread;
-			venc_ctx->caching = _external_venc_ctx->caching;
 			venc_ctx->compression_level = _external_venc_ctx->png.compression_level;
 			venc_ctx->posterization = _external_venc_ctx->png.quantization_posterization;
 			venc_ctx->use_dither_map = _external_venc_ctx->png.quantization_dither_map;
@@ -71,7 +70,12 @@ int32_t sirius::library::unified::compressor::initialize_video_compressor(sirius
 			venc_ctx->max_colors = _external_venc_ctx->png.quantization_colors;
 			venc_ctx->min_quality = 0;
 			venc_ctx->max_quality = 100;
-			wcsncpy_s(venc_ctx->caching_directory, _external_venc_ctx->caching_directory, MAX_PATH);
+
+			venc_ctx->localcache = _external_venc_ctx->localcache;
+			venc_ctx->localcache_legacy = _external_venc_ctx->localcache_legacy;
+			venc_ctx->localcache_legacy_expire_time = _external_venc_ctx->localcache_legacy_expire_time;
+			venc_ctx->localcache_portnumber = _external_venc_ctx->localcache_portnumber;
+			wcsncpy_s(venc_ctx->localcache_path, _external_venc_ctx->localcache_path, MAX_PATH);
 
 			venc->initialize(venc_ctx);
 			if (_external_venc_ctx->play_after_init)

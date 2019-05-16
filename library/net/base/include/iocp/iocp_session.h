@@ -144,6 +144,11 @@ namespace sirius
 					BOOL			pending(void);
 					BOOL			is_session_destroy(void);
 					void			increase_session_destroy_count(void);
+
+					int32_t			so_recv_buffer_size(void);
+					int32_t			so_send_buffer_size(void);
+					int32_t			recv_buffer_size(void);
+					int32_t			send_buffer_size(void);
 					
 					uint32_t		status(void);
 					void			status(uint32_t value);

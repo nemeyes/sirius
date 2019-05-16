@@ -1,6 +1,7 @@
 #ifndef _PARTIAL_PNG_COMPRESSOR_H_
 #define _PARTIAL_PNG_COMPRESSOR_H_
 
+#include <sirius_localcache_client.h>
 #include "sirius_partial_png_compressor.h"
 
 #include <atlbase.h>
@@ -108,7 +109,10 @@ namespace sirius
 									char *			compressed_buffer;
 									int32_t			compressed_buffer_size;
 
+									int32_t			hash_buffer_size;
+									uint8_t *		hash_buffer;
 
+									uint8_t **		rows;
 									int32_t *		pindex;
 									uint8_t *		pcompressed;
 									int32_t *		pcapacity;
@@ -125,6 +129,7 @@ namespace sirius
 									HANDLE			available;
 									sirius::library::video::transform::codec::partial::png::compressor::entity_t	input;
 									sirius::library::video::transform::codec::partial::png::compressor::entity_t	output;
+									sirius::library::cache::local::client *											lcc;
 									sirius::library::video::transform::codec::libpng::compressor *					real_compressor;
 									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
 								} indexed_thread_context_t;
@@ -133,6 +138,9 @@ namespace sirius
 								{
 									char *			compressed_buffer;
 									int32_t			compressed_buffer_size;
+
+									int32_t			hash_buffer_size;
+									uint8_t *		hash_buffer;
 
 									uint8_t **		rows;
 									uint8_t *		pcompressed;
@@ -144,6 +152,7 @@ namespace sirius
 									HANDLE			available;
 									sirius::library::video::transform::codec::partial::png::compressor::entity_t	input;
 									sirius::library::video::transform::codec::partial::png::compressor::entity_t	output;
+									sirius::library::cache::local::client *											lcc;
 									sirius::library::video::transform::codec::libpng::compressor *					real_compressor;
 									sirius::library::video::transform::codec::partial::png::compressor::core *		parent;
 								} coordinated_thread_context_t;
@@ -216,9 +225,6 @@ namespace sirius
 
 								void	connect_component(unsigned short * pseudo_stack, std::map<uint64_t, uint32_t> * bfgs, connected_component_t * cc, uint32_t width, uint32_t height, uint32_t x, uint32_t y);
 
-								//void	process_psend_indexed(void);
-								//void	process_bsend_indexed(void);
-								//void	process_coordinates(void);
 								int32_t allocate_io_buffers(void);
 								int32_t release_io_buffers(void);
 
@@ -239,8 +245,8 @@ namespace sirius
 
 								sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t										_iobuffer[MAX_IO_BUFFERS];
 								sirius::queue<sirius::library::video::transform::codec::partial::png::compressor::core::buffer_t>						_iobuffer_queue;
-								sirius::library::video::transform::codec::libpng::compressor *															_real_compressor;								
-								std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*>	_indexed_cache_image;
+								//sirius::library::video::transform::codec::libpng::compressor *															_real_compressor;								
+								//std::map<int32_t, sirius::library::video::transform::codec::partial::png::compressor::core::compressed_cache_image_t*>	_indexed_cache_image;
 								
 								int32_t				_prev_x;
 								int32_t				_prev_y;

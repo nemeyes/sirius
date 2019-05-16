@@ -153,6 +153,13 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		return status;
 
 	wcsncpy_s(_framework_context->url, _context->url, sizeof(_framework_context->url));
+
+	_framework_context->localcache = _context->localcache;
+	_framework_context->localcache_legacy = _context->localcache_legacy;
+	_framework_context->localcache_legacy_expire_time = _context->localcache_legacy_expire_time;
+	_framework_context->localcache_portnumber = _context->localcache_portnumber;
+	wcsncpy_s(_framework_context->localcache_path, _context->localcache_path, sizeof(_framework_context->localcache_path));
+
 	_framework_context->video_codec = _context->video_codec;
 	_framework_context->video_width = _context->video_width;
 	_framework_context->video_height = _context->video_height;
@@ -169,7 +176,6 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 		_framework_context->png.video_quantization_dither_map = _context->png.video_quantization_dither_map;
 		_framework_context->png.video_quantization_contrast_maps = _context->png.video_quantization_contrast_maps;
 		_framework_context->png.video_quantization_colors = _context->png.video_quantization_colors;
-		wcsncpy_s(_framework_context->caching_directory, _context->caching_directory, sizeof(_framework_context->caching_directory));
 	}
 	else if (_framework_context->video_codec == sirius::app::attendant::proxy::video_submedia_type_t::webp)
 	{
@@ -181,7 +187,6 @@ int32_t sirius::app::attendant::proxy::core::connect(void)
 	_framework_context->indexed_mode = _context->indexed_mode;
 	_framework_context->nthread = _context->nthread;
 	_framework_context->present = _context->present;
-	_framework_context->caching = _context->caching;
 	_framework_context->keepalive = _context->keepalive;
 	_framework_context->keepalive_timeout = _context->keepalive_timeout;
 	_framework_context->tls = _context->tls;
@@ -226,6 +231,13 @@ int32_t sirius::app::attendant::proxy::core::play(void)
 	if (!_context->play_after_connect)
 	{
 		wcsncpy_s(_framework_context->url, _context->url, sizeof(_framework_context->url));
+
+		_framework_context->localcache = _context->localcache;
+		_framework_context->localcache_legacy = _context->localcache_legacy;
+		_framework_context->localcache_legacy_expire_time = _context->localcache_legacy_expire_time;
+		_framework_context->localcache_portnumber = _context->localcache_portnumber;
+		wcsncpy_s(_framework_context->localcache_path, _context->localcache_path, sizeof(_framework_context->localcache_path));
+
 		_framework_context->video_codec = _context->video_codec;
 		_framework_context->video_width = _context->video_width;
 		_framework_context->video_height = _context->video_height;

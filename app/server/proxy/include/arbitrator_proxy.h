@@ -6,6 +6,8 @@
 
 #include <sirius_uuid.h>
 #include "sirius_arbitrator_proxy.h"
+#include <sirius_localcache_server.h>
+#include "configuration_entity.h"
 #include <sirius_sicp_server.h>
 #include "process_controller.h"
 #include <sirius_performance_monitor.h>
@@ -46,7 +48,7 @@ namespace sirius
 						static const int32_t start = 2;
 					} arbitrator_state_t;
 
-					core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, int32_t keepalive_timeout, bool use_tls);
+					core(sirius::app::server::arbitrator::proxy * front, sirius::app::server::arbitrator::entity::configuration_t * configuration);
 					virtual ~core(void);
 
 					int32_t initialize(sirius::app::server::arbitrator::proxy::context_t * context);
@@ -56,12 +58,13 @@ namespace sirius
 					int32_t stop(void);
 
 					int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+						bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
 						int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 						int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 						float video_webp_quality, int32_t video_webp_method, 
 						bool invalidate4client, bool indexed_mode, int32_t nthread, 
 						bool double_reloading_on_creating, bool reloading_on_disconnecting,
-						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t chching_expire_time);
+						bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app);
 
 					int32_t	connect_client(const char * uuid, const char * client_id);
 					int32_t disconnect_client(const char * uuid);
@@ -116,7 +119,10 @@ namespace sirius
 					HANDLE _system_monitor_thread;
 					bool _system_monitor_run;					
 					
-					CRITICAL_SECTION _attendant_cs;					
+					CRITICAL_SECTION _attendant_cs;				
+
+					sirius::library::cache::local::server::context_t * _lcs_ctx;
+					sirius::library::cache::local::server * _lcs;
 				};
 			};
 		};

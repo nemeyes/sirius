@@ -172,6 +172,26 @@ void sirius::library::net::iocp::session::increase_session_destroy_count(void)
 	sirius::library::log::log4cplus::logger::make_debug_log(SAA, "ndestroy_session_count=%d", _ndestroy_session);
 }
 
+int32_t	sirius::library::net::iocp::session::so_recv_buffer_size(void)
+{
+	return _so_recv_buffer_size;
+}
+
+int32_t sirius::library::net::iocp::session::so_send_buffer_size(void)
+{
+	return _so_send_buffer_size;
+}
+
+int32_t sirius::library::net::iocp::session::recv_buffer_size(void)
+{
+	return _recv_buffer_size;
+}
+
+int32_t sirius::library::net::iocp::session::send_buffer_size(void)
+{
+	return _send_buffer_size;
+}
+
 void sirius::library::net::iocp::session::close(void)
 {
 	sirius::autolock lock(&_lock);

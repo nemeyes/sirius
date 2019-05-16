@@ -148,6 +148,8 @@ int32_t sirius::library::net::backend::cluster_adapter::alive_start()
 		_keepalive_timeset_event = timeSetEvent(_keepalive_delay_time, _timer_res, &timer_keepalive, (DWORD_PTR)this, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 		_stat_timer = true;
 	}
+
+	return sirius::base::err_code_t::success;
 }
 
 int32_t sirius::library::net::backend::cluster_adapter::client_connect(char* client_id, int32_t use_count, int32_t attendant_num)

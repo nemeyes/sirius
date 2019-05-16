@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{31423dd5-dfc3-4351-8693-fa6ac25162fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="localcache">
+      <UniqueIdentifier>{103e6278-5617-4bf8-8722-7799c993029d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command">
+      <UniqueIdentifier>{e4f52932-e1fa-4b0d-ae08-112b10268667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{7ee86d96-32a4-488b-8e3b-f75496e6520d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\iocp">
+      <UniqueIdentifier>{8685a91c-84b1-45da-bf21-a34dec867866}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\server\include\sirius_localcache_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\server\include\localcache_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_base.h">
+      <Filter>localcache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_command.h">
+      <Filter>localcache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_packet.h">
+      <Filter>localcache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_session.h">
+      <Filter>localcache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_commands.h">
+      <Filter>localcache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\base\command\localcache_commands_server.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\base\include\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\cache\local\server\include\storage_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\platform.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_handler.h">
+      <Filter>net\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h">
+      <Filter>net\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_server.h">
+      <Filter>net\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_session.h">
+      <Filter>net\iocp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\server\source\sirius_localcache_server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\server\source\localcache_server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_base.cpp">
+      <Filter>localcache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_command.cpp">
+      <Filter>localcache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_session.cpp">
+      <Filter>localcache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\cache\local\server\source\storage_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp">
+      <Filter>net\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_server.cpp">
+      <Filter>net\iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_session.cpp">
+      <Filter>net\iocp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

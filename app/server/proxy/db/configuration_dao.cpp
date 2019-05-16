@@ -28,6 +28,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 
 	std::string sql = "UPDATE tb_configuration SET ";
 	sql += "uuid=?, url=?, max_attendant_instance=?, attendant_creation_delay=?, min_attendant_restart_threshold=?, max_attendant_restart_threshold=?, controller_portnumber=?, streamer_portnumber=?, ";
+	sql += "localcache=?, localcache_legacy=?, localcache_legacy_expire_time=?, localcache_portnumber=?, localcache_size=?, localcache_threadpool_count=?, localcache_path=?, ";
 	sql += "video_codec=?, video_width=?, video_height=?, video_fps=?, video_buffer_count=?, ";
 	sql += "video_block_width=?, video_block_height=?, ";
 	sql += "video_png_compression_level = ?, video_png_quantization_posterization=?, video_png_quantization_dither_map=?, video_png_quantization_contrast_maps=?, video_png_quantization_colors = ? , ";
@@ -35,8 +36,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	sql += "enable_invalidate4client=?, enable_indexed_mode=?, nthread=?, ";
 	sql += "double_reloading_on_creating=?, reloading_on_disconnecting=?, ";
 	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_streamer_keepalive=?, streamer_keepalive_timeout=?, enable_present=?, enable_auto_start=?, enable_caching=?, clean_attendant=?, ";
-	sql += "app_session_app=?, ";
-	sql += "caching_directory=?, caching_expire_time=?";
+	sql += "app_session_app=? ";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -49,6 +49,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->max_attendant_restart_threshold);
 		sqlite3_bind_int(stmt, ++index, entity->controller_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->streamer_portnumber);
+
+		sqlite3_bind_int(stmt, ++index, entity->localcache ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_legacy ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_legacy_expire_time);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_portnumber);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_size);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_threadpool_count);
+		sqlite3_bind_text(stmt, ++index, entity->localcache_path, -1, 0);
+
 		sqlite3_bind_int(stmt, ++index, entity->video_codec);
 		sqlite3_bind_int(stmt, ++index, entity->video_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_height);
@@ -80,11 +89,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->streamer_keepalive_timeout);
 		sqlite3_bind_int(stmt, ++index, entity->enable_present?1:0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
+
 		sqlite3_bind_int(stmt, ++index, entity->clean_attendant ? 1 : 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
-		sqlite3_bind_text(stmt, ++index, entity->caching_directory, -1, 0);
-		sqlite3_bind_int(stmt, ++index, entity->caching_expire_time);
 
 		int32_t result = sqlite3_step(stmt);
 		if (result == SQLITE_DONE)
@@ -130,6 +137,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.max_attendant_restart_threshold = 10;
 		c_entity.controller_portnumber = 5000;
 		c_entity.streamer_portnumber = 7000;
+
+		c_entity.localcache = false;
+		c_entity.localcache_legacy = false;
+		c_entity.localcache_legacy_expire_time = 1;
+		c_entity.localcache_portnumber = 5001;
+		c_entity.localcache_size = 1024;
+		c_entity.localcache_threadpool_count = 0;
+		strncpy_s(c_entity.localcache_path, "./cache", sizeof(c_entity.localcache_path));
+
 		c_entity.video_codec = sirius::app::server::arbitrator::db::configuration_dao::video_submedia_type_t::png;
 		c_entity.video_width = 1280;
 		c_entity.video_height = 720;
@@ -156,11 +172,8 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 		c_entity.streamer_keepalive_timeout = 5000;
 		c_entity.enable_present = false;
 		c_entity.enable_auto_start = false;
-		c_entity.enable_caching = false;
 		c_entity.clean_attendant = false;
 		strncpy_s(c_entity.app_session_app, "", sizeof(c_entity.app_session_app));
-		strncpy_s(c_entity.caching_directory, "", sizeof(c_entity.caching_directory));
-		c_entity.caching_expire_time = 1;
 
 		status = create(&c_entity, conn);
 		if (status != sirius::app::server::arbitrator::db::configuration_dao::err_code_t::success)
@@ -168,15 +181,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 	}
 
 	std::string sql = "SELECT uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, ";
+	sql += "localcache, localcache_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool_count, localcache_path, ";
 	sql += "video_codec, video_width, video_height, video_fps, video_buffer_count, ";
 	sql += "video_block_width, video_block_height, ";
 	sql += "video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, ";
 	sql += "video_webp_quality, video_webp_method, ";
 	sql += "enable_invalidate4client, enable_indexed_mode, nthread, ";
 	sql += "double_reloading_on_creating, reloading_on_disconnecting, ";
-	sql += "enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, ";
-	sql += "app_session_app, ";
-	sql += "caching_directory, caching_expire_time ";
+	sql += "enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, ";
+	sql += "app_session_app ";
 	sql += "FROM tb_configuration";
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -197,6 +210,19 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 				entity->max_attendant_restart_threshold = sqlite3_column_int(stmt, index++);
 				entity->controller_portnumber = sqlite3_column_int(stmt, index++);
 				entity->streamer_portnumber = sqlite3_column_int(stmt, index++);
+
+				entity->localcache = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->localcache_legacy = sqlite3_column_int(stmt, index++) ? true : false;
+				entity->localcache_legacy_expire_time = sqlite3_column_int(stmt, index++);
+				entity->localcache_portnumber = sqlite3_column_int(stmt, index++);
+				entity->localcache_size = sqlite3_column_int(stmt, index++);
+				entity->localcache_threadpool_count = sqlite3_column_int(stmt, index++);
+				char * localcache_path = (char*)sqlite3_column_text(stmt, index++);
+				if (localcache_path && strlen(localcache_path) > 0)
+				{
+					strncpy_s(entity->localcache_path, localcache_path, sizeof(entity->localcache_path));
+				}
+
 				entity->video_codec = sqlite3_column_int(stmt, index++);
 				entity->video_width = sqlite3_column_int(stmt, index++);
 				entity->video_height = sqlite3_column_int(stmt, index++);
@@ -229,14 +255,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::retrieve(sirius:
 
 				entity->enable_present = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->enable_auto_start = sqlite3_column_int(stmt, index++) ? true : false;
-				entity->enable_caching = sqlite3_column_int(stmt, index++) ? true : false;
 				entity->clean_attendant = sqlite3_column_int(stmt, index++) ? true : false;
 				char * app_session_app = (char*)sqlite3_column_text(stmt, index++);
 				strncpy_s(entity->app_session_app, app_session_app, sizeof(entity->app_session_app));
-
-				char * caching_directory = (char*)sqlite3_column_text(stmt, index++);
-				strncpy_s(entity->caching_directory, caching_directory, sizeof(entity->caching_directory));
-				entity->caching_expire_time = sqlite3_column_int(stmt, index++);
 
 				status = sirius::app::server::arbitrator::db::configuration_dao::err_code_t::success;
 			}
@@ -265,8 +286,14 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 	else
 		conn = connection;
 
-	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, video_webp_quality, video_webp_method, enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expier_time) ";
-	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string sql = "INSERT INTO tb_configuration (uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, \
+		localcache, localcache_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool_count, localcache_path, \
+		video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, \
+		video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, \
+		video_webp_quality, video_webp_method, \
+		enable_invalidate4client, enable_indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, \
+		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, app_session_app) ";
+	sql += "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
 	{
@@ -279,6 +306,15 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		sqlite3_bind_int(stmt, ++index, entity->max_attendant_restart_threshold);
 		sqlite3_bind_int(stmt, ++index, entity->controller_portnumber);
 		sqlite3_bind_int(stmt, ++index, entity->streamer_portnumber);
+
+		sqlite3_bind_int(stmt, ++index, entity->localcache ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_legacy ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_legacy_expire_time);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_portnumber ? 1 : 0);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_size);
+		sqlite3_bind_int(stmt, ++index, entity->localcache_threadpool_count);
+		sqlite3_bind_text(stmt, ++index, entity->localcache_path, -1, 0);
+
 		sqlite3_bind_int(stmt, ++index, entity->video_codec);
 		sqlite3_bind_int(stmt, ++index, entity->video_width);
 		sqlite3_bind_int(stmt, ++index, entity->video_height);
@@ -311,11 +347,9 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::create(sirius::a
 		
 		sqlite3_bind_int(stmt, ++index, entity->enable_present ? 1 : 0);
 		sqlite3_bind_int(stmt, ++index, entity->enable_auto_start ? 1 : 0);
-		sqlite3_bind_int(stmt, ++index, entity->enable_caching ? 1 : 0);
+
 		sqlite3_bind_int(stmt, ++index, entity->clean_attendant ? 1 : 0);
 		sqlite3_bind_text(stmt, ++index, entity->app_session_app, -1, 0);
-		sqlite3_bind_text(stmt, ++index, entity->caching_directory, -1, 0);
-		sqlite3_bind_int(stmt, ++index, entity->caching_expire_time);
 
 		int32_t result = SQLITE_ERROR;
 		result = sqlite3_step(stmt);

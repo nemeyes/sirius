@@ -1,5 +1,5 @@
-#include "sirius_partial_png_compressor.h"
 #include "partial_png_compressor.h"
+#include "sirius_partial_png_compressor.h"
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t::_context_t(void)
 	: block_width(128)
@@ -19,9 +19,12 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	, binvalidate(true)
 	, indexed_video(true)
 	, nthread(20)
-	, caching(false)
+	, localcache(false)
+	, localcache_legacy(false)
+	, localcache_legacy_expire_time(1)
+	, localcache_portnumber(5001)
 {
-
+	::memset(localcache_path, 0x00, sizeof(localcache_path));
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t::_context_t(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
@@ -43,7 +46,12 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t::
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
 	nthread = clone.nthread;
-	caching = clone.caching;
+
+	localcache = clone.localcache;
+	localcache_legacy = clone.localcache_legacy;
+	localcache_legacy_expire_time = clone.localcache_legacy_expire_time;
+	localcache_portnumber = clone.localcache_portnumber;
+	wcsncpy_s(localcache_path, clone.localcache_path, sizeof(localcache_path));
 }
 
 sirius::library::video::transform::codec::partial::png::compressor::_context_t & sirius::library::video::transform::codec::partial::png::compressor::_context_t::operator=(const sirius::library::video::transform::codec::partial::png::compressor::_context_t & clone)
@@ -65,7 +73,12 @@ sirius::library::video::transform::codec::partial::png::compressor::_context_t &
 	binvalidate = clone.binvalidate;
 	indexed_video = clone.indexed_video;
 	nthread = clone.nthread;
-	caching = clone.caching;
+
+	localcache = clone.localcache;
+	localcache_legacy = clone.localcache_legacy;
+	localcache_legacy_expire_time = clone.localcache_legacy_expire_time;
+	localcache_portnumber = clone.localcache_portnumber;
+	wcsncpy_s(localcache_path, clone.localcache_path, sizeof(localcache_path));
 	return (*this);
 }
 

@@ -80,6 +80,13 @@ namespace sirius
 					int32_t gpuindex;
 					int32_t memtype;
 					void *	device;
+
+					bool	localcache;
+					bool	localcache_legacy;
+					int32_t localcache_legacy_expire_time;
+					int32_t localcache_portnumber;
+					wchar_t	localcache_path[MAX_PATH];
+
 					int32_t codec;
 					int32_t origin_width;
 					int32_t origin_height;
@@ -95,12 +102,14 @@ namespace sirius
 					bool	indexed_mode;
 					int32_t nthread;
 					bool	play_after_init;
-					bool	caching;
-					wchar_t	caching_directory[MAX_PATH];					
 					_video_compressor_context_t(void)
 						: gpuindex(0)
 						, memtype(sirius::library::unified::server::video_memory_type_t::host)
 						, device(nullptr)
+						, localcache(false)
+						, localcache_legacy(false)
+						, localcache_legacy_expire_time(1)
+						, localcache_portnumber(5001)
 						, codec(sirius::library::unified::server::video_submedia_type_t::png)
 						, origin_width(0)
 						, origin_height(0)
@@ -114,9 +123,8 @@ namespace sirius
 						, invalidate4client(false)
 						, indexed_mode(false)
 						, nthread(20)
-						, caching(false)
 					{
-						memset(caching_directory, 0x00, MAX_PATH);
+						memset(localcache_path, 0x00, MAX_PATH);
 					}
 				} video_compressor_context_t;
 

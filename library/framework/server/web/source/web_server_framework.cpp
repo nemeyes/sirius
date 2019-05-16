@@ -89,6 +89,13 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 			case sirius::library::framework::server::web::video_submedia_type_t::png :
 			{
 				_venc_context.memtype = context->video_process_type;
+				
+				_venc_context.localcache = context->localcache;
+				_venc_context.localcache_legacy = context->localcache_legacy;
+				_venc_context.localcache_legacy_expire_time = context->localcache_legacy_expire_time;
+				_venc_context.localcache_portnumber = context->localcache_portnumber;
+				wcsncpy_s(_venc_context.localcache_path, context->localcache_path, sizeof(_venc_context.localcache_path));
+
 				_venc_context.codec = context->video_codec;
 				_venc_context.width = context->video_width;
 				_venc_context.height = context->video_height;
@@ -104,13 +111,18 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 				_venc_context.invalidate4client = context->invalidate4client;
 				_venc_context.indexed_mode = context->indexed_mode;
 				_venc_context.nthread = context->nthread;
-				_venc_context.caching = context->caching;		
-				wcsncpy_s(_venc_context.caching_directory, context->caching_directory, sizeof(_venc_context.caching_directory));
 				break;
 			}
 			case sirius::library::framework::server::web::video_submedia_type_t::webp :
 			{
 				_venc_context.memtype = context->video_process_type;
+
+				_venc_context.localcache = context->localcache;
+				_venc_context.localcache_legacy = context->localcache_legacy;
+				_venc_context.localcache_legacy_expire_time = context->localcache_legacy_expire_time;
+				_venc_context.localcache_portnumber = context->localcache_portnumber;
+				wcsncpy_s(_venc_context.localcache_path, context->localcache_path, sizeof(_venc_context.localcache_path));
+
 				_venc_context.codec = context->video_codec;
 				_venc_context.width = context->video_width;
 				_venc_context.height = context->video_height;
@@ -123,8 +135,6 @@ int32_t sirius::library::framework::server::web::core::initialize(sirius::librar
 				_venc_context.invalidate4client = context->invalidate4client;
 				_venc_context.indexed_mode = context->indexed_mode;
 				_venc_context.nthread = context->nthread;
-				_venc_context.caching = context->caching;
-				wcsncpy_s(_venc_context.caching_directory, context->caching_directory, sizeof(_venc_context.caching_directory));
 				break;
 			}
 		}

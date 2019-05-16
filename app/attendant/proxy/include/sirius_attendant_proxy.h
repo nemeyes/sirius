@@ -73,6 +73,13 @@ namespace sirius
 					int32_t max_attendant_restart_threshold;
 					bool	reconnect;
 					wchar_t url[MAX_PATH];
+
+					bool	localcache;
+					bool	localcache_legacy;
+					int32_t localcache_legacy_expire_time;
+					int32_t localcache_portnumber;
+					wchar_t localcache_path[MAX_PATH];
+
 					int32_t video_codec;
 					int32_t video_width;
 					int32_t video_height;
@@ -91,7 +98,6 @@ namespace sirius
 					bool	reloading_on_disconnecting;
 
 					bool	present;
-					bool	caching;
 					bool	keepalive;
 					int32_t keepalive_timeout;
 					bool	tls;
@@ -102,13 +108,15 @@ namespace sirius
 					int32_t controller_portnumber;
 					int32_t streamer_portnumber;
 					int32_t play_after_connect;
-					wchar_t caching_directory[MAX_PATH];
-
 					_context_t(void)
 						: type(sirius::app::attendant::proxy::attendant_type_t::web)
 						, min_attendant_restart_threshold(0)
 						, max_attendant_restart_threshold(0)
 						, reconnect(true)
+						, localcache(false)
+						, localcache_legacy(false)
+						, localcache_legacy_expire_time(1)
+						, localcache_portnumber(5001)
 						, video_codec(sirius::app::attendant::proxy::video_submedia_type_t::unknown)
 						, video_width(1280)
 						, video_height(720)
@@ -123,7 +131,6 @@ namespace sirius
 						, double_reloading_on_creating(false)
 						, reloading_on_disconnecting(false)
 						, present(false)
-						, caching(false)
 						, keepalive(false)
 						, keepalive_timeout(5000)
 						, tls(false)
@@ -136,6 +143,7 @@ namespace sirius
 					{
 						memset(url, 0x00, sizeof(url));
 						memset(uuid, 0x00, sizeof(uuid));
+						memset(localcache_path, 0x00, sizeof(localcache_path));
 					}
 
 					~_context_t(void)
