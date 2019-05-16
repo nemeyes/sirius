@@ -72,6 +72,27 @@ namespace sirius
 		exclusive_scopedlock(const exclusive_scopedlock & clone);
 	};
 
+	class shared_scopedlock
+	{
+	public:
+		shared_scopedlock(SRWLOCK * lock)
+			: _lock(lock)
+		{
+			::AcquireSRWLockShared(_lock);
+		}
+
+		~shared_scopedlock(void)
+		{
+			::ReleaseSRWLockShared(_lock);
+		}
+
+	private:
+		SRWLOCK * _lock;
+
+	private:
+		shared_scopedlock(void);
+		shared_scopedlock(const shared_scopedlock & clone);
+	};
 };
 
 

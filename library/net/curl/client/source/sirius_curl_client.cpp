@@ -35,6 +35,8 @@ bool sirius::library::net::curl::client::set_post_data(char* data)
 {
 	if (_core)
 		return _core->set_post_data(data);
+	else
+		return false;
 }
 
 void sirius::library::net::curl::client::set_get_data(char* parameters, int stat_type)

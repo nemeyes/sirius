@@ -95,6 +95,43 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		value = iter->second;
 		wcscpy_s(context->url, MAX_PATH - 1, value.c_str());
 	}
+
+	if (param.end() != (iter = param.find(L"localcache")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->localcache = true;
+		else
+			context->localcache = false;
+	}
+
+	if (param.end() != (iter = param.find(L"localcache_legacy")))
+	{
+		value = iter->second;
+		if (!_wcsicmp(value.c_str(), L"true"))
+			context->localcache_legacy = true;
+		else
+			context->localcache_legacy = false;
+	}
+
+	if (param.end() != (iter = param.find(L"localcache_legacy_expire_time")))
+	{
+		value = iter->second;
+		context->localcache_legacy_expire_time = _wtoi(value.c_str());
+	}
+
+	if (param.end() != (iter = param.find(L"localcache_portnumber")))
+	{
+		value = iter->second;
+		context->localcache_portnumber = _wtoi(value.c_str());
+	}
+
+	if (param.end() != (iter = param.find(L"localcache_path")))
+	{
+		value = iter->second;
+		wcscpy_s(context->localcache_path, value.c_str());
+	}
+
 	if (param.end() != (iter = param.find(L"video_codec")))
 	{
 		value = iter->second;
@@ -237,14 +274,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 		else
 			context->present = false;
 	}
-	if (param.end() != (iter = param.find(L"enable_caching")))
-	{
-		value = iter->second;
-		if (!_wcsicmp(value.c_str(), L"true"))
-			context->caching = true;
-		else
-			context->caching = false;
-	}
 	if (param.end() != (iter = param.find(L"enable_keepalive")))
 	{
 		value = iter->second;
@@ -282,15 +311,6 @@ bool sirius::app::attendant::proxy::parse_argument(int32_t argc, wchar_t * argv[
 			value = iter->second;
 			context->video_fps = _wtoi(value.c_str());
 		}
-	}
-	if (param.end() != (iter = param.find(L"caching_directory")))
-	{
-		value = iter->second;
-		wcscpy_s(context->caching_directory, value.c_str());
-	}
-	else
-	{
-		context->video_process_type = sirius::app::attendant::proxy::video_memory_type_t::d3d11;
 	}
 	return true;
 }

@@ -26,13 +26,15 @@ namespace sirius
 	public:
 		typedef struct _err_code_t
 		{
+			static const int32_t unknown = -1;
 			static const int32_t success = 0;
 			static const int32_t fail = 1;
-			
-			//pngqaunt
-			static const int32_t missing_argument = 2;
-			static const int32_t read_error = 3;
-			static const int32_t invalid_argument = 4;
+			static const int32_t memory_alloc_error = 2;
+			static const int32_t timeout = 3;
+			static const int32_t missing_argument = 4;
+			static const int32_t read_error = 5;
+			static const int32_t invalid_argument = 6;
+
 			static const int32_t not_overwriting_error = 15;
 			static const int32_t cant_write_error = 16;
 			static const int32_t out_of_memory_error = 17;
@@ -60,7 +62,30 @@ namespace sirius
 			static const int32_t attendant_count_danger_ct = 113;
 			static const int32_t invalid_file_path = 114;
 			static const int32_t port_is_already_use = 115;
-			static const int32_t max_err_count = 115;
+
+			static const int32_t storage_manager_not_initialized = 116;
+			static const int32_t cached_image_already_exist = 117;
+			static const int32_t cached_image_dir_creation_fail = 118;
+			static const int32_t cached_image_read_write_fail = 119;
+			static const int32_t cached_image_not_exist = 120;
+			static const int32_t cached_image_write_fail = 121;
+			static const int32_t cached_image_read_fail = 122;
+			static const int32_t cached_image_full = 123;
+			static const int32_t cached_image_low_hitcount = 124;
+			static const int32_t cached_image_need_upload = 125;
+			static const int32_t cached_image_need_fsize = 126;
+			static const int32_t cached_image_read_timeout = 127;
+			static const int32_t uploading_write_already_exist = 128;
+			static const int32_t uploading_segment_write_fail = 129;
+			static const int32_t uploading_segment_read_fail = 130;
+			static const int32_t uploading_state_not_exist = 131;
+			static const int32_t uploading_hash_no_equal = 132;
+			static const int32_t uploading_no_segment = 133;
+			static const int32_t uploading_memalloc_fail = 134;
+			static const int32_t uploading_segment_not_exist = 135;
+			static const int32_t uploading_temp_file_creation_fail = 136;
+
+			static const int32_t max_err_count = 136;
 
 		} err_code_t;
 

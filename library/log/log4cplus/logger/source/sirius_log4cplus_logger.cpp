@@ -68,6 +68,7 @@ sirius::library::log::log4cplus::logger::scopped_lock::~scopped_lock(void)
 
 sirius::library::log::log4cplus::logger::trace_logger::trace_logger(const char * section, const char * fmt, ...)
 {
+#if 0
 #if defined(WITH_DISABLE)
 	memset(_log, 0x00, sizeof(_log));
 	memcpy(_log, "TRACE : ", strlen("TRACE :"));
@@ -114,10 +115,12 @@ sirius::library::log::log4cplus::logger::trace_logger::trace_logger(const char *
 	strncpy_s(rlog, max_message_size - index, _log, strlen(_log));
 	sirius::library::log::log4cplus::logger::make_trace_log(_section, log);
 #endif
+#endif
 }
 
 sirius::library::log::log4cplus::logger::trace_logger::~trace_logger(void)
 {
+#if 0
 #if defined(WITH_DISABLE)
 	char log[max_message_size] = { "LEAVE :" };
 	int index = strlen(log);
@@ -131,6 +134,7 @@ sirius::library::log::log4cplus::logger::trace_logger::~trace_logger(void)
 	char * rlog = &log[index];
 	strncpy_s(rlog, max_message_size - index, _log, strlen(_log));
 	sirius::library::log::log4cplus::logger::make_trace_log(_section, log);
+#endif
 #endif
 }
 
@@ -586,17 +590,17 @@ void sirius::library::log::log4cplus::logger::make_fatal_log(const char * secion
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "FATAL :" };
+		char * log = new char[max_message_size] { "FATAL :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -609,6 +613,7 @@ void sirius::library::log::log4cplus::logger::make_fatal_log(const char * secion
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];
@@ -627,17 +632,17 @@ void sirius::library::log::log4cplus::logger::make_error_log(const char * secion
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "ERROR :" };
+		char * log = new char[max_message_size] { "ERROR :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -650,6 +655,7 @@ void sirius::library::log::log4cplus::logger::make_error_log(const char * secion
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];
@@ -670,17 +676,17 @@ void sirius::library::log::log4cplus::logger::make_warn_log(const char * secion,
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "WARN :" };
+		char * log = new char[max_message_size] { "WARN :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -693,6 +699,7 @@ void sirius::library::log::log4cplus::logger::make_warn_log(const char * secion,
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];
@@ -711,17 +718,17 @@ void sirius::library::log::log4cplus::logger::make_info_log(const char * secion,
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "INFO :" };
+		char * log = new char[max_message_size] { "INFO :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -734,6 +741,7 @@ void sirius::library::log::log4cplus::logger::make_info_log(const char * secion,
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];
@@ -752,17 +760,17 @@ void sirius::library::log::log4cplus::logger::make_debug_log(const char * secion
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "DEBUG :" };
+		char * log = new char[max_message_size] { "DEBUG :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -775,6 +783,7 @@ void sirius::library::log::log4cplus::logger::make_debug_log(const char * secion
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];
@@ -794,17 +803,17 @@ void sirius::library::log::log4cplus::logger::make_trace_log(const char * secion
 	if (_instance)
 	{
 #if defined(WITH_DISABLE)
-		char log[max_message_size] = { "TRACE :" };
+		char * log = new char[max_message_size] { "TRACE :" };
 		int index = strlen(log);
 		char * rlog = &log[index];
 
 		va_list args;
 		va_start(args, fmt);
-		vsnprintf_s(rlog, sizeof(log) - index, sizeof(log) - index, fmt, args);
+		vsnprintf_s(rlog, max_message_size - index, max_message_size - index, fmt, args);
 		va_end(args);
 
 		index = strlen(log);
-		if (index > (sizeof(log) - 1))
+		if (index > (max_message_size - 1))
 		{
 			log[max_message_size - 1] = 0;
 			log[max_message_size - 2] = '\n';
@@ -817,6 +826,7 @@ void sirius::library::log::log4cplus::logger::make_trace_log(const char * secion
 			log[index + 2] = 0;
 		}
 		::OutputDebugStringA(log);
+		delete[] log;
 #else
 		log_directory_check(secion);
 		char * logger = new char[max_message_size];

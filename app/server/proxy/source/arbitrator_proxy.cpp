@@ -9,8 +9,9 @@
 #include <wincrypt.h>
 #include "sirius_version.h"
 
-sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, int32_t keepalive_timeout, bool use_tls)
-	: sirius::library::net::sicp::server(uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, use_keepliave?TRUE:FALSE, keepalive_timeout, use_tls?TRUE:FALSE)
+//sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::app::server::arbitrator::proxy * front, bool use_keepliave, int32_t keepalive_timeout, bool use_tls)
+sirius::app::server::arbitrator::proxy::core::core(sirius::app::server::arbitrator::proxy * front, sirius::app::server::arbitrator::entity::configuration_t * configuration)
+	: sirius::library::net::sicp::server(configuration->uuid, MTU_SIZE, MTU_SIZE, MTU_SIZE, MTU_SIZE, IO_THREAD_POOL_COUNT, COMMAND_THREAD_POOL_COUNT, configuration->enable_keepalive ? TRUE : FALSE, configuration->keepalive_timeout, configuration->enable_tls ? TRUE : FALSE)
 	, _front(front)
 	, _monitor(nullptr)
 	, _run(false)
@@ -20,6 +21,8 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	, _use_count(NULL)	
 	, _last_alloc_session_id(-1)
 	, _state(sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::stop)
+	, _lcs_ctx(NULL)
+	, _lcs(NULL)
 {
 	::InitializeCriticalSection(&_attendant_cs);
 	sirius::library::log::log4cplus::logger::create("configuration\\sirius_log_configuration.ini", SAA, "");
@@ -28,6 +31,17 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 	LOGGER::make_info_log(SAA, "%s, ======================= ", __FUNCTION__);
 
 	_monitor = new sirius::library::misc::performance::monitor();
+
+	if (configuration->localcache && !configuration->localcache_legacy)
+	{
+		_lcs_ctx = new sirius::library::cache::local::server::context_t();
+		_lcs_ctx->nsessions = configuration->max_attendant_instance * configuration->nthread;
+		_lcs_ctx->cache_size_mib = configuration->localcache_size;
+		_lcs_ctx->nthread_pool = configuration->localcache_threadpool_count;
+		strncpy_s(_lcs_ctx->path, configuration->localcache_path, sizeof(_lcs_ctx->path));
+		_lcs_ctx->portnumber = configuration->localcache_portnumber;
+		_lcs = new sirius::library::cache::local::server();
+	}
 
 	add_command(new sirius::app::server::arbitrator::connect_client_req(_front));
 	add_command(new sirius::app::server::arbitrator::disconnect_client_req(_front));
@@ -56,6 +70,17 @@ sirius::app::server::arbitrator::proxy::core::core(const char * uuid, sirius::ap
 
 sirius::app::server::arbitrator::proxy::core::~core(void)
 {
+	if (_lcs)
+	{
+		delete _lcs;
+		_lcs = NULL;
+	}
+	if (_lcs_ctx)
+	{
+		delete _lcs_ctx;
+		_lcs_ctx = NULL;
+	}
+
 	if (_monitor)
 	{
 		delete _monitor;
@@ -79,6 +104,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 	if (status != sirius::app::server::arbitrator::proxy::err_code_t::success)
 		return status;
 
+	if (_lcs_ctx && _lcs)
+	{
+		status = _lcs->initialize(_lcs_ctx);
+		if (status != sirius::app::server::arbitrator::proxy::err_code_t::success)
+			return status;
+	}
+
 	sirius::app::server::arbitrator::entity::configuration_t confentity;
 	{
 		sirius::app::server::arbitrator::db::configuration_dao confdao(context->db_path);
@@ -88,12 +120,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::initialize(sirius::app::se
 	if (_context && _context->handler)
 	{	
 		_context->handler->on_initialize(confentity.uuid, confentity.url, confentity.max_attendant_instance, confentity.attendant_creation_delay, confentity.min_attendant_restart_threshold, confentity.max_attendant_restart_threshold, confentity.controller_portnumber, confentity.streamer_portnumber,
+			confentity.localcache, confentity.localcache_legacy, confentity.localcache_legacy_expire_time, confentity.localcache_portnumber, confentity.localcache_size, confentity.localcache_threadpool_count, confentity.localcache_path,
 			confentity.video_codec, confentity.video_width, confentity.video_height, confentity.video_fps, confentity.video_buffer_count, confentity.video_block_width, confentity.video_block_height, 
 			confentity.png.video_compression_level, confentity.png.video_quantization_posterization, confentity.png.video_quantization_dither_map, confentity.png.video_quantization_contrast_maps, confentity.png.video_quantization_colors, 
 			confentity.webp.video_quality, confentity.webp.video_method, 
 			confentity.invalidate4client, confentity.indexed_mode, confentity.nthread, 
 			confentity.double_reloading_on_creating, confentity.reloading_on_disconnecting,
-			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_streamer_keepalive, confentity.streamer_keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.enable_caching, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app, confentity.caching_directory, confentity.caching_expire_time);
+			confentity.enable_tls, confentity.enable_keepalive, confentity.keepalive_timeout, confentity.enable_streamer_keepalive, confentity.streamer_keepalive_timeout, confentity.enable_present, confentity.enable_auto_start, confentity.clean_attendant, _monitor->cpu_info(), _monitor->mem_info(), confentity.app_session_app);
 		unsigned int thrdaddr;
 		_system_monitor_run = true;
 		_system_monitor_thread = (HANDLE)::_beginthreadex(NULL, 0, sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb, this, 0, &thrdaddr);
@@ -117,6 +150,11 @@ int32_t sirius::app::server::arbitrator::proxy::core::release(void)
 		}
 
 		_context->handler->on_release();
+	}
+
+	if (_lcs_ctx && _lcs)
+	{
+		_lcs->release();
 	}
 
 	_monitor->release();
@@ -159,12 +197,13 @@ int32_t sirius::app::server::arbitrator::proxy::core::stop(void)
 }
 
 int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+	bool localcache, bool localcache_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
 	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 	float video_webp_quality, int32_t video_webp_method, 
 	bool invalidate4client, bool indexed_mode, int32_t nthread, 
 	bool double_reloading_on_creating, bool reloading_on_disconnecting,
-	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app)
 {
 	int32_t status = sirius::app::server::arbitrator::proxy::err_code_t::fail;
 
@@ -179,6 +218,15 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.max_attendant_restart_threshold = max_attendant_restart_threshold;
 	configuration.controller_portnumber = controller_portnumber;
 	configuration.streamer_portnumber = streamer_portnumber;
+
+	configuration.localcache = localcache;
+	configuration.localcache_legacy = localcache_legacy;
+	configuration.localcache_legacy_expire_time = localcache_legacy_expire_time;
+	configuration.localcache_portnumber = localcache_portnumber;
+	configuration.localcache_size = localcache_size;
+	configuration.localcache_threadpool_count = localcache_threadpool_count;
+	strncpy_s(configuration.localcache_path, localcache_path, sizeof(configuration.localcache_path) - 1);
+	
 	configuration.video_codec = video_codec;
 	configuration.video_width = video_width;
 	configuration.video_height = video_height;
@@ -210,11 +258,8 @@ int32_t sirius::app::server::arbitrator::proxy::core::update(const char * uuid, 
 	configuration.streamer_keepalive_timeout = streamer_keepalive_timeout;
 	configuration.enable_present = enable_present;
 	configuration.enable_auto_start = enable_auto_start;
-	configuration.enable_caching = enable_caching;
 	configuration.clean_attendant = clean_attendant;
 	strncpy_s(configuration.app_session_app, app_session_app, sizeof(configuration.app_session_app) - 1);
-	strncpy_s(configuration.caching_directory, caching_directory, sizeof(configuration.caching_directory) - 1);
-	configuration.caching_expire_time = caching_expire_time;
 
 	status = dao.update(&configuration);
 	return status;
@@ -832,6 +877,10 @@ unsigned sirius::app::server::arbitrator::proxy::core::process_cb(void * param)
 void sirius::app::server::arbitrator::proxy::core::process(void)
 {		
 	sirius::app::server::arbitrator::entity::configuration_t confentity;
+
+	if (_lcs_ctx && _lcs)
+		_lcs->start();
+
 	if (_context && _context->handler)
 	{
 		unsigned long pid = 0;
@@ -949,11 +998,17 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 			}
 			if (_state == sirius::app::server::arbitrator::proxy::core::arbitrator_state_t::start)
 			{
-				if (elapsed_millisec % (onesec * 10) == 0)			
+				if (elapsed_millisec % (onesec * 10) == 0)
 					check_alive_attendant();
 
+
 				if (elapsed_millisec % (onesec * 60) == 0)
-					check_expire_cache(confentity.caching_directory ,confentity.caching_expire_time);
+				{
+					if (confentity.localcache && confentity.localcache_legacy)
+					{
+						check_expire_cache(confentity.localcache_path, confentity.localcache_legacy_expire_time);
+					}
+				}
 
 				//if (elapsed_millisec % (onesec * 10) == 0 && elapsed_millisec > 0)
 				//	close_disconnected_attendant();
@@ -978,10 +1033,8 @@ void sirius::app::server::arbitrator::proxy::core::process(void)
 		_context->handler->on_stop();
 	sirius::library::net::sicp::server::stop();
 
-/*
-	sirius::app::server::arbitrator::db::attendant_dao contdao(_context->db_path);
-	contdao.remove();
-*/
+	if (_lcs_ctx && _lcs)
+		_lcs->stop();
 }
 
 unsigned sirius::app::server::arbitrator::proxy::core::system_monitor_process_cb(void * param)

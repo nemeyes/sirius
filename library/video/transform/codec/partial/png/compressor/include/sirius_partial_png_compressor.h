@@ -49,8 +49,13 @@ namespace sirius
 									bool	binvalidate;
 									bool	indexed_video;
 									int32_t nthread;
-									bool	caching;
-									wchar_t	caching_directory[MAX_PATH];									
+
+									bool	localcache;
+									bool	localcache_legacy;
+									int32_t	localcache_legacy_expire_time;
+									int32_t localcache_portnumber;
+									wchar_t	localcache_path[MAX_PATH];
+
 									_context_t(void);
 									_context_t(const _context_t & clone);
 									_context_t & operator=(const _context_t & clone);

@@ -44,13 +44,21 @@ namespace sirius
 						char	uuid[MAX_PATH];
 						char	url[MAX_PATH];
 						char	app_session_app[MAX_PATH * 5];
-						char	caching_directory[MAX_PATH];
 						int32_t	max_attendant_instance;
 						int32_t attendant_creation_delay;
 						int32_t min_attendant_restart_threshold;
 						int32_t max_attendant_restart_threshold;
 						int32_t controller_portnumber;
 						int32_t streamer_portnumber;
+
+						bool	localcache;
+						bool	localcache_legacy;
+						int32_t	localcache_legacy_expire_time;
+						int32_t localcache_portnumber;
+						int32_t localcache_size;
+						int32_t localcache_threadpool_count;
+						char 	localcache_path[MAX_PATH];
+
 						int32_t video_codec;
 						int32_t video_width;
 						int32_t video_height;
@@ -74,9 +82,8 @@ namespace sirius
 						int32_t	streamer_keepalive_timeout;
 						bool	enable_present;
 						bool	enable_auto_start;
-						bool	enable_caching;
+
 						bool	clean_attendant;
-						int32_t	caching_expire_time;
 						_configuration_t(void)
 							: max_attendant_instance(100)
 							, attendant_creation_delay(2000)
@@ -84,6 +91,12 @@ namespace sirius
 							, max_attendant_restart_threshold(0)
 							, controller_portnumber(5000)
 							, streamer_portnumber(7000)
+							, localcache(false)
+							, localcache_legacy(false)
+							, localcache_legacy_expire_time(1)
+							, localcache_portnumber(5001)
+							, localcache_size(0)
+							, localcache_threadpool_count(0)
 							, video_codec(sirius::base::video_submedia_type_t::png)
 							, video_width(1280)
 							, video_height(720)
@@ -103,14 +116,12 @@ namespace sirius
 							, streamer_keepalive_timeout(5000)
 							, enable_present(false)
 							, enable_auto_start(false)
-							, enable_caching(false)
-							, clean_attendant(false)							
-							, caching_expire_time(1)							
+							, clean_attendant(false)													
 						{
 							memset(uuid, 0x00, sizeof(uuid));
 							memset(url, 0x00, sizeof(url));
+							memset(localcache_path, 0x00, sizeof(localcache_path));
 							memset(app_session_app, 0x00, sizeof(app_session_app));
-							memset(caching_directory, 0x00, sizeof(caching_directory));
 						}
 					} configuration_t;
 				};

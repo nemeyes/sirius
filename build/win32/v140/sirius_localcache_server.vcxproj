@@ -19,10 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{80D35D35-8773-4F7C-8FD4-4CE13422AABE}</ProjectGuid>
+    <ProjectGuid>{E6D2AE5F-1914-4C91-A6F8-8FC7B3EFB899}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>sirius_log4cplus_logger</RootNamespace>
+    <RootNamespace>sirius_lwiftp_server</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>sirius_localcache_server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -69,23 +70,19 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\</OutDir>
     <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\bin\</OutDir>
     <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\</OutDir>
-    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\bin\</OutDir>
     <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\intermediate\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -95,16 +92,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_LOG4CPLUS_LOGGER_LIB;_CRT_SECURE_NO_WARNINGS;WITH_DISABLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;EXPORT_SIRIUS_LOCALCACHE_SERVER_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shlwapi.lib;log4cplusSUD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay32MTd.lib;ssleay32MTd.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -113,16 +109,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;_USRDLL;EXPORT_LOG4CPLUS_LOGGER_LIB;_CRT_SECURE_NO_WARNINGS;WITH_DISABLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;EXPORT_SIRIUS_LOCALCACHE_SERVER_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shlwapi.lib;log4cplusSUD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay64MTd.lib;ssleay64MTd.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,22 +128,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_LOG4CPLUS_LOGGER_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;EXPORT_SIRIUS_LOCALCACHE_SERVER_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;shlwapi.lib;log4cplusSU.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay32MT.lib;ssleay32MT.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
-      <StripPrivateSymbols>
-      </StripPrivateSymbols>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,28 +150,49 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;EXPORT_LOG4CPLUS_LOGGER_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;WITH_WORKING_AS_SERVER;EXPORT_SIRIUS_LOCALCACHE_SERVER_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include\;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\log4cplus\v1_2_0\win32\$(DefaultPlatformToolset)\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;shlwapi.lib;log4cplusSU.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
       <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay64MT.lib;ssleay64MT.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
     <ClInclude Include="..\..\..\base\include\resource.h" />
-    <ClInclude Include="..\..\..\library\log\log4cplus\logger\include\sirius_log4cplus_logger.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_handler.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_server.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_session.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\platform.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_base.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_commands.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_command.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_packet.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_session.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\command\localcache_commands_server.h" />
+    <ClInclude Include="..\..\..\library\cache\local\server\include\sirius_localcache_server.h" />
+    <ClInclude Include="..\..\..\library\cache\local\server\include\localcache_server.h" />
+    <ClInclude Include="..\..\..\library\cache\local\server\include\storage_manager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\library\log\log4cplus\logger\source\sirius_log4cplus_logger.cpp" />
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_server.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_session.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_base.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_command.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_session.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\server\source\sirius_localcache_server.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\server\source\localcache_server.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\server\source\storage_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\base\source\sirius_version.rc" />

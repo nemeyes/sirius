@@ -99,6 +99,13 @@ void sirius_warbitrator_dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_VIDEO_CODEC, _video_codec);
 	DDX_Control(pDX, IDC_CHECK_DOBULE_RELOAD_CREATING, _double_reload_creating);
 	DDX_Control(pDX, IDC_CHECK_RELOAD_DISCONNECTING, _reload_disconnecting);
+	DDX_Control(pDX, IDC_CHECK_LOCALCACHE, _localcache);
+	DDX_Control(pDX, IDC_CHECK_LOCALCACHE_LEGACY, _localcache_legacy);
+	DDX_Control(pDX, IDC_EDIT_LOCALCACHE_LEGACY_EXPIRE_TIME, _localcache_legacy_expire_time);
+	DDX_Control(pDX, IDC_EDIT_LOCALCACHE_PORTNUMBER, _localcache_portnumber);
+	DDX_Control(pDX, IDC_EDIT_LOCALCACHE_SIZE, _localcache_size);
+	DDX_Control(pDX, IDC_EDIT_LOCALCACHE_THREADPOOL, _localcache_threadpool);
+	DDX_Control(pDX, IDC_EDIT_LOCALCACHE_PATH, _localcache_path);
 }
 
 BEGIN_MESSAGE_MAP(sirius_warbitrator_dlg, CDialogEx)
@@ -316,6 +323,12 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	CString wcontroller_portnumber;
 	CString wstreamer_portnumber;
 
+	CString wlocalcache_legacy_expire_time;
+	CString wlocalcache_portnumber;
+	CString wlocalcache_size;
+	CString wlocalcache_threadpool;
+	CString wlocalcache_path;
+
 	CString wvideo_fps;
 	CString wvideo_buffer_count;
 	CString wvideo_block_width;
@@ -336,6 +349,14 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	int32_t max_attendant_restart_threshold = 10;
 	int32_t controller_portnumber;
 	int32_t streamer_portnumber;
+
+	bool	localcache = false;
+	bool	localcache_legacy = false;
+	int32_t localcache_legacy_expire_time = 1;
+	int32_t localcache_portnumber = 5001;
+	int32_t localcache_size = 1024;
+	int32_t localcache_threadpool = 0;
+	char * localcache_path = nullptr;
 
 	int32_t video_codec = sirius::app::server::arbitrator::proxy::video_submedia_type_t::png;
 
@@ -378,6 +399,12 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_arbitrator_control_portnumber.GetWindowTextW(wcontroller_portnumber);
 	_streamer_portnumber.GetWindowTextW(wstreamer_portnumber);
 
+	_localcache_legacy_expire_time.GetWindowTextW(wlocalcache_legacy_expire_time);
+	_localcache_portnumber.GetWindowTextW(wlocalcache_portnumber);
+	_localcache_size.GetWindowTextW(wlocalcache_size);
+	_localcache_threadpool.GetWindowTextW(wlocalcache_threadpool);
+	_localcache_path.GetWindowTextW(wlocalcache_path);
+
 	_video_fps.GetWindowTextW(wvideo_fps);
 	_video_buffer_count.GetWindowTextW(wvideo_buffer_count);
 	_video_block_width.GetWindowTextW(wvideo_block_width);
@@ -388,6 +415,22 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	_streamer_keepalive_timeout.GetWindowTextW(wstreamer_keepalive_timeout);
 
 	_nthread.GetWindowTextW(wnthread);
+
+	if (_localcache.GetCheck())
+		localcache = true;
+	else
+		localcache = false;
+
+	if (_localcache_legacy.GetCheck())
+		localcache_legacy = true;
+	else
+		localcache_legacy = false;
+
+	localcache_legacy_expire_time = _wtoi(wlocalcache_legacy_expire_time);
+	localcache_portnumber = _wtoi(wlocalcache_portnumber);
+	localcache_size = _wtoi(wlocalcache_size);
+	localcache_threadpool = _wtoi(wlocalcache_threadpool);
+	sirius::stringhelper::convert_wide2multibyte((LPTSTR)(LPCTSTR)wlocalcache_path, &localcache_path);
 
 	if (_video_codec.GetCurSel() == 0)
 	{
@@ -476,29 +519,37 @@ void sirius_warbitrator_dlg::OnBnClickedButtonUpdate()
 	if (_clean_attendant.GetCheck())
 		clean_attendant = true;
 	update(uuid, url, attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
+		localcache, localcache_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool, localcache_path,
 		video_codec, 1280, 720, video_fps, video_buffer_count, video_block_width, video_block_height, 
 		video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors, 
 		video_webp_quality, video_webp_method, 
 		invalidate4client, indexed_mode, nthread, 
 		double_reload_creating, reload_disconnecting, 
-		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, false, clean_attendant, "");
+		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, "");
+
+
+	if (localcache_path)
+		free(localcache_path);
 
 	if (uuid)
 		free(uuid);
+
 	if (url)
 		free(url);
+
 	uuid = nullptr;
 	url = nullptr;
 }
 
 
 void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, int32_t attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+	bool localcache, bool localcache_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
 	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
 	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors, 
 	float video_webp_quality, int32_t video_webp_method, 
 	bool invalidate4client, bool indexed_mode, int32_t nthread, 
 	bool double_reloading_on_creating, bool reloading_on_disconnecting,
-	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
 	wchar_t * wuuid = nullptr;
 	wchar_t * wurl = nullptr;
@@ -508,6 +559,13 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	wchar_t wattendant_creation_delay[MAX_PATH] = { 0 };
 	wchar_t wmin_attendant_restart_threshold[MAX_PATH] = { 0 };
 	wchar_t wmax_attendant_restart_threshold[MAX_PATH] = { 0 };
+
+	wchar_t wlocalcache_legacy_expire_time[MAX_PATH] = { 0 };
+	wchar_t wlocalcache_portnumber[MAX_PATH] = { 0 };
+	wchar_t wlocalcache_size[MAX_PATH] = { 0 };
+	wchar_t wlocalcache_threadpool_count[MAX_PATH] = { 0 };
+	wchar_t * wlocalcache_path = nullptr;
+
 	wchar_t wvideo_fps[MAX_PATH] = { 0 };
 	wchar_t wvideo_buffer_count[MAX_PATH] = { 0 };
 	wchar_t wvideo_block_width[MAX_PATH] = { 0 };
@@ -528,6 +586,13 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_itow_s(max_attendant_restart_threshold, wmax_attendant_restart_threshold, 10);
 	_itow_s(controller_portnumber, wcontroler_portnumber, 10);
 	_itow_s(streamer_portnumber, wstreamer_portnumber, 10);
+
+	_itow_s(localcache_legacy_expire_time, wlocalcache_legacy_expire_time, 10);
+	_itow_s(localcache_portnumber, wlocalcache_portnumber, 10);
+	_itow_s(localcache_size, wlocalcache_size, 10);
+	_itow_s(localcache_threadpool_count, wlocalcache_threadpool_count, 10);
+	sirius::stringhelper::convert_multibyte2wide((char*)localcache_path, &wlocalcache_path);
+
 	_itow_s(video_fps, wvideo_fps, 10);
 	_itow_s(video_buffer_count, wvideo_buffer_count, 10);
 	_itow_s(video_block_width, wvideo_block_width, 10);
@@ -560,6 +625,14 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 	_max_attendant_restart_threshold.SetWindowTextW(wmax_attendant_restart_threshold);
 	_arbitrator_control_portnumber.SetWindowTextW(wcontroler_portnumber);
 	_streamer_portnumber.SetWindowTextW(wstreamer_portnumber);
+
+	_localcache.SetCheck(localcache ? 1 : 0);
+	_localcache_legacy.SetCheck(localcache_legacy ? 1 : 0);
+	_localcache_legacy_expire_time.SetWindowTextW(wlocalcache_legacy_expire_time);
+	_localcache_portnumber.SetWindowTextW(wlocalcache_portnumber);
+	_localcache_size.SetWindowTextW(wlocalcache_size);
+	_localcache_threadpool.SetWindowTextW(wlocalcache_threadpool_count);
+	_localcache_path.SetWindowTextW(wlocalcache_path);
 
 	if (video_codec == sirius::base::video_submedia_type_t::png)
 	{
@@ -624,7 +697,8 @@ void sirius_warbitrator_dlg::on_initialize(const char * uuid, const char * url, 
 		GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
 		_proxy->start();
 	}
-
+	if (wlocalcache_path)
+		::SysFreeString(wlocalcache_path);
 	if (wuuid)
 		::SysFreeString(wuuid);
 	if (wurl)

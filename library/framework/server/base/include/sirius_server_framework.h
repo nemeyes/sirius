@@ -60,6 +60,13 @@ namespace sirius
 					typedef struct _context_t
 					{
 						wchar_t url[MAX_PATH];
+
+						bool	localcache;
+						bool	localcache_legacy;
+						int32_t localcache_legacy_expire_time;
+						int32_t localcache_portnumber;
+						wchar_t localcache_path[MAX_PATH];
+
 						int32_t video_codec;
 						int32_t video_width;
 						int32_t video_height;
@@ -74,7 +81,6 @@ namespace sirius
 						bool	indexed_mode;
 						int32_t	nthread;
 						bool	present;
-						bool	caching;
 						bool	keepalive;
 						int32_t keepalive_timeout;
 						bool	tls;
@@ -83,9 +89,12 @@ namespace sirius
 						int32_t type;
 						HWND	hwnd;
 						void *	user_data;
-						wchar_t caching_directory[MAX_PATH];
 						_context_t(void)
-							: video_codec(sirius::library::framework::server::base::video_submedia_type_t::unknown)
+							: localcache(false)
+							, localcache_legacy(false)
+							, localcache_legacy_expire_time(1)
+							, localcache_portnumber(5001)
+							, video_codec(sirius::library::framework::server::base::video_submedia_type_t::unknown)
 							, video_width(0)
 							, video_height(0)
 							, video_fps(0)
@@ -97,7 +106,6 @@ namespace sirius
 							, indexed_mode(false)
 							, nthread(20)
 							, present(false)
-							, caching(false)
 							, tls(false)
 							, keepalive(false)
 							, keepalive_timeout(5000)
@@ -108,7 +116,7 @@ namespace sirius
 						{
 							memset(url, 0x00, sizeof(url));
 							memset(uuid, 0x00, sizeof(uuid));
-							memset(caching_directory, 0x00, sizeof(caching_directory));
+							memset(localcache_path, 0x00, sizeof(localcache_path));
 						}
 
 						~_context_t(void)

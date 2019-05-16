@@ -212,6 +212,26 @@ int main()
 			proc_ctrl.set_cmdline(arguments, "--id=%d", contenity.id);
 			proc_ctrl.set_cmdline(arguments, "--play_after_connect=true");
 
+			if (confentity.localcache)
+			{
+				proc_ctrl.set_cmdline(arguments, "--localcache=true");
+				if (confentity.localcache_legacy)
+				{
+					proc_ctrl.set_cmdline(arguments, "--localcache_legacy=true");
+					proc_ctrl.set_cmdline(arguments, "--localcache_legacy_expire_time=%d", confentity.localcache_legacy_expire_time);
+					proc_ctrl.set_cmdline(arguments, "--localcache_legacy_directory=\"%s\"", confentity.localcache_path);
+				}
+				else
+				{
+					proc_ctrl.set_cmdline(arguments, "--localcache_legacy=false");
+				}
+				proc_ctrl.set_cmdline(arguments, "--localcache_portnumber=%d", confentity.localcache_portnumber);
+			}
+			else
+			{
+				proc_ctrl.set_cmdline(arguments, "--localcache=false");
+			}
+
 			if(confentity.invalidate4client)
 				proc_ctrl.set_cmdline(arguments, "--enable_invalidate4client=true");
 			else
@@ -263,11 +283,6 @@ int main()
 			else
 				proc_ctrl.set_cmdline(arguments, "--enable_present=false");
 
-			if (confentity.enable_caching)
-				proc_ctrl.set_cmdline(arguments, "--enable_caching=true");
-			else
-				proc_ctrl.set_cmdline(arguments, "--enable_caching=false");
-
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu");
 			proc_ctrl.set_cmdline(arguments, "--disable-gpu-compositing");
 			//proc_ctrl.set_cmdline(arguments, "--disable-d3d11");
@@ -295,9 +310,6 @@ int main()
 			{
 				proc_ctrl.set_cmdline(arguments, confentity.app_session_app);
 			}
-
-			proc_ctrl.set_cmdline(arguments, "--caching_directory=\"%s\"", confentity.caching_directory);
-			proc_ctrl.set_cmdline(arguments, "--caching_expire_time=%d", confentity.caching_expire_time);
 
 			status = proc_ctrl.fork("..\\attendants\\web\\sirius_web_attendant.exe", "..\\attendants\\web", arguments, &pid);
 
