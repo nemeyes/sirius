@@ -7,14 +7,28 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
-typedef void(__stdcall *initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, int32_t, float, int32_t, bool, bool, int32_t, bool, bool, bool, bool, int32_t, bool, int32_t, bool, bool, bool, bool, char *, char *, const char *, const char *, int32_t);
+typedef void(__stdcall *initialize_callback)(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+	bool, bool, int32_t, int32_t, int32_t, int32_t, const char *,
+	int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+	int32_t, bool, bool, bool, int32_t,
+	float, int32_t,
+	bool, bool, int32_t,
+	bool, bool,
+	bool, bool, int32_t, bool, int32_t, bool, bool, bool, char *, char *, const char *);
 typedef void(__stdcall *system_monitor_info_callback)(double, double);
 typedef void(__stdcall *attendant_create_callback)(double);
 typedef void(__stdcall *start_callback)(void);
 typedef void(__stdcall *stop_callback)(void);
 typedef void(__stdcall *release_callback)(void);
 
-public delegate void delegate_initialize_callback(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, bool, bool, bool, int32_t, float, int32_t, bool, bool, int32_t, bool,bool, bool, bool, int32_t, bool, int32_t, bool, bool, bool, bool, char *, char *, const char *, const char * ,int32_t);
+public delegate void delegate_initialize_callback(const char *, const char *, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+	bool, bool, int32_t, int32_t, int32_t, int32_t, const char *,
+	int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t,
+	int32_t, bool, bool, bool, int32_t,
+	float, int32_t,
+	bool, bool, int32_t,
+	bool, bool,
+	bool, bool, int32_t, bool, int32_t, bool, bool, bool, char *, char *, const char *);
 public delegate void delegate_system_monitor_info_callback(double, double);
 public delegate void delegate_attendant_create_callback(double);
 public delegate void delegate_start_callback(void);
@@ -41,11 +55,25 @@ namespace sirius
 						void release();
 						int start();
 						int stop();
-						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time);
+						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, 
+							bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path, 
+							int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
+							int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, 
+							float video_webp_quality, int32_t video_webp_method, 
+							bool invalidate4client, bool indexed_mode, int32_t nthread, 
+							bool double_reloading_on_creating, bool reloading_on_disconnecting, 
+							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app);
 						int get_available_attendant_count();
 						char* get_version();
 						
-						void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invlidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory , const char * app_session_app, const char * caching_directory, int32_t caching_expire_time);
+						void on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+							bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
+							int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, 
+							int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, 
+							float video_webp_quality, int32_t video_webp_method, 
+							bool invlidate4client, bool indexed_mode, int32_t nthread, 
+							bool double_reloading_on_creating, bool reloading_on_disconnecting, 
+							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, char * cpu, char * memory , const char * app_session_app);
 						void on_system_monitor_info(double cpu_usage, double memory_usage);
 						void on_attendant_create(double percent);
 						void on_start(void);
@@ -82,7 +110,14 @@ namespace sirius
 						void release();
 						int start();
 						int stop();
-						int update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time);
+						int32_t update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+							bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
+							int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height,
+							int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors,
+							float video_webp_quality, int32_t video_webp_method,
+							bool invalidate4client, bool indexed_mode, int32_t nthread,
+							bool double_reloading_on_creating, bool reloading_on_disconnecting,
+							bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app);
 						int get_available_attendant_count();
 						char* get_version();
 

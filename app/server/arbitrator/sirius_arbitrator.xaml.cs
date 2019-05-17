@@ -91,7 +91,14 @@ namespace sirius.app.server.arbitrator
             }
             controller.initailize();
         }
-        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int min_attendant_restart_threshold, int max_attendant_restart_threshold, int controller_portnumber, int streamer_portnumber, int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, int video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int video_quantization_colors, float video_webp_quality, int video_webp_method, bool invalidate4client, bool indexed_mode, int nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_streamer_keepalive, int streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app, sbyte* caching_directory, int caching_expire_time)
+        public unsafe void on_initalize(sbyte* uuid, sbyte* url, int max_attendant_instance, int attendant_creation_delay, int min_attendant_restart_threshold, int max_attendant_restart_threshold, int controller_portnumber, int streamer_portnumber,
+            bool localcache, bool localcache_legacy, int localcache_legacy_expire_time, int localcache_portnumber, int localcache_size, int localcache_threadpool_count, sbyte* localcache_path,
+            int video_codec, int video_width, int video_height, int video_fps, int video_buffer_count, int video_block_width, int video_block_height, 
+            int video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int video_quantization_colors, 
+            float video_webp_quality, int video_webp_method, 
+            bool invalidate4client, bool indexed_mode, int nthread, 
+            bool double_reloading_on_creating, bool reloading_on_disconnecting, 
+            bool enable_tls, bool enable_keepalive, int keepalive_timeout, bool enable_streamer_keepalive, int streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, sbyte* cpu, sbyte* memory, sbyte* app_session_app)
         {
             SettingValue.Instance().uuid = new string(uuid);
             SettingValue.Instance().url = new string(url);
@@ -101,6 +108,15 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().max_attendant_restart_threshold = max_attendant_restart_threshold;
             SettingValue.Instance().controller_portnumber = controller_portnumber;
             SettingValue.Instance().streamer_portnumber = streamer_portnumber;
+
+            SettingValue.Instance().localcache = localcache;
+            SettingValue.Instance().localcache_legacy = localcache_legacy;
+            SettingValue.Instance().localcache_legacy_expire_time = localcache_legacy_expire_time;
+            SettingValue.Instance().localcache_portnumber = localcache_portnumber;
+            SettingValue.Instance().localcache_size = localcache_size;
+            SettingValue.Instance().localcache_threadpool_count = localcache_threadpool_count;
+            SettingValue.Instance().localcache_path = new string(localcache_path);
+
             SettingValue.Instance().video_codec = video_codec;
             SettingValue.Instance().video_width = video_width;
             SettingValue.Instance().video_height = video_height;
@@ -110,30 +126,32 @@ namespace sirius.app.server.arbitrator
             SettingValue.Instance().video_block_height = video_block_height;
             SettingValue.Instance().video_compression_level = video_compression_level;
             SettingValue.Instance().video_quantization_colors = video_quantization_colors;
+
             SettingValue.Instance().video_webp_quality = video_webp_quality;
             SettingValue.Instance().video_webp_method = video_webp_method;
+
             SettingValue.Instance().video_quantization_posterization = video_quantization_posterization;
             SettingValue.Instance().video_quantization_dither_map = video_quantization_dither_map;
             SettingValue.Instance().video_quantization_contrast_maps = video_quantization_contrast_maps;
+
             SettingValue.Instance().invalidate4client = invalidate4client;
             SettingValue.Instance().indexed_mode = indexed_mode;
             SettingValue.Instance().nthread = nthread;
+
             SettingValue.Instance().double_reloading_on_creating = double_reloading_on_creating;
             SettingValue.Instance().reloading_on_disconnecting = reloading_on_disconnecting;
+
             SettingValue.Instance().enable_tls = enable_tls;
             SettingValue.Instance().enable_keepalive = enable_keepalive;
             SettingValue.Instance().keepalive_timeout = keepalive_timeout;
             SettingValue.Instance().enable_streamer_keepalive = enable_streamer_keepalive;
             SettingValue.Instance().streamer_keepalive_timeout = streamer_keepalive_timeout;
             SettingValue.Instance().enable_present = enable_present;
-            SettingValue.Instance().enable_auto_start = enable_auto_start;
-            SettingValue.Instance().enable_caching = enable_caching;
+            SettingValue.Instance().enable_auto_start = enable_auto_start;            
             SettingValue.Instance().clean_attendant = clean_attendant;
             SettingValue.Instance().cpu = new string(cpu);
             SettingValue.Instance().memory = new string(memory);
             SettingValue.Instance().app_session_app = new string(app_session_app);
-            SettingValue.Instance().caching_directory = new string(caching_directory);
-            SettingValue.Instance().caching_expire_time = caching_expire_time;
             
             string[] arg = Environment.GetCommandLineArgs();
             if (arg.Length > 1)

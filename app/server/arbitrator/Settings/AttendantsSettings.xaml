@@ -191,25 +191,48 @@
                 </StackPanel>
 
                 <StackPanel VerticalAlignment="Top">
-                    <Label Content="Caching" Target="{Binding ElementName=Caching}" Width="240"/>
-                    <RadioButton x:Name="CachingOn" IsChecked="True" Click="CachingOn_Click">
+                    <Label Content="Local Cache" Target="{Binding ElementName=LocalCache}" Width="240"/>
+                    <RadioButton x:Name="LocalCacheOn" IsChecked="True" Click="LocalCacheOn_Click">
                         <TextBlock>Yes</TextBlock>
                     </RadioButton>
-                    <RadioButton x:Name="CachingOff" IsChecked="False" Content="No" Margin="8,0,0,0" Click="CachingOff_Click"/>
+                    <RadioButton x:Name="LocalCacheOff" IsChecked="False" Content="No" Margin="8,0,0,0" Click="LocalCacheOff_Click"/>
+                </StackPanel>
+
+                <StackPanel VerticalAlignment="Top">
+                    <Label Content="Local Cache Legacy" Target="{Binding ElementName=Caching}" Width="240"/>
+                    <RadioButton x:Name="LocalCacheLegacyOn" IsChecked="True" Click="LocalCacheLegacyOn_Click">
+                        <TextBlock>Yes</TextBlock>
+                    </RadioButton>
+                    <RadioButton x:Name="LocalCacheLegacyOff" IsChecked="False" Content="No" Margin="8,0,0,0" Click="LocalCacheLegacyOff_Click"/>
+                </StackPanel>
+
+                <StackPanel Name="CachingExpireTimePanel">
+                    <Label Content="Local Cache Legacy Expire Time" Target="{Binding ElementName=TextCachingExpireTime}" Width="240"/>
+                    <TextBox x:Name="TextCachingExpireTime" Width="70" Text="{Binding TextCachingExpireTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
+                    <Label Content="(h)"/>
+                </StackPanel>
+
+                <StackPanel Name="LocalCachePortnumberPanel">
+                    <Label Content="Local Cache Portnumber" Target="{Binding ElementName=TextLocalCachePortnumber}" Width="240"/>
+                    <TextBox x:Name="TextLocalCachePortnumber" Width="70" Text="{Binding TextLocalCachePortnumber, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>                    
+                </StackPanel>
+
+                <StackPanel Name="LocalCacheSizePanel">
+                    <Label Content="Local Cache Size" Target="{Binding ElementName=TextLocalCacheSize}" Width="240"/>
+                    <TextBox x:Name="TextLocalCacheSize" Width="70" Text="{Binding TextLocalCacheSize, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
+                </StackPanel>
+
+                <StackPanel Name="LocalCacheThreadpoolCountPanel">
+                    <Label Content="Local Cache Threadpool Count" Target="{Binding ElementName=TextLocalCacheThreadpoolCount}" Width="240"/>
+                    <TextBox x:Name="TextLocalCacheThreadpoolCount" Width="70" Text="{Binding TextLocalCacheThreadpoolCount, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
                 </StackPanel>
 
                 <StackPanel Name="CachingDirectoryPanel">
-                    <Label Content="Caching Directory" Target="{Binding ElementName=TextCachingDirectory}" Width="240"/>
+                    <Label Content="Cache Path" Target="{Binding ElementName=TextCachingDirectory}" Width="240"/>
                 </StackPanel>
                 <StackPanel Name="TextCachingDirectoryPanel">
                     <TextBox x:Name="TextCachingDirectory" Width="262" Text="{Binding TextCachingDirectory, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Left"/>
                     <Button x:Name="CachingDirectoryButton" Width="43" Content="..." Margin="5,0,0,0" HorizontalAlignment="Right" Click="CachingDirectoryButton_Click"/>
-                </StackPanel>
-
-                <StackPanel Name="CachingExpireTimePanel">
-                    <Label Content="Caching Expire Time" Target="{Binding ElementName=TextCachingExpireTime}" Width="240"/>
-                    <TextBox x:Name="TextCachingExpireTime" Width="70" Text="{Binding TextCachingExpireTime, Mode=TwoWay, ValidatesOnDataErrors=True}" TextAlignment="Right"/>
-                    <Label Content="(h)"/>
                 </StackPanel>
 
                 <!--StackPanel>

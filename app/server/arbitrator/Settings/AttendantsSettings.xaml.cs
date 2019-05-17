@@ -54,8 +54,11 @@ namespace sirius.app.server.arbitrator.Settings
             TextAppSessionApp.Text = setting_value.app_session_app.ToString();
             TextVideoWebpQuality.Text = setting_value.video_webp_quality.ToString();
             QuantizationColors.Text = setting_value.video_quantization_colors.ToString();
-            TextCachingExpireTime.Text = setting_value.caching_expire_time.ToString();
-            TextCachingDirectory.Text = setting_value.caching_directory.ToString();
+            TextLocalCachePortnumber.Text = setting_value.localcache_portnumber.ToString();
+            TextLocalCacheSize.Text = setting_value.localcache_size.ToString();
+            TextLocalCacheThreadpoolCount.Text = setting_value.localcache_threadpool_count.ToString();
+            TextCachingExpireTime.Text = setting_value.localcache_legacy_expire_time.ToString();
+            TextCachingDirectory.Text = setting_value.localcache_path.ToString();
 
             if (setting_value.video_codec == sirius_arbitrator.video_submedia_type.png)
             {
@@ -167,15 +170,26 @@ namespace sirius.app.server.arbitrator.Settings
                 VideoQuantizationContrastMapsOff.IsChecked = true;
             }
 
-            if (setting_value.enable_caching)
+            if (setting_value.localcache)
             {
-                CachingOn.IsChecked = true;
-                CachingOff.IsChecked = false;
+                LocalCacheOn.IsChecked = true;
+                LocalCacheOff.IsChecked = false;
             }
             else
             {
-                CachingOn.IsChecked = false;
-                CachingOff.IsChecked = true;
+                LocalCacheOn.IsChecked = false;
+                LocalCacheOff.IsChecked = true;
+            }
+
+            if (setting_value.localcache_legacy)
+            {
+                LocalCacheLegacyOn.IsChecked = true;
+                LocalCacheLegacyOff.IsChecked = false;
+            }
+            else
+            {
+                LocalCacheLegacyOn.IsChecked = false;
+                LocalCacheLegacyOff.IsChecked = true;
             }
 
             setting_value.enable_auto_start = false;
@@ -242,8 +256,12 @@ namespace sirius.app.server.arbitrator.Settings
             setting_value.video_block_height = Convert.ToInt32(TextVideoBlockHeight.Text);
             setting_value.nthread = Convert.ToInt32(TextThreadCount.Text);
             setting_value.video_webp_quality = Convert.ToSingle(TextVideoWebpQuality.Text);
-            setting_value.caching_expire_time = Convert.ToInt32(TextCachingExpireTime.Text);
-            setting_value.caching_directory = TextCachingDirectory.Text.Trim();
+
+            setting_value.localcache_portnumber = Convert.ToInt32(TextLocalCachePortnumber.Text);
+            setting_value.localcache_size = Convert.ToInt32(TextLocalCacheSize.Text);
+            setting_value.localcache_threadpool_count = Convert.ToInt32(TextLocalCacheThreadpoolCount.Text);
+            setting_value.localcache_legacy_expire_time = Convert.ToInt32(TextCachingExpireTime.Text);
+            setting_value.localcache_path = TextCachingDirectory.Text.Trim();
 
             if (DisaplyAttendantOn.IsChecked.Value)
                 setting_value.enable_present = true;
@@ -270,10 +288,15 @@ namespace sirius.app.server.arbitrator.Settings
             else
                 setting_value.reloading_on_disconnecting = false;
 
-            if (CachingOn.IsChecked.Value)
-                setting_value.enable_caching = true;
+            if (LocalCacheOn.IsChecked.Value)
+                setting_value.localcache = true;
             else
-                setting_value.enable_caching = false;
+                setting_value.localcache = false;
+
+            if (LocalCacheLegacyOn.IsChecked.Value)
+                setting_value.localcache_legacy = true;
+            else
+                setting_value.localcache_legacy = false;
 
             if (VideoQuantizationPosterizationOn.IsChecked.Value)
                 setting_value.video_quantization_posterization = true;
@@ -438,18 +461,21 @@ namespace sirius.app.server.arbitrator.Settings
                 WebpQualityPanel.IsEnabled = true;
             }
         }
-        private void CachingOn_Click(object sender, RoutedEventArgs e)
+        private void LocalCacheOn_Click(object sender, RoutedEventArgs e)
+        {
+                        
+        }
+        private void LocalCacheOff_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+        private void LocalCacheLegacyOn_Click(object sender, RoutedEventArgs e)
         {
             CachingExpireTimePanel.IsEnabled = true;
-            CachingDirectoryPanel.IsEnabled = true;
-            TextCachingDirectoryPanel.IsEnabled = true;
         }
-
-        private void CachingOff_Click(object sender, RoutedEventArgs e)
+        private void LocalCacheLegacyOff_Click(object sender, RoutedEventArgs e)
         {
-            CachingExpireTimePanel.IsEnabled = false;
-            CachingDirectoryPanel.IsEnabled = false;
-            TextCachingDirectoryPanel.IsEnabled = false;                    
+            CachingExpireTimePanel.IsEnabled = false;       
         }
         private void CachingDirectoryButton_Click(object sender, RoutedEventArgs e)
         {

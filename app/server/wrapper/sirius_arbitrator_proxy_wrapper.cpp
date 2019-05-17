@@ -79,10 +79,24 @@ int sirius::app::server::arbitrator::wrapper::core::stop()
 		return -1;
 }
 
-int sirius::app::server::arbitrator::wrapper::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
+int sirius::app::server::arbitrator::wrapper::core::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+	bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
+	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height,
+	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors,
+	float video_webp_quality, int32_t video_webp_method,
+	bool invalidate4client, bool indexed_mode, int32_t nthread,
+	bool double_reloading_on_creating, bool reloading_on_disconnecting,
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app)
 {		
 	if(_proxy)
-		return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, video_webp_quality, video_webp_method, invalidate4client, indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expire_time);
+		return _proxy->update(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
+			localcache, localcahce_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool_count, localcache_path,
+			video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height,
+			video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors,
+			video_webp_quality, video_webp_method,
+			invalidate4client, indexed_mode, nthread,
+			double_reloading_on_creating, reloading_on_disconnecting,
+			enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, app_session_app);
 	else
 		return -1;
 }
@@ -95,9 +109,23 @@ int sirius::app::server::arbitrator::wrapper::core::get_available_attendant_coun
 		return -1;
 }
 
-void sirius::app::server::arbitrator::wrapper::core::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, char * cpu, char * memory, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
+void sirius::app::server::arbitrator::wrapper::core::on_initialize(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+	bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
+	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height,
+	int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors,
+	float video_webp_quality, int32_t video_webp_method,
+	bool invlidate4client, bool indexed_mode, int32_t nthread,
+	bool double_reloading_on_creating, bool reloading_on_disconnecting,
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, char * cpu, char * memory, const char * app_session_app)
 {
-	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, video_webp_quality, video_webp_method, invalidate4client, indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, cpu, memory, app_session_app, caching_directory, caching_expire_time);
+	_front_on_initalize(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
+		localcache, localcahce_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool_count, localcache_path,
+		video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height,
+		video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors,
+		video_webp_quality, video_webp_method,
+		invlidate4client, indexed_mode, nthread,
+		double_reloading_on_creating, reloading_on_disconnecting,
+		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, cpu, memory, app_session_app);
 }
 
 void sirius::app::server::arbitrator::wrapper::core::on_system_monitor_info(double cpu_usage, double memory_usage)
@@ -164,9 +192,23 @@ int sirius::app::server::arbitrator::wrapper::handler::stop()
 	return _core->stop();
 }
 
-int sirius::app::server::arbitrator::wrapper::handler::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber, int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height, int32_t video_compression_level, bool video_quantization_posterization, bool video_quantization_dither_map, bool video_quantization_contrast_maps, int32_t video_quantization_colors, float video_webp_quality, int32_t video_webp_method, bool invalidate4client, bool indexed_mode, int32_t nthread, bool double_reloading_on_creating, bool reloading_on_disconnecting, bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool enable_caching, bool clean_attendant, const char * app_session_app, const char * caching_directory, int32_t caching_expire_time)
+int sirius::app::server::arbitrator::wrapper::handler::update(const char * uuid, const char * url, int32_t max_attendant_instance, int32_t attendant_creation_delay, int32_t min_attendant_restart_threshold, int32_t max_attendant_restart_threshold, int32_t controller_portnumber, int32_t streamer_portnumber,
+	bool localcache, bool localcahce_legacy, int32_t localcache_legacy_expire_time, int32_t localcache_portnumber, int32_t localcache_size, int32_t localcache_threadpool_count, const char * localcache_path,
+	int32_t video_codec, int32_t video_width, int32_t video_height, int32_t video_fps, int32_t video_buffer_count, int32_t video_block_width, int32_t video_block_height,
+	int32_t video_png_compression_level, bool video_png_quantization_posterization, bool video_png_quantization_dither_map, bool video_png_quantization_contrast_maps, int32_t video_png_quantization_colors,
+	float video_webp_quality, int32_t video_webp_method,
+	bool invalidate4client, bool indexed_mode, int32_t nthread,
+	bool double_reloading_on_creating, bool reloading_on_disconnecting,
+	bool enable_tls, bool enable_keepalive, int32_t keepalive_timeout, bool enable_streamer_keepalive, int32_t streamer_keepalive_timeout, bool enable_present, bool enable_auto_start, bool clean_attendant, const char * app_session_app)
 {
-	return _core->update(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber, video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height, video_compression_level, video_quantization_posterization, video_quantization_dither_map, video_quantization_contrast_maps, video_quantization_colors, video_webp_quality, video_webp_method, invalidate4client, indexed_mode, nthread, double_reloading_on_creating, reloading_on_disconnecting, enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, enable_caching, clean_attendant, app_session_app, caching_directory, caching_expire_time);
+	return _core->update(uuid, url, max_attendant_instance, attendant_creation_delay, min_attendant_restart_threshold, max_attendant_restart_threshold, controller_portnumber, streamer_portnumber,
+		localcache, localcahce_legacy, localcache_legacy_expire_time, localcache_portnumber, localcache_size, localcache_threadpool_count, localcache_path,
+		video_codec, video_width, video_height, video_fps, video_buffer_count, video_block_width, video_block_height,
+		video_png_compression_level, video_png_quantization_posterization, video_png_quantization_dither_map, video_png_quantization_contrast_maps, video_png_quantization_colors,
+		video_webp_quality, video_webp_method,
+		invalidate4client, indexed_mode, nthread,
+		double_reloading_on_creating, reloading_on_disconnecting,
+		enable_tls, enable_keepalive, keepalive_timeout, enable_streamer_keepalive, streamer_keepalive_timeout, enable_present, enable_auto_start, clean_attendant, app_session_app);
 }
 
 int sirius::app::server::arbitrator::wrapper::handler::get_available_attendant_count()
