@@ -17,6 +17,13 @@ namespace sirius.app.server.arbitrator.Settings
         public int max_attendant_restart_threshold { get; set; }
         public int controller_portnumber { get; set; }
         public int streamer_portnumber { get; set; }
+        public bool localcache { get; set; }
+        public bool localcache_legacy { get; set; }
+        public int localcache_legacy_expire_time { get; set; }
+        public int localcache_portnumber { get; set; }
+        public int localcache_size { get; set; }
+        public int localcache_threadpool_count { get; set; }
+        public string localcache_path { get; set; }
         public int video_codec { get; set; }
         public int video_width { get; set; }
         public int video_height { get; set; }
@@ -42,8 +49,7 @@ namespace sirius.app.server.arbitrator.Settings
         public bool enable_streamer_keepalive { get; set; }
         public int streamer_keepalive_timeout { get; set; }
         public bool enable_present { get; set; }
-        public bool enable_auto_start { get; set; }
-        public bool enable_caching { get; set; }
+        public bool enable_auto_start { get; set; }        
         public bool clean_attendant { get; set; }
         public string cpu { get; set; }
         public string memory { get; set; }
@@ -51,9 +57,6 @@ namespace sirius.app.server.arbitrator.Settings
         public int idle_time { get; set; }
         public string log_root_path { get; set; }
         public string app_session_app { get; set; }
-        public string caching_directory { get; set; }
-        public int caching_expire_time { get; set; }
-
 
         private static SettingValue _instance;
         protected SettingValue()
@@ -73,7 +76,7 @@ namespace sirius.app.server.arbitrator.Settings
             IntPtr purl = Marshal.StringToHGlobalAnsi(url);
             IntPtr plog_root_path = Marshal.StringToHGlobalAnsi(log_root_path);
             IntPtr papp_sesion_app = Marshal.StringToHGlobalAnsi(app_session_app);
-            IntPtr pcaching_directory = Marshal.StringToHGlobalAnsi(caching_directory);
+            IntPtr plocalcache_path = Marshal.StringToHGlobalAnsi(localcache_path);
 
             sirius_arbitrator.controller.update(
                 (sbyte*)puuid, 
@@ -84,6 +87,13 @@ namespace sirius.app.server.arbitrator.Settings
                 max_attendant_restart_threshold,
                 controller_portnumber,
                 streamer_portnumber, 
+                localcache,
+                localcache_legacy,
+                localcache_legacy_expire_time,
+                localcache_portnumber,
+                localcache_size,
+                localcache_threadpool_count,                
+                (sbyte*)plocalcache_path,
                 video_codec, 
                 video_width, 
                 video_height, 
@@ -110,12 +120,8 @@ namespace sirius.app.server.arbitrator.Settings
                 streamer_keepalive_timeout,
                 enable_present, 
                 enable_auto_start, 
-                enable_caching,
                 clean_attendant,
-                (sbyte*)papp_sesion_app,
-                (sbyte*)pcaching_directory,
-                caching_expire_time
-                );
+                (sbyte*)papp_sesion_app);
         }
     }
 }
