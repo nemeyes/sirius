@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{379957F3-9F1F-448B-B8CA-C01FA7D487B9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>sirius_localcache_client</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>sirius_localcache_client</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\intermediate\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\intermediate\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\intermediate\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\bin\</OutDir>
+    <IntDir>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\intermediate\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;EXPORT_SIRIUS_LOCALCACHE_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay32MTd.lib;ssleay32MTd.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\debug\lib\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;EXPORT_SIRIUS_LOCALCACHE_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include\;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay64MTd.lib;ssleay64MTd.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\debug\lib\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;EXPORT_SIRIUS_LOCALCACHE_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\include;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x86\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay32MT.lib;ssleay32MT.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x86\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x86\release\lib\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;_WINSOCK_DEPRECATED_NO_WARNINGS;EXPORT_SIRIUS_LOCALCACHE_CLIENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\include\;..\..\..\3rdparty\gperftools\v2_6_1\win32\v140\x64\include;..\..\..\base\include;..\..\..\library\log\log4cplus\logger\include;..\..\..\library\net\base\include;..\..\..\library\net\base\include\iocp;..\..\..\library\cache\local\base\include;..\..\..\library\cache\local\base\command;..\..\..\library\cache\local\client\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\..\3rdparty\gperftools\v2_6_1\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\3rdparty\openssl\v1_0_1e\win32\$(DefaultPlatformToolset)\x64\lib;..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;rpcrt4.lib;ws2_32.lib;mswsock.lib;libeay64MT.lib;ssleay64MT.lib;winmm.lib;sirius_log4cplus_logger.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <ImportLibrary>..\..\..\platform\win32\$(DefaultPlatformToolset)\x64\release\lib\$(ProjectName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\base\include\sirius_uuid.h" />
+    <ClInclude Include="..\..\..\base\include\resource.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_handler.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_io_context.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_client.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\iocp\iocp_session.h" />
+    <ClInclude Include="..\..\..\library\net\base\include\platform.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\command\localcache_commands_client.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_commands.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_base.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_command.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_packet.h" />
+    <ClInclude Include="..\..\..\library\cache\local\base\include\localcache_session.h" />
+    <ClInclude Include="..\..\..\library\cache\local\client\include\localcache_client.h" />
+    <ClInclude Include="..\..\..\library\cache\local\client\include\sirius_localcache_client.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\base\source\sirius_uuid.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_client.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_handler.cpp" />
+    <ClCompile Include="..\..\..\library\net\base\source\iocp\iocp_session.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_base.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_command.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\base\source\localcache_session.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\client\source\localcache_client.cpp" />
+    <ClCompile Include="..\..\..\library\cache\local\client\source\sirius_localcache_client.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\base\source\sirius_version.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
