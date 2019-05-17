@@ -219,7 +219,7 @@ int main()
 				{
 					proc_ctrl.set_cmdline(arguments, "--localcache_legacy=true");
 					proc_ctrl.set_cmdline(arguments, "--localcache_legacy_expire_time=%d", confentity.localcache_legacy_expire_time);
-					proc_ctrl.set_cmdline(arguments, "--localcache_legacy_directory=\"%s\"", confentity.localcache_path);
+					proc_ctrl.set_cmdline(arguments, "--localcache_path=\"%s\"", confentity.localcache_path);
 				}
 				else
 				{

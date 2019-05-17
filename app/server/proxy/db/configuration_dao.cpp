@@ -35,7 +35,7 @@ int32_t sirius::app::server::arbitrator::db::configuration_dao::update(sirius::a
 	sql += "video_webp_quality = ?, video_webp_method=? , ";
 	sql += "enable_invalidate4client=?, enable_indexed_mode=?, nthread=?, ";
 	sql += "double_reloading_on_creating=?, reloading_on_disconnecting=?, ";
-	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_streamer_keepalive=?, streamer_keepalive_timeout=?, enable_present=?, enable_auto_start=?, enable_caching=?, clean_attendant=?, ";
+	sql += "enable_tls=?, enable_keepalive=?, keepalive_timeout=?, enable_streamer_keepalive=?, streamer_keepalive_timeout=?, enable_present=?, enable_auto_start=?, clean_attendant=?, ";
 	sql += "app_session_app=? ";
 
 	if (sqlite3_prepare(conn, sql.c_str(), -1, &stmt, 0) == SQLITE_OK)
