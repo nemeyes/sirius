@@ -39,41 +39,45 @@ xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_ca
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_capturer.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_cpu_video_capturer.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_localcache_client.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_localcache_client.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_localcache_client.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_png_compressor.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_partial_webp_compressor.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.pdb						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_scsp_server.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_server.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_server.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_unified_server.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.pdb						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_curl_client.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.dll						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.pdb						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.ipdb						%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_xml_parser.ipdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_timestamp_generator.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_timestamp_generator.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_timestamp_generator.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_timestamp_generator.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_internal_notifier.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_internal_notifier.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_internal_notifier.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.dll			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.pdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
-xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.ipdb			%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.dll				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.pdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
+xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_web_server_framework.ipdb				%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.dll					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
 xcopy /Y %work_dir%\platform\win32\v140\x86\%build_mode%\bin\sirius_attendant_proxy.pdb					%work_dir%\platform\win32\v140\x86\%build_mode%\bin\apps\attendants\web\
